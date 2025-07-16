@@ -1,13 +1,14 @@
-import { Button } from "./components/ui/button";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { queryClient } from "@/services/queryClient";
+import AppRouter from "@/routing/AppRouter";
 
 function App() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <h1 className="text-3xl font-bold">Hello shadcn/ui! 🎉</h1>
-      <Button>Click me</Button>
-      <Button variant="outline">Outline Button</Button>
-      <Button variant="outline">Outline Button</Button>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <AppRouter />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 
