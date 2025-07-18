@@ -5,7 +5,7 @@ import ProductCardActions from "./ProductCardActions";
 
 function ProductCard() {
   return (
-    <Card className={"w-[300px] pt-0"}>
+    <Card className="pt-0 ">
       <ProductCardImage />
       <ProductCardInfo />
       <ProductCardActions />

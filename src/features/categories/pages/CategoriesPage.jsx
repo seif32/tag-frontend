@@ -1,5 +1,13 @@
+import CategoryCard from "../components/CategoryCard";
+import { CategoriesHeader } from "../components/CategoryHeader";
+
 function CategoriesPage() {
-  return <div>CategoriesPage</div>;
+  return (
+    <div>
+      <CategoriesHeader />
+      <CategoryCard />
+    </div>
+  );
 }
 
 export default CategoriesPage;

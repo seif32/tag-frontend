@@ -9,7 +9,7 @@ function ProductCardInfo() {
           mobiles
         </span>
 
-        <StrikePrice price={"45.99"} className="self-end" />
+        <StrikePrice price={"45.99"} className="self-end justify-self-end" />
 
         <h3 className="text-base font-semibold text-gray-900 leading-tight flex-1 ">
           iPhone 11 128GB

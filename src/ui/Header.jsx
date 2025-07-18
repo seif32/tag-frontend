@@ -11,12 +11,12 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-white shadow-md border-b">
-      <div className="container mx-auto px-4">
+    <header className="bg-white ">
+      <div className="container mx-auto px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to={ROUTES.HOME} className="text-xl font-bold text-gray-800">
-            🛍️ ProductStore
+            TAG
           </Link>
 
           {/* Navigation */}
