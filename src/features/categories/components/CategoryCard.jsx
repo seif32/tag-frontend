@@ -9,7 +9,9 @@ import { IoFastFoodOutline } from "react-icons/io5";
 
 function CategoryCard() {
   return (
-    <Card className={"w-60 h-60 flex flex-col items-center pt-0 gap-0"}>
+    <Card
+      className={" h-60 flex flex-col items-center pt-0 gap-0 cursor-pointer"}
+    >
       <CardHeader
         className={
           "flex-1 grid place-content-center bg-gray-200 w-full rounded-t-lg"

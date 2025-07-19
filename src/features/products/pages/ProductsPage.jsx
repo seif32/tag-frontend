@@ -5,17 +5,15 @@ import { ProductsHeader } from "../components/ProductsHeader";
 
 function ProductsPage() {
   return (
-    <SidebarProvider className={"pr-8"}>
+    <SidebarProvider className={""}>
       <ProductsSidebar />
 
-      <div className="mb-4 md:hidden">
-        <SidebarTrigger />
-      </div>
+      <SidebarTrigger className="mb-4 md:hidden" />
 
-      <main className=" overflow-auto flex-1">
+      <main className="flex-1 px-8 overflow-auto">
         <ProductsHeader productCount={4502} />
 
-        <div className=" grid  grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+        <div className=" grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
           <ProductCard />
           <ProductCard />
           <ProductCard />

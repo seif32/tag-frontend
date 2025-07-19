@@ -5,7 +5,7 @@ import ProductCardActions from "./ProductCardActions";
 
 function ProductCard() {
   return (
-    <Card className="pt-0 ">
+    <Card className="pt-0 transition-all cursor-pointer ">
       <ProductCardImage />
       <ProductCardInfo />
       <ProductCardActions />

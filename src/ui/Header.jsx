@@ -11,89 +11,80 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-white ">
-      <div className="container mx-auto px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to={ROUTES.HOME} className="text-xl font-bold text-gray-800">
-            TAG
+    <header className="flex items-center justify-between h-16 px-8">
+      {/* Logo */}
+      <Link to={ROUTES.HOME} className="text-xl font-bold text-gray-800">
+        TAG
+      </Link>
+
+      {/* Navigation */}
+      <nav className="hidden space-x-8 md:flex">
+        {navItems.map((item) => (
+          <Link
+            key={item.name}
+            to={item.path}
+            className={`text-gray-600 hover:text-gray-800 transition-colors ${
+              location.pathname === item.path ? "text-blue-600 font-medium" : ""
+            }`}
+          >
+            {item.name}
           </Link>
+        ))}
+      </nav>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`text-gray-600 hover:text-gray-800 transition-colors ${
-                  location.pathname === item.path
-                    ? "text-blue-600 font-medium"
-                    : ""
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+      {/* Right side actions */}
+      <div className="flex items-center space-x-4">
+        {/* Search */}
+        <div className="hidden md:block">
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-          {/* Right side actions */}
-          <div className="flex items-center space-x-4">
-            {/* Search */}
-            <div className="hidden md:block">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+        {/* Cart */}
+        <Link
+          to={ROUTES.CART}
+          className="relative p-2 text-gray-600 hover:text-gray-800"
+        >
+          🛒
+          {/* Static cart badge for UI */}
+          <span className="absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full -top-1 -right-1">
+            0
+          </span>
+        </Link>
 
-            {/* Cart */}
-            <Link
-              to={ROUTES.CART}
-              className="relative p-2 text-gray-600 hover:text-gray-800"
-            >
-              🛒
-              {/* Static cart badge for UI */}
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                0
-              </span>
-            </Link>
-
-            {/* Auth buttons */}
-            <div className="flex items-center space-x-2">
-              <Link
-                to={ROUTES.LOGIN}
-                className="text-gray-600 hover:text-gray-800"
-              >
-                Login
-              </Link>
-              <Link
-                to={ROUTES.REGISTER}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Sign Up
-              </Link>
-            </div>
-          </div>
-
-          {/* Mobile menu toggle */}
-          <button className="md:hidden p-2">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
+        {/* Auth buttons */}
+        <div className="flex items-center space-x-2">
+          <Link to={ROUTES.LOGIN} className="text-gray-600 hover:text-gray-800">
+            Login
+          </Link>
+          <Link
+            to={ROUTES.REGISTER}
+            className="px-4 py-2 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700"
+          >
+            Sign Up
+          </Link>
         </div>
       </div>
+
+      {/* Mobile menu toggle */}
+      <button className="p-2 md:hidden">
+        <svg
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
     </header>
   );
 };

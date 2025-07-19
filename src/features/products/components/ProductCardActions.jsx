@@ -5,7 +5,11 @@ import { HeartButton } from "@/ui/HeartButton";
 function ProductCardActions() {
   return (
     <CardFooter className={"flex flex-row px-4 gap-2"}>
-      <Button className={"uppercase flex-1  h-12 md:h-10 cursor-pointer"}>
+      <Button
+        className={
+          "uppercase flex-1  h-12 md:h-10 cursor-pointer hover:scale-105"
+        }
+      >
         Add to Card
       </Button>
       <HeartButton />
