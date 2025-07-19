@@ -3,17 +3,17 @@ import { Badge } from "@/components/ui/badge";
 // features/categories/components/CategoriesHeader.jsx
 export function CategoriesHeader() {
   return (
-    <section className="bg-gray-50 py-12">
-      <div className="container mx-auto px-4 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+    <section className="bg-gray-50 ">
+      <div className="container px-4 mx-auto text-center">
+        <h1 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
           Shop by Category
         </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+        <p className="max-w-2xl mx-auto mb-8 text-lg text-gray-600">
           Explore our wide range of products across different categories
         </p>
 
         {/* Optional: Quick category filters */}
-        <div className="flex flex-wrap gap-2 justify-center">
+        <div className="flex flex-wrap justify-center gap-2">
           <Badge variant="secondary">Electronics</Badge>
           <Badge variant="secondary">Candies</Badge>
           <Badge variant="secondary">Fashion</Badge>

@@ -1,31 +1,22 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
-import { IoFastFoodOutline } from "react-icons/io5";
-
-function CategoryCard() {
+function CategoryCard({ name, storage, image }) {
   return (
-    <Card
-      className={" h-60 flex flex-col items-center pt-0 gap-0 cursor-pointer"}
-    >
-      <CardHeader
-        className={
-          "flex-1 grid place-content-center bg-gray-200 w-full rounded-t-lg"
-        }
-      >
-        <IoFastFoodOutline size={100} />
-      </CardHeader>
-      <CardContent className={"font-bold text-xl"}>
-        <h2>Candies</h2>
-      </CardContent>
-      <CardFooter className={" "}>
-        <span>452 products</span>
-      </CardFooter>
-    </Card>
+    <div className="flex flex-col h-64 gap-6 pt-0 cursor-pointer group">
+      <div className="relative w-full h-full transition-transform duration-400 rounded-xl aspect-square group-hover:scale-110">
+        <img
+          className="object-cover w-full h-full shadow-sm rounded-xl "
+          src={image}
+        />
+        <Badge variant={"destructive"} className={"absolute top-2 right-2"}>
+          {storage}
+        </Badge>
+      </div>
+      <div className="flex justify-center ">
+        <span className="text-lg font-bold tracking-tight">{name}</span>
+        {/* <span className="text-lg">{storage} Products</span> */}
+      </div>
+    </div>
   );
 }
 

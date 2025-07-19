@@ -1,4 +1,6 @@
-import { useState } from "react";
+// src/features/products/components/ProductsSidebar.jsx
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router";
 import {
   Sidebar,
   SidebarContent,
@@ -75,11 +77,22 @@ const categories = [
 ];
 
 export function ProductsSidebar() {
+  const location = useLocation();
   const [expandedCategories, setExpandedCategories] = useState(new Set());
   const [activeCategory, setActiveCategory] = useState(null);
 
+  // Auto-expand category if user is on that route
+  useEffect(() => {
+    const pathParts = location.pathname.split("/");
+    const categoryFromPath = pathParts[3]; // /products/category/[categoryId]
+
+    if (categoryFromPath) {
+      setExpandedCategories((prev) => new Set([...prev, categoryFromPath]));
+    }
+  }, [location.pathname]);
+
   return (
-    <Sidebar className="relative h-full ">
+    <Sidebar className="relative h-full">
       <ProductsSidebarHeader />
 
       <SidebarContent className="p-2">
@@ -93,11 +106,12 @@ export function ProductsSidebar() {
               />
 
               {expandedCategories.has(category.id) && (
-                <SidebarMenuSub className="mt-1 ml-4 space-y-1 ">
+                <SidebarMenuSub className="mt-1 ml-4 space-y-1">
                   {category.subcategories.map((subcat) => (
                     <SidebarMenuSubItem key={subcat.id}>
                       <ProductsSidebarMenuSubButton
                         subcat={subcat}
+                        categoryId={category.id}
                         activeCategory={activeCategory}
                         setActiveCategory={setActiveCategory}
                       />

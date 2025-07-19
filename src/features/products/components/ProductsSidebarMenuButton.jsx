@@ -1,11 +1,15 @@
+// src/features/products/components/ProductsSidebarMenuButton.jsx
 import { SidebarMenuButton } from "@/components/ui/sidebar";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { NavLink, useLocation } from "react-router";
 
 function ProductsSidebarMenuButton({
   expandedCategories,
   setExpandedCategories,
   category,
 }) {
+  const location = useLocation();
+
   const toggleCategory = (categoryId) => {
     const newExpanded = new Set(expandedCategories);
     if (newExpanded.has(categoryId)) {
@@ -16,24 +20,39 @@ function ProductsSidebarMenuButton({
     setExpandedCategories(newExpanded);
   };
 
+  const isCategoryActive = location.pathname.includes(
+    `/products/category/${category.id}`
+  );
+  const totalProducts = category.subcategories.reduce(
+    (sum, sub) => sum + sub.count,
+    0
+  );
+
   return (
     <SidebarMenuButton
       onClick={() => toggleCategory(category.id)}
-      className=" w-full justify-between hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
+      className={`w-full justify-between cursor-pointer ${
+        isCategoryActive ? "bg-accent text-accent-foreground" : ""
+      }`}
     >
-      <div className="flex items-center gap-3">
-        {/* <span className="text-lg">{category.icon}</span> */}
+      <NavLink
+        to={`/products/category/${category.id}`}
+        className="flex items-center gap-3 flex-1"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* <span className="text-base">{category.icon}</span> */}
         <span className="font-medium">{category.name}</span>
-      </div>
+      </NavLink>
+
       <div className="flex items-center gap-2">
-        <span className="text-xs bg-gray-200 text-primary px-2 py-1 rounded-sm">
-          {category.subcategories.reduce((sum, sub) => sum + sub.count, 0)}
+        <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-md">
+          {totalProducts}
         </span>
-        {expandedCategories.has(category.id) ? (
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
-        ) : (
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
-        )}
+        <ChevronRight
+          className={`h-4 w-4 text-muted-foreground transition-transform ${
+            expandedCategories.has(category.id) ? "rotate-90" : ""
+          }`}
+        />
       </div>
     </SidebarMenuButton>
   );
