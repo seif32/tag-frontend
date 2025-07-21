@@ -120,10 +120,7 @@ function SidebarProvider({
             "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
             ...style,
           }}
-          className={cn(
-            "group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full",
-            className
-          )}
+          className={cn("", className)}
           {...props}
         >
           {children}

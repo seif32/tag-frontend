@@ -15,7 +15,7 @@ import {
 
 export function ProductsHeader({ productCount }) {
   return (
-    <div className="flex items-center justify-between mb-6">
+    <div className="flex flex-col items-start mb-6 sm:flex-row sm:justify-between">
       <div>
         <h1 className="text-2xl font-bold">Products</h1>
         <p className="text-gray-600">{productCount} items found</p>
