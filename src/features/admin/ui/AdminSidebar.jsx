@@ -5,8 +5,8 @@ import AdminSidebarHeader from "./AdminSidebarHeader";
 
 function AdminSidebar() {
   return (
-    <Sidebar className="w-64 border-r bg-card">
-      <SidebarContent>
+    <Sidebar className="w-64 border-r bg-sidebar">
+      <SidebarContent className={"bg-sidebar"}>
         <AdminSidebarHeader />
 
         {AdminSidebarGroups.map((group, index) => (

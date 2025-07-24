@@ -30,6 +30,11 @@ function TagSidebarMenuButton({
           </div>
 
           <div className="flex items-center gap-2">
+            {menuButton.badge && (
+              <Badge variant={menuButton.badge.variant} className="text-xs">
+                {menuButton.badge.content}
+              </Badge>
+            )}
             <ChevronRight
               className={`h-4 w-4 transition-transform duration-200 ${
                 isOpen ? "rotate-90" : ""

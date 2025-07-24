@@ -10,8 +10,8 @@ function AdminLayout() {
         <AdminSidebar />
 
         <div className="flex flex-col flex-1 overflow-hidden">
-          {/* <AdminHeader className="border-b px-6 py-4" /> */}
-          <main className="flex-1 overflow-auto p-6 bg-muted">
+          {/* <AdminHeader className="px-6 py-4 border-b" /> */}
+          <main className="flex-1 p-6 overflow-auto bg-[#fdfdfd]">
             <Outlet />
           </main>
         </div>

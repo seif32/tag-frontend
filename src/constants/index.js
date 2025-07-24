@@ -1,13 +1,28 @@
 export const API_BASE_URL = "http://localhost:5000/api";
 
 export const ROUTES = {
-  HOME: "/",
-  PRODUCTS: "/products",
-  CATEGORIES: "/categories",
-  CART: "/cart",
-  LOGIN: "/login",
-  REGISTER: "/register",
-  PROFILE: "/profile",
+  CUSTOMER: {
+    HOME: "/",
+    PRODUCTS: "/products",
+    PRODUCT_DETAIL: "/products/:id", // 🎯 Add dynamic routes
+    CATEGORIES: "/categories",
+    CATEGORY_DETAIL: "/categories/:slug",
+    CART: "/cart",
+    CHECKOUT: "/checkout",
+    LOGIN: "/login",
+    REGISTER: "/register",
+    PROFILE: "/profile",
+    ORDER_HISTORY: "/orders",
+  },
+  ADMIN: {
+    DASHBOARD: "",
+    ADD_PRODUCT: "add-product",
+    PRODUCTS: "products",
+    EDIT_PRODUCT: "products/:id/edit",
+    ORDERS: "orders",
+    USERS: "users",
+    SETTINGS: "settings",
+  },
 };
 
 export const QUERY_KEYS = {
