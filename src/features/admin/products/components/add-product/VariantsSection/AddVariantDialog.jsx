@@ -10,7 +10,7 @@ import { IoAddOutline } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import CreateVariantModal from "./CreateVariantModal";
 import AddVariantModal from "./AddVariantModal";
-import useProductStore from "@/features/admin/store/productStore";
+import useVariantStore from "@/features/admin/store/variantStore";
 
 function AddVariantDialog() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -18,7 +18,7 @@ function AddVariantDialog() {
   const [newVariantType, setNewVariantType] = useState("");
   const [customTypeName, setCustomTypeName] = useState("");
 
-  const addVariant = useProductStore((state) => state.addVariant);
+  const addVariant = useVariantStore((state) => state.addVariant);
 
   function handleAddVariant() {
     const typeToAdd =

@@ -4,12 +4,10 @@ import VariantsType from "./VariantsType";
 import VariantsValues from "./VariantsValues";
 import NoVariants from "./NoVariants";
 import VariantsHeader from "./VariantsHeader";
-import useProductStore from "@/features/admin/store/productStore";
+import useVariantStore from "@/features/admin/store/variantStore";
 
 function VariantsSection() {
-  const variants = useProductStore((state) => state.variants);
-
-  // console.log(JSON.stringify(variants, null, 2));
+  const variants = useVariantStore((state) => state.variants);
 
   return (
     <Card>

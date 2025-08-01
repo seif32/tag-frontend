@@ -42,7 +42,7 @@ function ToggleGroupItem({ className, children, variant, size, ...props }) {
           size: context.size || size,
         }),
         "min-w-0 flex-1 shrink-0 rounded-none shadow-none  focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l border-2",
-        "data-[state=on]:bg-blue-500 data-[state=on]:border-0 data-[state=on]:text-white data-[state=on]:scale-105 rounded-md ",
+        "data-[state=on]:bg-blue-500 data-[state=on]:border-0 data-[state=on]:text-white data-[state=on]:scale-105 rounded-md group ",
         className
       )}
       {...props}

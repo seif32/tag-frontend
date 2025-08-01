@@ -32,6 +32,9 @@ function VariantManualValueInput({ variant }) {
           onClick={() => {
             handleAddValue(variant.id, newValueInputs[variant.id] || "");
           }}
+          disabled={
+            !(newValueInputs[variant.id] && newValueInputs[variant.id].trim())
+          }
         >
           Create
         </Button>

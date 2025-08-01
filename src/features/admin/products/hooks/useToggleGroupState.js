@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useProductStore from "../../store/productStore";
+import useVariantStore from "../../store/variantStore";
 const variantValues = [
   {
     value: "s",
@@ -28,8 +28,8 @@ export function useToggleGroupState(variant, setIsDialogOpen) {
     }
   }, [variant]);
 
-  const addVariantValue = useProductStore((state) => state.addVariantValue);
-  const removeVariantValues = useProductStore(
+  const addVariantValue = useVariantStore((state) => state.addVariantValue);
+  const removeVariantValues = useVariantStore(
     (state) => state.removeVariantValues
   );
 

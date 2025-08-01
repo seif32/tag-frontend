@@ -1,10 +1,10 @@
 import { useState } from "react";
-import useProductStore from "../../store/productStore";
+import useVariantStore from "../../store/variantStore";
 
 export function useManualVariantValueInput() {
   const [newValueInputs, setNewValueInputs] = useState({});
 
-  const addVariantValue = useProductStore((state) => state.addVariantValue);
+  const addVariantValue = useVariantStore((state) => state.addVariantValue);
 
   const handleKeyPress = (e, action) => {
     if (e.key === "Enter") {

@@ -7,7 +7,6 @@ function VariantsValues({ variant }) {
       <p className="text-sm text-muted-foreground">Values</p>
       <div className="flex flex-wrap gap-2 p-3 rounded-lg border min-h-[60px]">
         <VariantValueList variant={variant} />
-
         <VariantValueDialog variant={variant} />
       </div>
     </div>

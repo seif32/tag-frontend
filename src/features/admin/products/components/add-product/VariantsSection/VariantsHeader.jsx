@@ -1,14 +1,14 @@
-import useProductStore from "@/features/admin/store/productStore";
+import useVariantStore from "@/features/admin/store/variantStore";
 import { IoTrashOutline } from "react-icons/io5";
 
 function VariantsHeader({ variant }) {
-  const setVariants = useProductStore((state) => state.setVariants);
+  const setVariants = useVariantStore((state) => state.setVariants);
 
   const deleteVariant = (variantId) => {
     setVariants(variants.filter((v) => v.id !== variantId));
   };
 
-  const variants = useProductStore((state) => state.variants);
+  const variants = useVariantStore((state) => state.variants);
 
   return (
     <div className="flex items-center justify-between">

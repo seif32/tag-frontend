@@ -7,9 +7,9 @@ import Image3 from "@/assets/product6.jpg";
 import Image4 from "@/assets/product7.jpg";
 import Image5 from "@/assets/product8.jpg";
 import Image6 from "@/assets/product9.jpg";
-import AddProductDialog from "./AddProductDialog";
 import ProductCard from "./ProductCard";
 import { useFieldArray } from "react-hook-form";
+import AddProductSheet from "./AddProductSheet";
 
 function ProductInstancesSection({ control }) {
   const {
@@ -51,18 +51,9 @@ function ProductInstancesSection({ control }) {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <h2 className="text-md font-semibold">Products</h2>
-
-        <AddProductDialog
-          editingProductId={editingProductId}
-          formData={formData}
-          isAddDialogOpen={isAddDialogOpen}
-          setEditingProductId={setEditingProductId}
-          setFormData={setFormData}
-          setIsAddDialogOpen={setIsAddDialogOpen}
-          setProducts={setProducts}
-        />
+      <CardHeader className="flex flex-row items-center justify-between pb-4 space-y-0">
+        <h2 className="font-semibold text-md">Products</h2>
+        <AddProductSheet />
       </CardHeader>
 
       <ProductCard

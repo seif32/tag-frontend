@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { create } from "zustand";
 
-const useProductStore = create((set) => ({
+const useVariantStore = create((set) => ({
   variants: [],
 
   setVariants: (variants) => set({ variants }),
@@ -35,6 +35,8 @@ const useProductStore = create((set) => ({
         v.id === variantId ? { ...v, values: newValues } : v
       ),
     })),
+
+  reset: () => set({ variants: [] }),
 }));
 
-export default useProductStore;
+export default useVariantStore;
