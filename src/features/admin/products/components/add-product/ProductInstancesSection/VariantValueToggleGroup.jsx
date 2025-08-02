@@ -7,17 +7,27 @@ function VariantValueToggleGroup({ variant }) {
   function handleValueChange(variantId, values) {
     setSelected((prev) => ({ ...prev, [variantId]: values }));
   }
-  return (
+  const isValues = variant.values.length !== 0;
+
+  console.log("VariantValueToggleGroup", JSON.stringify(variant, null, 2));
+  return isValues ? (
     <ToggleGroup
       type="single"
       value={selected[variant.id] || []}
       onValueChange={(values) => handleValueChange(variant.id, values)}
-      className="flex gap-2 flex-wrap"
+      className="flex flex-wrap gap-2"
     >
       {variant.values.map((item) => (
         <VariantToggleChip key={item.id} item={item} />
       ))}
     </ToggleGroup>
+  ) : (
+    <div className="flex flex-col items-start p-4 bg-red-200 border border-red-600 rounded-md">
+      <p className="text-sm font-bold text-red-600">No values</p>
+      <p className="text-xs text-red-600">
+        Please choose values in variants section first
+      </p>
+    </div>
   );
 }
 
