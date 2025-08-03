@@ -20,7 +20,7 @@ function AddProductSheet() {
           <>
             <ProductSheetHeader />
             <ScrollArea className="flex-1 overflow-y-auto">
-              <div className="px-4 mb-30 space-y-30">
+              <div className="px-4 mb-30 space-y-14">
                 <VariantSelectorStep />
                 <ProductDetailsStep />
                 <ProductImages />

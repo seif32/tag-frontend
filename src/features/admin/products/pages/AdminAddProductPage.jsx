@@ -14,15 +14,19 @@ import AddProductsHeader from "../components/add-product/AddProductsHeader";
 import GeneralInfoSection from "../components/add-product/GeneralInfoSection/GeneralInfoSection";
 import useProductStore from "../../store/productStore";
 import { useEffect } from "react";
+import { consoleObject } from "@/utils/consoleObject";
 
 function AdminAddProductPage() {
   const form = useForm({
     defaultValues: addProductDefaultValues,
   });
 
-  function onSubmit(data) {
-    // console.log("✅ Submitted Data:", JSON.stringify(data, null, 2));
-  }
+  const onSubmit = (data) => {
+    data.variants = data.variants.filter(
+      (v) => v.variantName.trim() !== "" && v.variantSku.trim() !== ""
+    );
+    consoleObject(data);
+  };
 
   const setBaseName = useProductStore((state) => state.setBaseName);
   const baseName = form.watch("name");
