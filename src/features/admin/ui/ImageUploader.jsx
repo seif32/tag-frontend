@@ -1,25 +1,20 @@
 import { useRef, useState } from "react";
 import { LuImagePlus } from "react-icons/lu";
 
-function ImageUploader() {
+function ImageUploader({ setImages }) {
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef(null);
-  const [images, setImages] = useState([]);
 
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
 
     files.forEach((file) => {
       if (file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setImages((prev) => [...prev, e.target.result]);
-        };
-        reader.readAsDataURL(file);
+        // ✅ Store the file itself
+        setImages((prev) => [...prev, file]);
       }
     });
 
-    // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -32,14 +27,43 @@ function ImageUploader() {
     const files = Array.from(event.dataTransfer.files);
     files.forEach((file) => {
       if (file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setImages((prev) => [...prev, e.target.result]);
-        };
-        reader.readAsDataURL(file);
+        setImages((prev) => [...prev, file]);
       }
     });
   };
+
+  // const processFiles = (files) => {
+  //   files.forEach((file) => {
+  //     if (file.type.startsWith("image/")) {
+  //       const reader = new FileReader();
+  //       reader.onload = (e) => {
+  //         setImages((prev) => [
+  //           ...prev,
+  //           {
+  //             imageUrl: e.target.result,
+  //             isPrimary: false,
+  //           },
+  //         ]);
+  //       };
+  //       reader.readAsDataURL(file);
+  //     }
+  //   });
+
+  //   // Reset file input
+  //   if (fileInputRef.current) {
+  //     fileInputRef.current.value = "";
+  //   }
+  // };
+
+  // const handleFileUpload = (event) => {
+  //   processFiles(Array.from(event.target.files));
+  // };
+
+  // const handleDrop = (event) => {
+  //   event.preventDefault();
+  //   setIsDragOver(false);
+  //   processFiles(Array.from(event.dataTransfer.files));
+  // };
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -50,6 +74,7 @@ function ImageUploader() {
     event.preventDefault();
     setIsDragOver(false);
   };
+
   return (
     <div
       className={`flex flex-col items-center justify-center transition-colors duration-200 border-2 border-dashed rounded-md cursor-pointer w-40 aspect-square min-w-[160px] ${

@@ -5,21 +5,17 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 
-function ProductSheetHeader() {
+function ProductSheetHeader({ onAddVariant }) {
   return (
     <SheetHeader className={"pb-0"}>
       <SheetTitle className={"flex justify-between"}>
         <p className={"text-3xl font-normal font-degular "}>
           Create your product
         </p>
-        <Button className={"cursor-pointer"}>Add</Button>
+        <Button className="cursor-pointer" onClick={onAddVariant}>
+          Add Variant
+        </Button>
       </SheetTitle>
-      {/* <SheetDescription>
-        <p className="text-sm font-normal leading-none text-gray-400 w-100">
-          Guide your customers to the exact option they want—pick variants, fill
-          in details, and make your catalog shine!
-        </p>
-      </SheetDescription> */}
     </SheetHeader>
   );
 }

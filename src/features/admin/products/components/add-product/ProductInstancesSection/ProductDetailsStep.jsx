@@ -1,40 +1,11 @@
-import { useFormContext, useFieldArray } from "react-hook-form";
 import useProductStore from "@/features/admin/store/productStore";
 import useVariantStore from "@/features/admin/store/variantStore";
 import StepHeader from "@/features/admin/ui/StepHeader";
 import TagFormField from "@/features/admin/ui/TagFormField";
 
 function ProductDetailsStep() {
-  const { control, getValues, resetField } = useFormContext();
-  const { append } = useFieldArray({ control, name: "variants" });
-
   const baseName = useProductStore((state) => state.baseName);
   const selectedValues = useVariantStore((state) => state.selectedValues);
-
-  const handleVariantSubmit = () => {
-    // Grab the current input values from "template" index 0
-    const variantData = getValues("variants.0");
-
-    // Merge with Zustand selected values
-    const finalVariant = {
-      ...variantData,
-      types: selectedValues,
-    };
-
-    // Add this variant to the field array
-    append(finalVariant);
-
-    // ✅ Clear only the first visible input fields
-    resetField("variants.0.variantName");
-    resetField("variants.0.variantSku");
-    resetField("variants.0.quantity");
-    resetField("variants.0.price");
-    resetField("variants.0.currency");
-    resetField("variants.0.compareAtPrice");
-    resetField("variants.0.costPrice");
-    // Optionally reset selected values
-    useVariantStore.getState().resetSelectedValues();
-  };
 
   return (
     <div className="space-y-4">
@@ -56,7 +27,6 @@ function ProductDetailsStep() {
         </div>
       </div>
 
-      {/* Always keep only ONE input group visible */}
       <TagFormField
         name="variants.0.variantName"
         label="Name"
@@ -79,7 +49,6 @@ function ProductDetailsStep() {
         <TagFormField
           name="variants.0.price"
           label="Price"
-          description="Customer will pay this"
           placeholder="e.g., 899.99"
         />
         <TagFormField
@@ -93,25 +62,14 @@ function ProductDetailsStep() {
         <TagFormField
           name="variants.0.compareAtPrice"
           label="Compare at Price"
-          description="Strikethrough Original price"
           placeholder="e.g., 1099.99"
         />
         <TagFormField
           name="variants.0.costPrice"
           label="Cost Price"
-          description="Used for profit analytics."
           placeholder="e.g., 700.00"
         />
       </div>
-
-      {/* Save button */}
-      <button
-        type="button"
-        onClick={handleVariantSubmit}
-        className="px-4 py-2 text-sm text-white bg-blue-500 rounded"
-      >
-        Save Variant & Reset
-      </button>
     </div>
   );
 }
