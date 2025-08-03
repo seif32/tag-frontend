@@ -2,6 +2,7 @@ import { ToggleGroup } from "@/components/ui/toggle-group";
 import VariantToggleChip from "./VariantToggleChip";
 import { useState } from "react";
 import useVariantStore from "@/features/admin/store/variantStore";
+import { PiEmptyLight } from "react-icons/pi";
 
 function VariantValueToggleGroup({ variant }) {
   const setSelectedValue = useVariantStore((state) => state.setSelectedValue);
@@ -28,6 +29,7 @@ function VariantValueToggleGroup({ variant }) {
     </ToggleGroup>
   ) : (
     <div className="flex flex-col items-start p-4 bg-red-200 border border-red-600 rounded-md ">
+      <PiEmptyLight className="text-red-600 " size={32} />
       <p className="text-sm font-bold text-red-600">No values</p>
       <p className="text-xs text-red-600">
         Please choose values in variants section first

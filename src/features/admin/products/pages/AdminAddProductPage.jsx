@@ -1,6 +1,6 @@
 import { Form } from "@/components/ui/form";
 
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 
 import { addProductDefaultValues } from "../data/formDefaults";
@@ -8,13 +8,11 @@ import { addProductDefaultValues } from "../data/formDefaults";
 import VariantsSection from "../components/add-product/VariantsSection/VariantsSection";
 import ProductInstancesSection from "../components/add-product/ProductInstancesSection/ProductInstancesSection";
 import SettingsSection from "../components/add-product/SettingsSection";
-import MediaUploadSection from "../components/add-product/MediaUploadSection";
 import CategoryBrandSection from "../components/add-product/CategoryBrandSection";
 import AddProductsHeader from "../components/add-product/AddProductsHeader";
 import GeneralInfoSection from "../components/add-product/GeneralInfoSection/GeneralInfoSection";
-import useProductStore from "../../store/productStore";
-import { useEffect } from "react";
 import { consoleObject } from "@/utils/consoleObject";
+import TagsManager from "../components/add-product/GeneralInfoSection/TagsManager";
 
 function AdminAddProductPage() {
   const form = useForm({
@@ -28,13 +26,6 @@ function AdminAddProductPage() {
     consoleObject(data);
   };
 
-  const setBaseName = useProductStore((state) => state.setBaseName);
-  const baseName = form.watch("name");
-
-  useEffect(() => {
-    setBaseName(baseName);
-  }, [baseName, setBaseName]);
-
   return (
     <Form {...form}>
       <form
@@ -42,7 +33,7 @@ function AdminAddProductPage() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
       >
-        <div className="flex flex-col gap-4 ">
+        <div className="flex flex-col gap-4 mb-40">
           <AddProductsHeader
             handleSubmit={form.handleSubmit}
             onSubmit={onSubmit}
@@ -55,9 +46,10 @@ function AdminAddProductPage() {
             </div>
 
             <div className="flex flex-col gap-4 flex-3/8">
-              <SettingsSection />
               {/* <MediaUploadSection /> */}
+              <SettingsSection />
               <CategoryBrandSection />
+              <TagsManager form={form} />
             </div>
           </div>
         </div>

@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+
 export default function TagFormField({
   name,
   label,
@@ -23,14 +24,12 @@ export default function TagFormField({
   placeholder = "",
   description = "",
   className = "",
-
-  // ✅ NEW: Specific className for the actual input/select trigger
   triggerClassName = "",
-
   required = false,
   disabled = false,
   options = [],
   rows = 3,
+  onBlur = null, // ✅ Ensure it's defined
   ...inputProps
 }) {
   return (
@@ -45,7 +44,7 @@ export default function TagFormField({
           )}
 
           {description && (
-            <FormDescription className="text-xs leading-none  text-muted-foreground">
+            <FormDescription className="text-xs leading-none text-muted-foreground">
               {description}
             </FormDescription>
           )}
@@ -57,7 +56,8 @@ export default function TagFormField({
               required,
               options,
               rows,
-              triggerClassName, // ✅ Pass it to renderFieldByType
+              triggerClassName,
+              onBlur, // ✅ Pass it safely
               ...inputProps,
             })}
           </FormControl>
@@ -76,6 +76,7 @@ function renderFieldByType(type, field, props) {
     options,
     rows,
     triggerClassName,
+    onBlur,
     ...restProps
   } = props;
 
@@ -86,9 +87,13 @@ function renderFieldByType(type, field, props) {
           placeholder={placeholder}
           disabled={disabled}
           rows={rows}
-          className={triggerClassName} // ✅ Apply to textarea
+          className={triggerClassName}
           {...field}
           {...restProps}
+          onBlur={(e) => {
+            field.onBlur();
+            if (onBlur) onBlur(e);
+          }}
         />
       );
 
@@ -135,9 +140,13 @@ function renderFieldByType(type, field, props) {
           type={type}
           placeholder={placeholder}
           disabled={disabled}
-          className={triggerClassName} // ✅ Apply to input
+          className={triggerClassName}
           {...field}
           {...restProps}
+          onBlur={(e) => {
+            field.onBlur();
+            if (onBlur) onBlur(e); // ✅ Now safe
+          }}
         />
       );
   }

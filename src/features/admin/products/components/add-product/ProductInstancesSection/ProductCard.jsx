@@ -2,33 +2,30 @@ import { Card, CardContent } from "@/components/ui/card";
 import ProductHeader from "./ProductHeader";
 import ProductDetails from "./ProductDetails";
 import NoProducts from "./NoProducts";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
-function ProductCard({
-  setEditingProductId,
-  setFormData,
-  setIsAddDialogOpen,
-  setProducts,
-  products,
-}) {
+function ProductCard() {
+  const { control } = useFormContext();
+
+  const { fields } = useFieldArray({
+    control,
+    name: "variants", // <-- watch variants only
+  });
+
   return (
     <CardContent className="space-y-4">
-      {products.map((product) => (
-        <Card key={product.id}>
-          <CardContent className="pt-6">
-            <ProductHeader
-              product={product}
-              setEditingProductId={setEditingProductId}
-              setFormData={setFormData}
-              setIsAddDialogOpen={setIsAddDialogOpen}
-              setProducts={setProducts}
-            />
+      {fields.map((product, index) => {
+        return (
+          <Card key={product.id || index}>
+            <CardContent className="pt-6">
+              <ProductHeader product={product} />
+              <ProductDetails product={product} />
+            </CardContent>
+          </Card>
+        );
+      })}
 
-            <ProductDetails product={product} />
-          </CardContent>
-        </Card>
-      ))}
-
-      {products.length === 0 && <NoProducts />}
+      {fields.length === 0 && <NoProducts />}
     </CardContent>
   );
 }

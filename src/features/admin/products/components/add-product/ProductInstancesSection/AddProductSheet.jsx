@@ -28,7 +28,6 @@ function AddProductSheet() {
       types: selectedValues,
       images: tempImages,
     };
-
     append(newVariant);
 
     // ✅ Reset all temporary states

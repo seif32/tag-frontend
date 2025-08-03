@@ -6,7 +6,7 @@ function ProductDetails({ product }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
         <div>
           <span className="text-muted-foreground">SKU:</span>
-          <p className="font-medium">{product.sku}</p>
+          <p className="font-medium">{product.variantSku}</p>
         </div>
         <div>
           <span className="text-muted-foreground">Quantity:</span>

@@ -1,7 +1,8 @@
 import { nanoid } from "nanoid";
+import { CiImageOff } from "react-icons/ci";
 
 function UploadedImages({ images }) {
-  return (
+  return images.length ? (
     <div className="flex flex-wrap gap-2">
       {images.map((file, index) => {
         return (
@@ -18,6 +19,12 @@ function UploadedImages({ images }) {
           </div>
         );
       })}
+    </div>
+  ) : (
+    <div className="p-8 flex justify-center items-center flex-col border bg-stone-50  rounded-md">
+      <CiImageOff size={48} className="mb-4 text-gray-500" />
+      <p className="font-bold  text-gray-500">No Images</p>
+      <p className="text-sm text-gray-500">Start uploading from above . . . </p>
     </div>
   );
 }
