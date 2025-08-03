@@ -1,13 +1,15 @@
+import useProductStore from "@/features/admin/store/productStore";
 import StepHeader from "@/features/admin/ui/StepHeader";
 import TagFormField from "@/features/admin/ui/TagFormField";
 
 function ProductDetailsStep() {
+  const baseName = useProductStore((state) => state.baseName);
   return (
     <div className="space-y-4">
       <StepHeader step={2} title={"Tell Us About Your Product"} />
-      <div className="bg-black rounded-lg flex items-center ">
-        <h3 className="font-degular text-xl text-white px-3 py-4">
-          Samsung Galaxy
+      <div className="flex items-center bg-black rounded-lg ">
+        <h3 className="px-3 py-4 text-xl text-white font-degular">
+          {baseName}
         </h3>
         <div className="flex flex-wrap gap-1">
           <span className=" text-xs h-fit bg-white rounded-sm px-4 py-0.5  ">
@@ -15,6 +17,11 @@ function ProductDetailsStep() {
           </span>
         </div>
       </div>
+      <TagFormField
+        name={"variants.variantName"}
+        label={"Name"}
+        placeholder="e.g., Samsung Galaxy red"
+      />
       <div className="flex gap-2">
         <TagFormField
           name={"variants.variantSku"}
@@ -28,7 +35,7 @@ function ProductDetailsStep() {
         />
       </div>
 
-      <div className="flex gap-2  items-end">
+      <div className="flex items-end gap-2">
         <TagFormField
           name={"variants.price"}
           label={"Price"}
@@ -42,7 +49,7 @@ function ProductDetailsStep() {
         />
       </div>
 
-      <div className="flex gap-2 items-end">
+      <div className="flex items-end gap-2">
         <TagFormField
           name={"variants.compareAtPrice"}
           label={"Compare at Price"}

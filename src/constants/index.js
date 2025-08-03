@@ -18,6 +18,8 @@ export const ROUTES = {
     DASHBOARD: "",
     ADD_PRODUCT: "add-product",
     PRODUCTS: "products",
+    CATEGORIES: "categories",
+    ADD_CATEGORY: "add-category",
     EDIT_PRODUCT: "products/:id/edit",
     ORDERS: "orders",
     USERS: "users",

@@ -9,9 +9,9 @@ function ProductSheetHeader() {
   return (
     <SheetHeader className={"pb-0"}>
       <SheetTitle className={"flex justify-between"}>
-        <h1 className={"text-3xl font-normal font-degular "}>
+        <p className={"text-3xl font-normal font-degular "}>
           Create your product
-        </h1>
+        </p>
         <Button className={"cursor-pointer"}>Add</Button>
       </SheetTitle>
       {/* <SheetDescription>

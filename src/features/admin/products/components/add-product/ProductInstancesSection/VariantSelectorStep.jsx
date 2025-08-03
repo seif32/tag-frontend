@@ -1,21 +1,13 @@
 import StepHeader from "@/features/admin/ui/StepHeader";
 import VariantTypeRow from "./VariantTypeRow";
 import useVariantStore from "@/features/admin/store/variantStore";
+import { useState } from "react";
 
 function VariantSelectorStep() {
   const variants = useVariantStore((state) => state.variants);
-  console.log("VariantSelectorStep", JSON.stringify(variants, null, 2));
+  const selectedValues = useVariantStore((state) => state.selectedValues);
 
-  const x = {
-    id: "1754096185799",
-    type: "color",
-    values: [
-      {
-        id: "qwO8l7SzF8B33DHeVgQob",
-        value: "l",
-      },
-    ],
-  };
+  console.log("VariantSelectorStep", JSON.stringify(selectedValues, null, 2));
 
   return (
     <div className="px-1 space-y-4">

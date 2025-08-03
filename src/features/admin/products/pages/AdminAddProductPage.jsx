@@ -12,6 +12,8 @@ import MediaUploadSection from "../components/add-product/MediaUploadSection";
 import CategoryBrandSection from "../components/add-product/CategoryBrandSection";
 import AddProductsHeader from "../components/add-product/AddProductsHeader";
 import GeneralInfoSection from "../components/add-product/GeneralInfoSection/GeneralInfoSection";
+import useProductStore from "../../store/productStore";
+import { useEffect } from "react";
 
 function AdminAddProductPage() {
   const form = useForm({
@@ -21,6 +23,13 @@ function AdminAddProductPage() {
   function onSubmit(data) {
     // console.log("✅ Submitted Data:", JSON.stringify(data, null, 2));
   }
+
+  const setBaseName = useProductStore((state) => state.setBaseName);
+  const baseName = form.watch("name");
+
+  useEffect(() => {
+    setBaseName(baseName);
+  }, [baseName, setBaseName]);
 
   return (
     <Form {...form}>
