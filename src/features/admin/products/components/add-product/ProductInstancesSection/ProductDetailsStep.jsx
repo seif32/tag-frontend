@@ -1,9 +1,16 @@
 import useProductStore from "@/features/admin/store/productStore";
+import useVariantStore from "@/features/admin/store/variantStore";
 import StepHeader from "@/features/admin/ui/StepHeader";
 import TagFormField from "@/features/admin/ui/TagFormField";
+import { consoleObject } from "@/utils/consoleObject";
 
 function ProductDetailsStep() {
   const baseName = useProductStore((state) => state.baseName);
+  const selectedValues = useVariantStore((state) => state.selectedValues);
+
+  console.log("SSSSSSSSSS");
+  consoleObject(selectedValues);
+
   return (
     <div className="space-y-4">
       <StepHeader step={2} title={"Tell Us About Your Product"} />
@@ -12,9 +19,16 @@ function ProductDetailsStep() {
           {baseName}
         </h3>
         <div className="flex flex-wrap gap-1">
-          <span className=" text-xs h-fit bg-white rounded-sm px-4 py-0.5  ">
-            Red
-          </span>
+          {selectedValues.map((value) => {
+            return (
+              <span
+                key={value.typeid}
+                className=" text-xs h-fit bg-white rounded-sm px-4 py-0.5  "
+              >
+                {value.value}
+              </span>
+            );
+          })}
         </div>
       </div>
       <TagFormField
