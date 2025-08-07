@@ -1,13 +1,37 @@
+// useVariantStore.js - Enhanced Version
 import { nanoid } from "nanoid";
 import { create } from "zustand";
 
-const useVariantStore = create((set) => ({
+const useVariantStore = create((set, get) => ({
   variants: [],
   selectedValues: [],
 
+  getAvailableVariantTypes: (allVariantTypes) => {
+    const state = get();
+    const selectedTypeIds = new Set(
+      state.variants.map((variant) => variant.type)
+    );
+
+    return allVariantTypes.filter(
+      (type) =>
+        type.value === "__ADD_CUSTOM__" || !selectedTypeIds.has(type.value)
+    );
+  },
+
   setVariants: (variants) => set({ variants }),
+
   addVariant: (variant) =>
     set((state) => ({ variants: [...state.variants, variant] })),
+
+  removeVariant: (variantId) =>
+    set((state) => ({
+      variants: state.variants.filter((v) => v.id !== variantId),
+      // Also clean up any selected values for this variant
+      selectedValues: state.selectedValues.filter(
+        (sv) => sv.typeid !== variantId
+      ),
+    })),
+
   addVariantValue: (variantId, value) =>
     set((state) => ({
       variants: state.variants.map((v) =>
@@ -19,6 +43,7 @@ const useVariantStore = create((set) => ({
           : v
       ),
     })),
+
   removeVariantValues: (variantId, valueIds) =>
     set((state) => ({
       variants: state.variants.map((v) =>
@@ -30,6 +55,7 @@ const useVariantStore = create((set) => ({
           : v
       ),
     })),
+
   updateVariantValues: (variantId, newValues) =>
     set((state) => ({
       variants: state.variants.map((v) =>
@@ -41,11 +67,9 @@ const useVariantStore = create((set) => ({
     set((state) => {
       let updated = [...state.selectedValues];
 
-      // if value is empty (user unselects)
       if (!value) {
         updated = updated.filter((item) => item.typeid !== typeid);
       } else {
-        // check if exists
         const existingIndex = updated.findIndex(
           (item) => item.typeid === typeid
         );
@@ -60,7 +84,7 @@ const useVariantStore = create((set) => ({
     }),
 
   resetSelectedValues: () => set({ selectedValues: [] }),
-  reset: () => set({ variants: [] }),
+  reset: () => set({ variants: [], selectedValues: [] }),
 }));
 
 export default useVariantStore;

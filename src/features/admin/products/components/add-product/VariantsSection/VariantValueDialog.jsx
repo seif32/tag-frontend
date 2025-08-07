@@ -11,9 +11,12 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import VariantManualValueInput from "./VariantManualValueInput";
 import VariantValueToggleGroup from "./VariantValueToggleGroup";
+import { consoleObject } from "@/utils/consoleObject";
 
 function VariantValueDialog({ variant }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  consoleObject(variant);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -21,11 +24,11 @@ function VariantValueDialog({ variant }) {
         <Button
           size="sm"
           variant="ghost"
-          className="h-8 w-8 p-0 group cursor-pointer rounded-4xl hover:bg-primary transition-colors duration-300"
+          className="hover:bg-transparent group cursor-pointer"
         >
           <Plus
             size={14}
-            className=" group-hover:text-primary-foreground  transition-colors"
+            className=" group-hover:scale-125  transition-all text-accent duration-200"
           />
         </Button>
       </DialogTrigger>

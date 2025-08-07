@@ -17,9 +17,9 @@ function VariantsSection() {
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          {variants.map((variant) => (
+          {variants.map((variant, index) => (
             <div key={variant.id} className="space-y-4">
-              <VariantsHeader variant={variant} variants={variants} />
+              <VariantsHeader index={index} variantId={variant.id} />
               <div className="grid grid-cols-[1fr_4fr] gap-4">
                 <VariantsType variantType={variant.type} />
                 <VariantsValues variant={variant} variants={variants} />

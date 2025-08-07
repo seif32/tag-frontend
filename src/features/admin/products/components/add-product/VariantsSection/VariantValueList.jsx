@@ -4,6 +4,12 @@ import { MdCancel } from "react-icons/md";
 function VariantValueList({ variant }) {
   return (
     <>
+      {variant.values.length === 0 && (
+        <p className="text-xs text-muted-foreground   grid place-items-center">
+          No values added yet.
+        </p>
+      )}
+
       {variant.values.map((value) => (
         <Badge key={value.id} variant="secondary" className="gap-1 pb-0 pt0">
           <span className="text-sm">{value.value}</span>

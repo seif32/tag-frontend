@@ -6,6 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useVariantStore from "@/features/admin/store/variantStore";
 
 const VARIANT_TYPES = [
   { value: "color", label: "Color" },
@@ -13,19 +14,27 @@ const VARIANT_TYPES = [
   { value: "material", label: "Material" },
   { value: "style", label: "Style" },
   { value: "storage", label: "Storage" },
-  { value: "__ADD_CUSTOM__", label: "Add Custom Type" }, // Special identifier
+  { value: "__ADD_CUSTOM__", label: "Add Custom Type" },
 ];
 
 function AddVariantModal({ setDialogMode, setNewVariantType, newVariantType }) {
+  const getAvailableVariantTypes = useVariantStore(
+    (state) => state.getAvailableVariantTypes
+  );
+
+  // 🔥 Get only available variant types (excludes already selected ones)
+  const availableVariantTypes = getAvailableVariantTypes(VARIANT_TYPES);
+
   function handleTypeSelection(value) {
     if (value === "__ADD_CUSTOM__") {
-      setDialogMode("create"); // Switch to custom creation mode
-      setNewVariantType(""); // Clear selection
+      setDialogMode("create");
+      setNewVariantType("");
     } else {
       setNewVariantType(value);
-      setDialogMode("select"); // Stay in selection mode
+      setDialogMode("select");
     }
   }
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -35,7 +44,8 @@ function AddVariantModal({ setDialogMode, setNewVariantType, newVariantType }) {
             <SelectValue placeholder="Select variant type" />
           </SelectTrigger>
           <SelectContent>
-            {VARIANT_TYPES.map((type) => (
+            {/* 🎪 Only show available variant types! */}
+            {availableVariantTypes.map((type) => (
               <SelectItem
                 key={type.value}
                 value={type.value}
@@ -48,6 +58,14 @@ function AddVariantModal({ setDialogMode, setNewVariantType, newVariantType }) {
                 {type.label}
               </SelectItem>
             ))}
+
+            {/* 🎯 Show helpful message when no options available */}
+            {availableVariantTypes.filter((t) => t.value !== "__ADD_CUSTOM__")
+              .length === 0 && (
+              <div className="px-2 py-1.5 text-sm text-gray-500 italic">
+                All variant types are already added
+              </div>
+            )}
           </SelectContent>
         </Select>
       </div>
