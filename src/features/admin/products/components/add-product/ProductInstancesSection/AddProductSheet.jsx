@@ -8,6 +8,8 @@ import ProductImagesStep from "./ProductImagesStep";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import EmptyState from "@/features/admin/ui/EmptyState";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { consoleObject } from "@/utils/consoleObject";
+import { Button } from "@/components/ui/button";
 
 function AddProductSheet() {
   const { control, getValues, resetField } = useFormContext();
@@ -19,7 +21,6 @@ function AddProductSheet() {
   const variants = useVariantStore((state) => state.variants);
   const isVariants = variants.length !== 0;
 
-  // ✅ Unified handler for saving a variant
   const handleAddVariant = () => {
     const variantData = getValues("variants.0");
 
@@ -45,7 +46,11 @@ function AddProductSheet() {
 
   return (
     <Sheet>
-      <SheetTrigger>Open</SheetTrigger>
+      <SheetTrigger asChild>
+        <Button size={"sm"} className={"text-xs"}>
+          Add New Product
+        </Button>
+      </SheetTrigger>
       <SheetContent className="flex flex-col max-h-[100vh] ">
         {isVariants ? (
           <>

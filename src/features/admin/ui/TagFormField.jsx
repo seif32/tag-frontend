@@ -101,7 +101,7 @@ function renderFieldByType(type, field, props) {
       return (
         <Select
           onValueChange={field.onChange}
-          defaultValue={field.value}
+          value={field.value || ""} // 👈 Use value instead of defaultValue
           disabled={disabled}
         >
           <SelectTrigger className={`w-full ${triggerClassName}`}>
@@ -109,7 +109,9 @@ function renderFieldByType(type, field, props) {
           </SelectTrigger>
           <SelectContent>
             {options.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
+              <SelectItem key={option.value} value={String(option.value)}>
+                {" "}
+                {/* 👈 Ensure string values */}
                 {option.label}
               </SelectItem>
             ))}

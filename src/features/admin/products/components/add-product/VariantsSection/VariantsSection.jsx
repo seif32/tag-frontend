@@ -20,7 +20,6 @@ function VariantsSection() {
           {variants.map((variant) => (
             <div key={variant.id} className="space-y-4">
               <VariantsHeader variant={variant} variants={variants} />
-
               <div className="grid grid-cols-[1fr_4fr] gap-4">
                 <VariantsType variantType={variant.type} />
                 <VariantsValues variant={variant} variants={variants} />

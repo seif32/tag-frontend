@@ -47,8 +47,9 @@ function AddVariantDialog() {
   return (
     <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
       <DialogTrigger asChild>
-        <Button size="icon" className="gap-2">
-          <IoAddOutline size={16} />
+        <Button size={"sm"} className="gap-2 bg-accent text-xs">
+          {/* <IoAddOutline size={16} /> */}
+          Add Variant
         </Button>
       </DialogTrigger>
 

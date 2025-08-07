@@ -1,6 +1,5 @@
 import { ToggleGroup } from "@/components/ui/toggle-group";
 import VariantToggleChip from "./VariantToggleChip";
-import { useState } from "react";
 import useVariantStore from "@/features/admin/store/variantStore";
 import { PiEmptyLight } from "react-icons/pi";
 
