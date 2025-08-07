@@ -1,60 +1,20 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import TagFormField from "../../../ui/TagFormField";
-import useCategories from "@/hooks/useCategories";
 import LoadingState from "@/ui/LoadingState";
-import { useMemo } from "react";
-import { useWatch } from "react-hook-form";
+import { useSelectCategory } from "../../hooks/useSelectCategory";
+import { useSelectBrand } from "../../hooks/useSelectBrand";
 
 function CategoryBrandSection() {
-  const { categories, isLoadingCategories } = useCategories.useAll();
-  const selectedCategoryId = useWatch({ name: "categoryId" });
+  const {
+    isLoadingCategories,
+    mainCategories,
+    selectedCategoryId,
+    subcategoriesByParent,
+  } = useSelectCategory();
 
-  const { mainCategories, subcategoriesByParent } = useMemo(() => {
-    if (!categories) return { mainCategories: [], subcategoriesByParent: {} };
+  const { allBrands, isLoadingBrands } = useSelectBrand();
 
-    // Main categories (top level)
-    const mainCategories = categories.map((category) => ({
-      value: category.id,
-      label: category.name,
-    }));
-
-    // Group subcategories by their main category ID
-    const subcategoriesByParent = {};
-
-    categories.forEach((mainCategory) => {
-      if (mainCategory.children && mainCategory.children.length > 0) {
-        // Create array for this main category's subcategories
-        subcategoriesByParent[mainCategory.id] = [];
-
-        mainCategory.children.forEach((subCategory) => {
-          subcategoriesByParent[mainCategory.id].push({
-            value: subCategory.id,
-            label: subCategory.name,
-            parent_id: subCategory.parent_id,
-          });
-
-          // Handle sub-subcategories if they exist
-          if (subCategory.children && subCategory.children.length > 0) {
-            subCategory.children.forEach((subSubCategory) => {
-              subcategoriesByParent[mainCategory.id].push({
-                value: subSubCategory.id,
-                label: subSubCategory.name,
-                parent_id: subSubCategory.parent_id,
-              });
-            });
-          }
-        });
-      }
-    });
-
-    return { mainCategories, subcategoriesByParent };
-  }, [categories]);
-
-  // useEffect(() => {
-  //   setValue("subcategoryId", "");
-  // }, [selectedCategoryId]);
-
-  if (isLoadingCategories) return <LoadingState />;
+  if (isLoadingCategories || isLoadingBrands) return <LoadingState />;
 
   return (
     <Card>
@@ -88,9 +48,9 @@ function CategoryBrandSection() {
           name={"brandId"}
           label={"Brand"}
           type="select"
-          options={[{ value: 3, label: "Apple" }]}
+          options={allBrands}
           required
-          placeholder="Apple"
+          placeholder="Select a brand"
         />
       </CardContent>
     </Card>
