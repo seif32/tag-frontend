@@ -96,9 +96,7 @@ function ImageUploader({ setImages, images }) {
         >
           {isDragOver ? "Drop images here" : "Click to upload images"}
         </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          or drag & drop • PNG, JPG, GIF up to 10MB
-        </p>
+        <p className="mt-1 text-xs text-muted-foreground">or drag & drop</p>
         <input
           ref={fileInputRef}
           type="file"
@@ -115,7 +113,7 @@ function ImageUploader({ setImages, images }) {
           <h4 className="text-sm font-medium">
             Uploaded Images ({images.length})
           </h4>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {images.map((image, index) => (
               <div
                 key={image.id || index}
@@ -127,13 +125,13 @@ function ImageUploader({ setImages, images }) {
                   <img
                     src={image.imageUrl || "/placeholder.svg"}
                     alt={`Upload ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="object-cover w-full h-full"
                   />
                 </div>
 
                 {/* Overlay with controls */}
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-200 flex items-center justify-center">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-2">
+                <div className="absolute inset-0 flex items-center justify-center transition-all duration-200 bg-black bg-opacity-0 group-hover:bg-opacity-50">
+                  <div className="flex gap-2 transition-opacity duration-200 opacity-0 group-hover:opacity-100">
                     {!image.isPrimary && (
                       <Button
                         size="sm"
@@ -155,7 +153,7 @@ function ImageUploader({ setImages, images }) {
                         removeImage(index);
                       }}
                     >
-                      <X className="h-4 w-4" />
+                      <X className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
@@ -163,7 +161,7 @@ function ImageUploader({ setImages, images }) {
                 {/* Primary badge */}
                 {image.isPrimary && (
                   <div className="absolute top-2 left-2">
-                    <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                    <span className="px-2 py-1 text-xs text-white bg-blue-500 rounded">
                       Primary
                     </span>
                   </div>

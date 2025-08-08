@@ -26,7 +26,6 @@ const useVariantStore = create((set, get) => ({
   removeVariant: (variantId) =>
     set((state) => ({
       variants: state.variants.filter((v) => v.id !== variantId),
-      // Also clean up any selected values for this variant
       selectedValues: state.selectedValues.filter(
         (sv) => sv.typeid !== variantId
       ),
@@ -51,6 +50,18 @@ const useVariantStore = create((set, get) => ({
           ? {
               ...v,
               values: v.values.filter((val) => !valueIds.includes(val.id)),
+            }
+          : v
+      ),
+    })),
+
+  removeVariantValue: (variantId, valueId) =>
+    set((state) => ({
+      variants: state.variants.map((v) =>
+        v.id === variantId
+          ? {
+              ...v,
+              values: v.values.filter((val) => val.id !== valueId),
             }
           : v
       ),

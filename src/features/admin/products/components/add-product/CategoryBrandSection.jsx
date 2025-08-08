@@ -10,6 +10,7 @@ function CategoryBrandSection() {
     mainCategories,
     selectedCategoryId,
     subcategoriesByParent,
+    selectedCategoryHasSubcategories, // 🆕 New property
   } = useSelectCategory();
 
   const { allBrands, isLoadingBrands } = useSelectBrand();
@@ -34,7 +35,9 @@ function CategoryBrandSection() {
           type="select"
           placeholder={
             selectedCategoryId
-              ? "Select a subcategory"
+              ? selectedCategoryHasSubcategories
+                ? "Select a subcategory"
+                : "No subcategories available"
               : "First select a category"
           }
           disabled={isLoadingCategories || !selectedCategoryId}
@@ -42,6 +45,11 @@ function CategoryBrandSection() {
             selectedCategoryId
               ? subcategoriesByParent[selectedCategoryId] || []
               : []
+          }
+          emptyMessage={
+            selectedCategoryId && !selectedCategoryHasSubcategories
+              ? "🏷️ This category has no subcategories available"
+              : null
           }
         />
         <TagFormField

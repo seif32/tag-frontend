@@ -6,46 +6,61 @@ export function useSelectCategory() {
   const { categories, isLoadingCategories } = useCategories.useAll();
   const selectedCategoryId = useWatch({ name: "categoryId" });
 
-  const { mainCategories, subcategoriesByParent } = useMemo(() => {
-    if (!categories) return { mainCategories: [], subcategoriesByParent: {} };
+  const { mainCategories, subcategoriesByParent, hasSubcategories } =
+    useMemo(() => {
+      if (!categories)
+        return {
+          mainCategories: [],
+          subcategoriesByParent: {},
+          hasSubcategories: false,
+        };
 
-    // Main categories (top level)
-    const mainCategories = categories.map((category) => ({
-      value: category.id,
-      label: category.name,
-    }));
+      const mainCategories = categories.map((category) => ({
+        value: category.id,
+        label: category.name,
+      }));
 
-    // Group subcategories by their main category ID
-    const subcategoriesByParent = {};
+      const subcategoriesByParent = {};
+      let hasSubcategories = false;
 
-    categories.forEach((mainCategory) => {
-      if (mainCategory.children && mainCategory.children.length > 0) {
-        // Create array for this main category's subcategories
-        subcategoriesByParent[mainCategory.id] = [];
+      categories.forEach((mainCategory) => {
+        if (
+          mainCategory.subcategories &&
+          mainCategory.subcategories.length > 0
+        ) {
+          hasSubcategories = true;
+          subcategoriesByParent[mainCategory.id] = [];
 
-        mainCategory.children.forEach((subCategory) => {
-          subcategoriesByParent[mainCategory.id].push({
-            value: subCategory.id,
-            label: subCategory.name,
-            parent_id: subCategory.parent_id,
-          });
-
-          // Handle sub-subcategories if they exist
-          if (subCategory.children && subCategory.children.length > 0) {
-            subCategory.children.forEach((subSubCategory) => {
-              subcategoriesByParent[mainCategory.id].push({
-                value: subSubCategory.id,
-                label: subSubCategory.name,
-                parent_id: subSubCategory.parent_id,
-              });
+          mainCategory.subcategories.forEach((subCategory) => {
+            subcategoriesByParent[mainCategory.id].push({
+              value: subCategory.id,
+              label: subCategory.name,
+              parent_id: subCategory.parent_id,
             });
-          }
-        });
-      }
-    });
 
-    return { mainCategories, subcategoriesByParent };
-  }, [categories]);
+            if (
+              subCategory.subcategories &&
+              subCategory.subcategories.length > 0
+            ) {
+              subCategory.subcategories.forEach((subSubCategory) => {
+                subcategoriesByParent[mainCategory.id].push({
+                  value: subSubCategory.id,
+                  label: subSubCategory.name,
+                  parent_id: subSubCategory.parent_id,
+                });
+              });
+            }
+          });
+        }
+      });
+
+      return { mainCategories, subcategoriesByParent, hasSubcategories };
+    }, [categories]);
+
+  // 🎯 Check if selected category has subcategories
+  const selectedCategoryHasSubcategories = selectedCategoryId
+    ? subcategoriesByParent[selectedCategoryId]?.length > 0
+    : false;
 
   return {
     categories,
@@ -53,5 +68,7 @@ export function useSelectCategory() {
     selectedCategoryId,
     mainCategories,
     subcategoriesByParent,
+    hasSubcategories,
+    selectedCategoryHasSubcategories,
   };
 }

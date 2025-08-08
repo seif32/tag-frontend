@@ -30,6 +30,7 @@ export default function TagFormField({
   options = [],
   rows = 3,
   onBlur = null, // ✅ Ensure it's defined
+  emptyMessage = null, // 🆕 New prop for empty state
   ...inputProps
 }) {
   return (
@@ -58,6 +59,7 @@ export default function TagFormField({
               rows,
               triggerClassName,
               onBlur, // ✅ Pass it safely
+              emptyMessage, // 🆕 Pass it down
               ...inputProps,
             })}
           </FormControl>
@@ -77,6 +79,7 @@ function renderFieldByType(type, field, props) {
     rows,
     triggerClassName,
     onBlur,
+    emptyMessage, // 🆕 Extract it
     ...restProps
   } = props;
 
@@ -101,20 +104,25 @@ function renderFieldByType(type, field, props) {
       return (
         <Select
           onValueChange={field.onChange}
-          value={field.value || ""} // 👈 Use value instead of defaultValue
+          value={field.value || ""}
           disabled={disabled}
         >
           <SelectTrigger className={`w-full ${triggerClassName}`}>
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>
-            {options.map((option) => (
-              <SelectItem key={option.value} value={String(option.value)}>
-                {" "}
-                {/* 👈 Ensure string values */}
-                {option.label}
-              </SelectItem>
-            ))}
+            {/* 🎯 Show empty message if no options */}
+            {options.length === 0 && emptyMessage ? (
+              <div className="px-3 py-2 text-sm text-muted-foreground text-center">
+                {emptyMessage}
+              </div>
+            ) : (
+              options.map((option) => (
+                <SelectItem key={option.value} value={String(option.value)}>
+                  {option.label}
+                </SelectItem>
+              ))
+            )}
           </SelectContent>
         </Select>
       );
