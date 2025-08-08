@@ -1,3 +1,4 @@
+// AddVariantModal.jsx - Clean Backend-Only Version
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -7,30 +8,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useVariantStore from "@/features/admin/store/variantStore";
+import useVariants from "@/hooks/useVariants";
 
-const VARIANT_TYPES = [
-  { value: "color", label: "Color" },
-  { value: "size", label: "Size" },
-  { value: "material", label: "Material" },
-  { value: "style", label: "Style" },
-  { value: "storage", label: "Storage" },
-  { value: "__ADD_CUSTOM__", label: "Add Custom Type" },
-];
+function AddVariantModal({
+  setDialogMode,
+  setNewVariantTypeId,
+  newVariantTypeId,
+}) {
+  const { variantTypes } = useVariants.useAllTypes();
 
-function AddVariantModal({ setDialogMode, setNewVariantType, newVariantType }) {
   const getAvailableVariantTypes = useVariantStore(
     (state) => state.getAvailableVariantTypes
   );
 
-  // 🔥 Get only available variant types (excludes already selected ones)
-  const availableVariantTypes = getAvailableVariantTypes(VARIANT_TYPES);
+  const availableVariantTypes = getAvailableVariantTypes(variantTypes || []);
 
   function handleTypeSelection(value) {
-    if (value === "__ADD_CUSTOM__") {
+    if (value === "custom") {
       setDialogMode("create");
-      setNewVariantType("");
+      setNewVariantTypeId("");
     } else {
-      setNewVariantType(value);
+      setNewVariantTypeId(parseInt(value));
       setDialogMode("select");
     }
   }
@@ -39,29 +37,29 @@ function AddVariantModal({ setDialogMode, setNewVariantType, newVariantType }) {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <Label htmlFor="variant-type">Variant Type</Label>
-        <Select value={newVariantType} onValueChange={handleTypeSelection}>
+        <Select
+          value={newVariantTypeId?.toString()}
+          onValueChange={handleTypeSelection}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select variant type" />
           </SelectTrigger>
           <SelectContent>
-            {/* 🎪 Only show available variant types! */}
+            {/* 🎪 Map directly from backend types! */}
             {availableVariantTypes.map((type) => (
-              <SelectItem
-                key={type.value}
-                value={type.value}
-                className={
-                  type.value === "__ADD_CUSTOM__"
-                    ? "bg-primary text-primary-foreground font-medium"
-                    : ""
-                }
-              >
-                {type.label}
+              <SelectItem key={type.id} value={type.id.toString()}>
+                {type.name}
               </SelectItem>
             ))}
 
-            {/* 🎯 Show helpful message when no options available */}
-            {availableVariantTypes.filter((t) => t.value !== "__ADD_CUSTOM__")
-              .length === 0 && (
+            <SelectItem
+              value="custom"
+              className="bg-primary text-primary-foreground font-medium"
+            >
+              Add Custom Type
+            </SelectItem>
+
+            {availableVariantTypes.length === 0 && (
               <div className="px-2 py-1.5 text-sm text-gray-500 italic">
                 All variant types are already added
               </div>

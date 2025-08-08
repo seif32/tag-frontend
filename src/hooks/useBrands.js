@@ -72,7 +72,7 @@ const useBrands = {
       onSuccess: (data) => {
         // Built-in functionality - always runs first
         queryClient.invalidateQueries({ queryKey: ["brands"] });
-        toast.success("✅ Brand created successfully!");
+        toast.success(" Brand created successfully!");
 
         // Your custom logic runs after
         if (options.onSuccess) {
@@ -120,7 +120,7 @@ const useBrands = {
         // Built-in functionality
         queryClient.setQueryData(["brands", variables.id], data);
         queryClient.invalidateQueries({ queryKey: ["brands"] });
-        toast.success("✅ Brand updated successfully!");
+        toast.success(" Brand updated successfully!");
 
         // Your custom logic
         if (options.onSuccess) {
@@ -169,7 +169,7 @@ const useBrands = {
         // Built-in functionality
         queryClient.removeQueries({ queryKey: ["brands", deletedId] });
         queryClient.invalidateQueries({ queryKey: ["brands"] });
-        toast.success("✅ Brand deleted successfully!");
+        toast.success(" Brand deleted successfully!");
 
         // Your custom logic
         if (options.onSuccess) {

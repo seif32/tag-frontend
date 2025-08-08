@@ -8,7 +8,6 @@ import ProductImagesStep from "./ProductImagesStep";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import EmptyState from "@/features/admin/ui/EmptyState";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { consoleObject } from "@/utils/consoleObject";
 import { Button } from "@/components/ui/button";
 
 function AddProductSheet() {

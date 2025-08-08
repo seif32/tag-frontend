@@ -5,9 +5,12 @@ import VariantsValues from "./VariantsValues";
 import NoVariants from "./NoVariants";
 import VariantsHeader from "./VariantsHeader";
 import useVariantStore from "@/features/admin/store/variantStore";
+import { consoleObject } from "@/utils/consoleObject";
 
 function VariantsSection() {
   const variants = useVariantStore((state) => state.variants);
+
+  consoleObject(variants);
 
   return (
     <Card>
@@ -21,7 +24,7 @@ function VariantsSection() {
             <div key={variant.id} className="space-y-4">
               <VariantsHeader index={index} variantId={variant.id} />
               <div className="grid grid-cols-[1fr_4fr] gap-4">
-                <VariantsType variantType={variant.type} />
+                <VariantsType variantType={variant.name} />
                 <VariantsValues variant={variant} variants={variants} />
               </div>
             </div>

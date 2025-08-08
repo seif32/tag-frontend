@@ -5,50 +5,31 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
-import { IoAddOutline } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import CreateVariantModal from "./CreateVariantModal";
 import AddVariantModal from "./AddVariantModal";
-import useVariantStore from "@/features/admin/store/variantStore";
+import { useSelectVariantType } from "../../../hooks/useSelectVariantType";
 
 function AddVariantDialog() {
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [dialogMode, setDialogMode] = useState("select");
-  const [newVariantType, setNewVariantType] = useState("");
-  const [customTypeName, setCustomTypeName] = useState("");
-
-  const addVariant = useVariantStore((state) => state.addVariant);
-
-  function handleAddVariant() {
-    const typeToAdd =
-      dialogMode === "create" ? customTypeName.toLowerCase() : newVariantType;
-
-    if (!typeToAdd.trim()) return;
-
-    const newVariant = {
-      id: Date.now().toString(),
-      type: typeToAdd,
-      values: [],
-    };
-
-    addVariant(newVariant);
-
-    resetDialog();
-  }
-
-  function resetDialog() {
-    setNewVariantType("");
-    setCustomTypeName("");
-    setDialogMode("select");
-    setIsAddDialogOpen(false);
-  }
+  const {
+    dialogMode,
+    isAddDialogOpen,
+    isLoadingVariantTypes,
+    newVariantTypeId,
+    setDialogMode,
+    setIsAddDialogOpen,
+    setNewVariantTypeId,
+    customTypeName,
+    handleAddVariant,
+    isPendingVariantTypes,
+    resetDialog,
+    setCustomTypeName,
+  } = useSelectVariantType();
 
   return (
     <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
       <DialogTrigger asChild>
         <Button size={"sm"} className="gap-2 bg-accent text-xs">
-          {/* <IoAddOutline size={16} /> */}
           Add Variant
         </Button>
       </DialogTrigger>
@@ -61,20 +42,30 @@ function AddVariantDialog() {
         </DialogHeader>
 
         <div className="space-y-6">
-          {dialogMode === "select" && (
-            <AddVariantModal
-              newVariantType={newVariantType}
-              setDialogMode={setDialogMode}
-              setNewVariantType={setNewVariantType}
-            />
-          )}
+          {isLoadingVariantTypes ? (
+            <div className="flex justify-center py-4">
+              <div className="text-sm text-gray-500">
+                Loading variant types... 🔄
+              </div>
+            </div>
+          ) : (
+            <>
+              {dialogMode === "select" && (
+                <AddVariantModal
+                  newVariantTypeId={newVariantTypeId}
+                  setDialogMode={setDialogMode}
+                  setNewVariantTypeId={setNewVariantTypeId}
+                />
+              )}
 
-          {dialogMode === "create" && (
-            <CreateVariantModal
-              customTypeName={customTypeName}
-              setCustomTypeName={setCustomTypeName}
-              setDialogMode={setDialogMode}
-            />
+              {dialogMode === "create" && (
+                <CreateVariantModal
+                  customTypeName={customTypeName}
+                  setCustomTypeName={setCustomTypeName}
+                  setDialogMode={setDialogMode}
+                />
+              )}
+            </>
           )}
 
           <div className="flex justify-end gap-2">
@@ -84,13 +75,19 @@ function AddVariantDialog() {
             <Button
               onClick={handleAddVariant}
               disabled={
-                dialogMode === "select"
-                  ? !newVariantType
-                  : !customTypeName.trim()
+                isLoadingVariantTypes ||
+                isPendingVariantTypes ||
+                (dialogMode === "select"
+                  ? !newVariantTypeId
+                  : !customTypeName.trim())
               }
               className="min-w-24"
             >
-              {dialogMode === "create" ? "Create & Add" : "Add Variant"}
+              {isPendingVariantTypes
+                ? "Creating... ⏳"
+                : dialogMode === "create"
+                ? "Create & Add"
+                : "Add Variant"}
             </Button>
           </div>
         </div>

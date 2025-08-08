@@ -64,7 +64,7 @@ const useCategories = {
       mutationFn: categoriesApi.create,
       onSuccess: (data) => {
         queryClient.invalidateQueries({ queryKey: ["categories"] });
-        toast.success("✅ Category created successfully!");
+        toast.success(" Category created successfully!");
         options.onSuccess?.(data);
       },
       onError: (error) => {
@@ -98,7 +98,7 @@ const useCategories = {
       onSuccess: (data, variables) => {
         queryClient.setQueryData(["categories", variables.id], data);
         queryClient.invalidateQueries({ queryKey: ["categories"] });
-        toast.success("✅ Category updated successfully!");
+        toast.success(" Category updated successfully!");
         options.onSuccess?.(data, variables);
       },
       onError: (error) => {
@@ -130,7 +130,7 @@ const useCategories = {
       onSuccess: (data, deletedId) => {
         queryClient.removeQueries({ queryKey: ["categories", deletedId] });
         queryClient.invalidateQueries({ queryKey: ["categories"] });
-        toast.success("✅ Category deleted successfully!");
+        toast.success(" Category deleted successfully!");
         options.onSuccess?.(data, deletedId);
       },
       onError: (error) => {

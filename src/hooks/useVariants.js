@@ -1,5 +1,5 @@
+import variantsApi from "@/services/variantsApi";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import variantTypesApi from "../../../services/variantTypesApi";
 import { toast } from "sonner";
 
 const useVariants = {
@@ -15,7 +15,7 @@ const useVariants = {
   useAllTypes: (options = {}) => {
     const query = useQuery({
       queryKey: ["variant-types"],
-      queryFn: variantTypesApi.getAllTypes,
+      queryFn: variantsApi.getAllTypes,
       staleTime: 10 * 60 * 1000, // 10 minutes - variant types change rarely
       cacheTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
       ...options,
@@ -42,11 +42,11 @@ const useVariants = {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
-      mutationFn: variantTypesApi.createType,
+      mutationFn: variantsApi.createType,
       onSuccess: (data) => {
         // Built-in functionality - refresh the types list
         queryClient.invalidateQueries({ queryKey: ["variant-types"] });
-        toast.success("✅ Variant type created successfully!");
+        toast.success(" Variant type created successfully!");
 
         // Your custom logic runs after
         if (options.onSuccess) {
@@ -87,7 +87,7 @@ const useVariants = {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
-      mutationFn: ({ id, data }) => variantTypesApi.updateType(id, data),
+      mutationFn: ({ id, data }) => variantsApi.updateType(id, data),
       onSuccess: (data, variables) => {
         // Refresh the types list
         queryClient.invalidateQueries({ queryKey: ["variant-types"] });
@@ -96,7 +96,7 @@ const useVariants = {
           queryKey: ["variant-values", variables.id],
         });
 
-        toast.success("✅ Variant type updated successfully!");
+        toast.success(" Variant type updated successfully!");
 
         if (options.onSuccess) {
           options.onSuccess(data, variables);
@@ -136,7 +136,7 @@ const useVariants = {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
-      mutationFn: variantTypesApi.deleteType,
+      mutationFn: variantsApi.deleteType,
       onSuccess: (data, deletedId) => {
         // Remove from types list
         queryClient.invalidateQueries({ queryKey: ["variant-types"] });
@@ -145,7 +145,7 @@ const useVariants = {
         // Remove from all values list too
         queryClient.invalidateQueries({ queryKey: ["variant-values"] });
 
-        toast.success("✅ Variant type deleted successfully!");
+        toast.success(" Variant type deleted successfully!");
 
         if (options.onSuccess) {
           options.onSuccess(data, deletedId);
@@ -186,7 +186,7 @@ const useVariants = {
   useAllValues: (options = {}) => {
     const query = useQuery({
       queryKey: ["variant-values"],
-      queryFn: variantTypesApi.getAllValues,
+      queryFn: variantsApi.getAllValues,
       staleTime: 5 * 60 * 1000, // 5 minutes - values change more frequently
       cacheTime: 10 * 60 * 1000,
       ...options,
@@ -212,7 +212,7 @@ const useVariants = {
   useValuesByType: (variantTypeId, options = {}) => {
     const query = useQuery({
       queryKey: ["variant-values", variantTypeId],
-      queryFn: () => variantTypesApi.getValuesByTypeId(variantTypeId),
+      queryFn: () => variantsApi.getValuesByTypeId(variantTypeId),
       enabled: !!variantTypeId, // Only run if we have a variant type ID
       staleTime: 5 * 60 * 1000,
       ...options,
@@ -239,7 +239,7 @@ const useVariants = {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
-      mutationFn: variantTypesApi.createManyValues,
+      mutationFn: variantsApi.createManyValues,
       onSuccess: (data, variables) => {
         // Refresh values for this specific type
         queryClient.invalidateQueries({
@@ -249,7 +249,7 @@ const useVariants = {
         queryClient.invalidateQueries({ queryKey: ["variant-values"] });
 
         toast.success(
-          `✅ Added ${variables.values.length} variant values successfully!`
+          ` Added ${variables.values.length} variant values successfully!`
         );
 
         if (options.onSuccess) {
@@ -290,7 +290,7 @@ const useVariants = {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
-      mutationFn: ({ id, data }) => variantTypesApi.updateValue(id, data),
+      mutationFn: ({ id, data }) => variantsApi.updateValue(id, data),
       onSuccess: (data, variables) => {
         // Refresh the values list for the old type
         if (variables.data.variant_type_id) {
@@ -301,7 +301,7 @@ const useVariants = {
         // Refresh all values list
         queryClient.invalidateQueries({ queryKey: ["variant-values"] });
 
-        toast.success("✅ Variant value updated successfully!");
+        toast.success(" Variant value updated successfully!");
 
         if (options.onSuccess) {
           options.onSuccess(data, variables);
@@ -341,7 +341,7 @@ const useVariants = {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
-      mutationFn: variantTypesApi.deleteValue,
+      mutationFn: variantsApi.deleteValue,
       onSuccess: (data, deletedId) => {
         // Refresh all values (we don't know which type it belonged to)
         queryClient.invalidateQueries({ queryKey: ["variant-values"] });
@@ -352,7 +352,7 @@ const useVariants = {
             typeof query.queryKey[1] === "number",
         });
 
-        toast.success("✅ Variant value deleted successfully!");
+        toast.success(" Variant value deleted successfully!");
 
         if (options.onSuccess) {
           options.onSuccess(data, deletedId);

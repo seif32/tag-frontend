@@ -1,6 +1,6 @@
 import { api } from "./api";
 
-const variantTypesApi = {
+const variantsApi = {
   // 🎯 ===== VARIANT TYPES MANAGEMENT (High Level) =====
 
   /**
@@ -218,4 +218,4 @@ const variantTypesApi = {
   },
 };
 
-export default variantTypesApi;
+export default variantsApi;

@@ -6,22 +6,30 @@ const useVariantStore = create((set, get) => ({
   variants: [],
   selectedValues: [],
 
-  getAvailableVariantTypes: (allVariantTypes) => {
+  getAvailableVariantTypes: (backendVariantTypes) => {
     const state = get();
+
+    // 🧠 Get IDs of currently selected variant types
     const selectedTypeIds = new Set(
       state.variants.map((variant) => variant.type)
     );
 
-    return allVariantTypes.filter(
-      (type) =>
-        type.value === "__ADD_CUSTOM__" || !selectedTypeIds.has(type.value)
-    );
+    return backendVariantTypes.filter((type) => !selectedTypeIds.has(type.id));
   },
 
-  setVariants: (variants) => set({ variants }),
-
   addVariant: (variant) =>
-    set((state) => ({ variants: [...state.variants, variant] })),
+    set((state) => {
+      const enhancedVariant = {
+        ...variant,
+        id: variant.id || nanoid(),
+        // Store the backend type ID directly
+        type: variant.type || variant.type_id,
+      };
+
+      return { variants: [...state.variants, enhancedVariant] };
+    }),
+
+  setVariants: (variants) => set({ variants }),
 
   removeVariant: (variantId) =>
     set((state) => ({
