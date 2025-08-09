@@ -2,16 +2,32 @@ import { Badge } from "@/components/ui/badge";
 
 function ProductDetails({ product }) {
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+    <div className="space-y-6">
+      {/* Main Info */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-sm">
         <div>
           <span className="text-muted-foreground">SKU:</span>
           <p className="font-medium">{product.variantSku}</p>
         </div>
+
         <div>
           <span className="text-muted-foreground">Quantity:</span>
           <p className="font-medium">{product.quantity}</p>
         </div>
+
+        <div className="flex flex-col">
+          <span className="text-muted-foreground">Stock Status:</span>
+          <Badge
+            variant={product.quantity > 0 ? "default" : "destructive"}
+            className={product.quantity > 0 && "bg-green-500"}
+          >
+            {product.quantity > 0 ? "In Stock" : "Out of Stock"}
+          </Badge>
+        </div>
+      </div>
+
+      {/* Pricing Info */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-sm">
         <div>
           <span className="text-muted-foreground">Price:</span>
           <p className="font-medium">
@@ -19,32 +35,57 @@ function ProductDetails({ product }) {
             {product.price}
           </p>
         </div>
+
         <div>
-          <span className="text-muted-foreground">Stock Status:</span>
-          <Badge variant={product.quantity > 0 ? "default" : "destructive"}>
-            {product.quantity > 0 ? "In Stock" : "Out of Stock"}
-          </Badge>
+          <span className="text-muted-foreground">Compare at Price:</span>
+          <p
+            className={`font-medium ${
+              parseFloat(product.compareAtPrice) > 0 ? "line-through " : ""
+            }`}
+          >
+            {product.currency === "USD" ? "$" : product.currency}{" "}
+            {product.compareAtPrice}
+          </p>
+        </div>
+
+        <div>
+          <span className="text-muted-foreground">Cost Price:</span>
+          <p className="font-medium ">
+            {product.currency === "USD" ? "$" : product.currency}{" "}
+            {product.costPrice}
+          </p>
         </div>
       </div>
 
-      {product.images && product.images.length > 0 && (
+      {/* Images */}
+      {product.images && product.images.length > 0 ? (
         <div className="space-y-2">
           <h4 className="text-sm font-medium">Images</h4>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {product.images.map((image, index) => (
               <div
                 key={index}
-                className="w-16 h-16 overflow-hidden bg-gray-100 rounded-md"
+                className="relative w-20 h-20 overflow-hidden bg-gray-100 rounded-md shadow-sm"
               >
                 <img
-                  src={image || "/placeholder.svg"}
-                  alt={`${product.name} image ${index + 1}`}
+                  src={image.imageUrl || "/placeholder.svg"}
+                  alt={`${product.variantName} image ${index + 1}`}
                   className="object-cover w-full h-full rounded-md"
                 />
+                {image.isPrimary && (
+                  <Badge
+                    variant="default"
+                    className="absolute top-1 left-1 text-[10px] px-1 py-0.5"
+                  >
+                    Primary
+                  </Badge>
+                )}
               </div>
             ))}
           </div>
         </div>
+      ) : (
+        <div>No Images</div>
       )}
     </div>
   );

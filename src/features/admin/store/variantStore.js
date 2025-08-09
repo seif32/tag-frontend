@@ -1,4 +1,3 @@
-// useVariantStore.js - Enhanced Version
 import { nanoid } from "nanoid";
 import { create } from "zustand";
 

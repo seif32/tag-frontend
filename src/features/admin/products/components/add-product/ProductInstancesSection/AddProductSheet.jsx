@@ -1,6 +1,4 @@
-import { useFormContext, useFieldArray } from "react-hook-form";
-import { useState } from "react";
-import useVariantStore from "@/features/admin/store/variantStore";
+import { useFormContext } from "react-hook-form";
 import ProductSheetHeader from "./ProductSheetHeader";
 import VariantSelectorStep from "./VariantSelectorStep";
 import ProductDetailsStep from "./ProductDetailsStep";
@@ -9,45 +7,18 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import EmptyState from "@/features/admin/ui/EmptyState";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import { useAddProductInstance } from "../../../hooks/useAddProductInstance";
 
 function AddProductSheet() {
   const { control, getValues, resetField } = useFormContext();
-  const { append } = useFieldArray({ control, name: "variants" });
-  const { selectedValues, resetSelectedValues } = useVariantStore();
-
-  const [tempImages, setTempImages] = useState([]);
-
-  const variants = useVariantStore((state) => state.variants);
-  const isVariants = variants.length !== 0;
-
-  const handleAddVariant = () => {
-    const variantData = getValues("variants.0");
-
-    const newVariant = {
-      ...variantData,
-      types: selectedValues,
-      images: tempImages,
-    };
-    append(newVariant);
-
-    // ✅ Reset all temporary states
-    resetField("variants.0.variantName");
-    resetField("variants.0.variantSku");
-    resetField("variants.0.quantity");
-    resetField("variants.0.price");
-    resetField("variants.0.currency");
-    resetField("variants.0.compareAtPrice");
-    resetField("variants.0.costPrice");
-
-    resetSelectedValues();
-    setTempImages([]);
-  };
+  const { handleAddVariant, isVariants, tempImages, setTempImages } =
+    useAddProductInstance(control, getValues, resetField);
 
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button size={"sm"} className={"text-xs"}>
-          Add New Product
+          Add Product
         </Button>
       </SheetTrigger>
       <SheetContent className="flex flex-col max-h-[100vh] ">

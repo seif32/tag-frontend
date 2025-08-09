@@ -31,17 +31,20 @@ function ProductDetailsStep() {
         name="variants.0.variantName"
         label="Name"
         placeholder="e.g., Samsung Galaxy red"
+        required
       />
       <div className="flex gap-2">
         <TagFormField
           name="variants.0.variantSku"
           label="SKU"
           placeholder="e.g., SMG-RED-128GB"
+          required
         />
         <TagFormField
           name="variants.0.quantity"
           label="Quantity"
           placeholder="e.g., 50"
+          required
         />
       </div>
 
@@ -50,11 +53,13 @@ function ProductDetailsStep() {
           name="variants.0.price"
           label="Price"
           placeholder="e.g., 899.99"
+          required
         />
         <TagFormField
           name="variants.0.currency"
           label="Currency"
           placeholder="e.g., USD"
+          required
         />
       </div>
 
@@ -63,11 +68,13 @@ function ProductDetailsStep() {
           name="variants.0.compareAtPrice"
           label="Compare at Price"
           placeholder="e.g., 1099.99"
+          required
         />
         <TagFormField
           name="variants.0.costPrice"
           label="Cost Price"
           placeholder="e.g., 700.00"
+          required
         />
       </div>
     </div>

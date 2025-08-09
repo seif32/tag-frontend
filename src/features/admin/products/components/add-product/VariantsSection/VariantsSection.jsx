@@ -5,12 +5,9 @@ import VariantsValues from "./VariantsValues";
 import NoVariants from "./NoVariants";
 import VariantsHeader from "./VariantsHeader";
 import useVariantStore from "@/features/admin/store/variantStore";
-import { consoleObject } from "@/utils/consoleObject";
 
 function VariantsSection() {
   const variants = useVariantStore((state) => state.variants);
-
-  consoleObject(variants);
 
   return (
     <Card>

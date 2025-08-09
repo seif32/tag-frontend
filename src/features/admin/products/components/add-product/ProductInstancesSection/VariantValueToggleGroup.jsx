@@ -2,6 +2,7 @@ import { ToggleGroup } from "@/components/ui/toggle-group";
 import VariantToggleChip from "./VariantToggleChip";
 import useVariantStore from "@/features/admin/store/variantStore";
 import { PiEmptyLight } from "react-icons/pi";
+import { consoleObject } from "@/utils/consoleObject";
 
 function VariantValueToggleGroup({ variant }) {
   const setSelectedValue = useVariantStore((state) => state.setSelectedValue);
@@ -17,9 +18,9 @@ function VariantValueToggleGroup({ variant }) {
     <ToggleGroup
       type="single"
       value={
-        selectedValues.find((item) => item.typeid === variant.id)?.value || ""
+        selectedValues.find((item) => item.typeid === variant.type)?.value || ""
       }
-      onValueChange={(values) => handleValueChange(variant.id, values)}
+      onValueChange={(values) => handleValueChange(variant.type, values)}
       className="flex flex-wrap gap-2"
     >
       {variant.values.map((item) => (

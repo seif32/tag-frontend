@@ -24,7 +24,7 @@ function ProductCard() {
     <CardContent className="space-y-4">
       {variantsList.slice(1).map((product, index) => (
         <Card key={product.id || index}>
-          <CardContent className="pt-6">
+          <CardContent>
             <ProductHeader product={product} />
             <ProductDetails product={product} />
           </CardContent>

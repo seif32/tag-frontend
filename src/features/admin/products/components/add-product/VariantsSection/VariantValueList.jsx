@@ -6,7 +6,6 @@ function VariantValueList({ variant }) {
   const removeVariantValue = useVariantStore(
     (state) => state.removeVariantValue
   );
-
   function handleClick(valueId) {
     removeVariantValue(variant.id, valueId);
   }
@@ -20,7 +19,7 @@ function VariantValueList({ variant }) {
 
       {variant.values.map((value) => (
         <Badge key={value.id} variant="secondary" className="gap-1 pt-0 pb-0 ">
-          <span className="text-sm">{value.value.toUpperCase()}</span>
+          <span className="text-sm capitalize">{value.value}</span>
           <span
             onClick={() => handleClick(value.id)}
             role="button"

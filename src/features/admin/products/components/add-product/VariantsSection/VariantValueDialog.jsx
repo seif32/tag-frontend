@@ -11,12 +11,9 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import VariantManualValueInput from "./VariantManualValueInput";
 import VariantValueToggleGroup from "./VariantValueToggleGroup";
-import { consoleObject } from "@/utils/consoleObject";
 
 function VariantValueDialog({ variant }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  consoleObject(variant);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
