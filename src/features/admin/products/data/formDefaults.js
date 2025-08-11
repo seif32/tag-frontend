@@ -33,31 +33,3 @@ export const addProductDefaultValues = {
     },
   ],
 };
-
-export const editProductDefaultValues = (existingProduct) => ({
-  name: existingProduct?.name || "",
-  sku: existingProduct?.sku || "",
-  description: existingProduct?.description || "",
-  shortdescription: existingProduct?.shortdescription || "",
-  categoryid: existingProduct?.categoryid || "",
-  subcategoryid: existingProduct?.subcategoryid || "",
-  brandid: existingProduct?.brandid || "",
-  featured: existingProduct?.featured || false,
-  isavailable: existingProduct?.isavailable ?? true,
-  tags: existingProduct?.tags || [],
-  variants: existingProduct?.variants || [
-    {
-      variantsku: "",
-      variantname: "",
-      price: "",
-      compareatprice: "",
-      costprice: "",
-      currency: "USD",
-      hasdiscount: false,
-      quantity: "",
-      instock: true,
-      types: [],
-      images: [],
-    },
-  ],
-});

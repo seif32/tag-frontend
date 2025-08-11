@@ -26,7 +26,6 @@ const useCategories = {
       isErrorCategories: query.isError,
       refetchCategories: query.refetch,
       // Include original query object for advanced usage
-      ...query,
     };
   },
 
@@ -49,7 +48,6 @@ const useCategories = {
       errorCategory: query.error,
       isErrorCategory: query.isError,
       refetchCategory: query.refetch,
-      ...query,
     };
   },
 
@@ -82,7 +80,6 @@ const useCategories = {
       isErrorCreateCategory: mutation.isError,
       resetCreateCategory: mutation.reset,
       // Include original mutation for advanced usage
-      ...mutation,
     };
   },
 
@@ -114,7 +111,6 @@ const useCategories = {
       errorUpdateCategory: mutation.error,
       isErrorUpdateCategory: mutation.isError,
       resetUpdateCategory: mutation.reset,
-      ...mutation,
     };
   },
 
@@ -146,7 +142,6 @@ const useCategories = {
       errorDeleteCategory: mutation.error,
       isErrorDeleteCategory: mutation.isError,
       resetDeleteCategory: mutation.reset,
-      ...mutation,
     };
   },
 };

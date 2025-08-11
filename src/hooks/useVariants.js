@@ -27,7 +27,6 @@ const useVariants = {
       errorVariantTypes: query.error,
       isErrorVariantTypes: query.isError,
       refetchVariantTypes: query.refetch,
-      ...query,
     };
   },
 
@@ -73,7 +72,6 @@ const useVariants = {
       errorCreateVariantType: mutation.error,
       isErrorCreateVariantType: mutation.isError,
       resetCreateVariantType: mutation.reset,
-      ...mutation,
     };
   },
 
@@ -122,7 +120,6 @@ const useVariants = {
       errorUpdateVariantType: mutation.error,
       isErrorUpdateVariantType: mutation.isError,
       resetUpdateVariantType: mutation.reset,
-      ...mutation,
     };
   },
 
@@ -171,7 +168,6 @@ const useVariants = {
       errorDeleteVariantType: mutation.error,
       isErrorDeleteVariantType: mutation.isError,
       resetDeleteVariantType: mutation.reset,
-      ...mutation,
     };
   },
 
@@ -198,7 +194,6 @@ const useVariants = {
       errorVariantValues: query.error,
       isErrorVariantValues: query.isError,
       refetchVariantValues: query.refetch,
-      ...query,
     };
   },
 
@@ -224,7 +219,6 @@ const useVariants = {
       errorVariantValues: query.error,
       isErrorVariantValues: query.isError,
       refetchVariantValues: query.refetch,
-      ...query,
     };
   },
 
@@ -276,7 +270,6 @@ const useVariants = {
       errorCreateManyValues: mutation.error,
       isErrorCreateManyValues: mutation.isError,
       resetCreateManyValues: mutation.reset,
-      ...mutation,
     };
   },
 
@@ -327,7 +320,6 @@ const useVariants = {
       errorUpdateValue: mutation.error,
       isErrorUpdateValue: mutation.isError,
       resetUpdateValue: mutation.reset,
-      ...mutation,
     };
   },
 
@@ -378,7 +370,6 @@ const useVariants = {
       errorDeleteValue: mutation.error,
       isErrorDeleteValue: mutation.isError,
       resetDeleteValue: mutation.reset,
-      ...mutation,
     };
   },
 };

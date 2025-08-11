@@ -25,7 +25,6 @@ const useBrands = {
       errorBrands: query.error,
       isErrorBrands: query.isError,
       refetchBrands: query.refetch,
-      ...query,
     };
   },
 
@@ -51,7 +50,6 @@ const useBrands = {
       errorBrand: query.error,
       isErrorBrand: query.isError,
       refetchBrand: query.refetch,
-      ...query,
     };
   },
 
@@ -99,7 +97,6 @@ const useBrands = {
       errorCreateBrand: mutation.error,
       isErrorCreateBrand: mutation.isError,
       resetCreateBrand: mutation.reset,
-      ...mutation,
     };
   },
 
@@ -147,7 +144,6 @@ const useBrands = {
       errorUpdateBrand: mutation.error,
       isErrorUpdateBrand: mutation.isError,
       resetUpdateBrand: mutation.reset,
-      ...mutation,
     };
   },
 
@@ -196,7 +192,6 @@ const useBrands = {
       errorDeleteBrand: mutation.error,
       isErrorDeleteBrand: mutation.isError,
       resetDeleteBrand: mutation.reset,
-      ...mutation,
     };
   },
 };

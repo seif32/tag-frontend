@@ -4,6 +4,7 @@ import AdminAddCategoryPage from "@/features/admin/categories/pages/AdminAddCate
 import AdminCategoriesPage from "@/features/admin/categories/pages/AdminCategoriesPage";
 import AdminDashboardPage from "@/features/admin/dashboard/pages/AdminDashboardPage";
 import AdminAddProductPage from "@/features/admin/products/pages/AdminAddProductPage";
+import { AdminProductsPage } from "@/features/admin/products/pages/AdminProductsPage";
 import AdminLayout from "@/layout/AdminLayout";
 import { Routes, Route } from "react-router";
 
@@ -18,6 +19,7 @@ function AdminRouter() {
           path={ROUTES.ADMIN.ADD_PRODUCT}
           element={<AdminAddProductPage />}
         />
+        <Route path={ROUTES.ADMIN.PRODUCTS} element={<AdminProductsPage />} />
         <Route
           path={ROUTES.ADMIN.CATEGORIES}
           element={<AdminCategoriesPage />}
