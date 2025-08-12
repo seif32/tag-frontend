@@ -30,6 +30,32 @@ const useProducts = {
   },
 
   /**
+   * 📂 GET ALL PRODUCTS WITHOUT VARIANTS HOOK
+   * Fetches simplified product catalog without variant complexity
+   * Perfect for dropdowns, autocomplete, lightweight listings
+   * Faster loading due to reduced data payload
+   * Returns: isLoadingProductsLight, productsLight, errorProductsLight
+   * Example: const { productsLight } = useProducts.useAllWithoutVariants();
+   */
+  useAllWithoutVariants: (options = {}) => {
+    const query = useQuery({
+      queryKey: ["products", "without-variants"],
+      queryFn: productsApi.getAllWithoutVariants,
+      staleTime: 5 * 60 * 1000, // 5 minutes - simpler data, can cache longer
+      cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+      ...options,
+    });
+
+    return {
+      isLoadingProducts: query.isLoading,
+      products: query.data,
+      errorProducts: query.error,
+      isErrorProducts: query.isError,
+      refetchProducts: query.refetch,
+    };
+  },
+
+  /**
    * 🎯 GET SINGLE PRODUCT HOOK
    * Fetches one specific product with all variants, images, and relationships
    * Great for product detail pages, edit forms, variant management screens
@@ -52,6 +78,35 @@ const useProducts = {
       errorProduct: query.error,
       isErrorProduct: query.isError,
       refetchProduct: query.refetch,
+    };
+  },
+
+  /**
+   * 🎣 REACT QUERY HOOK: useProductStats
+   * TanStack Query wrapper for product statistics
+   * Optimized caching for dashboard performance
+   * Auto-refresh every 10 minutes to keep stats current
+   * Returns loading states and data with consistent naming
+   */
+  useStats: (options = {}) => {
+    const query = useQuery({
+      queryKey: ["products", "stats"],
+      queryFn: productsApi.getStats,
+      staleTime: 5 * 60 * 1000, // 5 minutes - stats change moderately
+      cacheTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
+      refetchInterval: 10 * 60 * 1000, // Auto-refresh every 10 minutes
+      refetchOnWindowFocus: true, // Refresh when user returns to tab
+      ...options,
+    });
+
+    return {
+      isLoadingStats: query.isLoading,
+      stats: query.data,
+      errorStats: query.error,
+      isErrorStats: query.isError,
+      refetchStats: query.refetch,
+      isStaleStats: query.isStale,
+      lastUpdated: query.dataUpdatedAt,
     };
   },
 

@@ -1,5 +1,6 @@
+import useProducts from "@/hooks/useProducts";
+import LoadingState from "@/ui/LoadingState";
 import {
-  AlertCircle,
   AlertTriangle,
   CheckCircle,
   Package,
@@ -7,40 +8,41 @@ import {
   XCircle,
 } from "lucide-react";
 
-function ProductsStats({ data }) {
+function ProductsStats({ data, isLoadingStats }) {
+  if (isLoadingStats) return <LoadingState />;
   const stats = [
     {
       icon: Package,
       label: "Total Products",
-      value: data?.totalProducts || 0,
+      value: data?.total_products || 0,
       iconColor: "text-primary",
       bgColor: "bg-primary/10",
     },
     {
       icon: CheckCircle,
       label: "Active Products",
-      value: data?.activeProducts || 0,
+      value: data?.active_products || 0,
       iconColor: "text-green-500",
       bgColor: "bg-green-100",
     },
     {
       icon: XCircle,
       label: "Inactive Products",
-      value: data?.inactiveProducts || 0,
+      value: data?.inactive_products || 0,
       iconColor: "text-red-500",
       bgColor: "bg-red-100",
     },
     {
       icon: Star,
       label: "Featured Products",
-      value: data?.featuredProducts || 0,
+      value: data?.featured_products || 0,
       iconColor: "text-yellow-500",
       bgColor: "bg-yellow-100",
     },
     {
       icon: AlertTriangle,
       label: "Out of Stock",
-      value: data?.outOfStockProducts || 0,
+      value: data?.out_of_stock_products || 0,
       iconColor: "text-orange-500",
       bgColor: "bg-orange-100",
     },

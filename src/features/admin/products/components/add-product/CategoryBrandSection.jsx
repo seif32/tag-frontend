@@ -10,7 +10,7 @@ function CategoryBrandSection() {
     mainCategories,
     selectedCategoryId,
     subcategoriesByParent,
-    selectedCategoryHasSubcategories, // 🆕 New property
+    selectedCategoryHasSubcategories,
   } = useSelectCategory();
 
   const { allBrands, isLoadingBrands } = useSelectBrand();

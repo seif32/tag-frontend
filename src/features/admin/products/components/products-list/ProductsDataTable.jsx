@@ -35,7 +35,6 @@ import {
 
 import { productColumns } from "./productColumns";
 
-// 🎯 Main ProductsDataTable Component
 export function ProductsDataTable({
   products = [],
   isLoadingProducts,

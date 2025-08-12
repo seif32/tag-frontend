@@ -8,21 +8,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const productColumns = [
-  // // 📸 IMAGE COLUMN - Simple & Visual
+  // //  📸 IMAGE COLUMN - Simple & Visual
   // {
-  //   accessorKey: "image",
+  //   accessorKey: "primary_image",
   //   header: "Image",
   //   cell: ({ row }) => {
   //     const product = row.original;
   //     return (
-  //       <div className="w-12 h-12 rounded-md overflow-hidden border">
+  //       <div className="w-12 h-12 overflow-hidden border rounded-md">
   //         <img
-  //           src={product.image || "/placeholder-product.jpg"}
+  //           src={product.primary_image || "/placeholder-product.jpg"}
   //           alt={product.name}
-  //           className="w-full h-full object-cover"
-  //           onError={(e) => {
-  //             e.target.src = "/placeholder-product.jpg";
-  //           }}
+  //           className="object-cover w-full h-full"
   //         />
   //       </div>
   //     );
@@ -41,7 +38,7 @@ export const productColumns = [
         className="p-0 font-semibold"
       >
         Product
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </Button>
     ),
     cell: ({ row }) => {
@@ -56,21 +53,29 @@ export const productColumns = [
     enableSorting: true,
   },
 
-  //   // 🏪 CATEGORY - Organization
+  // 🏪 CATEGORY - Organization
   {
-    accessorKey: "category",
-    header: "Category",
+    accessorKey: "sub_category_name",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="p-0 font-semibold"
+      >
+        Category
+        <ArrowUpDown className="w-4 h-4 ml-2" />
+      </Button>
+    ),
     cell: ({ row }) => (
-      <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-        {row.getValue("category")}
+      <span className="px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-full">
+        {row.getValue("sub_category_name")}
       </span>
     ),
     enableSorting: true,
   },
-
   // 💰 PRICE RANGE - Smart Pricing
   {
-    accessorKey: "priceRange",
+    id: "priceRange",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -78,26 +83,25 @@ export const productColumns = [
         className="p-0 font-semibold"
       >
         Price
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </Button>
     ),
     cell: ({ row }) => {
-      const product = row.original;
-      const { min_price, max_price } = product;
+      const { lowest_price, highest_price } = row.original;
 
-      if (!min_price) return <span className="text-gray-400">No price</span>;
+      if (!lowest_price) return <span className="text-gray-400">No price</span>;
 
       return (
         <div className="font-semibold">
-          {min_price === max_price
-            ? `$${min_price.toFixed(2)}`
-            : `$${min_price.toFixed(2)} - $${max_price.toFixed(2)}`}
+          {lowest_price === highest_price
+            ? `$${lowest_price.toFixed(2)}`
+            : `$${lowest_price.toFixed(2)} - $${highest_price.toFixed(2)}`}
         </div>
       );
     },
     sortingFn: (rowA, rowB) => {
-      const priceA = rowA.original.min_price || 0;
-      const priceB = rowB.original.min_price || 0;
+      const priceA = rowA.original.lowest_price || 0;
+      const priceB = rowB.original.lowest_price || 0;
       return priceA - priceB;
     },
     enableSorting: true,
@@ -105,10 +109,19 @@ export const productColumns = [
 
   // 📦 STOCK STATUS - Inventory Overview
   {
-    accessorKey: "stockStatus",
-    header: "Stock",
+    id: "stockStatus",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="p-0 font-semibold"
+      >
+        Stock
+        <ArrowUpDown className="w-4 h-4 ml-2" />
+      </Button>
+    ),
     cell: ({ row }) => {
-      const stock = row.original.total_stock || 0;
+      const stock = row.original.total_quantity || 0;
 
       let statusText, colorClass;
       if (stock === 0) {
@@ -131,8 +144,8 @@ export const productColumns = [
       );
     },
     sortingFn: (rowA, rowB) => {
-      const stockA = rowA.original.total_stock || 0;
-      const stockB = rowB.original.total_stock || 0;
+      const stockA = rowA.original.total_quantity || 0;
+      const stockB = rowB.original.total_quantity || 0;
       return stockA - stockB;
     },
     enableSorting: true,
@@ -140,8 +153,17 @@ export const productColumns = [
 
   // 🔢 VARIANT COUNT - Complexity Indicator
   {
-    accessorKey: "variantCount",
-    header: "Variants",
+    accessorKey: "variant_count",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="p-0 font-semibold"
+      >
+        Variants
+        <ArrowUpDown className="w-4 h-4 ml-2" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const count = row.original.variant_count || 0;
       return (
@@ -155,8 +177,17 @@ export const productColumns = [
 
   // 📊 STATUS - Published State
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "is_available",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="p-0 font-semibold"
+      >
+        Status
+        <ArrowUpDown className="w-4 h-4 ml-2" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const isAvailable = row.original.is_available;
       return (
@@ -171,9 +202,15 @@ export const productColumns = [
         </span>
       );
     },
+    sortingFn: (rowA, rowB) => {
+      const statusA = rowA.original.is_available;
+      const statusB = rowB.original.is_available;
+
+      // Published (true) comes first, Draft (false) comes second
+      return statusB - statusA; // or statusA - statusB for opposite order
+    },
     enableSorting: true,
   },
-
   // ⚙️ ACTIONS - Essential Operations
   {
     id: "actions",
@@ -184,25 +221,25 @@ export const productColumns = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="w-8 h-8 p-0">
               <span className="sr-only">Open menu</span>
-              <Eye className="h-4 w-4" />
+              <Eye className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => console.log("View", product.id)}>
-              <Eye className="mr-2 h-4 w-4" />
+              <Eye className="w-4 h-4 mr-2" />
               View
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => console.log("Edit", product.id)}>
-              <Edit className="mr-2 h-4 w-4" />
+              <Edit className="w-4 h-4 mr-2" />
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem
               className="text-red-600"
               onClick={() => console.log("Delete", product.id)}
             >
-              <Trash2 className="mr-2 h-4 w-4" />
+              <Trash2 className="w-4 h-4 mr-2" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

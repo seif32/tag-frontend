@@ -25,6 +25,29 @@ const productsApi = {
   },
 
   /**
+   * 📥 GET ALL PRODUCTS WITHOUT VARIANTS
+   * Fetches simplified product catalog without variant details
+   * Perfect for dropdowns, simple listings, performance-critical views
+   * Returns lightweight product data for better performance
+   * Example: const products = await productsApi.getAllWithoutVariants();
+   */
+  getAllWithoutVariants: async (options = {}) => {
+    try {
+      return await api.get("/products/without-variants", {
+        ...options,
+      });
+    } catch (error) {
+      console.error("Failed to fetch products without variants:", {
+        status: error.status,
+        method: error.method,
+        url: error.url,
+        responseTime: error.responseTime,
+      });
+      throw error;
+    }
+  },
+
+  /**
    * 🎯 GET SINGLE PRODUCT BY ID WITH COMPLETE DETAILS
    * Fetches one specific product with all variants, images, and relationships
    * Great for product detail pages, edit forms, variant management
@@ -40,6 +63,30 @@ const productsApi = {
       return await api.get(`/products/${productId}`, options);
     } catch (error) {
       console.error(`Failed to fetch product ${productId}:`, error.details);
+      throw error;
+    }
+  },
+
+  /**
+   * 📊 GET PRODUCT STATISTICS OVERVIEW
+   * Fetches comprehensive product statistics for dashboard analytics
+   * Perfect for overview cards, KPI displays, business intelligence
+   * Returns essential metrics: totals, active/inactive counts, stock alerts
+   * Example: const stats = await productsApi.getStats();
+   */
+  getStats: async (options = {}) => {
+    try {
+      return await api.get("/products/stats", {
+        ...options,
+      });
+    } catch (error) {
+      console.error("Failed to fetch product statistics:", {
+        status: error.status,
+        method: error.method,
+        url: error.url,
+        responseTime: error.responseTime,
+        endpoint: "GET /products/stats",
+      });
       throw error;
     }
   },
