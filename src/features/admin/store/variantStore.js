@@ -34,7 +34,7 @@ const useVariantStore = create((set, get) => ({
     set((state) => ({
       variants: state.variants.filter((v) => v.id !== variantId),
       selectedValues: state.selectedValues.filter(
-        (sv) => sv.typeid !== variantId
+        (sv) => sv.type_id !== variantId
       ),
     })),
 
@@ -81,20 +81,20 @@ const useVariantStore = create((set, get) => ({
       ),
     })),
 
-  setSelectedValue: (typeid, value) =>
+  setSelectedValue: (type_id, value) =>
     set((state) => {
       let updated = [...state.selectedValues];
 
       if (!value) {
-        updated = updated.filter((item) => item.typeid !== typeid);
+        updated = updated.filter((item) => item.type_id !== type_id);
       } else {
         const existingIndex = updated.findIndex(
-          (item) => item.typeid === typeid
+          (item) => item.type_id === type_id
         );
         if (existingIndex >= 0) {
-          updated[existingIndex] = { typeid, value };
+          updated[existingIndex] = { type_id, value };
         } else {
-          updated.push({ typeid, value });
+          updated.push({ type_id, value });
         }
       }
 

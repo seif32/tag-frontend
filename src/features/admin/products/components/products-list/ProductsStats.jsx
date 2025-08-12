@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 function ProductsStats({ data, isLoadingStats }) {
-  if (isLoadingStats) return <LoadingState />;
+  if (isLoadingStats) return <LoadingState type="stats" columns={4} rows={1} />;
   const stats = [
     {
       icon: Package,

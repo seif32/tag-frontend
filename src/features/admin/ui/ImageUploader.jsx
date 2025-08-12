@@ -12,8 +12,8 @@ function ImageUploader({ setImages, images }) {
         const reader = new FileReader();
         reader.onload = (e) => {
           const imageData = {
-            imageUrl: e.target?.result,
-            isPrimary: images.length === 0, // First image is primary by default
+            image_url: e.target?.result,
+            is_primary: images.length === 0, // First image is primary by default
             file: file,
             id: `img-${Date.now()}-${Math.random()}`,
           };
@@ -60,7 +60,7 @@ function ImageUploader({ setImages, images }) {
     setImages((prev) =>
       prev.map((img, index) => ({
         ...img,
-        isPrimary: index === indexToSetPrimary,
+        is_primary: index === indexToSetPrimary,
       }))
     );
   };
@@ -118,12 +118,12 @@ function ImageUploader({ setImages, images }) {
               <div
                 key={image.id || index}
                 className={`relative group rounded-lg overflow-hidden border-2 ${
-                  image.isPrimary ? "border-blue-500" : "border-gray-200"
+                  image.is_primary ? "border-blue-500" : "border-gray-200"
                 }`}
               >
                 <div className="aspect-square">
                   <img
-                    src={image.imageUrl || "/placeholder.svg"}
+                    src={image.image_url || "/placeholder.svg"}
                     alt={`Upload ${index + 1}`}
                     className="object-cover w-full h-full"
                   />
@@ -132,7 +132,7 @@ function ImageUploader({ setImages, images }) {
                 {/* Overlay with controls */}
                 <div className="absolute inset-0 flex items-center justify-center transition-all duration-200 bg-black bg-opacity-0 group-hover:bg-opacity-50">
                   <div className="flex gap-2 transition-opacity duration-200 opacity-0 group-hover:opacity-100">
-                    {!image.isPrimary && (
+                    {!image.is_primary && (
                       <Button
                         size="sm"
                         variant="secondary"
@@ -159,7 +159,7 @@ function ImageUploader({ setImages, images }) {
                 </div>
 
                 {/* Primary badge */}
-                {image.isPrimary && (
+                {image.is_primary && (
                   <div className="absolute top-2 left-2">
                     <span className="px-2 py-1 text-xs text-white bg-blue-500 rounded">
                       Primary

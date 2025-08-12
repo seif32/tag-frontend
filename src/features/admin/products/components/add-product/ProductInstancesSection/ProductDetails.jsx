@@ -4,10 +4,10 @@ function ProductDetails({ product }) {
   return (
     <div className="space-y-6">
       {/* Main Info */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-sm">
+      <div className="grid grid-cols-2 gap-6 text-sm md:grid-cols-3">
         <div>
           <span className="text-muted-foreground">SKU:</span>
-          <p className="font-medium">{product.variantSku}</p>
+          <p className="font-medium">{product.variant_sku}</p>
         </div>
 
         <div>
@@ -27,7 +27,7 @@ function ProductDetails({ product }) {
       </div>
 
       {/* Pricing Info */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-sm">
+      <div className="grid grid-cols-2 gap-6 text-sm md:grid-cols-3">
         <div>
           <span className="text-muted-foreground">Price:</span>
           <p className="font-medium">
@@ -40,11 +40,11 @@ function ProductDetails({ product }) {
           <span className="text-muted-foreground">Compare at Price:</span>
           <p
             className={`font-medium ${
-              parseFloat(product.compareAtPrice) > 0 ? "line-through " : ""
+              parseFloat(product.compare_at_price) > 0 ? "line-through " : ""
             }`}
           >
             {product.currency === "USD" ? "$" : product.currency}{" "}
-            {product.compareAtPrice}
+            {product.compare_at_price}
           </p>
         </div>
 
@@ -52,13 +52,13 @@ function ProductDetails({ product }) {
           <span className="text-muted-foreground">Cost Price:</span>
           <p className="font-medium ">
             {product.currency === "USD" ? "$" : product.currency}{" "}
-            {product.costPrice}
+            {product.cost_price}
           </p>
         </div>
       </div>
 
       {/* Images */}
-      {product.images && product.images.length > 0 ? (
+      {/* {product.images && product.images.length > 0 ? (
         <div className="space-y-2">
           <h4 className="text-sm font-medium">Images</h4>
           <div className="flex flex-wrap gap-3">
@@ -68,11 +68,11 @@ function ProductDetails({ product }) {
                 className="relative w-20 h-20 overflow-hidden bg-gray-100 rounded-md shadow-sm"
               >
                 <img
-                  src={image.imageUrl || "/placeholder.svg"}
-                  alt={`${product.variantName} image ${index + 1}`}
+                  src={image.image_url || "/placeholder.svg"}
+                  alt={`${product.variant_name} image ${index + 1}`}
                   className="object-cover w-full h-full rounded-md"
                 />
-                {image.isPrimary && (
+                {image.is_primary && (
                   <Badge
                     variant="default"
                     className="absolute top-1 left-1 text-[10px] px-1 py-0.5"
@@ -86,7 +86,7 @@ function ProductDetails({ product }) {
         </div>
       ) : (
         <div>No Images</div>
-      )}
+      )} */}
     </div>
   );
 }

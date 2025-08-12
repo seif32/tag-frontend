@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/constants";
 import LoadingState from "@/ui/LoadingState";
 import { Plus, RefreshCw } from "lucide-react";
+import { useNavigate } from "react-router";
 
 function ProductsHeader({
   totalCount,
@@ -9,9 +11,12 @@ function ProductsHeader({
   isLoadingStats,
   refetchStats,
 }) {
-  if (isLoadingProducts || isLoadingStats) return <LoadingState />;
+  const navigate = useNavigate();
+
+  if (isLoadingProducts || isLoadingStats)
+    return <LoadingState type="header" />;
   return (
-    <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+    <div className=" flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Products</h1>
         <p className="mt-1 text-gray-600">
@@ -36,7 +41,7 @@ function ProductsHeader({
           Refresh
         </Button>
 
-        <Button>
+        <Button onClick={() => navigate("add")}>
           <Plus className="w-4 h-4 mr-2" />
           Add Product
         </Button>

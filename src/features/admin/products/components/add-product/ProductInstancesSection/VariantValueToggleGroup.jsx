@@ -18,7 +18,8 @@ function VariantValueToggleGroup({ variant }) {
     <ToggleGroup
       type="single"
       value={
-        selectedValues.find((item) => item.typeid === variant.type)?.value || ""
+        selectedValues.find((item) => item.type_id === variant.type)?.value ||
+        ""
       }
       onValueChange={(values) => handleValueChange(variant.type, values)}
       className="flex flex-wrap gap-2"

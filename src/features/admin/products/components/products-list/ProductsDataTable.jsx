@@ -33,7 +33,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-import { productColumns } from "./productColumns";
+import { useProductColumns } from "./useProductColumns";
+import LoadingState from "@/ui/LoadingState";
 
 export function ProductsDataTable({
   products = [],
@@ -50,12 +51,12 @@ export function ProductsDataTable({
     pageSize: 10,
   });
 
-  // 🎯 Memoize the products data to prevent unnecessary re-renders
+  const productColumns = useProductColumns();
+
   const memoizedProducts = useMemo(() => {
     return products || [];
   }, [products]);
 
-  // 🎯 Initialize the table with TanStack Table
   const table = useReactTable({
     data: memoizedProducts || [],
     columns: productColumns,
@@ -80,25 +81,16 @@ export function ProductsDataTable({
 
   // 🔄 Loading State - Clean and Professional
   if (isLoadingProducts) {
-    return (
-      <div className="w-full">
-        <div className="flex items-center justify-center h-64 border rounded-lg">
-          <div className="flex flex-col items-center gap-2">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-            <p className="text-sm text-gray-500">Loading products...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <LoadingState type="table" rows={10} />;
   }
 
   // ⚠️ Error State - User-Friendly Error Handling
   if (isErrorProducts) {
     return (
       <div className="w-full">
-        <div className="flex items-center justify-center h-64 border rounded-lg border-red-200 bg-red-50">
+        <div className="flex items-center justify-center h-64 border border-red-200 rounded-lg bg-red-50">
           <div className="flex flex-col items-center gap-2 text-center">
-            <AlertCircle className="h-8 w-8 text-red-500" />
+            <AlertCircle className="w-8 h-8 text-red-500" />
             <p className="font-medium text-red-700">Failed to load products</p>
             <p className="text-sm text-red-600">
               {errorProducts?.message ||
@@ -130,7 +122,7 @@ export function ProductsDataTable({
               placeholder="Search products..."
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              className="pl-8 w-64"
+              className="w-64 pl-8"
             />
           </div>
         </div>
@@ -144,7 +136,7 @@ export function ProductsDataTable({
       </div>
 
       {/* 📊 Main Data Table */}
-      <div className="rounded-md border">
+      <div className="border rounded-md">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -241,7 +233,7 @@ export function ProductsDataTable({
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="w-4 h-4" />
               Previous
             </Button>
             <Button
@@ -251,7 +243,7 @@ export function ProductsDataTable({
               disabled={!table.getCanNextPage()}
             >
               Next
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
         </div>

@@ -16,14 +16,14 @@ export function useAddProductInstance(control, getValues, resetField) {
     const variantData = getValues("variants.0");
     const missingFields = [];
 
-    if (!variantData.variantName?.trim()) missingFields.push("Variant Name");
-    if (!variantData.variantSku?.trim()) missingFields.push("Variant SKU");
+    if (!variantData.variant_name?.trim()) missingFields.push("Variant Name");
+    if (!variantData.variant_sku?.trim()) missingFields.push("Variant SKU");
     if (!variantData.quantity || Number(variantData.quantity) <= 0)
       missingFields.push("Quantity");
     if (!variantData.price || Number(variantData.price) <= 0)
       missingFields.push("Price");
-    if (!variantData.compareAtPrice) missingFields.push("Compare At Price");
-    if (!variantData.costPrice) missingFields.push("Cost Price");
+    if (!variantData.compare_at_price) missingFields.push("Compare At Price");
+    if (!variantData.cost_price) missingFields.push("Cost Price");
     if (!selectedValues || selectedValues.length === 0)
       missingFields.push("Variant Types");
     // if (!tempImages || tempImages.length === 0)
@@ -44,13 +44,13 @@ export function useAddProductInstance(control, getValues, resetField) {
     append(newVariant);
 
     // ✅ Reset all temporary states
-    resetField("variants.0.variantName");
-    resetField("variants.0.variantSku");
+    resetField("variants.0.variant_name");
+    resetField("variants.0.variant_sku");
     resetField("variants.0.quantity");
     resetField("variants.0.price");
     resetField("variants.0.currency");
-    resetField("variants.0.compareAtPrice");
-    resetField("variants.0.costPrice");
+    resetField("variants.0.compare_at_price");
+    resetField("variants.0.cost_price");
 
     resetSelectedValues();
     setTempImages([]);

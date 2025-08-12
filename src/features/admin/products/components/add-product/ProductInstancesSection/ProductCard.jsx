@@ -18,7 +18,7 @@ function ProductCard() {
     variantsList.length <= 1 ||
     variantsList
       .slice(1)
-      .every((variant) => !variant.variantSku || variant.variantSku === "");
+      .every((variant) => !variant.variant_sku || variant.variant_sku === "");
 
   return (
     <CardContent className="space-y-4">

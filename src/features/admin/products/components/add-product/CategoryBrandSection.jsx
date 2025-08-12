@@ -3,17 +3,20 @@ import TagFormField from "../../../ui/TagFormField";
 import LoadingState from "@/ui/LoadingState";
 import { useSelectCategory } from "../../hooks/useSelectCategory";
 import { useSelectBrand } from "../../hooks/useSelectBrand";
+import useProductStore from "@/features/admin/store/productStore";
 
 function CategoryBrandSection() {
+  const mode = useProductStore((state) => state.mode);
+  const isViewMode = mode === "view";
+
   const {
     isLoadingCategories,
     mainCategories,
     selectedCategoryId,
     subcategoriesByParent,
     selectedCategoryHasSubcategories,
-  } = useSelectCategory();
-
-  const { allBrands, isLoadingBrands } = useSelectBrand();
+  } = useSelectCategory(mode);
+  const { allBrands, isLoadingBrands } = useSelectBrand(mode);
 
   if (isLoadingCategories || isLoadingBrands) return <LoadingState />;
 
@@ -22,15 +25,16 @@ function CategoryBrandSection() {
       <CardHeader>Category & Brand</CardHeader>
       <CardContent className={"space-y-4"}>
         <TagFormField
-          name={"categoryId"}
+          name={"category_id"}
           label={"Category"}
           type="select"
           options={mainCategories}
           required
           placeholder="Select a category"
+          disabled={isViewMode}
         />
         <TagFormField
-          name={"subcategoryId"}
+          name={"subcategory_id"}
           label={"Sub-category"}
           type="select"
           placeholder={
@@ -40,7 +44,7 @@ function CategoryBrandSection() {
                 : "No subcategories available"
               : "First select a category"
           }
-          disabled={isLoadingCategories || !selectedCategoryId}
+          disabled={isViewMode || isLoadingCategories || !selectedCategoryId}
           options={
             selectedCategoryId
               ? subcategoriesByParent[selectedCategoryId] || []
@@ -53,12 +57,13 @@ function CategoryBrandSection() {
           }
         />
         <TagFormField
-          name={"brandId"}
+          name={"brand_id"}
           label={"Brand"}
           type="select"
           options={allBrands}
           required
           placeholder="Select a brand"
+          disabled={isViewMode}
         />
       </CardContent>
     </Card>

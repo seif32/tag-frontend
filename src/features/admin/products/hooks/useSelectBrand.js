@@ -1,10 +1,10 @@
 import useBrands from "@/hooks/useBrands";
 import { useMemo } from "react";
 
-export function useSelectBrand() {
+export function useSelectBrand(mode) {
   const { brands, isLoadingBrands } = useBrands.useAll();
   const { allBrands } = useMemo(() => {
-    if (isLoadingBrands) return { allBrands: [] };
+    if (isLoadingBrands || !brands) return { allBrands: [] };
 
     const allBrands = brands.map((brand) => ({
       value: brand.id,

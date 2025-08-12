@@ -4,7 +4,7 @@ import { useWatch } from "react-hook-form";
 
 export function useSelectCategory() {
   const { categories, isLoadingCategories } = useCategories.useAll();
-  const selectedCategoryId = useWatch({ name: "categoryId" });
+  const selectedCategoryId = useWatch({ name: "category_id" });
 
   const { mainCategories, subcategoriesByParent, hasSubcategories } =
     useMemo(() => {

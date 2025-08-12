@@ -8,22 +8,31 @@ import SettingsSection from "../components/add-product/SettingsSection";
 import CategoryBrandSection from "../components/add-product/CategoryBrandSection";
 import AddProductsHeader from "../components/add-product/AddProductsHeader";
 import GeneralInfoSection from "../components/add-product/GeneralInfoSection/GeneralInfoSection";
-import TagsManager from "../components/add-product/GeneralInfoSection/TagsManager";
+import TagsManager from "../components/add-product/GeneralInfoSection/TagsSection";
 import { useParams } from "react-router";
 import { useEffect } from "react";
 import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import useProductStore from "../../store/productStore";
+import { consoleObject } from "@/utils/consoleObject";
 
 export default function AdminProductPage({ mode }) {
   const { id } = useParams();
   const setProductId = useProductStore((state) => state.setProductId);
   const setMode = useProductStore((state) => state.setMode);
+  const resetProductState = useProductStore((state) => state.setMode);
 
   useEffect(() => {
+    resetProductState();
     setMode(mode);
     setProductId(id);
-  }, [mode, id, setMode, setProductId]);
+  }, [mode, id]);
+
+  useEffect(() => {
+    return () => {
+      resetProductState();
+    };
+  }, []);
 
   const { product, isLoadingProduct } = useProducts.useById(id, {
     enabled: mode !== "add",
@@ -48,13 +57,14 @@ export default function AdminProductPage({ mode }) {
     if (mode === "view") return;
 
     data.variants = data.variants.filter(
-      (v) => v.variantName.trim() !== "" && v.variantSku.trim() !== ""
+      (v) => v.variant_name.trim() !== "" && v.variant_sku.trim() !== ""
     );
 
     if (mode === "edit") {
-      updateProduct({ id, data });
+      // updateProduct({ id, data });
     } else {
-      createProduct(data);
+      consoleObject(data);
+      // createProduct(data);
     }
   }
 

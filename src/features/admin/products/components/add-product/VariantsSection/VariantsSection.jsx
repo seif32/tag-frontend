@@ -5,15 +5,18 @@ import VariantsValues from "./VariantsValues";
 import NoVariants from "./NoVariants";
 import VariantsHeader from "./VariantsHeader";
 import useVariantStore from "@/features/admin/store/variantStore";
+import useProductStore from "@/features/admin/store/productStore";
 
 function VariantsSection() {
   const variants = useVariantStore((state) => state.variants);
+  const mode = useProductStore((state) => state.mode);
+  const isViewMode = mode === "view";
 
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between items-center space-y-0 pb-4">
         <h2 className="text-md font-semibold">Variants</h2>
-        <AddVariantDialog />
+        {!isViewMode && <AddVariantDialog />}
       </CardHeader>
       <CardContent>
         <div className="space-y-6">

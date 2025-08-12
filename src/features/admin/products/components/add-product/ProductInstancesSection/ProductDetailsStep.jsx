@@ -18,7 +18,7 @@ function ProductDetailsStep() {
         <div className="flex flex-wrap gap-1">
           {selectedValues.map((value) => (
             <span
-              key={value.typeid}
+              key={value.type_id}
               className="text-xs h-fit bg-white rounded-sm px-4 py-0.5"
             >
               {value.value.toUpperCase()}
@@ -28,14 +28,14 @@ function ProductDetailsStep() {
       </div>
 
       <TagFormField
-        name="variants.0.variantName"
+        name="variants.0.variant_name"
         label="Name"
         placeholder="e.g., Samsung Galaxy red"
         required
       />
       <div className="flex gap-2">
         <TagFormField
-          name="variants.0.variantSku"
+          name="variants.0.variant_sku"
           label="SKU"
           placeholder="e.g., SMG-RED-128GB"
           required
@@ -65,13 +65,13 @@ function ProductDetailsStep() {
 
       <div className="flex items-end gap-2">
         <TagFormField
-          name="variants.0.compareAtPrice"
+          name="variants.0.compare_at_price"
           label="Compare at Price"
           placeholder="e.g., 1099.99"
           required
         />
         <TagFormField
-          name="variants.0.costPrice"
+          name="variants.0.cost_price"
           label="Cost Price"
           placeholder="e.g., 700.00"
           required
