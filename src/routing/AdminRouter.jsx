@@ -1,4 +1,5 @@
 import { ROUTES } from "@/constants";
+import AdminAddCategoryPage from "@/features/admin/categories/pages/AdminAddCategoryPage";
 import AdminCategoriesPage from "@/features/admin/categories/pages/AdminCategoriesPage";
 import AdminDashboardPage from "@/features/admin/dashboard/pages/AdminDashboardPage";
 import AdminProductPage from "@/features/admin/products/pages/AdminProductPage";
@@ -16,6 +17,10 @@ function AdminRouter() {
         <Route
           path={ROUTES.ADMIN.CATEGORIES}
           element={<AdminCategoriesPage />}
+        />
+        <Route
+          path={ROUTES.ADMIN.ADD_CATEGORY}
+          element={<AdminAddCategoryPage />}
         />
         <Route path={ROUTES.ADMIN.PRODUCTS} element={<AdminProductsPage />} />
         <Route

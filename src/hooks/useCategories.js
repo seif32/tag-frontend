@@ -1,43 +1,68 @@
 import categoriesApi from "@/services/categoriesApi";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const useCategories = {
   /**
    * 📂 GET ALL CATEGORIES HOOK
-   * Returns pre-aliased properties: isLoadingCategories, categories
-   * No more destructuring needed!
-   * Example: const { isLoadingCategories, categories } = useCategoriesQueries.useAll();
+   * Fetches the complete list of categories with nested subcategories
+   * Perfect for your categories page, navigation, dropdowns
+   * Returns: isLoadingCategories, categories, errorCategories
+   * Example: const { isLoadingCategories, categories } = useCategory.useAll();
    */
   useAll: (options = {}) => {
     const query = useQuery({
       queryKey: ["categories"],
       queryFn: categoriesApi.getAll,
-      staleTime: 5 * 60 * 1000,
-      cacheTime: 10 * 60 * 1000,
+      staleTime: 5 * 60 * 1000, // 5 minutes - categories don't change often
+      cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
       ...options,
     });
 
     return {
-      // Pre-aliased for your exact naming pattern! 🎯
       isLoadingCategories: query.isLoading,
       categories: query.data,
       errorCategories: query.error,
       isErrorCategories: query.isError,
       refetchCategories: query.refetch,
-      // Include original query object for advanced usage
+    };
+  },
+
+  /**
+   * 📊 GET CATEGORY STATS HOOK
+   * Fetches statistics for your dashboard section
+   * Returns: isLoadingStats, stats, errorStats
+   * Example: const { isLoadingStats, stats } = useCategory.useStats();
+   */
+  useStats: (options = {}) => {
+    const query = useQuery({
+      queryKey: ["categories", "stats"],
+      queryFn: categoriesApi.getStats,
+      staleTime: 10 * 60 * 1000, // 10 minutes - stats change less frequently
+      ...options,
+    });
+
+    return {
+      isLoadingStats: query.isLoading,
+      stats: query.data,
+      errorStats: query.error,
+      isErrorStats: query.isError,
+      refetchStats: query.refetch,
     };
   },
 
   /**
    * 🎯 GET SINGLE CATEGORY HOOK
-   * Returns: isLoadingCategory, category
+   * Fetches details of one specific category using its ID
+   * Great for category detail pages, edit forms
+   * Returns: isLoadingCategory, category, errorCategory
+   * Example: const { isLoadingCategory, category } = useCategory.useById(5);
    */
   useById: (id, options = {}) => {
     const query = useQuery({
       queryKey: ["categories", id],
       queryFn: () => categoriesApi.getById(id),
-      enabled: !!id,
+      enabled: !!id, // Only run if ID exists
       staleTime: 5 * 60 * 1000,
       ...options,
     });
@@ -53,7 +78,12 @@ const useCategories = {
 
   /**
    * ➕ CREATE NEW CATEGORY HOOK
-   * Returns: isPendingCategories, createCategory
+   * Handles adding a new category to the database
+   * Automatically refreshes the categories list and stats after successful creation
+   * Returns: isPendingCreateCategory, createCategory, errorCreateCategory
+   * Example: const { isPendingCreateCategory, createCategory } = useCategory.useCreate({
+   *            onSuccess: () => { setFormData({}); navigate('/categories'); }
+   *          });
    */
   useCreate: (options = {}) => {
     const queryClient = useQueryClient();
@@ -61,31 +91,46 @@ const useCategories = {
     const mutation = useMutation({
       mutationFn: categoriesApi.create,
       onSuccess: (data) => {
+        // Built-in functionality - always runs first
         queryClient.invalidateQueries({ queryKey: ["categories"] });
+        queryClient.invalidateQueries({ queryKey: ["categories", "stats"] });
         toast.success(" Category created successfully!");
-        options.onSuccess?.(data);
+
+        // Your custom logic runs after
+        if (options.onSuccess) {
+          options.onSuccess(data);
+        }
       },
       onError: (error) => {
-        toast.error(`❌ Failed to create category: ${error.message}`);
-        options.onError?.(error);
+        toast.error(` Failed to create category: ${error.message}`);
+
+        if (options.onError) {
+          options.onError(error);
+        }
       },
-      ...options,
+      ...Object.fromEntries(
+        Object.entries(options).filter(
+          ([key]) => !["onSuccess", "onError"].includes(key)
+        )
+      ),
     });
 
     return {
-      // Your preferred naming pattern! 🎪
-      isPendingCategories: mutation.isPending,
+      isPendingCreateCategory: mutation.isPending,
       createCategory: mutation.mutate,
       errorCreateCategory: mutation.error,
       isErrorCreateCategory: mutation.isError,
       resetCreateCategory: mutation.reset,
-      // Include original mutation for advanced usage
     };
   },
 
   /**
    * ✏️ UPDATE EXISTING CATEGORY HOOK
-   * Returns: isPendingCategories, updateCategory
+   * Changes information of an existing category
+   * Updates both the specific category cache AND the full categories list
+   * Returns: isPendingUpdateCategory, updateCategory, errorUpdateCategory
+   * Example: const { isPendingUpdateCategory, updateCategory } = useCategory.useUpdate();
+   *          updateCategory({id: 5, data: {name: "Updated Electronics"}});
    */
   useUpdate: (options = {}) => {
     const queryClient = useQueryClient();
@@ -93,20 +138,33 @@ const useCategories = {
     const mutation = useMutation({
       mutationFn: ({ id, data }) => categoriesApi.update(id, data),
       onSuccess: (data, variables) => {
+        // Built-in functionality
         queryClient.setQueryData(["categories", variables.id], data);
         queryClient.invalidateQueries({ queryKey: ["categories"] });
+        queryClient.invalidateQueries({ queryKey: ["categories", "stats"] });
         toast.success(" Category updated successfully!");
-        options.onSuccess?.(data, variables);
+
+        // Your custom logic
+        if (options.onSuccess) {
+          options.onSuccess(data, variables);
+        }
       },
       onError: (error) => {
-        toast.error(`❌ Failed to update category: ${error.message}`);
-        options.onError?.(error);
+        toast.error(` Failed to update category: ${error.message}`);
+
+        if (options.onError) {
+          options.onError(error);
+        }
       },
-      ...options,
+      ...Object.fromEntries(
+        Object.entries(options).filter(
+          ([key]) => !["onSuccess", "onError"].includes(key)
+        )
+      ),
     });
 
     return {
-      isPendingCategories: mutation.isPending,
+      isPendingUpdateCategory: mutation.isPending,
       updateCategory: mutation.mutate,
       errorUpdateCategory: mutation.error,
       isErrorUpdateCategory: mutation.isError,
@@ -116,7 +174,12 @@ const useCategories = {
 
   /**
    * 🗑️ DELETE CATEGORY HOOK
-   * Returns: isPendingCategories, deleteCategory
+   * Permanently removes a category from database
+   * Removes category from cache and refreshes the categories list
+   * Returns: isPendingDeleteCategory, deleteCategory, errorDeleteCategory
+   * WARNING: Remember to ask user for confirmation before calling this!
+   * Example: const { isPendingDeleteCategory, deleteCategory } = useCategory.useDelete();
+   *          deleteCategory(categoryId);
    */
   useDelete: (options = {}) => {
     const queryClient = useQueryClient();
@@ -124,24 +187,234 @@ const useCategories = {
     const mutation = useMutation({
       mutationFn: categoriesApi.delete,
       onSuccess: (data, deletedId) => {
+        // Built-in functionality
         queryClient.removeQueries({ queryKey: ["categories", deletedId] });
         queryClient.invalidateQueries({ queryKey: ["categories"] });
+        queryClient.invalidateQueries({ queryKey: ["categories", "stats"] });
         toast.success(" Category deleted successfully!");
-        options.onSuccess?.(data, deletedId);
+
+        // Your custom logic
+        if (options.onSuccess) {
+          options.onSuccess(data, deletedId);
+        }
       },
       onError: (error) => {
-        toast.error(`❌ Failed to delete category: ${error.message}`);
-        options.onError?.(error);
+        toast.error(` Failed to delete category: ${error.message}`);
+
+        if (options.onError) {
+          options.onError(error);
+        }
       },
-      ...options,
+      ...Object.fromEntries(
+        Object.entries(options).filter(
+          ([key]) => !["onSuccess", "onError"].includes(key)
+        )
+      ),
     });
 
     return {
-      isPendingCategories: mutation.isPending,
+      isPendingDeleteCategory: mutation.isPending,
       deleteCategory: mutation.mutate,
       errorDeleteCategory: mutation.error,
       isErrorDeleteCategory: mutation.isError,
       resetDeleteCategory: mutation.reset,
+    };
+  },
+
+  // --------- Subcategory Hooks ---------
+
+  /**
+   * 📂 GET ALL SUBCATEGORIES HOOK
+   * Fetches all subcategories in a flat list format
+   * Perfect for your subcategory-focused table instead of nested transformation
+   * Returns: isLoadingAllSubCategories, allSubCategories, errorAllSubCategories
+   * Example: const { isLoadingAllSubCategories, allSubCategories } = useCategory.useAllSubCategories();
+   */
+  useAllSubCategories: (options = {}) => {
+    const query = useQuery({
+      queryKey: ["subcategories", "all"],
+      queryFn: categoriesApi.getAllSubCategories,
+      staleTime: 5 * 60 * 1000, // 5 minutes - subcategories don't change often
+      cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+      ...options,
+    });
+
+    return {
+      isLoadingAllSubCategories: query.isLoading,
+      allSubCategories: query.data,
+      errorAllSubCategories: query.error,
+      isErrorAllSubCategories: query.isError,
+      refetchAllSubCategories: query.refetch,
+    };
+  },
+
+  /**
+   * 🎯 GET SUBCATEGORIES BY CATEGORY ID HOOK
+   * Fetches all subcategories for a specific parent category
+   * Perfect for category-specific subcategory management
+   * Returns: isLoadingSubCategories, subcategories, errorSubCategories
+   * Example: const { isLoadingSubCategories, subcategories } = useCategory.useSubCategoriesByCategoryId(1);
+   */
+  useSubCategoriesByCategoryId: (id, options = {}) => {
+    const query = useQuery({
+      queryKey: ["subcategories", id],
+      queryFn: () => categoriesApi.getSubCategoriesByCategoryId(id),
+      enabled: !!id, // Only run if ID exists
+      staleTime: 5 * 60 * 1000,
+      ...options,
+    });
+
+    return {
+      isLoadingSubCategories: query.isLoading,
+      subcategories: query.data,
+      errorSubCategories: query.error,
+      isErrorSubCategories: query.isError,
+      refetchSubCategories: query.refetch,
+    };
+  },
+
+  /**
+   * ➕ CREATE NEW SUBCATEGORY HOOK
+   * Handles adding a new subcategory under a parent category
+   * Automatically refreshes the categories list after successful creation
+   * Returns: isPendingCreateSubCategory, createSubCategory, errorCreateSubCategory
+   * Example: const { isPendingCreateSubCategory, createSubCategory } = useCategory.useCreateSubCategory({
+   *            onSuccess: () => { setFormData({}); }
+   *          });
+   */
+  useCreateSubCategory: (options = {}) => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+      mutationFn: categoriesApi.createSubCategory,
+      onSuccess: (data) => {
+        // Built-in functionality - always runs first
+        queryClient.invalidateQueries({ queryKey: ["categories"] });
+        queryClient.invalidateQueries({ queryKey: ["categories", "stats"] });
+        toast.success(" Subcategory created successfully!");
+
+        // Your custom logic runs after
+        if (options.onSuccess) {
+          options.onSuccess(data);
+        }
+      },
+      onError: (error) => {
+        toast.error(` Failed to create subcategory: ${error.message}`);
+
+        if (options.onError) {
+          options.onError(error);
+        }
+      },
+      ...Object.fromEntries(
+        Object.entries(options).filter(
+          ([key]) => !["onSuccess", "onError"].includes(key)
+        )
+      ),
+    });
+
+    return {
+      isPendingCreateSubCategory: mutation.isPending,
+      createSubCategory: mutation.mutate,
+      errorCreateSubCategory: mutation.error,
+      isErrorCreateSubCategory: mutation.isError,
+      resetCreateSubCategory: mutation.reset,
+    };
+  },
+
+  /**
+   * ✏️ UPDATE EXISTING SUBCATEGORY HOOK
+   * Changes information of an existing subcategory
+   * Updates both the specific subcategory cache AND the full categories list
+   * Returns: isPendingUpdateSubCategory, updateSubCategory, errorUpdateSubCategory
+   * Example: const { isPendingUpdateSubCategory, updateSubCategory } = useCategory.useUpdateSubCategory();
+   *          updateSubCategory({id: 5, data: {name: "Mobile Phones"}});
+   */
+  useUpdateSubCategory: (options = {}) => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+      mutationFn: ({ id, data }) => categoriesApi.updateSubCategory(id, data),
+      onSuccess: (data, variables) => {
+        // Built-in functionality
+        queryClient.setQueryData(["subcategories", variables.id], data);
+        queryClient.invalidateQueries({ queryKey: ["categories"] });
+        queryClient.invalidateQueries({ queryKey: ["categories", "stats"] });
+        toast.success(" Subcategory updated successfully!");
+
+        // Your custom logic
+        if (options.onSuccess) {
+          options.onSuccess(data, variables);
+        }
+      },
+      onError: (error) => {
+        toast.error(` Failed to update subcategory: ${error.message}`);
+
+        if (options.onError) {
+          options.onError(error);
+        }
+      },
+      ...Object.fromEntries(
+        Object.entries(options).filter(
+          ([key]) => !["onSuccess", "onError"].includes(key)
+        )
+      ),
+    });
+
+    return {
+      isPendingUpdateSubCategory: mutation.isPending,
+      updateSubCategory: mutation.mutate,
+      errorUpdateSubCategory: mutation.error,
+      isErrorUpdateSubCategory: mutation.isError,
+      resetUpdateSubCategory: mutation.reset,
+    };
+  },
+
+  /**
+   * 🗑️ DELETE SUBCATEGORY HOOK
+   * Permanently removes a subcategory from database
+   * Removes subcategory from cache and refreshes the categories list
+   * Returns: isPendingDeleteSubCategory, deleteSubCategory, errorDeleteSubCategory
+   * WARNING: Remember to ask user for confirmation before calling this!
+   * Example: const { isPendingDeleteSubCategory, deleteSubCategory } = useCategory.useDeleteSubCategory();
+   *          deleteSubCategory(subCategoryId);
+   */
+  useDeleteSubCategory: (options = {}) => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+      mutationFn: categoriesApi.deleteSubCategory,
+      onSuccess: (data, deletedId) => {
+        // Built-in functionality
+        queryClient.removeQueries({ queryKey: ["subcategories", deletedId] });
+        queryClient.invalidateQueries({ queryKey: ["categories"] });
+        queryClient.invalidateQueries({ queryKey: ["categories", "stats"] });
+        toast.success(" Subcategory deleted successfully!");
+
+        // Your custom logic
+        if (options.onSuccess) {
+          options.onSuccess(data, deletedId);
+        }
+      },
+      onError: (error) => {
+        toast.error(` Failed to delete subcategory: ${error.message}`);
+
+        if (options.onError) {
+          options.onError(error);
+        }
+      },
+      ...Object.fromEntries(
+        Object.entries(options).filter(
+          ([key]) => !["onSuccess", "onError"].includes(key)
+        )
+      ),
+    });
+
+    return {
+      isPendingDeleteSubCategory: mutation.isPending,
+      deleteSubCategory: mutation.mutate,
+      errorDeleteSubCategory: mutation.error,
+      isErrorDeleteSubCategory: mutation.isError,
+      resetDeleteSubCategory: mutation.reset,
     };
   },
 };

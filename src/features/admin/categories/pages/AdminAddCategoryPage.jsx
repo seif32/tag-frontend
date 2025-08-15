@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 
-export default function AddCategoryPage() {
+export default function AdminAddCategoryPage() {
   const [categoryName, setCategoryName] = useState("");
   const [description, setDescription] = useState("");
   const [parentCategory, setParentCategory] = useState("");

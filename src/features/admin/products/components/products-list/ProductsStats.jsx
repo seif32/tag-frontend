@@ -1,4 +1,3 @@
-import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import {
   AlertTriangle,
@@ -39,29 +38,35 @@ function ProductsStats({ data, isLoadingStats }) {
       iconColor: "text-yellow-500",
       bgColor: "bg-yellow-100",
     },
-    {
-      icon: AlertTriangle,
-      label: "Out of Stock",
-      value: data?.out_of_stock_products || 0,
-      iconColor: "text-orange-500",
-      bgColor: "bg-orange-100",
-    },
+    // {
+    //   icon: AlertTriangle,
+    //   label: "Out of Stock",
+    //   value: data?.out_of_stock_products || 0,
+    //   iconColor: "text-orange-500",
+    //   bgColor: "bg-orange-100",
+    // },
   ];
 
   return (
-    <div className="grid grid-cols-5 gap-2">
+    <div className="grid grid-cols-4 gap-2">
       {stats.map((stat) => {
         return (
           <div
             key={stat.label}
-            className="flex items-center gap-4 px-4 py-8 border rounded-md shadow-2xs"
+            className="flex items-center gap-4 px-4 py-8 border rounded-md shadow-2xs justify-between"
           >
-            <stat.icon className={`w-6 h-6   ${stat.iconColor}`} />
             <div className="flex flex-col">
-              <p className="text-sm font-medium text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground ">
                 {stat.label}
               </p>
-              <p className="text-3xl font-medium font-degular">{stat.value}</p>
+              <p className="text-3xl font-semibold font-degular">
+                {stat.value}
+              </p>
+            </div>
+            <div
+              className={`${stat.bgColor} w-12 h-12 rounded-xl grid place-items-center`}
+            >
+              <stat.icon className={`w-6 h-6   ${stat.iconColor}`} />
             </div>
           </div>
         );
