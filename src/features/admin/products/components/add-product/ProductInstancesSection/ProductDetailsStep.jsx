@@ -2,10 +2,12 @@ import useProductStore from "@/features/admin/store/productStore";
 import useVariantStore from "@/features/admin/store/variantStore";
 import StepHeader from "@/features/admin/ui/StepHeader";
 import TagFormField from "@/features/admin/ui/TagFormField";
+import { useFormContext } from "react-hook-form";
 
 function ProductDetailsStep() {
   const baseName = useProductStore((state) => state.baseName);
   const selectedValues = useVariantStore((state) => state.selectedValues);
+  const { control } = useFormContext();
 
   return (
     <div className="space-y-4">
@@ -28,6 +30,7 @@ function ProductDetailsStep() {
       </div>
 
       <TagFormField
+        control={control}
         name="variants.0.variant_name"
         label="Name"
         placeholder="e.g., Samsung Galaxy red"
@@ -35,12 +38,14 @@ function ProductDetailsStep() {
       />
       <div className="flex gap-2">
         <TagFormField
+          control={control}
           name="variants.0.variant_sku"
           label="SKU"
           placeholder="e.g., SMG-RED-128GB"
           required
         />
         <TagFormField
+          control={control}
           name="variants.0.quantity"
           label="Quantity"
           placeholder="e.g., 50"
@@ -50,12 +55,14 @@ function ProductDetailsStep() {
 
       <div className="flex items-end gap-2">
         <TagFormField
+          control={control}
           name="variants.0.price"
           label="Price"
           placeholder="e.g., 899.99"
           required
         />
         <TagFormField
+          control={control}
           name="variants.0.currency"
           label="Currency"
           placeholder="e.g., USD"
@@ -65,12 +72,14 @@ function ProductDetailsStep() {
 
       <div className="flex items-end gap-2">
         <TagFormField
+          control={control}
           name="variants.0.compare_at_price"
           label="Compare at Price"
           placeholder="e.g., 1099.99"
           required
         />
         <TagFormField
+          control={control}
           name="variants.0.cost_price"
           label="Cost Price"
           placeholder="e.g., 700.00"

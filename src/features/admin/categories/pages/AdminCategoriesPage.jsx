@@ -7,11 +7,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Package, Tag, TrendingUp, Archive } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import useCategories from "@/hooks/useCategories";
 import { CategoriesDataTable } from "../components/CategoriesDataTable";
 import CategoryStatsCards from "../components/CategoryStatsCards";
+import AddCategoryDialog from "../components/AddCategoryDialog";
+import AddSubcategoryDialog from "../components/AddSubcategoryDialog";
 
 export default function AdminCategoriesPage() {
   const { allSubCategories, errorAllSubCategories, isLoadingAllSubCategories } =
@@ -114,14 +116,8 @@ export default function AdminCategoriesPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
-            <Tag className="mr-2 h-4 w-4" />
-            Add Category
-          </Button>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Subcategory
-          </Button>
+          <AddSubcategoryDialog />
+          <AddCategoryDialog />
         </div>
       </div>
 

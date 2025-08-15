@@ -3,13 +3,15 @@ import useProductStore from "@/features/admin/store/productStore";
 import TagFormField from "@/features/admin/ui/TagFormField";
 import useTags from "@/hooks/useTags";
 import LoadingState from "@/ui/LoadingState";
-import { useWatch } from "react-hook-form";
+import { useFormContext, useWatch } from "react-hook-form";
 
 export function TagsSection() {
   const selectedCategoryId = useWatch({ name: "category_id" });
   const { categoryTags, isLoadingCategoryTags } =
     useTags.useByCategoryId(selectedCategoryId);
   const mode = useProductStore((state) => state.mode);
+  const { control } = useFormContext();
+
   const isViewMode = mode === "view";
 
   if (isLoadingCategoryTags) return <LoadingState type="form" rows={2} />;
@@ -30,6 +32,7 @@ export function TagsSection() {
 
           <div className="border border-gray-200 p-3 rounded-lg flex flex-wrap gap-2 min-h-[60px] mt-2 items-center justify-start">
             <TagFormField
+              control={control}
               name="tags"
               type="toggle-group"
               toggleType="multiple"

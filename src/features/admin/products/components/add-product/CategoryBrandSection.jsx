@@ -4,10 +4,12 @@ import LoadingState from "@/ui/LoadingState";
 import { useSelectCategory } from "../../hooks/useSelectCategory";
 import { useSelectBrand } from "../../hooks/useSelectBrand";
 import useProductStore from "@/features/admin/store/productStore";
+import { useFormContext } from "react-hook-form";
 
 function CategoryBrandSection() {
   const mode = useProductStore((state) => state.mode);
   const isViewMode = mode === "view";
+  const { control } = useFormContext();
 
   const {
     isLoadingCategories,
@@ -25,6 +27,7 @@ function CategoryBrandSection() {
       <CardHeader>Category & Brand</CardHeader>
       <CardContent className={"space-y-4"}>
         <TagFormField
+          control={control}
           name={"category_id"}
           label={"Category"}
           type="select"
@@ -34,6 +37,7 @@ function CategoryBrandSection() {
           disabled={isViewMode}
         />
         <TagFormField
+          control={control}
           name={"subcategory_id"}
           label={"Sub-category"}
           type="select"
@@ -57,6 +61,7 @@ function CategoryBrandSection() {
           }
         />
         <TagFormField
+          control={control}
           name={"brand_id"}
           label={"Brand"}
           type="select"

@@ -20,8 +20,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 // 🆕 NEW: Import Toggle Group components
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { CheckCheck, Folder } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 export default function TagFormField({
+  control,
   name,
   label,
   type = "text",
@@ -43,8 +47,15 @@ export default function TagFormField({
   allowEmpty = true, // Allow deselecting all options (for multiple mode)
   ...inputProps
 }) {
+  const [uploadStatus, setUploadStatus] = useState({
+    hasFiles: false,
+    fileCount: 0,
+    totalSize: 0,
+  });
+
   return (
     <FormField
+      control={control}
       name={name}
       render={({ field }) => (
         <FormItem className={className}>
@@ -62,6 +73,8 @@ export default function TagFormField({
 
           <FormControl>
             {renderFieldByType(type, field, {
+              uploadStatus,
+              setUploadStatus,
               placeholder,
               disabled,
               required,
@@ -191,6 +204,40 @@ function renderFieldByType(type, field, props) {
         </div>
       );
 
+    case "switch":
+      return (
+        <div className={`flex items-center space-x-2 ${triggerClassName}`}>
+          <Switch
+            id={restProps.id || field.name}
+            checked={field.value || false}
+            onCheckedChange={field.onChange}
+            disabled={disabled}
+            {...restProps}
+          />
+          {placeholder && (
+            <label
+              htmlFor={restProps.id || field.name}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              {placeholder}
+            </label>
+          )}
+        </div>
+      );
+
+    case "file":
+    case "image-upload":
+      return renderFileUpload(field, {
+        placeholder,
+        disabled,
+        triggerClassName,
+        multiple: restProps.multiple || false,
+        accept: restProps.accept || "image/*",
+        maxFiles: restProps.maxFiles || 1,
+        maxSize: restProps.maxSize || 5 * 1024 * 1024, // 5MB default
+        ...restProps,
+      });
+
     default:
       return (
         <Input
@@ -207,6 +254,75 @@ function renderFieldByType(type, field, props) {
         />
       );
   }
+}
+
+// ✅ Updated renderFileUpload - receives state as props
+function renderFileUpload(field, props) {
+  const {
+    uploadStatus,
+    setUploadStatus,
+    placeholder,
+    disabled,
+    multiple,
+    accept,
+    triggerClassName,
+  } = props;
+
+  const handleFileChange = (event) => {
+    const files = event.target.files;
+
+    if (files && files.length > 0) {
+      const fileList = Array.from(files);
+      const totalSize = fileList.reduce((sum, file) => sum + file.size, 0);
+
+      // ✅ Use state setter from props
+      setUploadStatus({
+        hasFiles: true,
+        fileCount: fileList.length,
+        totalSize: totalSize,
+      });
+
+      field.onChange(multiple ? fileList : fileList[0]);
+    } else {
+      setUploadStatus({
+        hasFiles: false,
+        fileCount: 0,
+        totalSize: 0,
+      });
+      field.onChange(null);
+    }
+  };
+
+  return (
+    <div className="">
+      <Input
+        type="file"
+        onChange={handleFileChange}
+        multiple={multiple}
+        accept={accept}
+        disabled={disabled}
+        className={`file:bg-primary file:text-primary-foreground file:px-4 file:rounded-md border-0 p-0 bg-transparent shadow-none hover:file:bg-primary/90 ${triggerClassName}`}
+      />
+
+      {/* ✅ Display upload status */}
+      <div className="text-sm">
+        {uploadStatus.hasFiles ? (
+          <div className="flex items-center gap-2 text-green-600">
+            <CheckCheck color="green" />
+            <span>
+              {uploadStatus.fileCount} file(s) uploaded (
+              {(uploadStatus.totalSize / 1024).toFixed(1)} KB)
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 text-gray-500">
+            <Folder size={16} />
+            <span>No files uploaded yet</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 // 🆕 NEW: Toggle Group renderer

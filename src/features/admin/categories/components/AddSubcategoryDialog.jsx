@@ -1,0 +1,196 @@
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { Plus, Info, Upload, Tag } from "lucide-react";
+import TagFormField from "../../ui/TagFormField";
+import { useForm } from "react-hook-form";
+import { Form } from "@/components/ui/form";
+import useCategories from "@/hooks/useCategories";
+import LoadingState from "@/ui/LoadingState";
+import { useState } from "react";
+
+function AddSubcategoryDialog() {
+  const [open, setOpen] = useState(false);
+
+  const form = useForm({
+    defaultValues: {
+      name: "",
+      image_url:
+        "https://images.unsplash.com/photo-1723223440648-dc41fb3d9a7f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      active: true,
+      parent_id: null,
+    },
+  });
+
+  const { categories, isLoadingCategories, isErrorCategories } =
+    useCategories.useAll();
+  const { createSubCategory, isPendingCreateSubCategory } =
+    useCategories.useCreateSubCategory({
+      onSuccess: () => {
+        setOpen(false);
+        form.reset();
+      },
+    });
+
+  const selectCategories =
+    !isLoadingCategories && categories
+      ? categories.map((category) => ({
+          value: category.id,
+          label: category.name,
+        }))
+      : [];
+
+  function onSubmit(data) {
+    console.log("Add Subcategory Form submitted:", data);
+    createSubCategory(data);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="h-8 gap-3">
+          <Tag className="h-4 w-4" />
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+            Add Subcategory
+          </span>
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[525px]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Tag className="h-5 w-5 text-primary" />
+            Create New Subcategory
+          </DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground"></DialogDescription>
+        </DialogHeader>
+
+        <Separator />
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium">Basic Information</h3>
+
+              <div className="grid grid-cols-2 gap-4">
+                <TagFormField
+                  control={form.control}
+                  label="Name"
+                  name="name"
+                  placeholder="Enter subcategory name"
+                  className="col-span-1"
+                  required
+                />
+
+                {isLoadingCategories ? (
+                  <div className="flex items-center justify-center col-span-1 p-4">
+                    <LoadingState />
+                  </div>
+                ) : (
+                  <TagFormField
+                    control={form.control}
+                    name="parent_id"
+                    label="Parent Category"
+                    type="select"
+                    options={selectCategories}
+                    placeholder="Select parent category"
+                    className="col-span-1"
+                    required
+                  />
+                )}
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Media Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Upload className="h-4 w-4 text-muted-foreground" />
+                <h3 className="text-sm font-medium">Image Upload</h3>
+              </div>
+
+              <TagFormField
+                control={form.control}
+                name="image_url"
+                type="image-upload"
+                maxSize={2 * 1024 * 1024}
+                accept="image/*"
+                description="To represent this subcategory (max 2MB)"
+                className="w-full"
+              />
+            </div>
+
+            <Separator />
+
+            {/* Settings Section */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-medium">Visibility Settings</h3>
+              </div>
+
+              <div className="flex items-start justify-between p-4 border rounded-lg bg-muted/30">
+                <div className="space-y-1 flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium">Active Status</p>
+                    <TagFormField
+                      control={form.control}
+                      name="active"
+                      type="switch"
+                    />
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Info className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Controls whether this subcategory is visible to customers
+                      on your site. You can always change this later.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Action Buttons */}
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                className="sm:w-auto"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="sm:w-auto"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting || isPendingCreateSubCategory ? (
+                  <>
+                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Subcategory
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export default AddSubcategoryDialog;

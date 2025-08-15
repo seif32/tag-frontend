@@ -3,7 +3,8 @@ import useProductStore from "@/features/admin/store/productStore";
 import TagFormField from "@/features/admin/ui/TagFormField";
 
 function NameSkuFields({ mode }) {
-  const { getValues } = useFormContext();
+  const { getValues, control } = useFormContext();
+
   const setBaseName = useProductStore((state) => state.setBaseName);
 
   const handleBlur = () => {
@@ -14,6 +15,7 @@ function NameSkuFields({ mode }) {
   return (
     <div className="grid grid-cols-2 gap-2">
       <TagFormField
+        control={control}
         name="name"
         label="Product Name"
         placeholder="Enter product name"
@@ -22,6 +24,7 @@ function NameSkuFields({ mode }) {
         disabled={mode === "view"}
       />
       <TagFormField
+        control={control}
         name="sku"
         label="SKU"
         placeholder="PROD-001"

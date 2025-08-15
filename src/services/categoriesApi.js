@@ -178,7 +178,7 @@ const categoriesApi = {
    * Example: const newSubCat = await categoryApi.createSubCategory({name: "Smartphones", categoryId: 1});
    */
   createSubCategory: async (subCategoryData, options = {}) => {
-    if (!subCategoryData.name || !subCategoryData.categoryId) {
+    if (!subCategoryData.name || !subCategoryData.parent_id) {
       throw new Error("Subcategory name and parent category ID are required");
     }
 

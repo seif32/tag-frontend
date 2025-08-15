@@ -55,18 +55,50 @@ export const useCategoryColumns = ({ onEdit, onDelete, onView }) => {
     {
       accessorKey: "product_count",
       header: "Products",
-      cell: ({ getValue }) => (
-        <div className="text-center font-mono">{getValue() || 0}</div>
-      ),
+      cell: ({ getValue }) => {
+        const count = getValue() ?? 0;
+        const hasProducts = count > 0;
+
+        return (
+          <div className="flex items-center gap-1">
+            <span
+              className={hasProducts ? "" : "text-muted-foreground text-[10px]"}
+            >
+              {hasProducts ? count : "No"}
+            </span>
+            <span className="text-[10px] text-muted-foreground">
+              {hasProducts ? "products" : "products yet"}
+            </span>
+          </div>
+        );
+      },
     },
+
     {
       accessorKey: "active",
       header: "Status",
       cell: ({ getValue }) => {
         const isActive = getValue() === 1;
         return (
-          <Badge variant={isActive ? "default" : "secondary"}>
-            {isActive ? "Active" : "Inactive"}
+          <Badge
+            className={
+              isActive
+                ? "border-green-300 bg-green-50 text-green-800 text-[10px]"
+                : "border-red-300 bg-red-50 text-red-800 text-[10px]"
+            }
+            variant={isActive ? "default" : "secondary"}
+          >
+            {isActive ? (
+              <div className="flex items-center gap-1">
+                <div className="w-1 h-1 rounded-[2px] bg-green-400"></div>
+                <span>Active</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <div className="w-1 h-1 rounded-[2px] bg-red-500"></div>
+                <span>Inactive</span>
+              </div>
+            )}
           </Badge>
         );
       },
