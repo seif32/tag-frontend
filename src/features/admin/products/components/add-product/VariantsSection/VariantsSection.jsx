@@ -6,11 +6,14 @@ import NoVariants from "./NoVariants";
 import VariantsHeader from "./VariantsHeader";
 import useVariantStore from "@/features/admin/store/variantStore";
 import useProductStore from "@/features/admin/store/productStore";
+import { consoleObject } from "@/utils/consoleObject";
 
-function VariantsSection() {
+function VariantsSection({ product }) {
   const variants = useVariantStore((state) => state.variants);
   const mode = useProductStore((state) => state.mode);
   const isViewMode = mode === "view";
+
+  const { variant_types, variant_values } = product;
 
   return (
     <Card>
@@ -19,19 +22,47 @@ function VariantsSection() {
         {!isViewMode && <AddVariantDialog />}
       </CardHeader>
       <CardContent>
-        <div className="space-y-6">
-          {variants.map((variant, index) => (
-            <div key={variant.id} className="space-y-4">
-              <VariantsHeader index={index} variantId={variant.id} />
-              <div className="grid grid-cols-[1fr_4fr] gap-4">
-                <VariantsType variantType={variant.name} />
-                <VariantsValues variant={variant} variants={variants} />
+        {isViewMode ? (
+          <div className="space-y-4">
+            {Object.entries(variant_values).map(([variantType, options]) => (
+              <div key={variantType} className="flex gap-4">
+                <div className="space-y-2">
+                  <p className="text-muted-foreground text-sm">Type</p>
+                  <p className="font-semibold text-gray-800 mb-2">
+                    {variantType}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <div className="space-y-2">
+                    <p className="text-muted-foreground text-sm">Values</p>
+                    {options.map((option, index) => (
+                      <span
+                        className="px-3 py-1 bg-gray-100 rounded-md text-sm mr-2 "
+                        key={`${variantType}-${option}-${index}`}
+                      >
+                        {option}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {variants.map((variant, index) => (
+              <div key={variant.id} className="space-y-4">
+                <VariantsHeader index={index} variantId={variant.id} />
+                <div className="grid grid-cols-[1fr_4fr] gap-4">
+                  <VariantsType variantType={variant.name} />
+                  <VariantsValues variant={variant} variants={variants} />
+                </div>
+              </div>
+            ))}
 
-          {variants.length === 0 && <NoVariants />}
-        </div>
+            {variants.length === 0 && <NoVariants />}
+          </div>
+        )}
       </CardContent>
       <div className="space-y-4"></div>
     </Card>

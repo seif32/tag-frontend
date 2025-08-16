@@ -103,28 +103,52 @@ const productsApi = {
    * });
    */
   create: async (productData, options = {}) => {
-    // Input validation based on your Swagger documentation
-    if (!productData.product || !productData.variants) {
-      throw new Error("Product and variants data are required");
-    }
+    console.log("🚀 Original product data:", productData);
 
-    if (!productData.product.name || !productData.product.sku) {
+    // ✅ Basic validation on flat structure first
+    if (!productData.name || !productData.sku) {
       throw new Error("Product name and SKU are required");
     }
 
-    // Validate variants structure
-    const invalidVariants = productData.variants.filter(
-      (variant) => !variant.variant_sku || !variant.price
-    );
-    if (invalidVariants.length > 0) {
-      throw new Error("All variants must have variant_sku and price");
+    if (!productData.variants || !Array.isArray(productData.variants)) {
+      throw new Error("Variants array is required");
     }
 
+    // ✅ Transform to nested structure that backend expects
+    const transformedData = {
+      product: {
+        name: productData.name,
+        sku: productData.sku,
+        description: productData.description,
+        short_description: productData.short_description,
+        brand_id: productData.brand_id,
+        category_id: productData.category_id,
+        subcategory_id: productData.subcategory_id,
+        tags: productData.tags,
+        active: productData.active,
+        featured: productData.featured,
+      },
+      variants: productData.variants.map((variant) => ({
+        variant_name: variant.variant_name,
+        variant_sku: variant.variant_sku,
+        price: variant.price,
+        compare_at_price: variant.compare_at_price,
+        cost_price: variant.cost_price,
+        quantity: variant.quantity,
+        currency: variant.currency,
+        images: variant.images || [],
+        types: variant.types || [],
+      })),
+    };
+
+    console.log("🔄 Transformed data for API:", transformedData);
+
     try {
-      return await api.post("/products", productData, options);
+      return await api.post("/products", transformedData, options);
     } catch (error) {
-      console.error("Failed to create product:", {
-        data: productData,
+      console.error("❌ Failed to create product:", {
+        originalData: productData,
+        transformedData: transformedData,
         error: error.details,
       });
       throw error;

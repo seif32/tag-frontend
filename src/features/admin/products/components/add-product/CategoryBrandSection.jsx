@@ -24,7 +24,7 @@ function CategoryBrandSection() {
 
   return (
     <Card>
-      <CardHeader>Category & Brand</CardHeader>
+      <CardHeader className={"font-bold"}>Category & Brand</CardHeader>
       <CardContent className={"space-y-4"}>
         <TagFormField
           control={control}

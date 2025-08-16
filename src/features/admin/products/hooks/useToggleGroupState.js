@@ -3,6 +3,7 @@ import useVariantStore from "../../store/variantStore";
 import useVariants from "@/hooks/useVariants";
 
 export function useToggleGroupState(variant, setIsDialogOpen) {
+  console.log("sddwdwd", variant);
   const [selectedValues, setSelectedValues] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -20,10 +21,11 @@ export function useToggleGroupState(variant, setIsDialogOpen) {
 
   useEffect(() => {
     if (!isLoadingVariantValues && variant?.values) {
+      console.log("useToggleGroupState", variantValues);
       setSelectedValues(variant.values.map((v) => v.value));
       setIsInitialized(true);
     }
-  }, [variant, isLoadingVariantValues]); // 🔥 Added isLoadingVariantValues dependency!
+  }, [variant, isLoadingVariantValues]);
 
   function handleSelectValue() {
     if (isLoadingVariantValues) {

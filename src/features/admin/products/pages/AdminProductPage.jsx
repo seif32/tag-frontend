@@ -6,7 +6,6 @@ import VariantsSection from "../components/add-product/VariantsSection/VariantsS
 import ProductInstancesSection from "../components/add-product/ProductInstancesSection/ProductInstancesSection";
 import SettingsSection from "../components/add-product/SettingsSection";
 import CategoryBrandSection from "../components/add-product/CategoryBrandSection";
-import AddProductsHeader from "../components/add-product/AddProductsHeader";
 import GeneralInfoSection from "../components/add-product/GeneralInfoSection/GeneralInfoSection";
 import TagsManager from "../components/add-product/GeneralInfoSection/TagsSection";
 import { useParams } from "react-router";
@@ -15,6 +14,7 @@ import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import useProductStore from "../../store/productStore";
 import { consoleObject } from "@/utils/consoleObject";
+import ProductHeader from "../components/add-product/ProductHeader";
 
 export default function AdminProductPage({ mode }) {
   const { id } = useParams();
@@ -64,7 +64,7 @@ export default function AdminProductPage({ mode }) {
       // updateProduct({ id, data });
     } else {
       consoleObject(data);
-      // createProduct(data);
+      createProduct(data);
     }
   }
 
@@ -82,20 +82,25 @@ export default function AdminProductPage({ mode }) {
         className="space-y-4"
       >
         <div className="flex flex-col gap-4 mb-40">
-          <AddProductsHeader
+          <ProductHeader
             handleSubmit={form.handleSubmit}
             onSubmit={onSubmit}
             isPending={isPending}
+            productName={product.name}
+            product={product}
           />
           <div className="flex flex-col flex-1 gap-4 lg:flex-row">
             <div className="flex flex-col gap-4 flex-5/8">
               <GeneralInfoSection form={form} />
-              <VariantsSection />
+              <VariantsSection product={product} />
               <ProductInstancesSection control={form.control} />
             </div>
 
             <div className="flex flex-col gap-4 flex-3/8">
-              <SettingsSection />
+              <SettingsSection
+                isActive={product.active}
+                isFeatured={product.featured}
+              />
               <CategoryBrandSection />
               <TagsManager form={form} />
             </div>

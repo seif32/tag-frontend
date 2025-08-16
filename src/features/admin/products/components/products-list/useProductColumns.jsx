@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router";
+import { Badge } from "@/components/ui/badge";
 
 export function useProductColumns() {
   const navigate = useNavigate();
@@ -194,17 +195,28 @@ export function useProductColumns() {
         </Button>
       ),
       cell: ({ row }) => {
-        const active = row.original.is_available;
+        const active = row.original.active;
         return (
-          <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${
+          <Badge
+            className={
               active
-                ? "bg-green-100 text-green-800"
-                : "bg-gray-100 text-gray-800"
-            }`}
+                ? "border-green-300 bg-green-50 text-green-800 text-[12px]"
+                : "border-stone-300 bg-stone-50 text-stone-800 text-[12px]"
+            }
+            variant={active ? "default" : "secondary"}
           >
-            {active ? "Published" : "Draft"}
-          </span>
+            {active ? (
+              <div className="flex items-center gap-1">
+                <div className="w-1 h-1 rounded-[2px] bg-green-400"></div>
+                <span>Live</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <div className="w-1 h-1 rounded-[2px] bg-stone-500"></div>
+                <span>Draft</span>
+              </div>
+            )}
+          </Badge>
         );
       },
       sortingFn: (rowA, rowB) => {
