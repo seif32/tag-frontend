@@ -9,7 +9,7 @@ function ProductHeader({ product }) {
               key={type.type_id}
               className="px-2 text-xs text-white bg-black border border-black rounded-md"
             >
-              {type.value.toUpperCase()}
+              {type.value.name.toUpperCase()}
             </span>
           ))}
         </div>

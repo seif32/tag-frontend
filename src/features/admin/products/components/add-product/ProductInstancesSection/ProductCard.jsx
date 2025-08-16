@@ -2,27 +2,26 @@ import { Card, CardContent } from "@/components/ui/card";
 import ProductHeader from "./ProductHeader";
 import ProductDetails from "./ProductDetails";
 import NoProducts from "./NoProducts";
-import { useFormContext, useWatch } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 function ProductCard() {
   const { control } = useFormContext();
 
-  const variantsList = useWatch({
+  const { fields: variantsList } = useFieldArray({
     control,
     name: "variants",
-    select: (value) => value.length,
   });
 
   const isEmpty =
     !variantsList ||
     variantsList.length <= 1 ||
-    variantsList
-      .slice(1)
-      .every((variant) => !variant.variant_sku || variant.variant_sku === "");
+    variantsList.every(
+      (variant) => !variant.variant_sku || variant.variant_sku === ""
+    );
 
   return (
     <CardContent className="space-y-4">
-      {variantsList.slice(1).map((product, index) => (
+      {variantsList.map((product, index) => (
         <Card key={product.id || index}>
           <CardContent>
             <ProductHeader product={product} />
