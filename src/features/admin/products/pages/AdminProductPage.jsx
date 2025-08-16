@@ -86,13 +86,14 @@ export default function AdminProductPage({ mode }) {
             handleSubmit={form.handleSubmit}
             onSubmit={onSubmit}
             isPending={isPending}
-            productName={product.name}
-            product={product}
+            productName={product?.name}
+            isProductActive={product?.active}
+            productSku={product?.sku}
           />
           <div className="flex flex-col flex-1 gap-4 lg:flex-row">
             <div className="flex flex-col gap-4 flex-5/8">
               <GeneralInfoSection form={form} />
-              <VariantsSection product={product} />
+              <VariantsSection variantValues={product?.variant_values} />
               <ProductInstancesSection control={form.control} />
             </div>
 
@@ -102,7 +103,7 @@ export default function AdminProductPage({ mode }) {
                 isFeatured={product.featured}
               />
               <CategoryBrandSection />
-              <TagsManager form={form} />
+              <TagsManager form={form} productTags={product?.tags} />
             </div>
           </div>
         </div>

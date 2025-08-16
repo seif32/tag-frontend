@@ -8,12 +8,10 @@ import useVariantStore from "@/features/admin/store/variantStore";
 import useProductStore from "@/features/admin/store/productStore";
 import { consoleObject } from "@/utils/consoleObject";
 
-function VariantsSection({ product }) {
+function VariantsSection({ variantValues }) {
   const variants = useVariantStore((state) => state.variants);
   const mode = useProductStore((state) => state.mode);
   const isViewMode = mode === "view";
-
-  const { variant_types, variant_values } = product;
 
   return (
     <Card>
@@ -24,7 +22,7 @@ function VariantsSection({ product }) {
       <CardContent>
         {isViewMode ? (
           <div className="space-y-4">
-            {Object.entries(variant_values).map(([variantType, options]) => (
+            {Object.entries(variantValues).map(([variantType, options]) => (
               <div key={variantType} className="flex gap-4">
                 <div className="space-y-2">
                   <p className="text-muted-foreground text-sm">Type</p>

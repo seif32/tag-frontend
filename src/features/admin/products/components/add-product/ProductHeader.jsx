@@ -7,7 +7,8 @@ export default function ProductHeader({
   onSubmit,
   handleSubmit,
   productName,
-  product,
+  isProductActive,
+  productSku,
 }) {
   const mode = useProductStore((state) => state.mode);
   const setMode = useProductStore((state) => state.setMode);
@@ -26,19 +27,19 @@ export default function ProductHeader({
             <div className="flex items-center gap-2">
               <div
                 className={`w-2 h-2 rounded-full ${
-                  product?.active ? "bg-green-500" : "bg-gray-400"
+                  isProductActive ? "bg-green-500" : "bg-gray-400"
                 }`}
               />
               <span className="text-sm text-gray-600">
-                {product?.active ? "Live" : "Draft"}
+                {isProductActive ? "Live" : "Draft"}
               </span>
             </div>
           )}
         </div>
 
         {/* Product SKU or ID for reference */}
-        {isViewMode && product?.sku && (
-          <p className="text-sm text-gray-500 mt-1">SKU: {product.sku}</p>
+        {isViewMode && productSku && (
+          <p className="text-sm text-gray-500 mt-1">SKU: {productSku}</p>
         )}
       </div>
 
