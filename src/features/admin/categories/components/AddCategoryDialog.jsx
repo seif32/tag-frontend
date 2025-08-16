@@ -8,7 +8,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import { Tag, Upload, Info, Plus } from "lucide-react";
 import TagFormField from "../../ui/TagFormField";
 import { useForm } from "react-hook-form";
@@ -17,10 +16,11 @@ import { useState } from "react";
 import useCategories from "@/hooks/useCategories";
 
 function AddCategoryDialog() {
-  const [open, setOpen] = useState(false);
+  const [openAddCategoryDialog, setOpenAddCategoryDialog] = useState(false);
+
   const { createCategory, isPendingCreateCategory } = useCategories.useCreate({
     onSuccess: () => {
-      setOpen(false);
+      setOpenAddCategoryDialog(false);
       form.reset();
     },
   });
@@ -35,11 +35,15 @@ function AddCategoryDialog() {
   });
 
   function onSubmit(data) {
-    createCategory(data);
+    console.log(data);
+    // createCategory(data);
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={openAddCategoryDialog}
+      onOpenChange={setOpenAddCategoryDialog}
+    >
       <DialogTrigger asChild>
         <Button size="sm" className="h-8 gap-3">
           <Plus className="h-4 w-4" />
@@ -120,7 +124,7 @@ function AddCategoryDialog() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setOpen(false)}
+                onClick={() => setOpenAddCategoryDialog(false)}
                 className="sm:w-auto"
               >
                 Cancel

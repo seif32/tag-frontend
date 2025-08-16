@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -7,26 +7,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import useCategories from "@/hooks/useCategories";
 import { CategoriesDataTable } from "../components/CategoriesDataTable";
 import CategoryStatsCards from "../components/CategoryStatsCards";
 import AddCategoryDialog from "../components/AddCategoryDialog";
-import AddSubcategoryDialog from "../components/AddSubcategoryDialog";
+import AddEditSubcategoryDialog from "../components/AddEditSubcategoryDialog";
+import { AlertTriangle, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function AdminCategoriesPage() {
-  const { allSubCategories, errorAllSubCategories, isLoadingAllSubCategories } =
-    useCategories.useAllSubCategories();
+  const [subcategory, setSubcategory] = useState(null);
+  const [openSubcategoryDialog, setOpenSubcategoryDialog] = useState(false);
 
+  const {
+    allSubCategories,
+    errorAllSubCategories,
+    isLoadingAllSubCategories,
+    refetchAllSubCategories,
+  } = useCategories.useAllSubCategories();
   const { isLoadingStats, stats } = useCategories.useStats();
-
-  const { isPendingDeleteSubCategory, deleteSubCategory } =
-    useCategories.useDeleteSubCategory({
-      onSuccess: () => {
-        toast.success("🗑️ Subcategory deleted successfully!");
-      },
-    });
 
   const flatSubCategories = React.useMemo(() => {
     if (!allSubCategories || isLoadingAllSubCategories) return [];
@@ -55,24 +61,67 @@ export default function AdminCategoriesPage() {
     };
   }, [allSubCategories, flatSubCategories]);
 
-  // Action handlers
-  const handleEdit = (subcategory) => {
-    toast.info(`🖊️ Edit ${subcategory.name} (ID: ${subcategory.id})`);
-    // Navigate to edit form or open modal
-  };
+  function handleEdit(subcategory) {
+    setSubcategory(subcategory);
+    setOpenSubcategoryDialog(true);
+  }
 
-  const handleDelete = (subcategory) => {
-    if (
-      window.confirm(`Are you sure you want to delete "${subcategory.name}"?`)
-    ) {
-      deleteSubCategory(subcategory.id);
-    }
-  };
+  function handleAdd() {
+    setSubcategory(null);
+    setOpenSubcategoryDialog(true);
+  }
+
+  function handleDelete(subcategory) {
+    deleteSubCategory(subcategory.id);
+  }
 
   const handleView = (subcategory) => {
     toast.info(`👁️ View products in ${subcategory.name}`);
-    // Navigate to products filtered by subcategory
   };
+
+  // ✅ Add delete confirmation state
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    subcategory: null,
+  });
+
+  const { isPendingDeleteSubCategory, deleteSubCategory } =
+    useCategories.useDeleteSubCategory({
+      onSuccess: () => {
+        refetchAllSubCategories();
+        setDeleteDialog({ open: false, subcategory: null }); // ✅ Close dialog
+      },
+    });
+
+  function handleEdit(subcategory) {
+    setSubcategory(subcategory);
+    setOpenSubcategoryDialog(true);
+  }
+
+  function handleAdd() {
+    setSubcategory(null);
+    setOpenSubcategoryDialog(true);
+  }
+
+  // ✅ Open confirmation dialog instead of direct delete
+  function handleDelete(subcategory) {
+    setDeleteDialog({
+      open: true,
+      subcategory: subcategory,
+    });
+  }
+
+  // ✅ Actual delete function
+  function confirmDelete() {
+    if (deleteDialog.subcategory) {
+      deleteSubCategory(deleteDialog.subcategory.id);
+    }
+  }
+
+  // ✅ Cancel delete
+  function cancelDelete() {
+    setDeleteDialog({ open: false, subcategory: null });
+  }
 
   if (isLoadingAllSubCategories) {
     return (
@@ -116,7 +165,15 @@ export default function AdminCategoriesPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <AddSubcategoryDialog />
+          <AddEditSubcategoryDialog
+            key={subcategory?.id || "create"}
+            openSubcategoryDialog={openSubcategoryDialog}
+            setOpenSubcategoryDialog={setOpenSubcategoryDialog}
+            subcategory={subcategory}
+            onAdd={handleAdd}
+            mode={subcategory ? "edit" : "create"}
+            refetchAllSubCategories={refetchAllSubCategories}
+          />
           <AddCategoryDialog />
         </div>
       </div>
@@ -141,6 +198,51 @@ export default function AdminCategoriesPage() {
           />
         </CardContent>
       </Card>
+      <Dialog open={deleteDialog.open} onOpenChange={cancelDelete}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-red-500" />
+              Delete Subcategory
+            </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-foreground">
+                "{deleteDialog.subcategory?.name}"
+              </span>
+              ? This action cannot be undone and will permanently remove this
+              subcategory and all its associated data.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 mt-6">
+            <Button
+              variant="outline"
+              onClick={cancelDelete}
+              disabled={isPendingDeleteSubCategory}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={isPendingDeleteSubCategory}
+            >
+              {isPendingDeleteSubCategory ? (
+                <>
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete Subcategory
+                </>
+              )}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

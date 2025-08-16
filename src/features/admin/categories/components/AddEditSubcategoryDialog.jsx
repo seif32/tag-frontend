@@ -14,18 +14,26 @@ import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import useCategories from "@/hooks/useCategories";
 import LoadingState from "@/ui/LoadingState";
-import { useState } from "react";
+import { useEffect } from "react";
 
-function AddSubcategoryDialog() {
-  const [open, setOpen] = useState(false);
+function AddEditSubcategoryDialog({
+  subcategory,
+  openSubcategoryDialog,
+  setOpenSubcategoryDialog,
+  onAdd,
+  mode = "create",
+  refetchAllSubCategories,
+}) {
+  const isEditMode = mode === "edit";
 
   const form = useForm({
     defaultValues: {
-      name: "",
+      name: subcategory?.name || "",
+      parent_id: subcategory?.parent_id || "",
+      active: subcategory?.active ?? true,
       image_url:
+        subcategory?.image_url ||
         "https://images.unsplash.com/photo-1723223440648-dc41fb3d9a7f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      active: true,
-      parent_id: null,
     },
   });
 
@@ -34,7 +42,16 @@ function AddSubcategoryDialog() {
   const { createSubCategory, isPendingCreateSubCategory } =
     useCategories.useCreateSubCategory({
       onSuccess: () => {
-        setOpen(false);
+        refetchAllSubCategories();
+        setOpenSubcategoryDialog(false);
+        form.reset();
+      },
+    });
+  const { updateSubCategory, isPendingUpdateSubCategory } =
+    useCategories.useUpdateSubCategory({
+      onSuccess: () => {
+        refetchAllSubCategories();
+        setOpenSubcategoryDialog(false);
         form.reset();
       },
     });
@@ -48,14 +65,26 @@ function AddSubcategoryDialog() {
       : [];
 
   function onSubmit(data) {
-    console.log("Add Subcategory Form submitted:", data);
-    createSubCategory(data);
+    if (isEditMode) {
+      console.log({ id: subcategory.id, data });
+      updateSubCategory({ id: subcategory.id, data });
+    } else {
+      createSubCategory(data);
+    }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={openSubcategoryDialog}
+      onOpenChange={setOpenSubcategoryDialog}
+    >
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 gap-3">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 gap-3"
+          onClick={onAdd}
+        >
           <Tag className="h-4 w-4" />
           <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
             Add Subcategory
@@ -66,7 +95,9 @@ function AddSubcategoryDialog() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Tag className="h-5 w-5 text-primary" />
-            Create New Subcategory
+            {isEditMode
+              ? `Edit ${subcategory.name} subcategory`
+              : "Create New Subcategory"}
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground"></DialogDescription>
         </DialogHeader>
@@ -87,6 +118,8 @@ function AddSubcategoryDialog() {
                   className="col-span-1"
                   required
                 />
+
+                {/* {mode === "edit" && <span>{subcategory.parent_name}</span>} */}
 
                 {isLoadingCategories ? (
                   <div className="flex items-center justify-center col-span-1 p-4">
@@ -163,7 +196,7 @@ function AddSubcategoryDialog() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setOpen(false)}
+                onClick={() => setOpenSubcategoryDialog(false)}
                 className="sm:w-auto"
               >
                 Cancel
@@ -173,7 +206,9 @@ function AddSubcategoryDialog() {
                 className="sm:w-auto"
                 disabled={form.formState.isSubmitting}
               >
-                {form.formState.isSubmitting || isPendingCreateSubCategory ? (
+                {form.formState.isSubmitting ||
+                isPendingCreateSubCategory ||
+                isPendingUpdateSubCategory ? (
                   <>
                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
                     Creating...
@@ -181,7 +216,7 @@ function AddSubcategoryDialog() {
                 ) : (
                   <>
                     <Plus className="mr-2 h-4 w-4" />
-                    Create Subcategory
+                    {isEditMode ? "Edit Subcategory" : " Create Subcategory"}
                   </>
                 )}
               </Button>
@@ -193,4 +228,4 @@ function AddSubcategoryDialog() {
   );
 }
 
-export default AddSubcategoryDialog;
+export default AddEditSubcategoryDialog;

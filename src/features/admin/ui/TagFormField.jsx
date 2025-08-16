@@ -101,6 +101,13 @@ export default function TagFormField({
 
 function renderFieldByType(type, field, props) {
   const {
+    // 📦 File upload specific props
+    uploadStatus, // ✅ Extract this!
+    setUploadStatus, // ✅ Extract this!
+    multiple,
+    accept,
+    maxFiles,
+    maxSize,
     placeholder,
     disabled,
     options,
@@ -228,6 +235,12 @@ function renderFieldByType(type, field, props) {
     case "file":
     case "image-upload":
       return renderFileUpload(field, {
+        uploadStatus, // ✅ Extract this!
+        setUploadStatus, // ✅ Extract this!
+        multiple,
+        accept,
+        maxFiles,
+        maxSize,
         placeholder,
         disabled,
         triggerClassName,
@@ -266,6 +279,8 @@ function renderFileUpload(field, props) {
     multiple,
     accept,
     triggerClassName,
+    maxFiles,
+    maxSize,
   } = props;
 
   const handleFileChange = (event) => {
