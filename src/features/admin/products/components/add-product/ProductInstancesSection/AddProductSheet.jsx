@@ -9,10 +9,10 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useAddProductInstance } from "../../../hooks/useAddProductInstance";
 
-function AddProductSheet() {
+function AddProductSheet({ variantsList, append }) {
   const { control, getValues, resetField } = useFormContext();
-  const { handleAddVariant, isVariants, tempImages, setTempImages } =
-    useAddProductInstance(control, getValues, resetField);
+  const { handleAddVariant, isVariants, tempImages, setTempImages, fields } =
+    useAddProductInstance(control, getValues, resetField, variantsList, append);
 
   return (
     <Sheet>

@@ -9,8 +9,6 @@ function SettingsSection({ isActive, isFeatured }) {
   const { control } = useFormContext();
   const isViewMode = mode === "view";
 
-  console.log("SettingsSection", isActive, isFeatured);
-
   return (
     <Card>
       <CardContent className={"space-y-4"}>

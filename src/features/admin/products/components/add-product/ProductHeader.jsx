@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Edit, Eye, Share2, Copy, MoreHorizontal } from "lucide-react";
+import { Edit } from "lucide-react";
 import useProductStore from "@/features/admin/store/productStore";
 
 export default function ProductHeader({
@@ -22,7 +21,6 @@ export default function ProductHeader({
             {isViewMode ? productName : "Add Product"}
           </h2>
 
-          {/* Quick status indicator */}
           {isViewMode && (
             <div className="flex items-center gap-2">
               <div
@@ -37,7 +35,6 @@ export default function ProductHeader({
           )}
         </div>
 
-        {/* Product SKU or ID for reference */}
         {isViewMode && productSku && (
           <p className="text-sm text-gray-500 mt-1">SKU: {productSku}</p>
         )}

@@ -1,5 +1,5 @@
 import { Form } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import { addProductDefaultValues } from "../data/formDefaults";
 import VariantsSection from "../components/add-product/VariantsSection/VariantsSection";
@@ -46,6 +46,16 @@ export default function AdminProductPage({ mode }) {
   const form = useForm({
     defaultValues: addProductDefaultValues,
   });
+
+  const { fields: variantsList, append } = useFieldArray({
+    control: form.control,
+    name: "variants",
+  });
+
+  console.log("❌✅✅⭐⭐🎉❌❌✅❌🧾⚠⚠🏩🏩");
+  consoleObject(variantsList);
+  console.log("❌✅✅⭐⭐🎉❌❌✅❌🧾⚠⚠🏩🏩");
+  consoleObject(variantsList);
 
   useEffect(() => {
     if (product && mode !== "add") {
@@ -94,13 +104,16 @@ export default function AdminProductPage({ mode }) {
             <div className="flex flex-col gap-4 flex-5/8">
               <GeneralInfoSection form={form} />
               <VariantsSection variantValues={product?.variant_values} />
-              <ProductInstancesSection control={form.control} />
+              <ProductInstancesSection
+                variantsList={variantsList}
+                append={append}
+              />
             </div>
 
             <div className="flex flex-col gap-4 flex-3/8">
               <SettingsSection
-                isActive={product.active}
-                isFeatured={product.featured}
+                isActive={product?.active}
+                isFeatured={product?.featured}
               />
               <CategoryBrandSection />
               <TagsManager form={form} productTags={product?.tags} />
