@@ -1,5 +1,7 @@
 @import "tw-animate-css";
 @import "tailwindcss";
+@import "react-image-gallery/styles/css/image-gallery.css";
+
 
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
@@ -61,6 +63,7 @@
   --muted: oklch(0.968 0.007 247.896);
   --muted-foreground: oklch(0.554 0.046 257.417);
   --accent: #F95306  ;
+  /* --accent: #3C1801  ; */
   --accent-foreground: oklch(98.415% 0.00352 248.585);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.929 0.013 255.508);
@@ -160,6 +163,10 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground  font-poppins;
+    @apply bg-background text-foreground font-poppins;
   }
+
+
+
+
 }

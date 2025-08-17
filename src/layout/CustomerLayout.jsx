@@ -17,7 +17,7 @@ function CustomerLayout() {
       >
         <Outlet />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

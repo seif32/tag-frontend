@@ -17,8 +17,6 @@ function CustomerRouter() {
         <Route path="categories" element={<CategoriesPage />} />
         <Route path="products/:id" element={<ProductDetailPage />} />
         <Route path="cart" element={<CartPage />} />
-        {/* <Route path="checkout" element={<CheckoutPage />} /> */}
-        {/* Add more public routes */}
       </Route>
     </Routes>
   );

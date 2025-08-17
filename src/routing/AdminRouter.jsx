@@ -7,8 +7,6 @@ import AdminProductsPage from "@/features/admin/products/pages/AdminProductsPage
 import AdminLayout from "@/layout/AdminLayout";
 import { Routes, Route } from "react-router";
 
-// Import admin pages
-
 function AdminRouter() {
   return (
     <Routes>

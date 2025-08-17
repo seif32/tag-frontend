@@ -1,6 +1,6 @@
 function HomePage() {
   return (
-    <main className="grid mx-auto place-items-center">
+    <main className="bg-amber-500">
       <p>Home Page</p>
     </main>
   );
