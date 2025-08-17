@@ -5,7 +5,7 @@ function CategoryCard({ name, storage, image }) {
     <div className="flex flex-col h-64 gap-6 pt-0 cursor-pointer group">
       <div className="relative w-full h-full transition-transform duration-400 rounded-xl aspect-square group-hover:scale-110">
         <img
-          className="object-cover w-full h-full shadow-sm rounded-xl "
+          className="object-cover w-full h-full shadow-sm rounded-xl aspect-square"
           src={image}
         />
         <Badge variant={"destructive"} className={"absolute top-2 right-2"}>
