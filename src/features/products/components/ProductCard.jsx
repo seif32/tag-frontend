@@ -3,11 +3,17 @@ import ProductCardImage from "./ProductCardImage";
 import ProductCardInfo from "./ProductCardInfo";
 import ProductCardActions from "./ProductCardActions";
 
-function ProductCard({ image, isSoldOut }) {
+function ProductCard({ image, category, name, variantCount, brand }) {
   return (
-    <Card className="pt-0 transition-all cursor-pointer ">
-      <ProductCardImage image={image} isSoldOut={isSoldOut} />
-      <ProductCardInfo />
+    <Card className="flex justify-between pt-0 transition-all cursor-pointer">
+      <ProductCardImage image={image} variantCount={variantCount} />
+      <ProductCardInfo
+        category={category}
+        name={name}
+        variantCount={variantCount}
+        brand={brand}
+      />
+
       <ProductCardActions />
     </Card>
   );

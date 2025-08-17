@@ -3,12 +3,12 @@ import { ROUTES } from "@/constants";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white mt-auto">
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="mt-auto text-white bg-primary">
+      <div className="container px-4 py-8 mx-auto">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Company Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">🛍️ ProductStore</h3>
+            <h3 className="mb-4 text-lg font-semibold">TAG</h3>
             <p className="text-gray-400">
               Your one-stop shop for all categories of products. Quality
               guaranteed!
@@ -17,12 +17,12 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-md font-medium mb-4">Quick Links</h4>
+            <h4 className="mb-4 font-medium text-md">Quick Links</h4>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <Link
                   to={ROUTES.HOME}
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-white"
                 >
                   Home
                 </Link>
@@ -30,7 +30,7 @@ const Footer = () => {
               <li>
                 <Link
                   to={ROUTES.PRODUCTS}
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-white"
                 >
                   Products
                 </Link>
@@ -38,7 +38,7 @@ const Footer = () => {
               <li>
                 <Link
                   to={ROUTES.CATEGORIES}
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-white"
                 >
                   Categories
                 </Link>
@@ -46,7 +46,7 @@ const Footer = () => {
               <li>
                 <Link
                   to={ROUTES.CART}
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-white"
                 >
                   Cart
                 </Link>
@@ -56,12 +56,12 @@ const Footer = () => {
 
           {/* Categories */}
           <div>
-            <h4 className="text-md font-medium mb-4">Categories</h4>
+            <h4 className="mb-4 font-medium text-md">Categories</h4>
             <ul className="space-y-2 text-gray-400">
               <li>
                 <Link
                   to="/categories/electronics"
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-white"
                 >
                   Electronics
                 </Link>
@@ -69,7 +69,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/categories/clothing"
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-white"
                 >
                   Clothing
                 </Link>
@@ -77,7 +77,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/categories/home"
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-white"
                 >
                   Home & Garden
                 </Link>
@@ -85,7 +85,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/categories/sports"
-                  className="hover:text-white transition-colors"
+                  className="transition-colors hover:text-white"
                 >
                   Sports
                 </Link>
@@ -95,7 +95,7 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="text-md font-medium mb-4">Contact</h4>
+            <h4 className="mb-4 font-medium text-md">Contact</h4>
             <ul className="space-y-2 text-gray-400">
               <li>📧 support@productstore.com</li>
               <li>📞 +1 (555) 123-4567</li>
@@ -104,7 +104,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+        <div className="pt-8 mt-8 text-center text-gray-400 border-t border-gray-700">
           <p>&copy; 2025 ProductStore. All rights reserved.</p>
         </div>
       </div>

@@ -3,56 +3,56 @@ import { ProductsSidebar } from "../components/ProductsSidebar";
 import ProductCard from "../components/ProductCard";
 import { ProductsHeader } from "../components/ProductsHeader";
 
-import Image1 from "@/assets/product4.jpg";
-import Image2 from "@/assets/product5.jpg";
-import Image3 from "@/assets/product6.jpg";
-import Image4 from "@/assets/product7.jpg";
-import Image5 from "@/assets/product8.jpg";
-import Image6 from "@/assets/product9.jpg";
-
-const products = [
-  {
-    image: Image1,
-    isSoldOut: true,
-  },
-  {
-    image: Image2,
-    isSoldOut: false,
-  },
-  {
-    image: Image3,
-    isSoldOut: false,
-  },
-  {
-    image: Image4,
-    isSoldOut: true,
-  },
-  {
-    image: Image5,
-    isSoldOut: true,
-  },
-  {
-    image: Image6,
-    isSoldOut: false,
-  },
-];
+import useProducts from "@/hooks/useProducts";
+import LoadingState from "@/ui/LoadingState";
+import ErrorMessage from "@/ui/ErrorMessage";
 
 function ProductsPage() {
+  const {
+    products,
+    isLoadingProducts,
+    errorProducts,
+    isErrorProducts,
+    refetchProducts,
+  } = useProducts.useAllWithoutVariants();
+
+  if (isLoadingProducts)
+    return <LoadingState type="card" rows={20} columns={3} />;
+
+  if (isErrorProducts)
+    return (
+      <ErrorMessage
+        message={errorProducts.message || "Failed to load data"}
+        dismissible={true}
+        onDismiss={() => refetchProducts()}
+      />
+    );
+
+  const productsCountArray = products.map((product) => product.variant_count);
+  const totalVariantsCount = productsCountArray.reduce(
+    (acc, curr) => acc + curr,
+    0
+  );
+  const totalProductsCount = products.length;
+
   return (
-    <SidebarProvider className={""}>
+    <SidebarProvider className={"flex"}>
       <ProductsSidebar />
 
       <SidebarTrigger className="mb-4 md:hidden" />
 
       <main className="flex-1 px-8 overflow-auto">
-        <ProductsHeader productCount={4502} />
+        <ProductsHeader productCount={totalProductsCount} />
 
         <div className=" grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
-          {products.map((product, index) => (
+          {products.map((product) => (
             <ProductCard
-              key={index}
-              image={product.image}
-              isSoldOut={product.isSoldOut}
+              key={product.id}
+              image={product.primary_image}
+              category={product.category_name}
+              name={product.name}
+              variantCount={product.variant_count}
+              brand={product.brand_name}
             />
           ))}
         </div>

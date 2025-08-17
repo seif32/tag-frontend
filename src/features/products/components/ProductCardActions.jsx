@@ -7,10 +7,10 @@ function ProductCardActions() {
     <CardFooter className={"flex flex-row px-4 gap-2"}>
       <Button
         className={
-          "uppercase flex-1  h-12 md:h-10 cursor-pointer hover:scale-105"
+          "uppercase flex-1 h-12 md:h-10 cursor-pointer hover:scale-105 transition-all duration-300"
         }
       >
-        Add to Card
+        View Options
       </Button>
       <HeartButton />
     </CardFooter>
