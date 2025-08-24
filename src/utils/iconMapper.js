@@ -18,6 +18,8 @@ import {
   DollarSign,
   PieChart,
   Settings,
+  Tag,
+  Award,
 } from "lucide-react";
 
 export const iconMap = {
@@ -39,6 +41,8 @@ export const iconMap = {
   DollarSign,
   PieChart,
   Settings,
+  Tag,
+  Award,
 };
 
 // Helper function to get icon component

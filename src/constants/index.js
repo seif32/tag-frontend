@@ -25,6 +25,8 @@ export const ROUTES = {
     ORDERS: "orders",
     USERS: "users",
     SETTINGS: "settings",
+    BRANDS: "brands",
+    TAGS: "tags",
   },
 };
 

@@ -2,17 +2,29 @@ import { api } from "./api";
 
 const productsApi = {
   /**
-   * 📥 GET ALL PRODUCTS WITH VARIANTS AND IMAGES
-   * Fetches complete product catalog with all related data
-   * Perfect for admin product lists, data tables, product catalogs
+   * 📥 GET ALL PRODUCTS WITH FILTERS
+   * Fetches complete product catalog with optional filtering capabilities
+   * Perfect for product listings, admin tables, search and filter operations
+   * Supports filtering by active status, category ID, and subcategory ID
    * Returns products with full variant and image information
-   * Example: const products = await productsApi.getAll();
+   * Example: const products = await productsApi.getAll({ active: 1, category_id: 2 });
    */
-  getAll: async (options = {}) => {
+  getAll: async (filters = {}, options = {}) => {
     try {
-      return await api.get("/products", {
-        ...options,
-      });
+      // Build query string from filters
+      const queryParams = new URLSearchParams();
+
+      if (filters.active !== undefined)
+        queryParams.append("active", filters.active);
+      if (filters.category_id)
+        queryParams.append("category_id", filters.category_id);
+      if (filters.subcategory_id)
+        queryParams.append("subcategory_id", filters.subcategory_id);
+
+      const queryString = queryParams.toString();
+      const url = queryString ? `/products?${queryString}` : "/products";
+
+      return await api.get(url, options);
     } catch (error) {
       console.error("Failed to fetch products:", {
         status: error.status,
@@ -25,17 +37,29 @@ const productsApi = {
   },
 
   /**
-   * 📥 GET ALL PRODUCTS WITHOUT VARIANTS
-   * Fetches simplified product catalog without variant details
-   * Perfect for dropdowns, simple listings, performance-critical views
-   * Returns lightweight product data for better performance
-   * Example: const products = await productsApi.getAllWithoutVariants();
+   * 📥 GET ALL PRODUCTS WITHOUT VARIANTS WITH FILTERS
+   * Fetches simplified product catalog without variant complexity
+   * Perfect for dropdowns, autocomplete, lightweight listings, performance-critical views
+   * Supports same filtering options as full product list but with reduced payload
+   * Example: const products = await productsApi.getAllWithoutVariants({ active: 1 });
    */
-  getAllWithoutVariants: async (options = {}) => {
+  getAllWithoutVariants: async (filters = {}, options = {}) => {
     try {
-      return await api.get("/products/without-variants", {
-        ...options,
-      });
+      const queryParams = new URLSearchParams();
+
+      if (filters.active !== undefined)
+        queryParams.append("active", filters.active);
+      if (filters.category_id)
+        queryParams.append("category_id", filters.category_id);
+      if (filters.subcategory_id)
+        queryParams.append("subcategory_id", filters.subcategory_id);
+
+      const queryString = queryParams.toString();
+      const url = queryString
+        ? `/products/without-variants?${queryString}`
+        : "/products/without-variants";
+
+      return await api.get(url, options);
     } catch (error) {
       console.error("Failed to fetch products without variants:", {
         status: error.status,
@@ -47,13 +71,6 @@ const productsApi = {
     }
   },
 
-  /**
-   * 🎯 GET SINGLE PRODUCT BY ID WITH COMPLETE DETAILS
-   * Fetches one specific product with all variants, images, and relationships
-   * Great for product detail pages, edit forms, variant management
-   * Includes category, brand, and all variant type information
-   * Example: const product = await productsApi.getById(123);
-   */
   getById: async (productId, options = {}) => {
     if (!productId) {
       throw new Error("Product ID is required");

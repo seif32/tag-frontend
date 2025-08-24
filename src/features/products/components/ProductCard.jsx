@@ -3,7 +3,15 @@ import ProductCardImage from "./ProductCardImage";
 import ProductCardInfo from "./ProductCardInfo";
 import ProductCardActions from "./ProductCardActions";
 
-function ProductCard({ image, category, name, variantCount, brand }) {
+function ProductCard({
+  image,
+  category,
+  name,
+  variantCount,
+  brand,
+  onViewProductDetails,
+  productId,
+}) {
   return (
     <Card className="flex justify-between pt-0 transition-all cursor-pointer">
       <ProductCardImage image={image} variantCount={variantCount} />
@@ -14,7 +22,10 @@ function ProductCard({ image, category, name, variantCount, brand }) {
         brand={brand}
       />
 
-      <ProductCardActions />
+      <ProductCardActions
+        onViewProductDetails={onViewProductDetails}
+        productId={productId}
+      />
     </Card>
   );
 }

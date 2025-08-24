@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router";
 
-// Import your public pages
 import HomePage from "@/features/home/pages/HomePage";
 import ProductsPage from "@/features/products/pages/ProductsPage";
 import ProductDetailPage from "@/features/products/pages/ProductDetailPage";
@@ -13,9 +12,24 @@ function CustomerRouter() {
     <Routes>
       <Route path="/" element={<CustomerLayout />}>
         <Route index element={<HomePage />} />
+
         <Route path="products" element={<ProductsPage />} />
+
+        <Route
+          path="categories/:categoryId/products"
+          element={<ProductsPage />}
+        />
+
+        <Route
+          path="categories/:categoryId/subcategories/:subcategoryId/products"
+          element={<ProductsPage />}
+        />
+
         <Route path="categories" element={<CategoriesPage />} />
+        <Route path="categories/:categoryId" element={<CategoriesPage />} />
+
         <Route path="products/:id" element={<ProductDetailPage />} />
+
         <Route path="cart" element={<CartPage />} />
       </Route>
     </Routes>

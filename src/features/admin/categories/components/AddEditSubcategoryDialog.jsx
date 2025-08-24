@@ -85,8 +85,8 @@ function AddEditSubcategoryDialog({
           className="h-8 gap-3"
           onClick={onAdd}
         >
-          <Tag className="h-4 w-4" />
-          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+          <Tag className="w-4 h-4 text-accent" />
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap text-accent">
             Add Subcategory
           </span>
         </Button>
@@ -94,7 +94,7 @@ function AddEditSubcategoryDialog({
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Tag className="h-5 w-5 text-primary" />
+            <Tag className="w-5 h-5 text-primary" />
             {isEditMode
               ? `Edit ${subcategory.name} subcategory`
               : "Create New Subcategory"}
@@ -145,11 +145,11 @@ function AddEditSubcategoryDialog({
             {/* Media Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Upload className="h-4 w-4 text-muted-foreground" />
+                <Upload className="w-4 h-4 text-muted-foreground" />
                 <h3 className="text-sm font-medium">Image Upload</h3>
               </div>
 
-              <TagFormField
+              {/* <TagFormField
                 control={form.control}
                 name="image_url"
                 type="image-upload"
@@ -157,7 +157,7 @@ function AddEditSubcategoryDialog({
                 accept="image/*"
                 description="To represent this subcategory (max 2MB)"
                 className="w-full"
-              />
+              /> */}
             </div>
 
             <Separator />
@@ -169,7 +169,7 @@ function AddEditSubcategoryDialog({
               </div>
 
               <div className="flex items-start justify-between p-4 border rounded-lg bg-muted/30">
-                <div className="space-y-1 flex-1">
+                <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium">Active Status</p>
                     <TagFormField
@@ -180,7 +180,7 @@ function AddEditSubcategoryDialog({
                   </div>
                   <div className="flex items-start gap-2">
                     <Info className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-                    <p className="text-xs text-muted-foreground leading-relaxed">
+                    <p className="text-xs leading-relaxed text-muted-foreground">
                       Controls whether this subcategory is visible to customers
                       on your site. You can always change this later.
                     </p>
@@ -192,7 +192,7 @@ function AddEditSubcategoryDialog({
             <Separator />
 
             {/* Action Buttons */}
-            <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2">
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">
               <Button
                 type="button"
                 variant="outline"
@@ -210,12 +210,12 @@ function AddEditSubcategoryDialog({
                 isPendingCreateSubCategory ||
                 isPendingUpdateSubCategory ? (
                   <>
-                    <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                    <div className="w-4 h-4 mr-2 border-2 rounded-full animate-spin border-background border-t-transparent" />
                     Creating...
                   </>
                 ) : (
                   <>
-                    <Plus className="mr-2 h-4 w-4" />
+                    <Plus className="w-4 h-4 mr-2" />
                     {isEditMode ? "Edit Subcategory" : " Create Subcategory"}
                   </>
                 )}

@@ -1,9 +1,12 @@
 import { ROUTES } from "@/constants";
+import AdminAddBrandPage from "@/features/admin/brands/components/AdminAddBrandDialog";
+import AdminBrandsPage from "@/features/admin/brands/pages/AdminBrandsPage";
 import AdminAddCategoryPage from "@/features/admin/categories/pages/AdminAddCategoryPage";
 import AdminCategoriesPage from "@/features/admin/categories/pages/AdminCategoriesPage";
 import AdminDashboardPage from "@/features/admin/dashboard/pages/AdminDashboardPage";
 import AdminProductPage from "@/features/admin/products/pages/AdminProductPage";
 import AdminProductsPage from "@/features/admin/products/pages/AdminProductsPage";
+import AdminTagsPage from "@/features/admin/tags/pages/AdminTagsPage";
 import AdminLayout from "@/layout/AdminLayout";
 import { Routes, Route } from "react-router";
 
@@ -33,6 +36,8 @@ function AdminRouter() {
           path={ROUTES.ADMIN.VIEW_PRODUCT}
           element={<AdminProductPage mode="view" />}
         />
+        <Route path={ROUTES.ADMIN.BRANDS} element={<AdminBrandsPage />} />
+        <Route path={ROUTES.ADMIN.TAGS} element={<AdminTagsPage />} />
       </Route>
     </Routes>
   );

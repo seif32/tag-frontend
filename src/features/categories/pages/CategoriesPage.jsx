@@ -6,8 +6,10 @@ import { CategoriesHeader } from "../components/CategoryHeader";
 import useCategories from "@/hooks/useCategories";
 import ErrorMessage from "@/ui/ErrorMessage";
 import LoadingState from "@/ui/LoadingState";
+import { useNavigate } from "react-router";
 
 function CategoriesPage() {
+  const navigate = useNavigate();
   const {
     categories,
     isErrorCategories,
@@ -27,6 +29,12 @@ function CategoriesPage() {
         onDismiss={() => refetchCategories()}
       />
     );
+
+  function handleViewSubcategoryProducts(categoryId, subcategoryId) {
+    navigate(
+      `/categories/${categoryId}/subcategories/${subcategoryId}/products`
+    );
+  }
 
   return (
     <>
@@ -51,7 +59,12 @@ function CategoriesPage() {
                         name={subcategory.name}
                         storage={subcategory.product_count}
                         image={subcategory.image_url}
-                        onClick={() => console.log("Navigate to mobiles")}
+                        isActive={subcategory.active}
+                        onViewSubcategoryProducts={
+                          handleViewSubcategoryProducts
+                        }
+                        subcategoryId={subcategory.id}
+                        categoryId={category.id}
                       />
                     );
                   })}

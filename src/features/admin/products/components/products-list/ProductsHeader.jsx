@@ -32,9 +32,10 @@ function ProductsHeader({
           }}
           variant="outline"
           disabled={isLoadingProducts}
+          className={"text-accent"}
         >
           <RefreshCw
-            className={`mr-2 h-4 w-4 ${
+            className={`mr-2 h-4 w-4 text-accent${
               isLoadingProducts ? "animate-spin" : ""
             }`}
           />

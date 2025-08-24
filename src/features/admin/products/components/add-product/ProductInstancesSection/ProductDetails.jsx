@@ -58,7 +58,7 @@ function ProductDetails({ product }) {
       </div>
 
       {/* Images */}
-      {/* {product.images && product.images.length > 0 ? (
+      {product.images && product.images.length > 0 ? (
         <div className="space-y-2">
           <h4 className="text-sm font-medium">Images</h4>
           <div className="flex flex-wrap gap-3">
@@ -86,7 +86,7 @@ function ProductDetails({ product }) {
         </div>
       ) : (
         <div>No Images</div>
-      )} */}
+      )}
     </div>
   );
 }

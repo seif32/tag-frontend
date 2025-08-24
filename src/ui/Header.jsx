@@ -1,13 +1,13 @@
-import { Link, useLocation } from "react-router";
 import { ROUTES } from "@/constants";
+import { Link, useLocation } from "react-router";
 
 const Header = () => {
   const location = useLocation();
 
   const navItems = [
-    { name: "Home", path: ROUTES.HOME },
-    { name: "Products", path: ROUTES.PRODUCTS },
-    { name: "Categories", path: ROUTES.CATEGORIES },
+    { name: "Home", path: ROUTES.CUSTOMER.HOME },
+    { name: "Products", path: ROUTES.CUSTOMER.PRODUCTS },
+    { name: "Categories", path: ROUTES.CUSTOMER.CATEGORIES },
   ];
 
   return (
@@ -62,7 +62,7 @@ const Header = () => {
           </Link>
           <Link
             to={ROUTES.REGISTER}
-            className="px-4 py-2 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 text-white transition-colors rounded-lg hover:bg-primary/90 bg-primary"
           >
             Sign Up
           </Link>

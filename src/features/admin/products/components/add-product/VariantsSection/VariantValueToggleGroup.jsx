@@ -62,7 +62,7 @@ function VariantValueToggleGroup({ variant, setIsDialogOpen }) {
           <ToggleGroupItem
             key={value.id}
             value={value.value}
-            className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground  flex-none"
+            className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:border-primary  flex-none"
           >
             {value.value}
           </ToggleGroupItem>

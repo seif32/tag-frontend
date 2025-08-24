@@ -21,23 +21,42 @@ export const AdminSidebarGroups = [
           iconName: "ShoppingBag",
           submenuButtons: [
             {
-              name: "All Products",
+              name: "Products",
               path: "/admin/products",
               iconName: "Package",
             },
             {
               name: "Categories",
-              path: "/admin/products/categories",
+              path: "/admin/categories",
               iconName: "Tags",
             },
             {
               name: "Inventory",
-              path: "/admin/products/inventory",
+              path: "/admin/inventory",
               iconName: "Warehouse",
               badge: {
                 content: "12 Low",
                 variant: "outline",
               },
+            },
+          ],
+        },
+      },
+      {
+        menuButton: {
+          name: "Catalog",
+          path: "/admin/catalog",
+          iconName: "Package", // Better than ShoppingCart for catalog
+          submenuButtons: [
+            {
+              name: "Brands",
+              path: "/admin/brands",
+              iconName: "Award", // Perfect for brands/premium feel
+            },
+            {
+              name: "Tags",
+              path: "/admin/tags",
+              iconName: "Tag", // Classic tag icon
             },
           ],
         },

@@ -38,7 +38,7 @@ export function ProductsHeader({ productCount }) {
         {/* Filter Button */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">Filter </Button>
+            <Button>Filter </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>All Categories</DropdownMenuItem>

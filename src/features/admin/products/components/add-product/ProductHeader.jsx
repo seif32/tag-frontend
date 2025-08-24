@@ -12,13 +12,18 @@ export default function ProductHeader({
   const mode = useProductStore((state) => state.mode);
   const setMode = useProductStore((state) => state.setMode);
   const isViewMode = mode === "view";
+  const isEditMode = mode === "edit";
 
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex items-center justify-between">
       <div>
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold">
-            {isViewMode ? productName : "Add Product"}
+            {isViewMode
+              ? productName
+              : isEditMode
+              ? "Edit Product"
+              : "Add Product"}
           </h2>
 
           {isViewMode && (
@@ -36,7 +41,7 @@ export default function ProductHeader({
         </div>
 
         {isViewMode && productSku && (
-          <p className="text-sm text-gray-500 mt-1">SKU: {productSku}</p>
+          <p className="mt-1 text-sm text-gray-500">SKU: {productSku}</p>
         )}
       </div>
 

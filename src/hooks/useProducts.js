@@ -4,17 +4,19 @@ import { toast } from "sonner";
 
 const useProducts = {
   /**
-   * 📂 GET ALL PRODUCTS HOOK
+   * 📂 GET ALL PRODUCTS HOOK WITH FILTERING
    * Fetches complete product catalog with variants and images
-   * Perfect for admin data tables, product catalogs, dropdown selections
-   * Includes smart caching for optimal performance
+   * Enhanced with filtering support for active status, category, and subcategory
+   * Perfect for admin product lists, data tables, product catalogs with filters
+   * Includes smart caching with filter-specific cache keys for optimal performance
+   * Cache includes filter parameters to prevent incorrect data reuse
    * Returns: isLoadingProducts, products, errorProducts
-   * Example: const { isLoadingProducts, products } = useProducts.useAll();
+   * Example: const { isLoadingProducts, products } = useProducts.useAll({ active: 1, category_id: 2 });
    */
-  useAll: (options = {}) => {
+  useAll: (filters = {}, options = {}) => {
     const query = useQuery({
-      queryKey: ["products"],
-      queryFn: productsApi.getAll,
+      queryKey: ["products", "list", filters], // Include filters in query key for proper caching
+      queryFn: () => productsApi.getAll(filters), // Pass filters to API
       staleTime: 3 * 60 * 1000, // 3 minutes - products change more often than brands
       cacheTime: 8 * 60 * 1000, // Keep in cache for 8 minutes
       ...options,
@@ -30,17 +32,19 @@ const useProducts = {
   },
 
   /**
-   * 📂 GET ALL PRODUCTS WITHOUT VARIANTS HOOK
+   * 📂 GET ALL PRODUCTS WITHOUT VARIANTS HOOK WITH FILTERING
    * Fetches simplified product catalog without variant complexity
-   * Perfect for dropdowns, autocomplete, lightweight listings
-   * Faster loading due to reduced data payload
-   * Returns: isLoadingProductsLight, productsLight, errorProductsLight
-   * Example: const { productsLight } = useProducts.useAllWithoutVariants();
+   * Enhanced with filtering support for active status, category, and subcategory
+   * Perfect for dropdowns, autocomplete, lightweight listings, performance-critical views
+   * Faster loading due to reduced data payload - ideal for mobile optimization
+   * Smart caching with filter-specific keys prevents data conflicts
+   * Returns: isLoadingProducts, products, errorProducts
+   * Example: const { products } = useProducts.useAllWithoutVariants({ active: 1 });
    */
-  useAllWithoutVariants: (options = {}) => {
+  useAllWithoutVariants: (filters = {}, options = {}) => {
     const query = useQuery({
-      queryKey: ["products", "without-variants"],
-      queryFn: productsApi.getAllWithoutVariants,
+      queryKey: ["products", "without-variants", filters], // Include filters for proper cache separation
+      queryFn: () => productsApi.getAllWithoutVariants(filters), // Pass filters to API
       staleTime: 5 * 60 * 1000, // 5 minutes - simpler data, can cache longer
       cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
       ...options,

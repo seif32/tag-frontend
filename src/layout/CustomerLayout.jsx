@@ -5,7 +5,7 @@ import Header from "@/ui/Header";
 
 function CustomerLayout() {
   const location = useLocation();
-  const isProductsPage = location.pathname.startsWith("/products");
+  const isProductsPage = location.pathname.startsWith("/producssts");
 
   return (
     <div className="flex flex-col min-h-screen">

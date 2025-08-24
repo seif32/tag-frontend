@@ -70,7 +70,7 @@ const useBrands = {
       onSuccess: (data) => {
         // Built-in functionality - always runs first
         queryClient.invalidateQueries({ queryKey: ["brands"] });
-        toast.success(" Brand created successfully!");
+        toast.success("Brand created successfully!");
 
         // Your custom logic runs after
         if (options.onSuccess) {

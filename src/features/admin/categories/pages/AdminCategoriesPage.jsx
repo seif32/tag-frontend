@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { consoleObject } from "@/utils/consoleObject";
 
 export default function AdminCategoriesPage() {
   const [subcategory, setSubcategory] = useState(null);
@@ -79,7 +80,6 @@ export default function AdminCategoriesPage() {
     toast.info(`👁️ View products in ${subcategory.name}`);
   };
 
-  // ✅ Add delete confirmation state
   const [deleteDialog, setDeleteDialog] = useState({
     open: false,
     subcategory: null,
@@ -103,7 +103,6 @@ export default function AdminCategoriesPage() {
     setOpenSubcategoryDialog(true);
   }
 
-  // ✅ Open confirmation dialog instead of direct delete
   function handleDelete(subcategory) {
     setDeleteDialog({
       open: true,
@@ -111,7 +110,6 @@ export default function AdminCategoriesPage() {
     });
   }
 
-  // ✅ Actual delete function
   function confirmDelete() {
     if (deleteDialog.subcategory) {
       deleteSubCategory(deleteDialog.subcategory.id);
@@ -178,7 +176,11 @@ export default function AdminCategoriesPage() {
         </div>
       </div>
 
-      <CategoryStatsCards calculatedStats={calculatedStats} stats={stats} />
+      <CategoryStatsCards
+        calculatedStats={calculatedStats}
+        stats={stats}
+        isLoadingStats={isLoadingStats}
+      />
 
       {/* Main Data Table */}
       <Card>
