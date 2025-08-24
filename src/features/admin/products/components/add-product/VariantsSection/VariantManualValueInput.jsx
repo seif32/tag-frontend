@@ -1,10 +1,42 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useManualVariantValueInput } from "../../../hooks/useManualVariantValueInput";
+import useVariants from "@/hooks/useVariants";
 
 function VariantManualValueInput({ variant }) {
   const { handleAddValue, handleKeyPress, newValueInputs, setNewValueInputs } =
     useManualVariantValueInput();
+
+  const { createManyValues, isPendingVariantValues } =
+    useVariants.useCreateManyValues();
+
+  // 🎯 Handle form submission
+  const handleCreateValue = () => {
+    const inputValue = newValueInputs[variant.id] || "";
+
+    // ✅ Validation - don't send empty values
+    if (!inputValue.trim()) {
+      console.warn("Cannot create empty value");
+      return;
+    }
+
+    // 🚀 Call your hook's add function
+    handleAddValue(variant.id, inputValue);
+
+    // 🎯 Send to API with the actual input value
+    createManyValues({
+      variant_type_id: variant.type,
+      values: [inputValue.trim()], // ✅ Pass the actual input value!
+    });
+
+    console.log("Creating value:", inputValue, "for variant:", variant);
+  };
+
+  // 🎯 Enhanced key press handler
+  const handleInputKeyPress = (e) => {
+    handleKeyPress(e, handleCreateValue);
+  };
+
   return (
     <div>
       <h5 className="leading-none mb-1">You don't find what you want?</h5>
@@ -20,23 +52,19 @@ function VariantManualValueInput({ variant }) {
               [variant.id]: e.target.value,
             })
           }
-          placeholder="(optional)"
-          className=" "
-          onKeyPress={(e) => {
-            handleKeyPress(e, () =>
-              handleAddValue(variant.id, newValueInputs[variant.id] || "")
-            );
-          }}
+          placeholder="Enter new value..."
+          onKeyPress={handleInputKeyPress}
+          disabled={isPendingVariantValues} // ✅ Disable during API call
         />
         <Button
-          onClick={() => {
-            handleAddValue(variant.id, newValueInputs[variant.id] || "");
-          }}
+          onClick={handleCreateValue}
           disabled={
-            !(newValueInputs[variant.id] && newValueInputs[variant.id].trim())
+            !(
+              newValueInputs[variant.id] && newValueInputs[variant.id].trim()
+            ) || isPendingVariantValues // ✅ Disable during API call
           }
         >
-          Create
+          {isPendingVariantValues ? "Creating..." : "Create"}
         </Button>
       </div>
     </div>
