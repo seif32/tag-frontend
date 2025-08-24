@@ -16,6 +16,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 // 🆕 NEW: Import Toggle Group components
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -23,6 +36,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { CheckCheck, Folder } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 
 export default function TagFormField({
   control,
@@ -53,6 +67,8 @@ export default function TagFormField({
     totalSize: 0,
   });
 
+  const [comboboxOpen, setComboboxOpen] = useState(false);
+
   return (
     <FormField
       control={control}
@@ -73,6 +89,8 @@ export default function TagFormField({
 
           <FormControl>
             {renderFieldByType(type, field, {
+              comboboxOpen,
+              setComboboxOpen,
               uploadStatus,
               setUploadStatus,
               placeholder,
@@ -101,7 +119,8 @@ export default function TagFormField({
 
 function renderFieldByType(type, field, props) {
   const {
-    // 📦 File upload specific props
+    comboboxOpen,
+    setComboboxOpen,
     uploadStatus, // ✅ Extract this!
     setUploadStatus, // ✅ Extract this!
     multiple,
@@ -115,7 +134,6 @@ function renderFieldByType(type, field, props) {
     triggerClassName,
     onBlur,
     emptyMessage,
-    // 🆕 Extract toggle props
     toggleType,
     toggleSize,
     toggleVariant,
@@ -125,7 +143,10 @@ function renderFieldByType(type, field, props) {
   } = props;
 
   // 🎯 ENHANCED: Smart display mode for BOTH select AND toggle-group
-  if ((type === "select" || type === "toggle-group") && disabled) {
+  if (
+    (type === "select" || type === "toggle-group" || type === "combobox") &&
+    disabled
+  ) {
     return renderSelectDisplayMode(field, {
       options,
       placeholder,
@@ -152,6 +173,18 @@ function renderFieldByType(type, field, props) {
 
   // 🔄 Rest of your existing cases stay the same...
   switch (type) {
+    case "combobox":
+      return renderCombobox(field, {
+        options,
+        disabled,
+        placeholder,
+        triggerClassName,
+        emptyMessage,
+        // 🎯 Pass state from component
+        open: comboboxOpen,
+        setOpen: setComboboxOpen,
+      });
+
     case "textarea":
       return (
         <Textarea
@@ -267,6 +300,81 @@ function renderFieldByType(type, field, props) {
         />
       );
   }
+}
+
+function renderCombobox(
+  field,
+  {
+    options,
+    disabled,
+    placeholder,
+    triggerClassName,
+    emptyMessage,
+    open, // 🎯 Receive from props
+    setOpen, // 🎯 Receive from props
+  }
+) {
+  const selectedOption = options.find(
+    (option) => String(option.value) === String(field.value)
+  );
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className={cn(
+            "w-full justify-between",
+            !selectedOption && "text-muted-foreground",
+            triggerClassName
+          )}
+          disabled={disabled}
+        >
+          {selectedOption ? selectedOption.label : placeholder}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-full p-0"
+        side="up" // 🎯 Controls which side it appears
+        sideOffset={4} // 🎯 Distance from trigger
+        alignOffset={0} // 🎯 Offset along alignment axis
+        avoidCollisions={true} // 🎯 Auto-reposition when needed
+      >
+        <Command>
+          <CommandInput
+            placeholder={`Search ${placeholder?.toLowerCase() || "options"}...`}
+          />
+          <CommandEmpty>{emptyMessage || "No options found."}</CommandEmpty>
+          <CommandGroup>
+            {options.map((option) => (
+              <CommandItem
+                key={option.value}
+                value={option.label}
+                onSelect={() => {
+                  field.onChange(String(option.value));
+                  setOpen(false);
+                }}
+                disabled={option.disabled}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    String(field.value) === String(option.value)
+                      ? "opacity-100"
+                      : "opacity-0"
+                  )}
+                />
+                {option.label}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
 }
 
 // ✅ Updated renderFileUpload - receives state as props

@@ -64,7 +64,7 @@ function CategoryBrandSection() {
           control={control}
           name={"brand_id"}
           label={"Brand"}
-          type="select"
+          type="combobox"
           options={allBrands}
           required
           placeholder="Select a brand"
