@@ -35,6 +35,9 @@ function CategoriesPage() {
       `/categories/${categoryId}/subcategories/${subcategoryId}/products`
     );
   }
+  function handleViewCategoryProducts(categoryId) {
+    navigate(`/categories/${categoryId}/products`);
+  }
 
   return (
     <>
@@ -44,7 +47,10 @@ function CategoriesPage() {
           return (
             category.subcategories.length !== 0 && (
               <div key={category.id} className="">
-                <h2 className="text-2xl font-bold text-foreground">
+                <h2
+                  className="text-2xl font-bold text-foreground cursor-pointer inline hover:text-accent"
+                  onClick={() => handleViewCategoryProducts(category.id)}
+                >
                   {category.name}
                 </h2>
                 <p className="mb-6 text-muted-foreground">

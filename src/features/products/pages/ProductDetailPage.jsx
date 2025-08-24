@@ -1,6 +1,6 @@
 // src/features/products/pages/ProductDetailPage.jsx
 import ReactImageGallery from "react-image-gallery";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import ProductInfoSection from "../components/product-details/ProductInfoSection";
 import VariantsSection from "../components/product-details/VariantsSection";
 import ActionButtons from "../components/product-details/ActionButtons";
@@ -10,9 +10,12 @@ import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import { consoleObject } from "@/utils/consoleObject";
 import useVariantSelector from "../components/useVariantSelector";
+import { useMemo } from "react";
+import ProductCard from "../components/ProductCard";
 
 function ProductDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const {
     product,
@@ -32,8 +35,27 @@ function ProductDetailPage() {
     isLoading: isVariantLoading,
   } = useVariantSelector(product?.variants);
 
-  if (isLoadingProduct || isVariantLoading)
+  const filters = useMemo(() => {
+    if (!product) return null;
+    return {
+      active: 1,
+      ...(product.category_id && {
+        category_id: parseInt(product.category_id),
+      }),
+      ...(product.subcategory_id && {
+        subcategory_id: parseInt(product.subcategory_id),
+      }),
+    };
+  }, [product]);
+
+  const { products = [], isLoadingProducts } =
+    useProducts.useAllWithoutVariants(filters || {});
+
+  const firstFourProducts = products.slice(1, 5);
+
+  if (isLoadingProduct || isVariantLoading || isLoadingProducts) {
     return <LoadingState type="card" rows={20} columns={3} />;
+  }
 
   if (isErrorProduct)
     return (
@@ -45,6 +67,10 @@ function ProductDetailPage() {
     );
 
   consoleObject({ product, selectedVariant, selections });
+
+  function handleViewProductDetails(productId) {
+    navigate(`/products/${productId}`);
+  }
 
   return (
     <div className="flex flex-col space-y-8">
@@ -102,18 +128,24 @@ function ProductDetailPage() {
       <div className="">
         <p>Description:</p>
         <p className="text-sm text-muted-foreground">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime quam
-          aliquid aspernatur ea eveniet. Id voluptate incidunt, error commodi
-          dolorem vel enim veniam architecto eius blanditiis. Incidunt fugiat
-          pariatur dicta. Doloribus aliquid ex repellendus saepe voluptatum
-          facilis in, animi delectus optio molestiae magni architecto alias non
-          iusto sapiente aspernatur magnam ad reiciendis impedit! Dicta dolores
-          nisi sint perspiciatis sapiente architecto.
-        </p>
-        {/* <p className="text-sm text-muted-foreground">
           {product?.description ||
             "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae totam non, expedita, obcaecati molestiae in earum harum a debitis placeat saepe culpa id ipsum cum possimus eligendi pariatur modi eaque! "}
-        </p> */}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-4 gap-6">
+        {firstFourProducts.map((product) => (
+          <ProductCard
+            key={product.id}
+            image={product.primary_image}
+            category={product.category_name}
+            name={product.name}
+            variantCount={product.variant_count}
+            brand={product.brand_name}
+            onViewProductDetails={handleViewProductDetails}
+            productId={product.id}
+          />
+        ))}
       </div>
     </div>
   );
