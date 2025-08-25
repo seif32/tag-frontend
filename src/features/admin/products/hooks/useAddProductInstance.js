@@ -9,11 +9,12 @@ export function useAddProductInstance(
   append
 ) {
   // const { append, variantsList } = useFieldArray({ control, name: "variants" });
-  const { selectedValues, resetSelectedValues } = useVariantStore();
+  // const { selectedValues, resetSelectedValues } = useVariantStore();
   const [tempImages, setTempImages] = useState([]);
 
-  const variants = useVariantStore((state) => state.variants);
-  const isVariants = variants.length !== 0;
+  const selectedValues = useVariantStore((state) => state.selectedValues);
+
+  const isVariants = selectedValues.length !== 0;
 
   function handleAddVariant() {
     const variantData = getValues("variants.0");
@@ -37,7 +38,7 @@ export function useAddProductInstance(
     resetField("variants.0.compare_at_price", { defaultValue: "" });
     resetField("variants.0.cost_price", { defaultValue: "" });
 
-    resetSelectedValues();
+    // resetSelectedValues();
     setTempImages([]);
   }
 

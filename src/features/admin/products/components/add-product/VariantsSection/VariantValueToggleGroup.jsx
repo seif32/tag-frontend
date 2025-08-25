@@ -26,7 +26,7 @@ function VariantValueToggleGroup({
   );
 
   function handleDone() {
-    setSelectedValuesForType(typeId, localSelectedValues);
+    setSelectedValuesForType(typeId, typeName, localSelectedValues);
 
     console.log("Selected values saved:", {
       typeId,

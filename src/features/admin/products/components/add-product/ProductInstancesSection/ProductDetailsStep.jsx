@@ -23,7 +23,7 @@ function ProductDetailsStep() {
               key={value.type_id}
               className="text-xs h-fit bg-white rounded-sm px-4 py-0.5"
             >
-              {value.value.toUpperCase()}
+              {/* {value.value.toUpperCase()} */}
             </span>
           ))}
         </div>

@@ -1,4 +1,3 @@
-import { nanoid } from "nanoid";
 import { create } from "zustand";
 
 const useVariantStore = create((set, get) => ({
@@ -35,22 +34,29 @@ const useVariantStore = create((set, get) => ({
       },
     })),
 
-  setSelectedValuesForType: (typeId, values) =>
+  setSelectedValuesForType: (typeId, typeName, values) =>
     set((state) => {
       const existingIndex = state.selectedValues.findIndex(
         (sv) => sv.typeId === typeId
       );
 
+      const newEntry = {
+        typeId,
+        typeName,
+        values,
+      };
+
       if (existingIndex >= 0) {
         const updated = [...state.selectedValues];
-        updated[existingIndex] = { typeId, values };
+        updated[existingIndex] = newEntry;
         return { selectedValues: updated };
       } else {
         return {
-          selectedValues: [...state.selectedValues, { typeId, values }],
+          selectedValues: [...state.selectedValues, newEntry],
         };
       }
     }),
+
   removeSelectedValue: (typeId, value) =>
     set((state) => ({
       selectedValues: state.selectedValues
@@ -71,153 +77,17 @@ const useVariantStore = create((set, get) => ({
     })),
   clearSelectedValues: () => set({ selectedValues: [] }),
 
-  /*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*/
-
-  variants: [],
-  selectedValues: [],
-
-  // getAvailableVariantTypes: (backendVariantTypes) => {
-  //   const state = get();
-
-  //   // 🧠 Get IDs of currently selected variant types
-  //   const selectedTypeIds = new Set(
-  //     state.variants.map((variant) => variant.type)
-  //   );
-
-  //   return backendVariantTypes.filter((type) => !selectedTypeIds.has(type.id));
-  // },
-
-  getAvailableVariantTypes: (backendVariantTypes) => {
-    const state = get();
-
-    // 🎯 Get IDs of currently selected variant types from the store
-    const selectedTypeIds = new Set(
-      state.variants.map((variant) => variant.type)
-    );
-
-    // 🚀 Filter out already selected types
-    return backendVariantTypes.filter((type) => !selectedTypeIds.has(type.id));
-  },
-
-  addVariant: (variant) =>
-    set((state) => {
-      const enhancedVariant = {
-        ...variant,
-        id: variant.id || nanoid(),
-        // Store the backend type ID directly
-        type: variant.type || variant.type_id,
+  getVariantsForCombination: () => {
+    const { selectedTypes, selectedValues } = get();
+    return selectedTypes.map((type) => {
+      const valuesObj = selectedValues.find((sv) => sv.typeId === type.id);
+      return {
+        typeId: type.id,
+        typeName: type.name,
+        selectedValues: valuesObj ? valuesObj.values : [],
       };
-
-      return { variants: [...state.variants, enhancedVariant] };
-    }),
-
-  setVariants: (variants) => set({ variants }),
-
-  removeVariant: (variantId) =>
-    set((state) => ({
-      variants: state.variants.filter((v) => v.id !== variantId),
-      selectedValues: state.selectedValues.filter(
-        (sv) => sv.type_id !== variantId
-      ),
-    })),
-
-  addVariantValue: (variantId, value) =>
-    set((state) => ({
-      variants: state.variants.map((v) =>
-        v.id === variantId
-          ? {
-              ...v,
-              values: [...v.values, { id: nanoid(), value: value.trim() }],
-            }
-          : v
-      ),
-    })),
-
-  removeVariantValues: (variantId, valueIds) =>
-    set((state) => ({
-      variants: state.variants.map((v) =>
-        v.id === variantId
-          ? {
-              ...v,
-              values: v.values.filter((val) => !valueIds.includes(val.id)),
-            }
-          : v
-      ),
-    })),
-
-  removeVariantValue: (variantId, valueId) =>
-    set((state) => ({
-      variants: state.variants.map((v) =>
-        v.id === variantId
-          ? {
-              ...v,
-              values: v.values.filter((val) => val.id !== valueId),
-            }
-          : v
-      ),
-    })),
-
-  updateVariantValues: (variantId, newValues) =>
-    set((state) => ({
-      variants: state.variants.map((v) =>
-        v.id === variantId ? { ...v, values: newValues } : v
-      ),
-    })),
-
-  setSelectedValue: (type_id, value) =>
-    set((state) => {
-      let updated = [...state.selectedValues];
-
-      if (!value) {
-        updated = updated.filter((item) => item.type_id !== type_id);
-      } else {
-        const existingIndex = updated.findIndex(
-          (item) => item.type_id === type_id
-        );
-        if (existingIndex >= 0) {
-          updated[existingIndex] = { type_id, value };
-        } else {
-          updated.push({ type_id, value });
-        }
-      }
-
-      return { selectedValues: updated };
-    }),
-
-  resetSelectedValues: () => set({ selectedValues: [] }),
-  reset: () => set({ variants: [], selectedValues: [] }),
+    });
+  },
 }));
 
 export default useVariantStore;

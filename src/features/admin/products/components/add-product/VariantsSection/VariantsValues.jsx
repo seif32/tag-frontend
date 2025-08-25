@@ -7,6 +7,8 @@ function VariantsValues({ typeId, typeName }) {
 
   const valuesForThisType =
     selectedValues.find((sv) => sv.typeId === typeId)?.values || [];
+
+  console.log("VariantsValues", valuesForThisType);
   return (
     <div className="space-y-2">
       <p className="text-sm text-muted-foreground">Values</p>

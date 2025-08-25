@@ -1,36 +1,29 @@
 import { ToggleGroup } from "@/components/ui/toggle-group";
 import VariantToggleChip from "./VariantToggleChip";
-import useVariantStore from "@/features/admin/store/variantStore";
 import { PiEmptyLight } from "react-icons/pi";
-import { consoleObject } from "@/utils/consoleObject";
 
 function VariantValueToggleGroup({ variant }) {
-  const setSelectedValue = useVariantStore((state) => state.setSelectedValue);
-  const selectedValues = useVariantStore((state) => state.selectedValues);
-
-  function handleValueChange(variantId, value) {
-    setSelectedValue(variantId, value);
-  }
-
-  const isValues = variant.values.length !== 0;
+  // ✅ Use the values from props instead of hardcoded
+  const isValues = variant.values && variant.values.length !== 0;
 
   return isValues ? (
     <ToggleGroup
       type="single"
-      value={
-        selectedValues.find((item) => item.type_id === variant.type)?.value ||
-        ""
-      }
-      onValueChange={(values) => handleValueChange(variant.type, values)}
+      value="" // ✅ No active value - just showing UI
+      onValueChange={() => {}} // ✅ Empty function - no logic
       className="flex flex-wrap gap-2"
     >
-      {variant.values.map((item) => (
-        <VariantToggleChip key={item.id} item={item} />
+      {/* ✅ Use variant.values from props */}
+      {variant.values.map((value, index) => (
+        <VariantToggleChip
+          key={`${variant.typeId}-${value}-${index}`}
+          item={{ id: index, value: value }}
+        />
       ))}
     </ToggleGroup>
   ) : (
-    <div className="flex flex-col items-start p-4 bg-red-200 border border-red-600 rounded-md ">
-      <PiEmptyLight className="text-red-600 " size={32} />
+    <div className="flex flex-col items-start p-4 bg-red-200 border border-red-600 rounded-md">
+      <PiEmptyLight className="text-red-600" size={32} />
       <p className="text-sm font-bold text-red-600">No values</p>
       <p className="text-xs text-red-600">
         Please choose values in variants section first
