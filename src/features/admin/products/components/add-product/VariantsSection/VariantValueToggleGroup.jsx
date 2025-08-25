@@ -1,32 +1,64 @@
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useToggleGroupState } from "../../../hooks/useToggleGroupState";
-import useVariants from "@/hooks/useVariants";
+import useVariantStore from "@/features/admin/store/variantStore";
 import LoadingState from "@/ui/LoadingState";
+import { consoleObject } from "@/utils/consoleObject";
+import { useState } from "react";
 
-function VariantValueToggleGroup({ variant, setIsDialogOpen }) {
-  const {
-    handleSelectValue,
-    selectedValues,
-    setSelectedValues,
-    canPerformActions,
-  } = useToggleGroupState(variant, setIsDialogOpen);
+function VariantValueToggleGroup({
+  typeId,
+  typeName,
+  isLoading,
+  values,
+  error,
+  setIsDialogOpen,
+}) {
+  const setSelectedValuesForType = useVariantStore(
+    (state) => state.setSelectedValuesForType
+  );
+  const selectedValues = useVariantStore((state) => state.selectedValues);
 
-  const { variantValues, isLoadingVariantValues } = useVariants.useValuesByType(
-    variant.type
+  const existingValuesForType =
+    selectedValues.find((sv) => sv.typeId === typeId)?.values || [];
+
+  const [localSelectedValues, setLocalSelectedValues] = useState(
+    existingValuesForType
   );
 
-  console.log("ddddddddd", variant);
+  function handleDone() {
+    setSelectedValuesForType(typeId, localSelectedValues);
 
-  if (isLoadingVariantValues) return <LoadingState />;
+    console.log("Selected values saved:", {
+      typeId,
+      values: localSelectedValues,
+    });
+    setIsDialogOpen(false);
+  }
+  consoleObject(selectedValues);
 
-  if (!variantValues || variantValues.length === 0) {
+  if (isLoading) return <LoadingState />;
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-6 text-center">
+        <div className="text-red-400 mb-2">❌</div>
+        <h5 className="text-sm font-medium mb-1">Error loading values</h5>
+        <p className="text-xs text-red-500 mb-3">
+          {error.message || "Failed to load values"}
+        </p>
+        <p className="text-xs">Please try again later</p>
+      </div>
+    );
+  }
+
+  // 3. Handle successful fetch but no values (empty array)
+  if (Array.isArray(values) && values.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-6 text-center">
         <div className="text-gray-400 mb-2">📭</div>
         <h5 className="text-sm font-medium mb-1">No values available</h5>
         <p className="text-xs text-gray-500 mb-3">
-          No {variant.name?.toLowerCase()} values have been configured yet.
+          No {typeName?.toLowerCase()} values have been configured yet.
         </p>
         <p className="text-xs font-bold mb-3">Add from below</p>
       </div>
@@ -38,45 +70,41 @@ function VariantValueToggleGroup({ variant, setIsDialogOpen }) {
       <div className="flex justify-between items-center mb-4">
         <div>
           <h5 className="leading-none mb-1">
-            Choose {variant.name?.toLowerCase() || "value"}
+            Choose {typeName?.toLowerCase() || "value"}
           </h5>
           <h6 className="text-primary/50 text-xs leading-none mb-2.5">
             Select multiple options by clicking them! ✨
           </h6>
         </div>
 
-        <Button
-          onClick={handleSelectValue}
-          disabled={!canPerformActions}
-          size="sm"
-        >
+        <Button onClick={handleDone} size="sm">
           Done
         </Button>
       </div>
 
       <ToggleGroup
-        value={selectedValues}
-        onValueChange={setSelectedValues}
+        value={localSelectedValues}
+        onValueChange={setLocalSelectedValues}
         type="multiple"
         className="gap-2 flex flex-wrap"
       >
-        {variantValues.map((value) => (
+        {/* ✅ CHANGE: Use values prop instead of variantValues */}
+        {values.map((value) => (
           <ToggleGroupItem
             key={value.id}
             value={value.value}
-            className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:border-primary  flex-none"
+            className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:border-primary flex-none"
           >
             {value.value}
           </ToggleGroupItem>
         ))}
       </ToggleGroup>
 
-      {/* 🎪 Optional: Clear All Button */}
-      {selectedValues.length > 0 && (
+      {localSelectedValues.length > 0 && (
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setSelectedValues([])}
+          onClick={() => setLocalSelectedValues([])}
           className="self-start mt-2 text-xs"
         >
           Clear all

@@ -4,6 +4,8 @@ import { create } from "zustand";
 const useVariantStore = create((set, get) => ({
   availableTypes: [],
   selectedTypes: [],
+  availableValues: {},
+  selectedValues: [],
 
   setAvailableTypes: (types) => set({ availableTypes: types }),
   addSelectedType: (type) =>
@@ -16,14 +18,58 @@ const useVariantStore = create((set, get) => ({
     })),
   clearSelectedTypes: () => set({ selectedTypes: [] }),
 
-  getFilteredAvailableTypes: () => {
-    const { availableTypes, selectedTypes } = get();
-    const selectedIds = new Set(selectedTypes.map((t) => t.id));
-    return availableTypes.filter((type) => !selectedIds.has(type.id));
-  },
+  // getFilteredAvailableTypes: () => {
+  //   const { availableTypes, selectedTypes } = get();
+  //   const selectedIds = new Set(selectedTypes.map((t) => t.id));
+  //   return availableTypes.filter((type) => !selectedIds.has(type.id));
+  // },
 
   setAvailableTypes: (types) => set({ availableTypes: types }),
   clearTypes: () => set({ availableTypes: [] }),
+
+  setAvailableValues: (typeId, values) =>
+    set((state) => ({
+      availableValues: {
+        ...state.availableValues,
+        [typeId]: values,
+      },
+    })),
+
+  setSelectedValuesForType: (typeId, values) =>
+    set((state) => {
+      const existingIndex = state.selectedValues.findIndex(
+        (sv) => sv.typeId === typeId
+      );
+
+      if (existingIndex >= 0) {
+        const updated = [...state.selectedValues];
+        updated[existingIndex] = { typeId, values };
+        return { selectedValues: updated };
+      } else {
+        return {
+          selectedValues: [...state.selectedValues, { typeId, values }],
+        };
+      }
+    }),
+  removeSelectedValue: (typeId, value) =>
+    set((state) => ({
+      selectedValues: state.selectedValues
+        .map((sv) =>
+          sv.typeId === typeId
+            ? {
+                ...sv,
+                values: sv.values.filter((v) => v !== value),
+              }
+            : sv
+        )
+        .filter((sv) => sv.values.length > 0),
+    })),
+
+  removeSelectedValuesForType: (typeId) =>
+    set((state) => ({
+      selectedValues: state.selectedValues.filter((sv) => sv.typeId !== typeId),
+    })),
+  clearSelectedValues: () => set({ selectedValues: [] }),
 
   /*
 

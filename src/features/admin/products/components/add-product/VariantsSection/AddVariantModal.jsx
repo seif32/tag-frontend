@@ -10,7 +10,7 @@ import useVariantStore from "@/features/admin/store/variantStore";
 import useVariants from "@/hooks/useVariants";
 import ErrorMessage from "@/ui/ErrorMessage";
 import LoadingState from "@/ui/LoadingState";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 function AddVariantModal({ setDialogMode, onTypeSelected }) {
   const [selectedTypeId, setSelectedTypeId] = useState("");
@@ -22,10 +22,13 @@ function AddVariantModal({ setDialogMode, onTypeSelected }) {
     refetchVariantTypes,
   } = useVariants.useAllTypes();
 
-  const getFilteredAvailableTypes = useVariantStore(
-    (state) => state.getFilteredAvailableTypes
-  );
-  const filteredTypes = getFilteredAvailableTypes();
+  const availableTypes = useVariantStore((state) => state.availableTypes);
+  const selectedTypes = useVariantStore((state) => state.selectedTypes);
+
+  const filteredTypes = useMemo(() => {
+    const selectedIds = new Set(selectedTypes.map((t) => t.id));
+    return availableTypes.filter((type) => !selectedIds.has(type.id));
+  }, [availableTypes, selectedTypes]);
 
   function handleTypeSelection(value) {
     if (value === "custom") {

@@ -17,7 +17,6 @@ function AddVariantDialog() {
 
   const addSelectedType = useVariantStore((state) => state.addSelectedType);
 
-  // ✨ Clean handler for Add button
   function handleAddVariantType() {
     if (currentSelectedType) {
       addSelectedType(currentSelectedType);

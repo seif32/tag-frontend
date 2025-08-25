@@ -27,17 +27,12 @@ const useVariants = {
       ...options,
     });
 
-    // ✅ Sync to Zustand when data changes
     useEffect(() => {
       if (query.data) {
         console.log("Syncing to Zustand:", query.data);
         setAvailableTypes(query.data);
-
-        if (options.onSuccess) {
-          options.onSuccess(query.data);
-        }
       }
-    }, [query.data, setAvailableTypes, options.onSuccess]);
+    }, [query.data, setAvailableTypes]);
 
     return {
       isLoadingVariantTypes: query.isLoading,
@@ -223,6 +218,10 @@ const useVariants = {
    * Example: const { variantValues } = useVariantTypesQueries.useValuesByType(colorTypeId);
    */
   useValuesByType: (variantTypeId, options = {}) => {
+    const setAvailableValues = useVariantStore(
+      (state) => state.setAvailableValues
+    );
+
     const query = useQuery({
       queryKey: ["variant-values", variantTypeId],
       queryFn: () => variantsApi.getValuesByTypeId(variantTypeId),
@@ -230,6 +229,12 @@ const useVariants = {
       staleTime: 5 * 60 * 1000,
       ...options,
     });
+
+    useEffect(() => {
+      if (query.data && variantTypeId) {
+        setAvailableValues(variantTypeId, query.data);
+      }
+    }, [query.data, variantTypeId, setAvailableValues]);
 
     return {
       isLoadingVariantValues: query.isLoading,

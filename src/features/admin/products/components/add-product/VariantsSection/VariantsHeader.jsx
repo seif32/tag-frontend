@@ -1,14 +1,18 @@
 import useVariantStore from "@/features/admin/store/variantStore";
 import { IoTrashOutline } from "react-icons/io5";
 
-function VariantsHeader({ index, variantId }) {
-  const setVariants = useVariantStore((state) => state.setVariants);
+function VariantsHeader({ index, typeId }) {
+  const removeSelectedType = useVariantStore(
+    (state) => state.removeSelectedType
+  );
+  const removeSelectedValuesForType = useVariantStore(
+    (state) => state.removeSelectedValuesForType
+  );
 
-  const deleteVariant = (variantId) => {
-    setVariants(variants.filter((v) => v.id !== variantId));
-  };
-
-  const variants = useVariantStore((state) => state.variants);
+  function handleDelete() {
+    removeSelectedType(typeId);
+    removeSelectedValuesForType(typeId);
+  }
 
   return (
     <div className="flex items-center justify-between">
@@ -16,7 +20,7 @@ function VariantsHeader({ index, variantId }) {
       <IoTrashOutline
         size={18}
         className="transition-all duration-75 cursor-pointer hover:text-red-500 hover:scale-105"
-        onClick={() => deleteVariant(variantId)}
+        onClick={handleDelete}
       />
     </div>
   );

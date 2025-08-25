@@ -8,9 +8,10 @@ import useVariantStore from "@/features/admin/store/variantStore";
 import useProductStore from "@/features/admin/store/productStore";
 
 function VariantsSection({ variantValues }) {
-  const variants = useVariantStore((state) => state.variants);
   const mode = useProductStore((state) => state.mode);
   const isViewMode = mode === "view";
+
+  const selectedTypes = useVariantStore((state) => state.selectedTypes);
 
   return (
     <Card>
@@ -47,17 +48,17 @@ function VariantsSection({ variantValues }) {
           </div>
         ) : (
           <div className="space-y-6">
-            {variants.map((variant, index) => (
-              <div key={variant.id} className="space-y-4">
-                <VariantsHeader index={index} variantId={variant.id} />
+            {selectedTypes.map((type, index) => (
+              <div key={type.id} className="space-y-4">
+                <VariantsHeader index={index} typeId={type.id} />
                 <div className="grid grid-cols-[1fr_4fr] gap-4">
-                  <VariantsType variantType={variant.name} />
-                  <VariantsValues variant={variant} variants={variants} />
+                  <VariantsType variantType={type.name} />
+                  <VariantsValues typeId={type.id} typeName={type.name} />
                 </div>
               </div>
             ))}
 
-            {variants.length === 0 && <NoVariants />}
+            {selectedTypes.length === 0 && <NoVariants />}
           </div>
         )}
       </CardContent>
