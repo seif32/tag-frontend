@@ -2,6 +2,63 @@ import { nanoid } from "nanoid";
 import { create } from "zustand";
 
 const useVariantStore = create((set, get) => ({
+  availableTypes: [],
+  selectedTypes: [],
+
+  setAvailableTypes: (types) => set({ availableTypes: types }),
+  addSelectedType: (type) =>
+    set((state) => ({
+      selectedTypes: [...state.selectedTypes, type],
+    })),
+  removeSelectedType: (typeId) =>
+    set((state) => ({
+      selectedTypes: state.selectedTypes.filter((t) => t.id !== typeId),
+    })),
+  clearSelectedTypes: () => set({ selectedTypes: [] }),
+
+  getFilteredAvailableTypes: () => {
+    const { availableTypes, selectedTypes } = get();
+    const selectedIds = new Set(selectedTypes.map((t) => t.id));
+    return availableTypes.filter((type) => !selectedIds.has(type.id));
+  },
+
+  setAvailableTypes: (types) => set({ availableTypes: types }),
+  clearTypes: () => set({ availableTypes: [] }),
+
+  /*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
+
   variants: [],
   selectedValues: [],
 

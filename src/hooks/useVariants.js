@@ -1,5 +1,7 @@
+import useVariantStore from "@/features/admin/store/variantStore";
 import variantsApi from "@/services/variantsApi";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 const useVariants = {
@@ -13,13 +15,29 @@ const useVariants = {
    * Example: const { isLoadingVariantTypes, variantTypes } = useVariantTypesQueries.useAllTypes();
    */
   useAllTypes: (options = {}) => {
+    const setAvailableTypes = useVariantStore(
+      (state) => state.setAvailableTypes
+    );
+
     const query = useQuery({
       queryKey: ["variant-types"],
       queryFn: variantsApi.getAllTypes,
-      staleTime: 10 * 60 * 1000, // 10 minutes - variant types change rarely
-      cacheTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
+      staleTime: 10 * 60 * 1000,
+      cacheTime: 15 * 60 * 1000,
       ...options,
     });
+
+    // ✅ Sync to Zustand when data changes
+    useEffect(() => {
+      if (query.data) {
+        console.log("Syncing to Zustand:", query.data);
+        setAvailableTypes(query.data);
+
+        if (options.onSuccess) {
+          options.onSuccess(query.data);
+        }
+      }
+    }, [query.data, setAvailableTypes, options.onSuccess]);
 
     return {
       isLoadingVariantTypes: query.isLoading,

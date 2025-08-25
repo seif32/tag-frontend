@@ -1,4 +1,3 @@
-// src/features/products/components/product-details/VariantsSection.jsx
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 function VariantsSection({

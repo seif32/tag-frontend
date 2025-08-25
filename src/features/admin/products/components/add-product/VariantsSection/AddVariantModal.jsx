@@ -1,4 +1,3 @@
-// AddVariantModal.jsx - Clean Backend-Only Version
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -9,44 +8,61 @@ import {
 } from "@/components/ui/select";
 import useVariantStore from "@/features/admin/store/variantStore";
 import useVariants from "@/hooks/useVariants";
+import ErrorMessage from "@/ui/ErrorMessage";
+import LoadingState from "@/ui/LoadingState";
+import { useState } from "react";
 
-function AddVariantModal({
-  setDialogMode,
-  setNewVariantTypeId,
-  newVariantTypeId,
-}) {
-  const { variantTypes } = useVariants.useAllTypes();
+function AddVariantModal({ setDialogMode, onTypeSelected }) {
+  const [selectedTypeId, setSelectedTypeId] = useState("");
 
-  const getAvailableVariantTypes = useVariantStore(
-    (state) => state.getAvailableVariantTypes
+  const {
+    isLoadingVariantTypes,
+    errorVariantTypes,
+    isErrorVariantTypes,
+    refetchVariantTypes,
+  } = useVariants.useAllTypes();
+
+  const getFilteredAvailableTypes = useVariantStore(
+    (state) => state.getFilteredAvailableTypes
   );
-
-  const availableVariantTypes = getAvailableVariantTypes(variantTypes || []);
+  const filteredTypes = getFilteredAvailableTypes();
 
   function handleTypeSelection(value) {
     if (value === "custom") {
       setDialogMode("create");
-      setNewVariantTypeId("");
+      setSelectedTypeId("");
+      onTypeSelected(null);
     } else {
-      setNewVariantTypeId(parseInt(value));
+      setSelectedTypeId(value);
+      const selectedType = filteredTypes.find(
+        (type) => type.id.toString() === value
+      );
+      onTypeSelected(selectedType);
+
       setDialogMode("select");
     }
   }
+  if (isLoadingVariantTypes) return <LoadingState />;
+
+  if (isErrorVariantTypes)
+    return (
+      <ErrorMessage
+        message={errorVariantTypes.message || "Failed to load data"}
+        dismissible={true}
+        onDismiss={() => refetchVariantTypes()}
+      />
+    );
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <Label htmlFor="variant-type">Variant Type</Label>
-        <Select
-          value={newVariantTypeId?.toString()}
-          onValueChange={handleTypeSelection}
-        >
+        <Select value={selectedTypeId} onValueChange={handleTypeSelection}>
           <SelectTrigger>
             <SelectValue placeholder="Select variant type" />
           </SelectTrigger>
           <SelectContent>
-            {/* 🎪 Map directly from backend types! */}
-            {availableVariantTypes.map((type) => (
+            {filteredTypes.map((type) => (
               <SelectItem key={type.id} value={type.id.toString()}>
                 {type.name}
               </SelectItem>
@@ -59,7 +75,7 @@ function AddVariantModal({
               Add Custom Type
             </SelectItem>
 
-            {availableVariantTypes.length === 0 && (
+            {filteredTypes.length === 0 && (
               <div className="px-2 py-1.5 text-sm text-gray-500 italic">
                 All variant types are already added
               </div>

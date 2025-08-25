@@ -6,25 +6,27 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import CreateVariantModal from "./CreateVariantModal";
 import AddVariantModal from "./AddVariantModal";
-import { useSelectVariantType } from "../../../hooks/useSelectVariantType";
+import { useState } from "react";
+import useVariantStore from "@/features/admin/store/variantStore";
 
 function AddVariantDialog() {
-  const {
-    dialogMode,
-    isAddDialogOpen,
-    isLoadingVariantTypes,
-    newVariantTypeId,
-    setDialogMode,
-    setIsAddDialogOpen,
-    setNewVariantTypeId,
-    customTypeName,
-    handleAddVariant,
-    isPendingVariantTypes,
-    resetDialog,
-    setCustomTypeName,
-  } = useSelectVariantType();
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState("select");
+  const [currentSelectedType, setCurrentSelectedType] = useState(null);
+
+  const addSelectedType = useVariantStore((state) => state.addSelectedType);
+
+  // ✨ Clean handler for Add button
+  function handleAddVariantType() {
+    if (currentSelectedType) {
+      addSelectedType(currentSelectedType);
+
+      setCurrentSelectedType(null);
+      setIsAddDialogOpen(false);
+      setDialogMode("select");
+    }
+  }
 
   return (
     <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -42,52 +44,21 @@ function AddVariantDialog() {
         </DialogHeader>
 
         <div className="space-y-6">
-          {isLoadingVariantTypes ? (
-            <div className="flex justify-center py-4">
-              <div className="text-sm text-gray-500">
-                Loading variant types... 🔄
-              </div>
-            </div>
-          ) : (
-            <>
-              {dialogMode === "select" && (
-                <AddVariantModal
-                  newVariantTypeId={newVariantTypeId}
-                  setDialogMode={setDialogMode}
-                  setNewVariantTypeId={setNewVariantTypeId}
-                />
-              )}
-
-              {dialogMode === "create" && (
-                <CreateVariantModal
-                  customTypeName={customTypeName}
-                  setCustomTypeName={setCustomTypeName}
-                  setDialogMode={setDialogMode}
-                />
-              )}
-            </>
+          {dialogMode === "select" && (
+            <AddVariantModal
+              setDialogMode={setDialogMode}
+              onTypeSelected={setCurrentSelectedType}
+            />
           )}
 
           <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={resetDialog}>
-              Cancel
-            </Button>
+            <Button variant="outline">Cancel</Button>
             <Button
-              onClick={handleAddVariant}
-              disabled={
-                isLoadingVariantTypes ||
-                isPendingVariantTypes ||
-                (dialogMode === "select"
-                  ? !newVariantTypeId
-                  : !customTypeName.trim())
-              }
+              onClick={handleAddVariantType}
+              disabled={!currentSelectedType}
               className="min-w-24"
             >
-              {isPendingVariantTypes
-                ? "Creating... ⏳"
-                : dialogMode === "create"
-                ? "Create & Add"
-                : "Add Variant"}
+              Add Variant
             </Button>
           </div>
         </div>
