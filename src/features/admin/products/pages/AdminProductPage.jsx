@@ -52,11 +52,6 @@ export default function AdminProductPage({ mode }) {
     name: "variants",
   });
 
-  console.log("❌✅✅⭐⭐🎉❌❌✅❌🧾⚠⚠🏩🏩");
-  consoleObject(variantsList);
-  console.log("❌✅✅⭐⭐🎉❌❌✅❌🧾⚠⚠🏩🏩");
-  consoleObject(variantsList);
-
   useEffect(() => {
     if (product && mode !== "add") {
       form.reset(product);
@@ -72,9 +67,10 @@ export default function AdminProductPage({ mode }) {
 
     if (mode === "edit") {
       // updateProduct({ id, data });
+      consoleObject(data);
     } else {
       consoleObject(data);
-      createProduct(data);
+      // createProduct(data);
     }
   }
 

@@ -16,6 +16,8 @@ function VariantValueToggleGroup({ variant, setIsDialogOpen }) {
     variant.type
   );
 
+  console.log("ddddddddd", variant);
+
   if (isLoadingVariantValues) return <LoadingState />;
 
   if (!variantValues || variantValues.length === 0) {

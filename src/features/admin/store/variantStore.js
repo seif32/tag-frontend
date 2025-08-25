@@ -5,14 +5,26 @@ const useVariantStore = create((set, get) => ({
   variants: [],
   selectedValues: [],
 
+  // getAvailableVariantTypes: (backendVariantTypes) => {
+  //   const state = get();
+
+  //   // 🧠 Get IDs of currently selected variant types
+  //   const selectedTypeIds = new Set(
+  //     state.variants.map((variant) => variant.type)
+  //   );
+
+  //   return backendVariantTypes.filter((type) => !selectedTypeIds.has(type.id));
+  // },
+
   getAvailableVariantTypes: (backendVariantTypes) => {
     const state = get();
 
-    // 🧠 Get IDs of currently selected variant types
+    // 🎯 Get IDs of currently selected variant types from the store
     const selectedTypeIds = new Set(
       state.variants.map((variant) => variant.type)
     );
 
+    // 🚀 Filter out already selected types
     return backendVariantTypes.filter((type) => !selectedTypeIds.has(type.id));
   },
 
