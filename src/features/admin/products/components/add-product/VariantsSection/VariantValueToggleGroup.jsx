@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import useVariantStore from "@/features/admin/store/variantStore";
 import LoadingState from "@/ui/LoadingState";
-import { consoleObject } from "@/utils/consoleObject";
 import { useState } from "react";
 
 function VariantValueToggleGroup({
@@ -34,7 +33,6 @@ function VariantValueToggleGroup({
     });
     setIsDialogOpen(false);
   }
-  consoleObject(selectedValues);
 
   if (isLoading) return <LoadingState />;
 

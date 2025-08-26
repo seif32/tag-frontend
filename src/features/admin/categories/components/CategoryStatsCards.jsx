@@ -2,15 +2,12 @@ import { Layers, EyeOff, FolderX, Archive, Tag } from "lucide-react";
 import StatsCard from "../../ui/StatsCard";
 import { nanoid } from "nanoid";
 import LoadingState from "@/ui/LoadingState";
-import { consoleObject } from "@/utils/consoleObject";
 
 function CategoryStatsCards({ calculatedStats, stats, isLoadingStats }) {
   if (isLoadingStats) return <LoadingState />;
 
   const inactiveSubcategories =
     calculatedStats.totalSubcategories - calculatedStats.activeSubcategories;
-  consoleObject(stats);
-  consoleObject(calculatedStats);
 
   const categoryStats = [
     {

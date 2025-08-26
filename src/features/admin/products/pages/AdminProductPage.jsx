@@ -8,7 +8,7 @@ import SettingsSection from "../components/add-product/SettingsSection";
 import CategoryBrandSection from "../components/add-product/CategoryBrandSection";
 import GeneralInfoSection from "../components/add-product/GeneralInfoSection/GeneralInfoSection";
 import TagsManager from "../components/add-product/GeneralInfoSection/TagsSection";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
@@ -16,16 +16,23 @@ import useProductStore from "../../store/productStore";
 import { consoleObject } from "@/utils/consoleObject";
 import ProductHeader from "../components/add-product/ProductHeader";
 import useVariantStore from "../../store/variantStore";
+import { toast } from "sonner";
 
 export default function AdminProductPage({ mode }) {
   const { id } = useParams();
   const setProductId = useProductStore((state) => state.setProductId);
   const setMode = useProductStore((state) => state.setMode);
   const resetProductState = useProductStore((state) => state.setMode);
-
-  const selectedValues = useVariantStore((state) => state.selectedValues);
-  console.log("AdminProductPage selectedValues selectedValues selectedValues");
-  consoleObject(selectedValues);
+  const navigate = useNavigate();
+  const clearSelectedTypes = useVariantStore(
+    (state) => state.clearSelectedTypes
+  );
+  const clearSelectedValues = useVariantStore(
+    (state) => state.clearSelectedValues
+  );
+  const clearSelectedCombination = useVariantStore(
+    (state) => state.clearSelectedCombination
+  );
 
   useEffect(() => {
     resetProductState();
@@ -44,7 +51,14 @@ export default function AdminProductPage({ mode }) {
   });
 
   const { createProduct, isPendingProducts: isCreating } =
-    useProducts.useCreate();
+    useProducts.useCreate({
+      onSuccess: () => {
+        clearSelectedTypes();
+        clearSelectedValues();
+        clearSelectedCombination();
+        navigate("/admin/products");
+      },
+    });
   const { updateProduct, isPendingProducts: isUpdating } =
     useProducts.useUpdate();
 
@@ -66,16 +80,70 @@ export default function AdminProductPage({ mode }) {
   function onSubmit(data) {
     if (mode === "view") return;
 
-    data.variants = data.variants.filter(
-      (v) => v.variant_name.trim() !== "" && v.variant_sku.trim() !== ""
+    const validVariants =
+      data?.variants?.filter(
+        (v) => v.variant_name?.trim() !== "" && v.variant_sku?.trim() !== ""
+      ) || [];
+
+    if (validVariants.length === 0) {
+      toast.warning("No product variants added", {
+        description:
+          "Please add at least one product variant before submitting. Use the 'Add Product' button to create variants.",
+        duration: 5000,
+        action: {
+          label: "Got it",
+          onClick: () => console.log("User acknowledged"),
+        },
+      });
+      return;
+    }
+
+    data.variants = validVariants;
+
+    toast.info(
+      `Submitting product with ${validVariants.length} variant${
+        validVariants.length === 1 ? "" : "s"
+      }`,
+      {
+        description: `Creating ${
+          data.name || "product"
+        } with all selected variants`,
+        duration: 3000,
+      }
     );
 
+    const transformedData = {
+      ...data,
+      brand_id: parseInt(data.brand_id),
+      category_id: parseInt(data.category_id),
+      subcategory_id: parseInt(data.subcategory_id),
+      variants: data.variants.map((variant) => ({
+        variant_name: variant.variant_name,
+        variant_sku: variant.variant_sku,
+        quantity: parseInt(variant.quantity),
+        price: parseFloat(variant.price),
+        compare_at_price: parseFloat(variant.compare_at_price || 0),
+        cost_price: parseFloat(variant.cost_price || 0),
+        currency: variant.currency || "USD",
+        has_discount:
+          parseFloat(variant.compare_at_price || 0) > parseFloat(variant.price),
+        in_stock: parseInt(variant.quantity) > 0,
+        types: variant.types
+          ? variant.types.map((type) => ({
+              type_id: parseInt(type.typeId),
+              value_id: parseInt(type.selectedValue.id),
+            }))
+          : [],
+        images: variant.images || [],
+      })),
+    };
+
     if (mode === "edit") {
-      // updateProduct({ id, data });
-      consoleObject(data);
+      // updateProduct({ id, data: transformedData });
+      consoleObject(transformedData);
     } else {
-      consoleObject(data);
-      // createProduct(data);
+      consoleObject(transformedData);
+      createProduct(transformedData);
     }
   }
 

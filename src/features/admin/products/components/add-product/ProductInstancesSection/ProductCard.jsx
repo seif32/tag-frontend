@@ -4,15 +4,14 @@ import ProductDetails from "./ProductDetails";
 import NoProducts from "./NoProducts";
 import { useFormContext } from "react-hook-form";
 import useProductStore from "@/features/admin/store/productStore";
+import { consoleObject } from "@/utils/consoleObject";
 
 function ProductCard({ variantsList }) {
   const mode = useProductStore((state) => state.mode);
 
-  // Filter out the first variant if mode is 'add' and it's empty
   const filteredVariants =
     mode === "add"
       ? variantsList.filter((variant, index) => {
-          // Skip first variant if it's empty (used for input form)
           if (
             index === 0 &&
             (!variant.variant_sku || variant.variant_sku.trim() === "")

@@ -21,7 +21,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { consoleObject } from "@/utils/consoleObject";
 
 export default function AdminCategoriesPage() {
   const [subcategory, setSubcategory] = useState(null);

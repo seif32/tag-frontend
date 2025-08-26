@@ -5,6 +5,7 @@ const useVariantStore = create((set, get) => ({
   selectedTypes: [],
   availableValues: {},
   selectedValues: [],
+  selectedCombination: [],
 
   setAvailableTypes: (types) => set({ availableTypes: types }),
   addSelectedType: (type) =>
@@ -93,6 +94,12 @@ const useVariantStore = create((set, get) => ({
       };
     });
   },
+
+  updateSelectedCombination: (combinationArray) =>
+    set((state) => {
+      return { selectedCombination: combinationArray };
+    }),
+  clearSelectedCombination: () => set({ selectedCombination: [] }),
 }));
 
 export default useVariantStore;

@@ -2,23 +2,23 @@ import { ToggleGroup } from "@/components/ui/toggle-group";
 import VariantToggleChip from "./VariantToggleChip";
 import { PiEmptyLight } from "react-icons/pi";
 
-function VariantValueToggleGroup({ variant }) {
-  // ✅ Use the values from props instead of hardcoded
+function VariantValueToggleGroup({ variant, onValueSelect, currentSelection }) {
   const isValues = variant.values && variant.values.length !== 0;
 
   return isValues ? (
     <ToggleGroup
       type="single"
-      value="" // ✅ No active value - just showing UI
-      onValueChange={() => {}} // ✅ Empty function - no logic
+      value={currentSelection?.value || ""}
+      onValueChange={(selectedValue) => {
+        const valueObject = variant.values.find(
+          (v) => v.value === selectedValue
+        );
+        onValueSelect(valueObject);
+      }}
       className="flex flex-wrap gap-2"
     >
-      {/* ✅ Use variant.values from props */}
-      {variant.values.map((value, index) => (
-        <VariantToggleChip
-          key={`${variant.typeId}-${value}-${index}`}
-          item={{ id: index, value: value }}
-        />
+      {variant.values.map((value) => (
+        <VariantToggleChip key={value.id} value={value} />
       ))}
     </ToggleGroup>
   ) : (

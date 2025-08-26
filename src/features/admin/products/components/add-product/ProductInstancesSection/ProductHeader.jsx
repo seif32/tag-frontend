@@ -11,12 +11,10 @@ function ProductHeader({ product }) {
         <div className="flex gap-2">
           {product?.types?.map((type) => (
             <span
-              key={type.type_id}
+              key={type.typeid}
               className="px-2 text-xs text-white bg-black border border-black rounded-md"
             >
-              {notAddMode
-                ? type?.value?.name?.toUpperCase()
-                : type?.value?.toUpperCase()}
+              {type?.selectedValue?.value?.toUpperCase()}
             </span>
           ))}
         </div>

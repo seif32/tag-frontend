@@ -8,7 +8,6 @@ import ExtraInfoSection from "../components/product-details/ExtraInfoSection";
 import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
-import { consoleObject } from "@/utils/consoleObject";
 import useVariantSelector from "../components/useVariantSelector";
 import { useMemo } from "react";
 import ProductCard from "../components/ProductCard";
@@ -65,8 +64,6 @@ function ProductDetailPage() {
         onDismiss={() => refetchProduct()}
       />
     );
-
-  consoleObject({ product, selectedVariant, selections });
 
   function handleViewProductDetails(productId) {
     navigate(`/products/${productId}`);

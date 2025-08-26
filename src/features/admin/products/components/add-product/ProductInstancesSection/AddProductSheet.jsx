@@ -11,8 +11,21 @@ import { useAddProductInstance } from "../../../hooks/useAddProductInstance";
 
 function AddProductSheet({ variantsList, append }) {
   const { control, getValues, resetField } = useFormContext();
-  const { handleAddVariant, isVariants, tempImages, setTempImages, fields } =
-    useAddProductInstance(control, getValues, resetField, variantsList, append);
+  const {
+    handleAddVariant,
+    isVariants,
+    tempImages,
+    setTempImages,
+    fields,
+    currentSelections,
+    setCurrentSelections,
+  } = useAddProductInstance(
+    control,
+    getValues,
+    resetField,
+    variantsList,
+    append
+  );
 
   return (
     <Sheet>
@@ -27,8 +40,11 @@ function AddProductSheet({ variantsList, append }) {
             <ProductSheetHeader onAddVariant={handleAddVariant} />
             <ScrollArea className="flex-1 overflow-y-auto">
               <div className="px-4 mb-30 space-y-14">
-                <VariantSelectorStep />
-                <ProductDetailsStep />
+                <VariantSelectorStep
+                  currentSelections={currentSelections}
+                  setCurrentSelections={setCurrentSelections}
+                />
+                <ProductDetailsStep currentSelections={currentSelections} />
                 <ProductImagesStep
                   setImages={setTempImages}
                   images={tempImages}

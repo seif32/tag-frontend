@@ -3,10 +3,12 @@ import { Card, CardHeader } from "@/components/ui/card";
 import ProductCard from "./ProductCard";
 import AddProductSheet from "./AddProductSheet";
 import useProductStore from "@/features/admin/store/productStore";
+import { consoleObject } from "@/utils/consoleObject";
 
 function ProductInstancesSection({ variantsList, append }) {
   const mode = useProductStore((state) => state.mode);
   const isViewMode = mode === "view";
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-4 space-y-0">

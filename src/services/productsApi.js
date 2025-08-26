@@ -122,17 +122,28 @@ const productsApi = {
   create: async (productData, options = {}) => {
     console.log("🚀 Original product data:", productData);
 
-    // ✅ Basic validation on flat structure first
+    // ✅ Basic validation on the already-transformed structure
     if (!productData.name || !productData.sku) {
       throw new Error("Product name and SKU are required");
     }
-
     if (!productData.variants || !Array.isArray(productData.variants)) {
       throw new Error("Variants array is required");
     }
 
-    // ✅ Transform to nested structure that backend expects
-    const transformedData = {
+    // ✅ Validate variants have required fields
+    productData.variants.forEach((variant, index) => {
+      if (!variant.variant_name || !variant.variant_sku) {
+        throw new Error(`Variant ${index + 1}: name and SKU are required`);
+      }
+      if (!variant.types || variant.types.length === 0) {
+        throw new Error(
+          `Variant ${index + 1}: must have at least one type selection`
+        );
+      }
+    });
+
+    // ✅ Since data is already transformed in onSubmit, just restructure for API
+    const apiPayload = {
       product: {
         name: productData.name,
         sku: productData.sku,
@@ -141,31 +152,21 @@ const productsApi = {
         brand_id: productData.brand_id,
         category_id: productData.category_id,
         subcategory_id: productData.subcategory_id,
-        tags: productData.tags,
-        active: productData.active,
-        featured: productData.featured,
+        active: productData.active ?? true,
+        featured: productData.featured ?? false,
       },
-      variants: productData.variants.map((variant) => ({
-        variant_name: variant.variant_name,
-        variant_sku: variant.variant_sku,
-        price: variant.price,
-        compare_at_price: variant.compare_at_price,
-        cost_price: variant.cost_price,
-        quantity: variant.quantity,
-        currency: variant.currency,
-        images: variant.images || [],
-        types: variant.types || [],
-      })),
+      tags: productData.tags || [],
+      variants: productData.variants, // ✅ Already transformed with correct structure
     };
 
-    console.log("🔄 Transformed data for API:", transformedData);
+    console.log("🔄 API payload:", apiPayload);
 
     try {
-      return await api.post("/products", transformedData, options);
+      return await api.post("/products", apiPayload, options);
     } catch (error) {
       console.error("❌ Failed to create product:", {
         originalData: productData,
-        transformedData: transformedData,
+        apiPayload: apiPayload,
         error: error.details,
       });
       throw error;

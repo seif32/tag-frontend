@@ -12,7 +12,6 @@ function VariantsValues({ typeId, typeName }) {
     value: item.value,
   }));
 
-  console.log("safeValues", safeValues);
   return (
     <div className="space-y-2">
       <p className="text-sm text-muted-foreground">Values</p>

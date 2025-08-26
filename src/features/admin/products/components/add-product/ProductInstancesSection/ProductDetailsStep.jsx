@@ -4,10 +4,11 @@ import StepHeader from "@/features/admin/ui/StepHeader";
 import TagFormField from "@/features/admin/ui/TagFormField";
 import { useFormContext } from "react-hook-form";
 
-function ProductDetailsStep() {
+function ProductDetailsStep({ currentSelections }) {
   const baseName = useProductStore((state) => state.baseName);
-  const selectedValues = useVariantStore((state) => state.selectedValues);
   const { control } = useFormContext();
+
+  console.log("ProductDetailsStep", currentSelections);
 
   return (
     <div className="space-y-4">
@@ -18,12 +19,12 @@ function ProductDetailsStep() {
           {baseName}
         </h3>
         <div className="flex flex-wrap gap-1">
-          {selectedValues.map((value) => (
+          {Object.values(currentSelections).map((selection, index) => (
             <span
-              key={value.type_id}
-              className="text-xs h-fit bg-white rounded-sm px-4 py-0.5"
+              key={selection.id || index}
+              className="text-xs h-fit bg-white rounded-sm px-4 py-0.5 capitalize"
             >
-              {/* {value.value.toUpperCase()} */}
+              {selection.value}
             </span>
           ))}
         </div>
