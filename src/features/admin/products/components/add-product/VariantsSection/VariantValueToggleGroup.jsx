@@ -22,7 +22,7 @@ function VariantValueToggleGroup({
     selectedValues.find((sv) => sv.typeId === typeId)?.values || [];
 
   const [localSelectedValues, setLocalSelectedValues] = useState(
-    existingValuesForType
+    existingValuesForType || [] // This should already be array of {id, value}
   );
 
   function handleDone() {
@@ -83,12 +83,16 @@ function VariantValueToggleGroup({
       </div>
 
       <ToggleGroup
-        value={localSelectedValues}
-        onValueChange={setLocalSelectedValues}
+        value={localSelectedValues.map((item) => item.value)} // Extract strings for UI
+        onValueChange={(selectedStrings) => {
+          const selectedObjects = selectedStrings
+            .map((valueString) => values.find((v) => v.value === valueString))
+            .filter(Boolean);
+          setLocalSelectedValues(selectedObjects);
+        }}
         type="multiple"
         className="gap-2 flex flex-wrap"
       >
-        {/* ✅ CHANGE: Use values prop instead of variantValues */}
         {values.map((value) => (
           <ToggleGroupItem
             key={value.id}

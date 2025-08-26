@@ -17,12 +17,6 @@ const useVariantStore = create((set, get) => ({
     })),
   clearSelectedTypes: () => set({ selectedTypes: [] }),
 
-  // getFilteredAvailableTypes: () => {
-  //   const { availableTypes, selectedTypes } = get();
-  //   const selectedIds = new Set(selectedTypes.map((t) => t.id));
-  //   return availableTypes.filter((type) => !selectedIds.has(type.id));
-  // },
-
   setAvailableTypes: (types) => set({ availableTypes: types }),
   clearTypes: () => set({ availableTypes: [] }),
 
@@ -57,19 +51,30 @@ const useVariantStore = create((set, get) => ({
       }
     }),
 
-  removeSelectedValue: (typeId, value) =>
-    set((state) => ({
-      selectedValues: state.selectedValues
-        .map((sv) =>
-          sv.typeId === typeId
-            ? {
-                ...sv,
-                values: sv.values.filter((v) => v !== value),
-              }
-            : sv
-        )
-        .filter((sv) => sv.values.length > 0),
-    })),
+  removeSelectedValue: (typeId, valueId, valueString) =>
+    set((state) => {
+      const existingIndex = state.selectedValues.findIndex(
+        (sv) => sv.typeId === typeId
+      );
+
+      if (existingIndex >= 0) {
+        const updated = [...state.selectedValues];
+        // Filter out the value by ID
+        updated[existingIndex].values = updated[existingIndex].values.filter(
+          (item) => item.id !== valueId
+        );
+
+        // If no values left, remove the entire type
+        if (updated[existingIndex].values.length === 0) {
+          updated.splice(existingIndex, 1);
+          return { selectedValues: updated };
+        }
+
+        return { selectedValues: updated };
+      }
+
+      return state; // No changes if type not found
+    }),
 
   removeSelectedValuesForType: (typeId) =>
     set((state) => ({

@@ -4,16 +4,20 @@ import VariantValueList from "./VariantValueList";
 
 function VariantsValues({ typeId, typeName }) {
   const selectedValues = useVariantStore((state) => state.selectedValues);
-
   const valuesForThisType =
     selectedValues.find((sv) => sv.typeId === typeId)?.values || [];
 
-  console.log("VariantsValues", valuesForThisType);
+  const safeValues = valuesForThisType.map((item) => ({
+    id: item.id,
+    value: item.value,
+  }));
+
+  console.log("safeValues", safeValues);
   return (
     <div className="space-y-2">
       <p className="text-sm text-muted-foreground">Values</p>
       <div className="flex flex-wrap gap-2 p-3 rounded-lg border min-h-[60px]">
-        <VariantValueList typeId={typeId} values={valuesForThisType} />
+        <VariantValueList typeId={typeId} values={safeValues} />
         <VariantValueDialog typeId={typeId} typeName={typeName} />
       </div>
     </div>

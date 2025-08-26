@@ -15,12 +15,17 @@ import LoadingState from "@/ui/LoadingState";
 import useProductStore from "../../store/productStore";
 import { consoleObject } from "@/utils/consoleObject";
 import ProductHeader from "../components/add-product/ProductHeader";
+import useVariantStore from "../../store/variantStore";
 
 export default function AdminProductPage({ mode }) {
   const { id } = useParams();
   const setProductId = useProductStore((state) => state.setProductId);
   const setMode = useProductStore((state) => state.setMode);
   const resetProductState = useProductStore((state) => state.setMode);
+
+  const selectedValues = useVariantStore((state) => state.selectedValues);
+  console.log("AdminProductPage selectedValues selectedValues selectedValues");
+  consoleObject(selectedValues);
 
   useEffect(() => {
     resetProductState();
