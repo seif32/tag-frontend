@@ -16,6 +16,12 @@ export default function AdminProductsPage() {
 
   const { stats, isLoadingStats, refetchStats } = useProducts.useStats();
 
+  const { deleteProduct } = useProducts.useDelete();
+
+  function handleDelete(productId) {
+    deleteProduct(productId);
+  }
+
   if (isErrorProducts) {
     return (
       <div className="flex flex-col items-center justify-center h-64 space-y-4">
@@ -49,6 +55,7 @@ export default function AdminProductsPage() {
         isLoadingProducts={isLoadingProducts}
         isErrorProducts={isErrorProducts}
         errorProducts={errorProducts}
+        onDelete={handleDelete}
       />
     </div>
   );

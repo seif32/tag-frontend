@@ -6,12 +6,16 @@ import NoVariants from "./NoVariants";
 import VariantsHeader from "./VariantsHeader";
 import useVariantStore from "@/features/admin/store/variantStore";
 import useProductStore from "@/features/admin/store/productStore";
+import { consoleObject } from "@/utils/consoleObject";
 
-function VariantsSection({ variantValues }) {
+function VariantsSection({ variantValues, variantTypes }) {
   const mode = useProductStore((state) => state.mode);
   const isViewMode = mode === "view";
 
   const selectedTypes = useVariantStore((state) => state.selectedTypes);
+  console.log("VariantsSection selectedTypes selectedTypes selectedTypes");
+  consoleObject(selectedTypes);
+  consoleObject(variantTypes);
 
   return (
     <Card>
@@ -48,15 +52,18 @@ function VariantsSection({ variantValues }) {
           </div>
         ) : (
           <div className="space-y-6">
-            {selectedTypes.map((type, index) => (
-              <div key={type.id} className="space-y-4">
-                <VariantsHeader index={index} typeId={type.id} />
-                <div className="grid grid-cols-[1fr_4fr] gap-4">
-                  <VariantsType variantType={type.name} />
-                  <VariantsValues typeId={type.id} typeName={type.name} />
+            {selectedTypes.map((type, index) => {
+              // console.log("VariantsSection", type);
+              return (
+                <div key={type.id} className="space-y-4">
+                  <VariantsHeader index={index} typeId={type.id} />
+                  <div className="grid grid-cols-[1fr_4fr] gap-4">
+                    <VariantsType variantType={type.name} />
+                    <VariantsValues typeId={type.id} typeName={type.name} />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             {selectedTypes.length === 0 && <NoVariants />}
           </div>

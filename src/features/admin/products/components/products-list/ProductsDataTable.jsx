@@ -41,6 +41,7 @@ export function ProductsDataTable({
   isLoadingProducts,
   isErrorProducts,
   errorProducts,
+  onDelete,
 }) {
   // 🎨 Local state for table interactions
   const [sorting, setSorting] = useState([]);
@@ -51,7 +52,7 @@ export function ProductsDataTable({
     pageSize: 10,
   });
 
-  const productColumns = useProductColumns();
+  const productColumns = useProductColumns({ onDelete });
 
   const memoizedProducts = useMemo(() => {
     return products || [];

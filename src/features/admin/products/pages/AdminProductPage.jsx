@@ -20,10 +20,10 @@ import { toast } from "sonner";
 
 export default function AdminProductPage({ mode }) {
   const { id } = useParams();
+  const navigate = useNavigate();
   const setProductId = useProductStore((state) => state.setProductId);
   const setMode = useProductStore((state) => state.setMode);
   const resetProductState = useProductStore((state) => state.setMode);
-  const navigate = useNavigate();
   const clearSelectedTypes = useVariantStore(
     (state) => state.clearSelectedTypes
   );
@@ -172,7 +172,10 @@ export default function AdminProductPage({ mode }) {
           <div className="flex flex-col flex-1 gap-4 lg:flex-row">
             <div className="flex flex-col gap-4 flex-5/8">
               <GeneralInfoSection form={form} />
-              <VariantsSection variantValues={product?.variant_values} />
+              <VariantsSection
+                variantValues={product?.variant_values}
+                variantTypes={product?.variant_types}
+              />
               <ProductInstancesSection
                 variantsList={variantsList}
                 append={append}

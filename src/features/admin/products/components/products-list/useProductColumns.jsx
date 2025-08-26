@@ -9,7 +9,7 @@ import {
 import { useNavigate } from "react-router";
 import { Badge } from "@/components/ui/badge";
 
-export function useProductColumns() {
+export function useProductColumns({ onDelete }) {
   const navigate = useNavigate();
 
   return [
@@ -254,7 +254,7 @@ export function useProductColumns() {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-600 "
-                onClick={() => console.log("Delete", product.id)}
+                onClick={() => onDelete(product.id)}
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Delete

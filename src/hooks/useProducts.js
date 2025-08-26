@@ -287,7 +287,7 @@ const useProducts = {
         // Built-in functionality
         queryClient.removeQueries({ queryKey: ["products", deletedId] });
         queryClient.invalidateQueries({ queryKey: ["products"] });
-        toast.success("🗑️ Product deleted successfully!");
+        toast.success("Product deleted successfully!");
 
         // Your custom logic
         if (options.onSuccess) {
