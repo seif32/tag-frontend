@@ -57,7 +57,8 @@ function CategoriesPage() {
                   Explore our {category.product_count} products available in
                   here
                 </p>
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-y-20 gap-x-6">
+                {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-y-20 gap-x-6"> */}
+                <div className="grid grid-cols-5 gap-y-20 gap-x-6">
                   {category.subcategories.map((subcategory) => {
                     return (
                       <CategoryCard

@@ -1,13 +1,6 @@
 // src/hooks/useVariantSelector.js
 import { useState, useMemo, useEffect } from "react";
 
-/**
- * 🎯 Smart Variant Selection Hook
- * Handles all variant logic: auto-selection, filtering, and state management
- *
- * @param {Array} variants - All product variants from API
- * @returns {Object} - Current variant, selection handlers, and helper functions
- */
 const useVariantSelector = (variants = []) => {
   // 🎯 Find the primary variant (or first available)
   const primaryVariant = useMemo(() => {
@@ -18,64 +11,36 @@ const useVariantSelector = (variants = []) => {
   // 📊 Current selected variant
   const [selectedVariant, setSelectedVariant] = useState(null);
 
-  // 🎨 User's current selections (Color: "Red", Size: "L", etc.)
-  const [selections, setSelections] = useState({});
-
   // 🚀 Auto-select primary variant on load
   useEffect(() => {
     if (primaryVariant && !selectedVariant) {
       setSelectedVariant(primaryVariant);
-
-      // Extract initial selections from primary variant
-      const initialSelections = {};
-      primaryVariant.types?.forEach((type) => {
-        initialSelections[type.type_name] = type.value.name;
-      });
-      setSelections(initialSelections);
     }
   }, [primaryVariant, selectedVariant]);
 
-  // 🔍 Get available values for a specific variant type
-  const getAvailableValues = (typeName) => {
-    const availableValues = new Set();
+  const variantBlocks = useMemo(() => {
+    return variants.map((variant) => {
+      // Create display name from variant types
+      const combinationName =
+        variant.types?.map((type) => type.value.name).join(" • ") ||
+        variant.variant_name;
 
-    variants.forEach((variant) => {
-      if (variant.in_stock) {
-        // Only show in-stock options
-        const typeValue = variant.types?.find((t) => t.type_name === typeName);
-        if (typeValue) {
-          availableValues.add(typeValue.value.name);
-        }
-      }
+      return {
+        id: variant.id,
+        name: combinationName,
+        variant: variant,
+        isAvailable: variant.quantity >= 1,
+        isSelected: selectedVariant?.id === variant.id,
+        price: variant.price,
+        comparePrice: variant.compare_at_price,
+        images: variant.images || [],
+      };
     });
+  }, [variants, selectedVariant]);
 
-    return Array.from(availableValues);
-  };
-
-  // 🎯 Find matching variant based on user selections
-  const findMatchingVariant = (newSelections) => {
-    return variants.find((variant) => {
-      return Object.entries(newSelections).every(
-        ([typeName, selectedValue]) => {
-          const variantType = variant.types?.find(
-            (t) => t.type_name === typeName
-          );
-          return variantType?.value.name === selectedValue;
-        }
-      );
-    });
-  };
-
-  // 🔄 Handle variant type selection (Color, Size, etc.)
-  const handleVariantSelection = (typeName, value) => {
-    const newSelections = { ...selections, [typeName]: value };
-    setSelections(newSelections);
-
-    // Find and set the matching variant
-    const matchingVariant = findMatchingVariant(newSelections);
-    if (matchingVariant) {
-      setSelectedVariant(matchingVariant);
-    }
+  // 🔄 Handle variant block selection
+  const handleVariantSelection = (variantBlock) => {
+    setSelectedVariant(variantBlock.variant);
   };
 
   // 🖼️ Get images for current variant
@@ -90,20 +55,11 @@ const useVariantSelector = (variants = []) => {
     }));
   }, [selectedVariant]);
 
-  // ✅ Check if a value is available/in-stock
-  const isValueAvailable = (typeName, value) => {
-    const testSelections = { ...selections, [typeName]: value };
-    const matchingVariant = findMatchingVariant(testSelections);
-    return matchingVariant?.in_stock === 1;
-  };
-
   return {
     selectedVariant,
-    selections,
+    variantBlocks,
     currentImages,
     handleVariantSelection,
-    getAvailableValues,
-    isValueAvailable,
     isLoading: !selectedVariant && variants.length > 0,
   };
 };

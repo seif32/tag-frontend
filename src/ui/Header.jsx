@@ -1,8 +1,14 @@
+import authApi from "@/auth/services/authApi";
+import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
 import { Link, useLocation } from "react-router";
 
 const Header = () => {
   const location = useLocation();
+
+  async function handleLogout() {
+    await authApi.logout();
+  }
 
   const navItems = [
     { name: "Home", path: ROUTES.CUSTOMER.HOME },
@@ -60,12 +66,12 @@ const Header = () => {
           <Link to={ROUTES.LOGIN} className="text-gray-600 hover:text-gray-800">
             Login
           </Link>
-          <Link
-            to={ROUTES.REGISTER}
+          <Button
+            onClick={handleLogout}
             className="px-4 py-2 text-white transition-colors rounded-lg hover:bg-primary/90 bg-primary"
           >
             Sign Up
-          </Link>
+          </Button>
         </div>
       </div>
 

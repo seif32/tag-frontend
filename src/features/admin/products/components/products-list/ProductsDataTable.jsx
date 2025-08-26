@@ -35,6 +35,7 @@ import {
 
 import { useProductColumns } from "./useProductColumns";
 import LoadingState from "@/ui/LoadingState";
+import { consoleObject } from "@/utils/consoleObject";
 
 export function ProductsDataTable({
   products = [],
@@ -55,7 +56,7 @@ export function ProductsDataTable({
   const productColumns = useProductColumns({ onDelete });
 
   const memoizedProducts = useMemo(() => {
-    return products || [];
+    return products.data || [];
   }, [products]);
 
   const table = useReactTable({
@@ -110,6 +111,8 @@ export function ProductsDataTable({
       </div>
     );
   }
+
+  consoleObject(products.data);
 
   // 🎨 Main Table Render
   return (

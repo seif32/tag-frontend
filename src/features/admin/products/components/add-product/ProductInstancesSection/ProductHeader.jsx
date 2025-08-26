@@ -62,7 +62,6 @@ function ProductHeader({ product }) {
 
   const notAddMode = mode !== "add";
 
-  console.log("ProductHeader", product);
   return (
     <div className="flex items-start justify-between mb-4">
       <div>

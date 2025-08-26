@@ -104,7 +104,6 @@ export function useAddProductInstance(
       return;
     }
 
-    // ✅ Validate current selections
     const selectionErrors = validateCurrentSelections();
     if (selectionErrors.length > 0) {
       toast.warning("Missing variant selections", {
@@ -114,7 +113,6 @@ export function useAddProductInstance(
       return;
     }
 
-    // ✅ All validation passed - proceed with adding variant
     try {
       const combinationArray = Object.entries(currentSelections).map(
         ([typeId, valueObj]) => {

@@ -1,9 +1,9 @@
-// src/features/products/components/product-details/ExtraInfoSection.jsx
 function ExtraInfoSection({ product, selectedVariant }) {
-  // 🎯 Get dynamic data
   const brandName = product?.brand_name || "Unknown";
   const variantSku = selectedVariant?.variant_sku || product?.sku || "N/A";
   const tags = product?.tags?.map((tag) => tag.name).join(", ") || "No tags";
+
+  const inStock = selectedVariant.quantity >= 1;
 
   return (
     <div className="space-y-1">
@@ -30,12 +30,8 @@ function ExtraInfoSection({ product, selectedVariant }) {
         <>
           <div className="flex gap-1 text-sm text-muted-foreground">
             <p className="font-semibold">Stock: </p>
-            <p
-              className={
-                selectedVariant.in_stock ? "text-green-600" : "text-red-600"
-              }
-            >
-              {selectedVariant.in_stock
+            <p className={inStock ? "text-green-600" : "text-red-600"}>
+              {inStock
                 ? `${selectedVariant.quantity} available`
                 : "Out of stock"}
             </p>

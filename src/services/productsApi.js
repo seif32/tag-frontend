@@ -122,7 +122,6 @@ const productsApi = {
   create: async (productData, options = {}) => {
     console.log("🚀 Original product data:", productData);
 
-    // ✅ Basic validation on the already-transformed structure
     if (!productData.name || !productData.sku) {
       throw new Error("Product name and SKU are required");
     }
@@ -130,7 +129,6 @@ const productsApi = {
       throw new Error("Variants array is required");
     }
 
-    // ✅ Validate variants have required fields
     productData.variants.forEach((variant, index) => {
       if (!variant.variant_name || !variant.variant_sku) {
         throw new Error(`Variant ${index + 1}: name and SKU are required`);
@@ -142,7 +140,6 @@ const productsApi = {
       }
     });
 
-    // ✅ Since data is already transformed in onSubmit, just restructure for API
     const apiPayload = {
       product: {
         name: productData.name,

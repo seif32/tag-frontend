@@ -7,6 +7,7 @@ import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import { useNavigate, useParams } from "react-router";
 import { Package } from "lucide-react";
+import { consoleObject } from "@/utils/consoleObject";
 
 function ProductsPage() {
   const { categoryId, subcategoryId } = useParams();
@@ -41,7 +42,7 @@ function ProductsPage() {
       };
     }
 
-    const firstProduct = products[0];
+    const firstProduct = products.data[0];
     const categoryName = firstProduct.category_name;
     const subcategoryName = firstProduct.sub_category_name;
 
@@ -93,12 +94,12 @@ function ProductsPage() {
     );
 
   const productsCountArray =
-    products?.map((product) => product.variant_count) || [];
+    products?.data?.map((product) => product.variant_count) || [];
   const totalVariantsCount = productsCountArray.reduce(
     (acc, curr) => acc + curr,
     0
   );
-  const totalProductsCount = products?.length || 0;
+  const totalProductsCount = products?.data?.length || 0;
 
   const pageInfo = getPageInfo();
 
@@ -177,19 +178,22 @@ function ProductsPage() {
           </div>
         ) : (
           /* 📦 Products Grid */
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                image={product.primary_image}
-                category={product.category_name}
-                name={product.name}
-                variantCount={product.variant_count}
-                brand={product.brand_name}
-                onViewProductDetails={handleViewProductDetails}
-                productId={product.id}
-              />
-            ))}
+          // <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
+          <div className="grid grid-cols-4 gap-6">
+            {products?.data?.map((product) => {
+              return (
+                <ProductCard
+                  key={product.id}
+                  image={product.primary_image}
+                  category={product.category_name}
+                  name={product.name}
+                  variantCount={product.variant_count}
+                  brand={product.brand_name}
+                  onViewProductDetails={handleViewProductDetails}
+                  productId={product.id}
+                />
+              );
+            })}
           </div>
         )}
       </main>
