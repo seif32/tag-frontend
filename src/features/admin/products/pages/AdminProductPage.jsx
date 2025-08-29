@@ -8,7 +8,7 @@ import SettingsSection from "../components/add-product/SettingsSection";
 import CategoryBrandSection from "../components/add-product/CategoryBrandSection";
 import GeneralInfoSection from "../components/add-product/GeneralInfoSection/GeneralInfoSection";
 import { useNavigate, useParams } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import useProductStore from "../../store/productStore";
@@ -17,6 +17,8 @@ import ProductHeader from "../components/add-product/ProductHeader";
 import useVariantStore from "../../store/variantStore";
 import { toast } from "sonner";
 import TagsSection from "../components/add-product/GeneralInfoSection/TagsSection";
+import EditProductDialog from "../components/add-product/ProductInstancesSection/EditProductDialog";
+import { useVariantsIDs } from "../hooks/useVariantsIDs";
 
 export default function AdminProductPage({ mode }) {
   const { id } = useParams();
@@ -33,6 +35,10 @@ export default function AdminProductPage({ mode }) {
   const clearSelectedCombination = useVariantStore(
     (state) => state.clearSelectedCombination
   );
+
+  // Dialog state - moved to parent
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const isEditMode = mode === "edit";
   const isAddMode = mode === "add";
@@ -85,6 +91,17 @@ export default function AdminProductPage({ mode }) {
     }
   }, [product, form, mode]);
 
+  // Dialog handlers
+  function handleEditProduct(product) {
+    setSelectedProduct(product);
+    setIsDialogOpen(true);
+  }
+
+  function handleDialogClose() {
+    setIsDialogOpen(false);
+    setSelectedProduct(null);
+  }
+
   function onSubmit(data) {
     if (isViewMode) return;
 
@@ -103,6 +120,35 @@ export default function AdminProductPage({ mode }) {
       consoleObject(editTransformedData);
       // updateProduct({ id, data: editTransformedData });
     } else {
+      const validVariants =
+        data?.variants?.filter(
+          (v) => Number(v.quantity) > 0 && Number(v.price) > 0
+        ) || [];
+
+      if (validVariants.length === 0) {
+        toast.warning("No product variants added", {
+          description:
+            "Please add at least one product variant before submitting. Use the 'Add Product' button to create variants.",
+          duration: 5000,
+          action: {
+            label: "Got it",
+            onClick: () => console.log("User acknowledged"),
+          },
+        });
+        return;
+      }
+
+      toast.info(
+        `Submitting product with ${validVariants.length} variant${
+          validVariants.length === 1 ? "" : "s"
+        }`,
+        {
+          description: `Creating ${
+            data.name || "product"
+          } with all selected variants`,
+          duration: 3000,
+        }
+      );
       const addTransformedData = {
         ...data,
         brand_id: parseInt(data.brand_id),
@@ -127,42 +173,13 @@ export default function AdminProductPage({ mode }) {
           images: variant.images || [],
         })),
       };
-      const validVariants =
-        data?.variants?.filter(
-          (v) => v.quantity?.trim() !== "" && v.price?.trim() !== ""
-        ) || [];
-
-      if (validVariants.length === 0) {
-        toast.warning("No product variants added", {
-          description:
-            "Please add at least one product variant before submitting. Use the 'Add Product' button to create variants.",
-          duration: 5000,
-          action: {
-            label: "Got it",
-            onClick: () => console.log("User acknowledged"),
-          },
-        });
-        return;
-      }
-
-      data.variants = validVariants;
-
-      toast.info(
-        `Submitting product with ${validVariants.length} variant${
-          validVariants.length === 1 ? "" : "s"
-        }`,
-        {
-          description: `Creating ${
-            data.name || "product"
-          } with all selected variants`,
-          duration: 3000,
-        }
-      );
 
       consoleObject(addTransformedData);
       createProduct(addTransformedData);
     }
   }
+
+  const displayVariants = useVariantsIDs(product, variantsList);
 
   if (isLoadingProduct && !isAddMode) {
     return <LoadingState />;
@@ -171,50 +188,62 @@ export default function AdminProductPage({ mode }) {
   const isPending = isCreating || isUpdating;
 
   return (
-    <Form {...form}>
-      <form
-        noValidate
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
-        <div className="flex flex-col gap-4 mb-40">
-          <ProductHeader
-            handleSubmit={form.handleSubmit}
-            onSubmit={onSubmit}
-            isPending={isPending}
-            productName={product?.name}
-            isProductActive={product?.active}
-            productSku={product?.sku}
-          />
-          <div className="flex flex-col flex-1 gap-4 lg:flex-row">
-            <div className="flex flex-col gap-4 flex-5/8">
-              <GeneralInfoSection form={form} />
-              {!isEditMode && (
-                <VariantsSection
-                  variantValues={product?.variant_values}
-                  variantTypes={product?.variant_types}
+    <>
+      {/* Main Form */}
+      <Form {...form}>
+        <form
+          noValidate
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4"
+        >
+          <div className="flex flex-col gap-4 mb-40">
+            <ProductHeader
+              handleSubmit={form.handleSubmit}
+              onSubmit={onSubmit}
+              isPending={isPending}
+              productName={product?.name}
+              isProductActive={product?.active}
+              productSku={product?.sku}
+            />
+            <div className="flex flex-col flex-1 gap-4 lg:flex-row">
+              <div className="flex flex-col gap-4 flex-5/8">
+                <GeneralInfoSection form={form} />
+                {!isEditMode && (
+                  <VariantsSection
+                    variantValues={product?.variant_values}
+                    variantTypes={product?.variant_types}
+                  />
+                )}
+                <ProductInstancesSection
+                  variantsList={displayVariants}
+                  // variantsList={variantsList}
+                  append={append}
+                  onEditProduct={handleEditProduct} // Pass the handler
                 />
-              )}
-              <ProductInstancesSection
-                variantsList={variantsList}
-                append={append}
-              />
-            </div>
+              </div>
 
-            <div className="flex flex-col gap-4 flex-3/8">
-              <SettingsSection
-                isActive={product?.active}
-                isFeatured={product?.featured}
-              />
-              <CategoryBrandSection />
-              {!isEditMode && (
-                <TagsSection form={form} productTags={product?.tags} />
-              )}
+              <div className="flex flex-col gap-4 flex-3/8">
+                <SettingsSection
+                  isActive={product?.active}
+                  isFeatured={product?.featured}
+                />
+                <CategoryBrandSection />
+                {!isEditMode && (
+                  <TagsSection form={form} productTags={product?.tags} />
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </form>
-      <DevTool control={form.control} />
-    </Form>
+        </form>
+        <DevTool control={form.control} />
+      </Form>
+
+      {/* Dialog Outside Form - This is the key! 🔑 */}
+      <EditProductDialog
+        isDialogOpen={isDialogOpen}
+        selectedProduct={selectedProduct}
+        onClose={handleDialogClose}
+      />
+    </>
   );
 }

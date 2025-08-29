@@ -393,7 +393,7 @@ const useProducts = {
       onSuccess: (data, variables) => {
         // Invalidate all product queries (we don't know which product this belongs to)
         queryClient.invalidateQueries({ queryKey: ["products"] });
-        toast.success("🔄 Variant updated successfully!");
+        toast.success("Variant updated successfully!");
 
         if (options.onSuccess) {
           options.onSuccess(data, variables);

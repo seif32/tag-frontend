@@ -1,10 +1,9 @@
 import { Card, CardHeader } from "@/components/ui/card";
-
 import ProductCard from "./ProductCard";
 import AddProductSheet from "./AddProductSheet";
 import useProductStore from "@/features/admin/store/productStore";
 
-function ProductInstancesSection({ variantsList, append }) {
+function ProductInstancesSection({ variantsList, append, onEditProduct }) {
   const mode = useProductStore((state) => state.mode);
   const isAddMode = mode === "add";
 
@@ -16,7 +15,10 @@ function ProductInstancesSection({ variantsList, append }) {
           <AddProductSheet append={append} variantsList={variantsList} />
         )}
       </CardHeader>
-      <ProductCard variantsList={variantsList} />
+      <ProductCard
+        variantsList={variantsList}
+        onEditProduct={onEditProduct} // Pass it down
+      />
     </Card>
   );
 }
