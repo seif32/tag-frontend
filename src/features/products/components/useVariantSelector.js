@@ -21,9 +21,9 @@ const useVariantSelector = (variants = []) => {
   const variantBlocks = useMemo(() => {
     return variants.map((variant) => {
       // Create display name from variant types
-      const combinationName =
-        variant.types?.map((type) => type.value.name).join(" • ") ||
-        variant.variant_name;
+      const combinationName = variant.types
+        ?.map((type) => type.value.name)
+        .join(" • ");
 
       return {
         id: variant.id,
@@ -50,8 +50,8 @@ const useVariantSelector = (variants = []) => {
     return selectedVariant.images.map((img) => ({
       original: img.image_url,
       thumbnail: img.image_url,
-      originalAlt: selectedVariant.variant_name,
-      thumbnailAlt: selectedVariant.variant_name,
+      // originalAlt: selectedVariant.variant_name,
+      // thumbnailAlt: selectedVariant.variant_name,
     }));
   }, [selectedVariant]);
 

@@ -65,7 +65,7 @@ function ProductHeader({ product }) {
   return (
     <div className="flex items-start justify-between mb-4">
       <div>
-        <h3 className="text-sm font-bold">{product.variant_name}</h3>
+        <h3 className="text-sm font-bold">{product.variant_sku}</h3>
         <div className="flex gap-2">
           {product?.types?.map((type) => (
             <span

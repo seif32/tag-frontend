@@ -23,14 +23,6 @@ export function useAddProductInstance(
   function validateVariantData(variantData) {
     const errors = [];
 
-    // Check required string fields
-    if (!variantData.variant_name || variantData.variant_name.trim() === "") {
-      errors.push("Variant name is required");
-    }
-    if (!variantData.variant_sku || variantData.variant_sku.trim() === "") {
-      errors.push("Variant SKU is required");
-    }
-
     // Check required numeric fields
     if (
       !variantData.quantity ||
@@ -137,9 +129,6 @@ export function useAddProductInstance(
 
       append(newVariant);
 
-      // ✅ Reset form fields
-      resetField("variants.0.variant_name", { defaultValue: "" });
-      resetField("variants.0.variant_sku", { defaultValue: "" });
       resetField("variants.0.quantity", { defaultValue: "" });
       resetField("variants.0.price", { defaultValue: "" });
       resetField("variants.0.currency", { defaultValue: "USD" });
@@ -155,9 +144,6 @@ export function useAddProductInstance(
         .map((c) => c.selectedValue.value)
         .join(" ");
       toast.success("Variant added successfully!", {
-        description: `${
-          variantData.variant_name || "New variant"
-        } (${variantName})`,
         duration: 3000,
       });
     } catch (error) {

@@ -32,60 +32,46 @@ function ProductDetailsStep({ currentSelections }) {
 
       <TagFormField
         control={control}
-        name="variants.0.variant_name"
-        label="Name"
-        placeholder="e.g., Samsung Galaxy red"
-        required
+        name="variants.0.quantity"
+        label="Quantity"
+        placeholder="e.g., 50"
       />
-      <div className="flex gap-2">
-        <TagFormField
-          control={control}
-          name="variants.0.variant_sku"
-          label="SKU"
-          placeholder="e.g., SMG-RED-128GB"
-          required
-        />
-        <TagFormField
-          control={control}
-          name="variants.0.quantity"
-          label="Quantity"
-          placeholder="e.g., 50"
-          required
-        />
-      </div>
 
       <div className="flex items-end gap-2">
-        <TagFormField
-          control={control}
-          name="variants.0.price"
-          label="Price"
-          placeholder="e.g., 899.99"
-          required
-        />
-        <TagFormField
-          control={control}
-          name="variants.0.currency"
-          label="Currency"
-          placeholder="e.g., USD"
-          required
-        />
+        <div className="flex-1">
+          <TagFormField
+            control={control}
+            name="variants.0.price"
+            label="Price"
+            placeholder="e.g., 899.99"
+          />
+        </div>
+        <div className="flex-1">
+          <TagFormField
+            control={control}
+            name="variants.0.currency"
+            label="Currency"
+            placeholder="e.g., USD"
+          />
+        </div>
       </div>
-
       <div className="flex items-end gap-2">
-        <TagFormField
-          control={control}
-          name="variants.0.compare_at_price"
-          label="Compare at Price"
-          placeholder="e.g., 1099.99"
-          required
-        />
-        <TagFormField
-          control={control}
-          name="variants.0.cost_price"
-          label="Cost Price"
-          placeholder="e.g., 700.00"
-          required
-        />
+        <div className="flex-1">
+          <TagFormField
+            control={control}
+            name="variants.0.compare_at_price"
+            label="Compare at Price"
+            placeholder="e.g., 1099.99"
+          />
+        </div>
+        <div className="flex-1">
+          <TagFormField
+            control={control}
+            name="variants.0.cost_price"
+            label="Cost Price"
+            placeholder="e.g., 700.00"
+          />
+        </div>
       </div>
     </div>
   );

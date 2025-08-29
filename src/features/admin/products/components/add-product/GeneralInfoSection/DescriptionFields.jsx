@@ -12,7 +12,6 @@ function DescriptionFields({ mode }) {
         type="textarea"
         rows={5}
         placeholder="Describe your product in detail..."
-        required
         disabled={mode === "view"}
       />
       <TagFormField
@@ -22,7 +21,6 @@ function DescriptionFields({ mode }) {
         type="textarea"
         rows={2}
         placeholder="Brief product summary..."
-        required
         disabled={mode === "view"}
       />
     </>

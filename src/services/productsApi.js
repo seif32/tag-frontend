@@ -122,7 +122,7 @@ const productsApi = {
   create: async (productData, options = {}) => {
     console.log("🚀 Original product data:", productData);
 
-    if (!productData.name || !productData.sku) {
+    if (!productData.name) {
       throw new Error("Product name and SKU are required");
     }
     if (!productData.variants || !Array.isArray(productData.variants)) {
@@ -130,9 +130,6 @@ const productsApi = {
     }
 
     productData.variants.forEach((variant, index) => {
-      if (!variant.variant_name || !variant.variant_sku) {
-        throw new Error(`Variant ${index + 1}: name and SKU are required`);
-      }
       if (!variant.types || variant.types.length === 0) {
         throw new Error(
           `Variant ${index + 1}: must have at least one type selection`
@@ -143,7 +140,6 @@ const productsApi = {
     const apiPayload = {
       product: {
         name: productData.name,
-        sku: productData.sku,
         description: productData.description,
         short_description: productData.short_description,
         brand_id: productData.brand_id,

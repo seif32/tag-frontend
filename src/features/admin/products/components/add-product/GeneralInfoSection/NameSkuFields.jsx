@@ -13,25 +13,14 @@ function NameSkuFields({ mode }) {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <TagFormField
-        control={control}
-        name="name"
-        label="Product Name"
-        placeholder="Enter product name"
-        required
-        onBlur={handleBlur}
-        disabled={mode === "view"}
-      />
-      <TagFormField
-        control={control}
-        name="sku"
-        label="SKU"
-        placeholder="PROD-001"
-        required
-        disabled={mode === "view"}
-      />
-    </div>
+    <TagFormField
+      control={control}
+      name="name"
+      label="Product Name"
+      placeholder="Enter product name"
+      onBlur={handleBlur}
+      disabled={mode === "view"}
+    />
   );
 }
 

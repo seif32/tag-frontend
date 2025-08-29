@@ -1,8 +1,7 @@
 import { FaStar } from "react-icons/fa";
 
 function ProductInfoSection({ product, selectedVariant }) {
-  const displayName =
-    selectedVariant?.variant_name || product?.name || "Product Name";
+  const displayName = product?.name || "Product Name";
   const currentPrice = selectedVariant?.price || "0.00";
   const comparePrice = selectedVariant?.compare_at_price;
   const rating = parseFloat(product?.rating || 0);

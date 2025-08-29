@@ -6,16 +6,22 @@ import NoVariants from "./NoVariants";
 import VariantsHeader from "./VariantsHeader";
 import useVariantStore from "@/features/admin/store/variantStore";
 import useProductStore from "@/features/admin/store/productStore";
+import { useEffect } from "react";
 import { consoleObject } from "@/utils/consoleObject";
 
 function VariantsSection({ variantValues, variantTypes }) {
   const mode = useProductStore((state) => state.mode);
   const isViewMode = mode === "view";
+  const isEditMode = mode === "edit";
 
   const selectedTypes = useVariantStore((state) => state.selectedTypes);
-  console.log("VariantsSection selectedTypes selectedTypes selectedTypes");
-  consoleObject(selectedTypes);
-  consoleObject(variantTypes);
+  const setSelectedTypes = useVariantStore((state) => state.setSelectedTypes);
+
+  useEffect(() => {
+    if (isEditMode) {
+      setSelectedTypes(variantTypes);
+    }
+  }, [isEditMode, variantTypes, setSelectedTypes]);
 
   return (
     <Card>
@@ -53,13 +59,16 @@ function VariantsSection({ variantValues, variantTypes }) {
         ) : (
           <div className="space-y-6">
             {selectedTypes.map((type, index) => {
-              // console.log("VariantsSection", type);
               return (
                 <div key={type.id} className="space-y-4">
                   <VariantsHeader index={index} typeId={type.id} />
                   <div className="grid grid-cols-[1fr_4fr] gap-4">
                     <VariantsType variantType={type.name} />
-                    <VariantsValues typeId={type.id} typeName={type.name} />
+                    <VariantsValues
+                      typeId={type.id}
+                      typeName={type.name}
+                      variantValues={variantValues}
+                    />
                   </div>
                 </div>
               );

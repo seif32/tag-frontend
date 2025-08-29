@@ -2,9 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import ProductHeader from "./ProductHeader";
 import ProductDetails from "./ProductDetails";
 import NoProducts from "./NoProducts";
-import { useFormContext } from "react-hook-form";
 import useProductStore from "@/features/admin/store/productStore";
-import { consoleObject } from "@/utils/consoleObject";
 
 function ProductCard({ variantsList }) {
   const mode = useProductStore((state) => state.mode);
@@ -12,10 +10,7 @@ function ProductCard({ variantsList }) {
   const filteredVariants =
     mode === "add"
       ? variantsList.filter((variant, index) => {
-          if (
-            index === 0 &&
-            (!variant.variant_sku || variant.variant_sku.trim() === "")
-          ) {
+          if (index === 0 && !variant.quantity) {
             return false;
           }
           return true;
@@ -25,9 +20,7 @@ function ProductCard({ variantsList }) {
   const isEmpty =
     !filteredVariants ||
     filteredVariants.length === 0 ||
-    filteredVariants.every(
-      (variant) => !variant.variant_sku || variant.variant_sku.trim() === ""
-    );
+    filteredVariants.every((variant) => !variant.quantity);
 
   return (
     <CardContent className="space-y-4">

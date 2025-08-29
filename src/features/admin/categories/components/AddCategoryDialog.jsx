@@ -76,7 +76,6 @@ function AddCategoryDialog() {
                 label="Name"
                 name="name"
                 placeholder="e.g., Electronics, Clothing"
-                required
               />
             </div>
 

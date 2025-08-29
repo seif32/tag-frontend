@@ -116,7 +116,6 @@ function AddEditSubcategoryDialog({
                   name="name"
                   placeholder="Enter subcategory name"
                   className="col-span-1"
-                  required
                 />
 
                 {/* {mode === "edit" && <span>{subcategory.parent_name}</span>} */}
@@ -134,7 +133,6 @@ function AddEditSubcategoryDialog({
                     options={selectCategories}
                     placeholder="Select parent category"
                     className="col-span-1"
-                    required
                   />
                 )}
               </div>

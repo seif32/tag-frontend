@@ -1,9 +1,21 @@
 import useVariantStore from "@/features/admin/store/variantStore";
 import VariantValueDialog from "./VariantValueDialog";
 import VariantValueList from "./VariantValueList";
+import useProductStore from "@/features/admin/store/productStore";
+import { useEffect } from "react";
 
-function VariantsValues({ typeId, typeName }) {
+function VariantsValues({ typeId, typeName, variantValues }) {
   const selectedValues = useVariantStore((state) => state.selectedValues);
+  const setSelectedValues = useVariantStore((state) => state.setSelectedValues);
+  const mode = useProductStore((state) => state.mode);
+  const isEditMode = mode === "edit";
+
+  useEffect(() => {
+    if (isEditMode) {
+      setSelectedValues(variantValues);
+    }
+  }, [isEditMode, variantValues, setSelectedValues]);
+
   const valuesForThisType =
     selectedValues.find((sv) => sv.typeId === typeId)?.values || [];
 

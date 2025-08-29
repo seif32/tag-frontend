@@ -7,7 +7,6 @@ import ProductInstancesSection from "../components/add-product/ProductInstancesS
 import SettingsSection from "../components/add-product/SettingsSection";
 import CategoryBrandSection from "../components/add-product/CategoryBrandSection";
 import GeneralInfoSection from "../components/add-product/GeneralInfoSection/GeneralInfoSection";
-import TagsManager from "../components/add-product/GeneralInfoSection/TagsSection";
 import { useNavigate, useParams } from "react-router";
 import { useEffect } from "react";
 import useProducts from "@/hooks/useProducts";
@@ -17,6 +16,7 @@ import { consoleObject } from "@/utils/consoleObject";
 import ProductHeader from "../components/add-product/ProductHeader";
 import useVariantStore from "../../store/variantStore";
 import { toast } from "sonner";
+import TagsSection from "../components/add-product/GeneralInfoSection/TagsSection";
 
 export default function AdminProductPage({ mode }) {
   const { id } = useParams();
@@ -33,6 +33,10 @@ export default function AdminProductPage({ mode }) {
   const clearSelectedCombination = useVariantStore(
     (state) => state.clearSelectedCombination
   );
+
+  const isEditMode = mode === "edit";
+  const isAddMode = mode === "add";
+  const isViewMode = mode === "view";
 
   useEffect(() => {
     resetProductState();
@@ -60,7 +64,11 @@ export default function AdminProductPage({ mode }) {
       },
     });
   const { updateProduct, isPendingProducts: isUpdating } =
-    useProducts.useUpdate();
+    useProducts.useUpdate({
+      onSuccess: () => {
+        navigate("/admin/products");
+      },
+    });
 
   const form = useForm({
     defaultValues: addProductDefaultValues,
@@ -78,76 +86,85 @@ export default function AdminProductPage({ mode }) {
   }, [product, form, mode]);
 
   function onSubmit(data) {
-    if (mode === "view") return;
+    if (isViewMode) return;
 
-    const validVariants =
-      data?.variants?.filter(
-        (v) => v.variant_name?.trim() !== "" && v.variant_sku?.trim() !== ""
-      ) || [];
-
-    if (validVariants.length === 0) {
-      toast.warning("No product variants added", {
-        description:
-          "Please add at least one product variant before submitting. Use the 'Add Product' button to create variants.",
-        duration: 5000,
-        action: {
-          label: "Got it",
-          onClick: () => console.log("User acknowledged"),
-        },
-      });
-      return;
-    }
-
-    data.variants = validVariants;
-
-    toast.info(
-      `Submitting product with ${validVariants.length} variant${
-        validVariants.length === 1 ? "" : "s"
-      }`,
-      {
-        description: `Creating ${
-          data.name || "product"
-        } with all selected variants`,
-        duration: 3000,
-      }
-    );
-
-    const transformedData = {
-      ...data,
-      brand_id: parseInt(data.brand_id),
-      category_id: parseInt(data.category_id),
-      subcategory_id: parseInt(data.subcategory_id),
-      variants: data.variants.map((variant) => ({
-        variant_name: variant.variant_name,
-        variant_sku: variant.variant_sku,
-        quantity: parseInt(variant.quantity),
-        price: parseFloat(variant.price),
-        compare_at_price: parseFloat(variant.compare_at_price || 0),
-        cost_price: parseFloat(variant.cost_price || 0),
-        currency: variant.currency || "USD",
-        has_discount:
-          parseFloat(variant.compare_at_price || 0) > parseFloat(variant.price),
-        in_stock: parseInt(variant.quantity) > 0,
-        types: variant.types
-          ? variant.types.map((type) => ({
-              type_id: parseInt(type.typeId),
-              value_id: parseInt(type.selectedValue.id),
-            }))
-          : [],
-        images: variant.images || [],
-      })),
+    const editTransformedData = {
+      name: data.name,
+      description: data.description,
+      short_description: data.short_description,
+      category_id: data.category_id,
+      subcategory_id: data.subcategory_id,
+      brand_id: data.brand_id,
+      featured: data.featured,
+      active: Boolean(data.active),
     };
 
-    if (mode === "edit") {
-      // updateProduct({ id, data: transformedData });
-      consoleObject(transformedData);
+    if (isEditMode) {
+      consoleObject(editTransformedData);
+      // updateProduct({ id, data: editTransformedData });
     } else {
-      consoleObject(transformedData);
-      createProduct(transformedData);
+      const addTransformedData = {
+        ...data,
+        brand_id: parseInt(data.brand_id),
+        category_id: parseInt(data.category_id),
+        subcategory_id: parseInt(data.subcategory_id),
+        variants: data.variants.map((variant) => ({
+          quantity: parseInt(variant.quantity),
+          price: parseFloat(variant.price),
+          compare_at_price: parseFloat(variant.compare_at_price || 0),
+          cost_price: parseFloat(variant.cost_price || 0),
+          currency: variant.currency || "USD",
+          has_discount:
+            parseFloat(variant.compare_at_price || 0) >
+            parseFloat(variant.price),
+          in_stock: parseInt(variant.quantity) > 0,
+          types: variant.types
+            ? variant.types.map((type) => ({
+                type_id: parseInt(type.typeId),
+                value_id: parseInt(type.selectedValue.id),
+              }))
+            : [],
+          images: variant.images || [],
+        })),
+      };
+      const validVariants =
+        data?.variants?.filter(
+          (v) => v.quantity?.trim() !== "" && v.price?.trim() !== ""
+        ) || [];
+
+      if (validVariants.length === 0) {
+        toast.warning("No product variants added", {
+          description:
+            "Please add at least one product variant before submitting. Use the 'Add Product' button to create variants.",
+          duration: 5000,
+          action: {
+            label: "Got it",
+            onClick: () => console.log("User acknowledged"),
+          },
+        });
+        return;
+      }
+
+      data.variants = validVariants;
+
+      toast.info(
+        `Submitting product with ${validVariants.length} variant${
+          validVariants.length === 1 ? "" : "s"
+        }`,
+        {
+          description: `Creating ${
+            data.name || "product"
+          } with all selected variants`,
+          duration: 3000,
+        }
+      );
+
+      consoleObject(addTransformedData);
+      createProduct(addTransformedData);
     }
   }
 
-  if (isLoadingProduct && mode !== "add") {
+  if (isLoadingProduct && !isAddMode) {
     return <LoadingState />;
   }
 
@@ -172,10 +189,12 @@ export default function AdminProductPage({ mode }) {
           <div className="flex flex-col flex-1 gap-4 lg:flex-row">
             <div className="flex flex-col gap-4 flex-5/8">
               <GeneralInfoSection form={form} />
-              <VariantsSection
-                variantValues={product?.variant_values}
-                variantTypes={product?.variant_types}
-              />
+              {!isEditMode && (
+                <VariantsSection
+                  variantValues={product?.variant_values}
+                  variantTypes={product?.variant_types}
+                />
+              )}
               <ProductInstancesSection
                 variantsList={variantsList}
                 append={append}
@@ -188,7 +207,9 @@ export default function AdminProductPage({ mode }) {
                 isFeatured={product?.featured}
               />
               <CategoryBrandSection />
-              <TagsManager form={form} productTags={product?.tags} />
+              {!isEditMode && (
+                <TagsSection form={form} productTags={product?.tags} />
+              )}
             </div>
           </div>
         </div>

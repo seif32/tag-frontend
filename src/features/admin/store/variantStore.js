@@ -8,6 +8,10 @@ const useVariantStore = create((set, get) => ({
   selectedCombination: [],
 
   setAvailableTypes: (types) => set({ availableTypes: types }),
+  setAvailableTypes: (types) => set({ availableTypes: types }),
+  clearTypes: () => set({ availableTypes: [] }),
+
+  setSelectedTypes: (types) => set({ selectedTypes: types }),
   addSelectedType: (type) =>
     set((state) => ({
       selectedTypes: [...state.selectedTypes, type],
@@ -18,9 +22,6 @@ const useVariantStore = create((set, get) => ({
     })),
   clearSelectedTypes: () => set({ selectedTypes: [] }),
 
-  setAvailableTypes: (types) => set({ availableTypes: types }),
-  clearTypes: () => set({ availableTypes: [] }),
-
   setAvailableValues: (typeId, values) =>
     set((state) => ({
       availableValues: {
@@ -29,6 +30,7 @@ const useVariantStore = create((set, get) => ({
       },
     })),
 
+  setSelectedValues: (values) => set({ selectedValues: values }),
   setSelectedValuesForType: (typeId, typeName, values) =>
     set((state) => {
       const existingIndex = state.selectedValues.findIndex(
@@ -51,7 +53,6 @@ const useVariantStore = create((set, get) => ({
         };
       }
     }),
-
   removeSelectedValue: (typeId, valueId, valueString) =>
     set((state) => {
       const existingIndex = state.selectedValues.findIndex(
@@ -76,24 +77,11 @@ const useVariantStore = create((set, get) => ({
 
       return state; // No changes if type not found
     }),
-
   removeSelectedValuesForType: (typeId) =>
     set((state) => ({
       selectedValues: state.selectedValues.filter((sv) => sv.typeId !== typeId),
     })),
   clearSelectedValues: () => set({ selectedValues: [] }),
-
-  getVariantsForCombination: () => {
-    const { selectedTypes, selectedValues } = get();
-    return selectedTypes.map((type) => {
-      const valuesObj = selectedValues.find((sv) => sv.typeId === type.id);
-      return {
-        typeId: type.id,
-        typeName: type.name,
-        selectedValues: valuesObj ? valuesObj.values : [],
-      };
-    });
-  },
 
   updateSelectedCombination: (combinationArray) =>
     set((state) => {

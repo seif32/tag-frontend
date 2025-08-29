@@ -20,11 +20,7 @@ function VariantValueList({ typeId, values }) {
       )}
 
       {values.map((item) => (
-        <Badge
-          key={item.id} // ✅ Use the actual ID as key
-          variant="secondary"
-          className="gap-1 pt-0 pb-0"
-        >
+        <Badge key={item.id} variant="secondary" className="gap-1 pt-0 pb-0">
           <span className="text-sm capitalize">{item.value}</span>{" "}
           <span
             onClick={() => handleClick(item.id, item.value)}

@@ -1,8 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import TagFormField from "../../../ui/TagFormField";
 import useProductStore from "@/features/admin/store/productStore";
-import { useFormContext } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { BadgeCheck, Check, CircleX, Cross } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 function SettingsSection({ isActive, isFeatured }) {
   const mode = useProductStore((state) => state.mode);
@@ -59,22 +61,35 @@ function SettingsSection({ isActive, isFeatured }) {
           </div>
         ) : (
           <>
-            <TagFormField
-              control={control}
-              name="featured"
-              type="checkbox"
-              label={"Mark as featured product"}
-              className="flex flex-row-reverse justify-end gap-8 "
-              disabled={mode === "view"}
-            />
-            <TagFormField
-              control={control}
-              name="active"
-              type="checkbox"
-              label={"Product is available for sale"}
-              className="flex flex-row-reverse justify-end gap-8"
-              disabled={mode === "view"}
-            />
+            <div className="flex items-center space-x-2">
+              <Controller
+                control={control}
+                name="featured"
+                render={({ field }) => (
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={mode === "view"}
+                  />
+                )}
+              />
+              <Label htmlFor="featured">Mark as featured product</Label>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Controller
+                control={control}
+                name="active"
+                render={({ field }) => (
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={mode === "view"}
+                  />
+                )}
+              />
+              <Label htmlFor="active">Product is available for sale</Label>
+            </div>
           </>
         )}
       </CardContent>

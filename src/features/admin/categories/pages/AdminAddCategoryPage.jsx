@@ -87,7 +87,6 @@ export default function AdminAddCategoryPage() {
                     onChange={(e) => setCategoryName(e.target.value)}
                     placeholder="Enter category name"
                     className="mt-1"
-                    required
                   />
                   <p className="mt-1 text-xs text-gray-500">
                     Choose a clear, descriptive name for your category

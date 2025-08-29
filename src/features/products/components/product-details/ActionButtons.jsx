@@ -30,7 +30,7 @@ function ActionButtons({ selectedVariant, product }) {
     if (!selectedVariant || !inStock) return;
     console.log("Adding to cart:", {
       variantId: selectedVariant.id,
-      variantName: selectedVariant.variant_name,
+      // variantName: selectedVariant.variant_name,
       quantity,
       price: variantPrice,
     });
