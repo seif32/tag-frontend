@@ -12,6 +12,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import {
   Popover,
@@ -62,7 +63,7 @@ function CategoryBrandSection() {
                       variant="outline"
                       role="combobox"
                       className={cn(
-                        "justify-between",
+                        "justify-between border-gray-200",
                         !field.value && "text-muted-foreground"
                       )}
                       disabled={isViewMode}
@@ -107,6 +108,7 @@ function CategoryBrandSection() {
                   </Command>
                 </PopoverContent>
               </Popover>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -124,7 +126,7 @@ function CategoryBrandSection() {
                       variant="outline"
                       role="combobox"
                       className={cn(
-                        "justify-between",
+                        "justify-between border-gray-200",
                         !field.value && "text-muted-foreground"
                       )}
                       disabled={
@@ -181,6 +183,7 @@ function CategoryBrandSection() {
                   </Command>
                 </PopoverContent>
               </Popover>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -198,7 +201,7 @@ function CategoryBrandSection() {
                       variant="outline"
                       role="combobox"
                       className={cn(
-                        "justify-between",
+                        "justify-between border-gray-200",
                         !field.value && "text-muted-foreground"
                       )}
                       disabled={isViewMode}
@@ -242,6 +245,7 @@ function CategoryBrandSection() {
                   </Command>
                 </PopoverContent>
               </Popover>
+              <FormMessage />
             </FormItem>
           )}
         />

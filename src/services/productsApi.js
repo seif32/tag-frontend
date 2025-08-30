@@ -453,6 +453,33 @@ const productsApi = {
       throw error;
     }
   },
+
+  /**
+   * ✅ CHECK IF PRODUCT NAME EXISTS
+   * Validates product name uniqueness before form submission
+   * Perfect for real-time validation and preventing duplicate names
+   * Returns boolean indicating if name already exists
+   * Example: const exists = await productsApi.checkNameExists("iPhone 15");
+   */
+  checkNameExists: async (productName, options = {}) => {
+    if (!productName || !productName.trim()) {
+      throw new Error("Product name is required");
+    }
+
+    try {
+      // Encode the name to handle special characters safely
+      const encodedName = encodeURIComponent(productName.trim());
+      return await api.get(`/products/exists/name/${encodedName}`, options);
+    } catch (error) {
+      console.error(`Failed to check product name "${productName}":`, {
+        status: error.status,
+        method: error.method,
+        url: error.url,
+        responseTime: error.responseTime,
+      });
+      throw error;
+    }
+  },
 };
 
 export default productsApi;

@@ -79,16 +79,12 @@ export function useTagsColumns({ onEdit, onDelete }) {
         },
       },
       {
-        accessorKey: "category_id",
+        accessorKey: "category_name",
         header: "Category",
         cell: ({ row }) => {
-          const categoryId = row.getValue("category_id");
+          const categoryName = row.getValue("category_name");
           // You can map this to actual category names later
-          return (
-            <Badge variant="outline" className="font-medium">
-              Category {categoryId}
-            </Badge>
-          );
+          return <p className="text-muted-foreground">{categoryName}</p>;
         },
       },
       {

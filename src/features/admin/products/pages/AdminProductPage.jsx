@@ -1,7 +1,11 @@
 import { Form } from "@/components/ui/form";
 import { useFieldArray, useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import { addProductDefaultValues } from "../data/formDefaults";
+import {
+  addProductDefaultValues,
+  editProductSchema,
+  productSchema,
+} from "../data/formDefaults";
 import VariantsSection from "../components/add-product/VariantsSection/VariantsSection";
 import ProductInstancesSection from "../components/add-product/ProductInstancesSection/ProductInstancesSection";
 import SettingsSection from "../components/add-product/SettingsSection";
@@ -19,6 +23,7 @@ import { toast } from "sonner";
 import TagsSection from "../components/add-product/GeneralInfoSection/TagsSection";
 import EditProductDialog from "../components/add-product/ProductInstancesSection/EditProductDialog";
 import { useVariantsIDs } from "../hooks/useVariantsIDs";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function AdminProductPage({ mode }) {
   const { id } = useParams();
@@ -69,7 +74,26 @@ export default function AdminProductPage({ mode }) {
         clearSelectedCombination();
         navigate("/admin/products");
       },
+      onError: (error) => {
+        if (
+          error.details?.sqlMessage?.includes("Duplicate entry") &&
+          error.details?.sqlMessage?.includes("for key 'products.name'")
+        ) {
+          toast.error("Product name already exists!", {
+            description:
+              "Please choose a different product name and try again.",
+            duration: 5000,
+          });
+        } else {
+          toast.error("❌ Failed to create product", {
+            description:
+              error.message || "Something went wrong. Please try again.",
+            duration: 5000,
+          });
+        }
+      },
     });
+
   const { updateProduct, isPendingProducts: isUpdating } =
     useProducts.useUpdate({
       onSuccess: () => {
@@ -78,7 +102,9 @@ export default function AdminProductPage({ mode }) {
     });
 
   const form = useForm({
+    resolver: isAddMode ? zodResolver(productSchema) : undefined,
     defaultValues: addProductDefaultValues,
+    mode: "onChange",
   });
 
   const { fields: variantsList, append } = useFieldArray({
@@ -106,7 +132,16 @@ export default function AdminProductPage({ mode }) {
   function onSubmit(data) {
     if (isViewMode) return;
 
+    // ✅ Filter out empty variants (common for both modes)
+    const validVariants =
+      data.variants?.filter((variant) => {
+        const hasQuantity = variant.quantity && parseInt(variant.quantity) > 0;
+        const hasPrice = variant.price && parseFloat(variant.price) > 0;
+        return hasQuantity && hasPrice;
+      }) || [];
+
     if (isEditMode) {
+      // 🔄 EDIT MODE: Only update product details (no variants)
       const editTransformedData = {
         name: data.name,
         description: data.description,
@@ -118,29 +153,21 @@ export default function AdminProductPage({ mode }) {
         active: Boolean(data.active),
       };
 
-      consoleObject(editTransformedData);
+      console.log("🔄 Editing product:", editTransformedData);
       updateProduct({ id, data: editTransformedData });
     } else {
-      const validVariants =
-        data?.variants?.filter(
-          (v) => Number(v.quantity) > 0 && Number(v.price) > 0
-        ) || [];
-
+      // ➕ ADD MODE: Create new product with variants
       if (validVariants.length === 0) {
-        toast.warning("No product variants added", {
+        toast.warning("📦 No valid product variants found", {
           description:
-            "Please add at least one product variant before submitting. Use the 'Add Product' button to create variants.",
+            "Please add at least one variant with quantity and price.",
           duration: 5000,
-          action: {
-            label: "Got it",
-            onClick: () => console.log("User acknowledged"),
-          },
         });
         return;
       }
 
       toast.info(
-        `Submitting product with ${validVariants.length} variant${
+        `🚀 Submitting product with ${validVariants.length} variant${
           validVariants.length === 1 ? "" : "s"
         }`,
         {
@@ -150,12 +177,13 @@ export default function AdminProductPage({ mode }) {
           duration: 3000,
         }
       );
+
       const addTransformedData = {
         ...data,
         brand_id: parseInt(data.brand_id),
         category_id: parseInt(data.category_id),
         subcategory_id: parseInt(data.subcategory_id),
-        variants: data.variants.map((variant) => ({
+        variants: validVariants.map((variant) => ({
           quantity: parseInt(variant.quantity),
           price: parseFloat(variant.price),
           compare_at_price: parseFloat(variant.compare_at_price || 0),
@@ -165,17 +193,17 @@ export default function AdminProductPage({ mode }) {
             parseFloat(variant.compare_at_price || 0) >
             parseFloat(variant.price),
           in_stock: parseInt(variant.quantity) > 0,
-          types: variant.types
-            ? variant.types.map((type) => ({
-                type_id: parseInt(type.typeId),
-                value_id: parseInt(type.selectedValue.id),
-              }))
-            : [],
+          // ✅ Transform types to expected backend format
+          types:
+            variant.types?.map((type) => ({
+              type_id: parseInt(type.typeId),
+              value_id: parseInt(type.selectedValue.id),
+            })) || [],
           images: variant.images || [],
         })),
       };
 
-      consoleObject(addTransformedData);
+      console.log("➕ Creating product:", addTransformedData);
       createProduct(addTransformedData);
     }
   }

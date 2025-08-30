@@ -1,4 +1,4 @@
-import { ArrowUpDown, Eye, Edit, Trash2 } from "lucide-react";
+import { ArrowUpDown, Eye, Edit, Trash2, Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,27 +12,27 @@ import { Badge } from "@/components/ui/badge";
 export function useProductColumns({ onDelete }) {
   const navigate = useNavigate();
 
-  return [
-    // //  📸 IMAGE COLUMN - Simple & Visual
-    // {
-    //   accessorKey: "primary_image",
-    //   header: "Image",
-    //   cell: ({ row }) => {
-    //     const product = row.original;
-    //     return (
-    //       <div className="w-12 h-12 overflow-hidden border rounded-md">
-    //         <img
-    //           src={product.primary_image || "/placeholder-product.jpg"}
-    //           alt={product.name}
-    //           className="object-cover w-full h-full"
-    //         />
-    //       </div>
-    //     );
-    //   },
-    //   enableSorting: false,
-    //   size: 60,
-    // },
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = (now - date) / (1000 * 60 * 60);
 
+    // Show relative time for recent dates
+    if (diffInHours < 24) {
+      return `${Math.floor(diffInHours)}h ago`;
+    } else if (diffInHours < 72) {
+      return `${Math.floor(diffInHours / 24)}d ago`;
+    } else {
+      // Show formatted date for older dates
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+  };
+
+  return [
     // 🏷️ PRODUCT NAME - Main Identifier
     {
       accessorKey: "name",
@@ -60,7 +60,7 @@ export function useProductColumns({ onDelete }) {
 
     // 🏪 CATEGORY - Organization
     {
-      accessorKey: "sub_category_name",
+      accessorKey: "category_name",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -71,44 +71,19 @@ export function useProductColumns({ onDelete }) {
           <ArrowUpDown className="w-4 h-4 ml-2" />
         </Button>
       ),
-      cell: ({ row }) => (
-        <span className="px-1  py-0.5 text-[10px] font-medium text-blue-800 border border-blue-800 rounded-full">
-          {row.getValue("sub_category_name")}
-        </span>
-      ),
-      enableSorting: true,
-    },
-    // 💰 PRICE RANGE - Smart Pricing
-    {
-      id: "priceRange",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 font-semibold"
-        >
-          Price
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      ),
       cell: ({ row }) => {
-        const { lowest_price, highest_price } = row.original;
-
-        if (!lowest_price)
-          return <span className="text-gray-400">No price</span>;
-
+        const category = row.getValue("category_name");
+        const subcategory = row.original.sub_category_name;
         return (
-          <div className="text-xs font-medium">
-            {lowest_price === highest_price
-              ? `$${lowest_price.toFixed(2)}`
-              : `$${lowest_price.toFixed(2)} - $${highest_price.toFixed(2)}`}
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-slate-700">
+              {category}
+            </span>
+            {subcategory && (
+              <span className="text-xs text-slate-500">{subcategory}</span>
+            )}
           </div>
         );
-      },
-      sortingFn: (rowA, rowB) => {
-        const priceA = rowA.original.lowest_price || 0;
-        const priceB = rowB.original.lowest_price || 0;
-        return priceA - priceB;
       },
       enableSorting: true,
     },
@@ -129,24 +104,28 @@ export function useProductColumns({ onDelete }) {
       cell: ({ row }) => {
         const stock = row.original.total_quantity || 0;
 
-        let statusText, colorClass;
+        let statusText, dotColor, textColor;
         if (stock === 0) {
           statusText = "Out of Stock";
-          colorClass = "border border-red-800 text-red-800";
+          dotColor = "bg-red-500";
+          textColor = "text-red-700";
         } else if (stock <= 10) {
           statusText = `Low (${stock})`;
-          colorClass = "border border-yellow-800 text-yellow-800";
+          dotColor = "bg-amber-500";
+          textColor = "text-amber-700";
         } else {
           statusText = `${stock} units`;
-          colorClass = "border border-black text-black";
+          dotColor = "bg-green-500";
+          textColor = "text-green-700";
         }
 
         return (
-          <span
-            className={`px-2 py-1 rounded-full text-[10px] font-medium ${colorClass}`}
-          >
-            {statusText}
-          </span>
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${dotColor}`}></div>
+            <span className={`text-xs font-medium ${textColor}`}>
+              {statusText}
+            </span>
+          </div>
         );
       },
       sortingFn: (rowA, rowB) => {
@@ -176,6 +155,86 @@ export function useProductColumns({ onDelete }) {
           <span className="text-sm text-gray-600">
             {count} {count === 1 ? "variant" : "variants"}
           </span>
+        );
+      },
+      enableSorting: true,
+    },
+
+    // ✅ CREATED AT - Modern Date Display
+    {
+      id: "created_at",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="p-0 font-semibold"
+        >
+          Created
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        const dateString = row.original.created_at;
+        const date = new Date(dateString);
+
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xs font-medium text-slate-700">
+              {formatDate(dateString)}
+            </span>
+            <span className="text-[10px] text-slate-500">
+              {date.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
+          </div>
+        );
+      },
+      sortingFn: (rowA, rowB) => {
+        return (
+          new Date(rowA.original.created_at) -
+          new Date(rowB.original.created_at)
+        );
+      },
+      enableSorting: true,
+    },
+
+    // 🔄 UPDATED AT - Modern Date Display
+    {
+      id: "updated_at",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="p-0 font-semibold"
+        >
+          Updated
+          <ArrowUpDown className="w-4 h-4 ml-2" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        const dateString = row.original.updated_at;
+        const date = new Date(dateString);
+
+        return (
+          <div className="flex flex-col gap-0.5">
+            <span className="text-xs font-medium text-slate-700">
+              {formatDate(dateString)}
+            </span>
+            <span className="text-[10px] text-slate-500">
+              {date.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
+          </div>
+        );
+      },
+      sortingFn: (rowA, rowB) => {
+        return (
+          new Date(rowA.original.updated_at) -
+          new Date(rowB.original.updated_at)
         );
       },
       enableSorting: true,
@@ -222,12 +281,11 @@ export function useProductColumns({ onDelete }) {
       sortingFn: (rowA, rowB) => {
         const statusA = rowA.original.is_available;
         const statusB = rowB.original.is_available;
-
-        // Published (true) comes first, Draft (false) comes second
-        return statusB - statusA; // or statusA - statusB for opposite order
+        return statusB - statusA;
       },
       enableSorting: true,
     },
+
     // ⚙️ ACTIONS - Essential Operations
     {
       id: "actions",

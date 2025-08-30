@@ -54,27 +54,29 @@ function CategoriesPage() {
                   {category.name}
                 </h2>
                 <p className="mb-6 text-muted-foreground">
-                  Explore our {category.product_count} products available in
-                  here
+                  Explore our {category.active_product_count} products available
+                  in here
                 </p>
                 {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-y-20 gap-x-6"> */}
                 <div className="grid grid-cols-5 gap-y-20 gap-x-6">
-                  {category.subcategories.map((subcategory) => {
-                    return (
-                      <CategoryCard
-                        key={subcategory.id}
-                        name={subcategory.name}
-                        storage={subcategory.product_count}
-                        image={subcategory.image_url}
-                        isActive={subcategory.active}
-                        onViewSubcategoryProducts={
-                          handleViewSubcategoryProducts
-                        }
-                        subcategoryId={subcategory.id}
-                        categoryId={category.id}
-                      />
-                    );
-                  })}
+                  {category.subcategories
+                    // .filter((sub) => sub.active === 1)
+                    .map((subcategory) => {
+                      return (
+                        <CategoryCard
+                          key={subcategory.id}
+                          name={subcategory.name}
+                          storage={subcategory.active_product_count}
+                          image={subcategory.image_url}
+                          isActive={subcategory.active}
+                          onViewSubcategoryProducts={
+                            handleViewSubcategoryProducts
+                          }
+                          subcategoryId={subcategory.id}
+                          categoryId={category.id}
+                        />
+                      );
+                    })}
                 </div>
               </div>
             )

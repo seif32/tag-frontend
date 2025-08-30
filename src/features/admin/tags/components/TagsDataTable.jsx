@@ -63,19 +63,15 @@ export function TagsDataTable({ data = [], handleDelete, handleEdit }) {
   return (
     <div className="space-y-4">
       {/* 🔍 Search & Filters */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center space-x-2">
-            <Search className="h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search tags..."
-              value={globalFilter ?? ""}
-              onChange={(event) => setGlobalFilter(String(event.target.value))}
-              className="max-w-sm"
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex items-center space-x-2">
+        <Search className="h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search tags..."
+          value={globalFilter ?? ""}
+          onChange={(event) => setGlobalFilter(String(event.target.value))}
+          className="max-w-sm"
+        />
+      </div>
 
       {/* 📋 Data Table */}
       <Card>

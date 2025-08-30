@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
-import { Plus, RefreshCw, Tag, TrendingUp } from "lucide-react";
+import {
+  Plus,
+  RefreshCw,
+  Tag,
+  TrendingUp,
+  Users,
+  Calendar,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { TagsDataTable } from "../components/TagsDataTable";
 import useTags from "@/hooks/useTags";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import AdminAddTagDialog from "../components/AdminAddTagDialog";
+import StatsCard from "../../ui/StatsCard";
 
 function AdminTagsPage() {
   const { tags, errorTags, isErrorTags, isLoadingTags, refetchTags } =
@@ -24,7 +30,6 @@ function AdminTagsPage() {
     setDialogOpen(true);
   }
 
-  // 🗑️ Handle Delete Tag
   function handleDelete(tag) {
     deleteTag(tag.id);
   }
@@ -60,7 +65,7 @@ function AdminTagsPage() {
       recentlyAdded,
       activeToday,
     });
-  }, [tags]); // only runs when tags change
+  }, [tags]);
 
   if (isLoadingTags) return <LoadingState type="table" />;
 
@@ -109,55 +114,28 @@ function AdminTagsPage() {
 
       <Separator />
 
-      {/* 📊 Quick Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Tags</CardTitle>
-            <Badge variant="secondary">{stats.total}</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              All registered tags
-            </p>
-          </CardContent>
-        </Card>
+      {/* ✅ Updated Stats Section using StatsCard */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <StatsCard
+          title="Total Tags"
+          icon={Tag}
+          value={stats.total}
+          subtitle="All registered tags"
+        />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Categories</CardTitle>
-            <Badge variant="outline">{stats.categories}</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.categories}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Unique categories
-            </p>
-          </CardContent>
-        </Card>
+        <StatsCard
+          title="This Week"
+          icon={Calendar}
+          value={stats.recentlyAdded}
+          subtitle="Recently added"
+        />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">This Week</CardTitle>
-            <Badge variant="default">{stats.recentlyAdded}</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.recentlyAdded}</div>
-            <p className="text-xs text-muted-foreground mt-1">Recently added</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Today</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.activeToday}</div>
-            <p className="text-xs text-muted-foreground mt-1">Updated today</p>
-          </CardContent>
-        </Card>
+        <StatsCard
+          title="Active Today"
+          icon={TrendingUp}
+          value={stats.activeToday}
+          subtitle="Updated today"
+        />
       </div>
 
       <TagsDataTable

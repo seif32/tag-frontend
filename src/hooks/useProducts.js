@@ -564,6 +564,35 @@ const useProducts = {
       resetBulkDelete: mutation.reset,
     };
   },
+
+  /**
+   * 🔍 CHECK PRODUCT NAME EXISTS HOOK
+   * Real-time validation for product name uniqueness
+   * Debounced to prevent excessive API calls during typing
+   * Perfect for form validation with instant feedback
+   * Returns: isCheckingName, nameExists, errorNameCheck
+   * Example: const { nameExists, isCheckingName } = useProducts.useCheckNameExists(productName);
+   */
+  useCheckNameExists: (productName, options = {}) => {
+    const query = useQuery({
+      queryKey: ["products", "check-name", productName], // ✅ FIX: Include productName in key
+      queryFn: () => productsApi.checkNameExists(productName),
+      enabled: !!productName && productName.trim().length > 0,
+      staleTime: 0, // ✅ Force fresh data every time
+      gcTime: 0, // ✅ Don't cache the result (React Query v5)
+      // cacheTime: 0, // ✅ Use this if you're on React Query v4
+      refetchOnWindowFocus: false,
+      retry: false,
+      ...options,
+    });
+
+    return {
+      isCheckingName: query.isLoading,
+      nameExists: query.data?.exists || false,
+      errorNameCheck: query.error,
+      isErrorNameCheck: query.isError,
+    };
+  },
 };
 
 export default useProducts;

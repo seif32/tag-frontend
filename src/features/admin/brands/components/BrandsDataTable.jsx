@@ -59,72 +59,16 @@ export function BrandsDataTable({ data = [], handleEdit, handleDelete }) {
 
   return (
     <div className="space-y-4">
-      {/* 🎯 Header Section */}
-
-      {/* 📊 Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Brands</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{data.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Active This Month
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {
-                data.filter((brand) => {
-                  const updatedDate = new Date(brand.updated_at);
-                  const thisMonth = new Date();
-                  thisMonth.setDate(1);
-                  return updatedDate >= thisMonth;
-                }).length
-              }
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Recently Added
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {
-                data.filter((brand) => {
-                  const createdDate = new Date(brand.created_at);
-                  const weekAgo = new Date();
-                  weekAgo.setDate(weekAgo.getDate() - 7);
-                  return createdDate >= weekAgo;
-                }).length
-              }
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* 🔍 Search & Filters */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center space-x-2">
-            <Search className="h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search brands..."
-              value={globalFilter ?? ""}
-              onChange={(event) => setGlobalFilter(String(event.target.value))}
-              className="max-w-sm"
-            />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex items-center space-x-2">
+        <Search className="h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search brands..."
+          value={globalFilter ?? ""}
+          onChange={(event) => setGlobalFilter(String(event.target.value))}
+          className="max-w-sm"
+        />
+      </div>
 
       {/* 📋 Data Table */}
       <Card>
