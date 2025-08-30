@@ -16,7 +16,6 @@ function VariantsSection({ variantValues, variantTypes }) {
   const selectedTypes = useVariantStore((state) => state.selectedTypes);
   const setSelectedTypes = useVariantStore((state) => state.setSelectedTypes);
 
-  // 🔥 Dynamic duplicate removal
   const cleanedVariantValues = useMemo(() => {
     if (!variantValues || !Array.isArray(variantValues)) return [];
 
@@ -39,7 +38,6 @@ function VariantsSection({ variantValues, variantTypes }) {
     });
   }, [variantValues]);
 
-  // 🎨 Minimal color styling
   const getColorStyle = (color) => {
     const colorMap = {
       Black: "border-gray-800 text-gray-800",

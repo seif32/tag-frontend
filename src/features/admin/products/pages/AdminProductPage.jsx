@@ -188,8 +188,6 @@ export default function AdminProductPage({ mode }) {
 
   const isPending = isCreating || isUpdating;
 
-  consoleObject(product);
-
   return (
     <>
       <Form {...form}>
