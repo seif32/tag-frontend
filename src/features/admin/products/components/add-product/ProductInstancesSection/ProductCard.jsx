@@ -5,7 +5,7 @@ import NoProducts from "./NoProducts";
 import { Button } from "@/components/ui/button";
 import useFilteredVariants from "../../../hooks/useFilteredVariants";
 
-function ProductCard({ variantsList, onEditProduct }) {
+function ProductCard({ variantsList, onEditProduct, productName }) {
   const { filteredVariants, isEmpty } = useFilteredVariants(variantsList);
 
   return (
@@ -14,7 +14,7 @@ function ProductCard({ variantsList, onEditProduct }) {
         <Card key={product.id || index}>
           <CardContent>
             <div className="flex justify-between">
-              <ProductHeader product={product} />
+              <ProductHeader product={product} productName={productName} />
               <Button
                 type="button" // Important: prevent parent form submission
                 onClick={(e) => {

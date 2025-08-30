@@ -27,7 +27,7 @@ function ProductDetailPage() {
 
   const {
     selectedVariant,
-    variantBlocks, // ✅ Now using blocks instead of individual types
+    variantBlocks,
     currentImages,
     handleVariantSelection,
     isLoading: isVariantLoading,
@@ -46,12 +46,7 @@ function ProductDetailPage() {
     };
   }, [product]);
 
-  const { products = [], isLoadingProducts } =
-    useProducts.useAllWithoutVariants(filters || {});
-
-  // const firstFourProducts = products?.slice(1, 5);
-
-  if (isLoadingProduct || isVariantLoading || isLoadingProducts) {
+  if (isLoadingProduct || isVariantLoading) {
     return <LoadingState type="card" rows={20} columns={3} />;
   }
 
@@ -86,7 +81,6 @@ function ProductDetailPage() {
             selectedVariant={selectedVariant}
           />
 
-          {/* ✅ Updated to use variant blocks */}
           <VariantsSection
             variantBlocks={variantBlocks}
             onVariantChange={handleVariantSelection}
@@ -102,8 +96,6 @@ function ProductDetailPage() {
           />
         </div>
       </div>
-
-      {/* ... rest of your component */}
     </div>
   );
 }

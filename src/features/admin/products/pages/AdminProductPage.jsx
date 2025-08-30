@@ -244,6 +244,7 @@ export default function AdminProductPage({ mode }) {
                   variantsList={displayVariants}
                   append={append}
                   onEditProduct={handleEditProduct}
+                  productName={product?.name}
                 />
               </div>
 

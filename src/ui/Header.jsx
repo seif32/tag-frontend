@@ -2,6 +2,7 @@ import authApi from "@/auth/services/authApi";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
 import { Link, useLocation } from "react-router";
+import SearchInput from "./SearchInput";
 
 const Header = () => {
   const location = useLocation();
@@ -40,13 +41,9 @@ const Header = () => {
 
       {/* Right side actions */}
       <div className="flex items-center space-x-4">
-        {/* Search */}
+        {/* ✅ Replace the basic input with SearchInput component */}
         <div className="hidden md:block">
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <SearchInput />
         </div>
 
         {/* Cart */}
@@ -55,7 +52,6 @@ const Header = () => {
           className="relative p-2 text-gray-600 hover:text-gray-800"
         >
           🛒
-          {/* Static cart badge for UI */}
           <span className="absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full -top-1 -right-1">
             0
           </span>

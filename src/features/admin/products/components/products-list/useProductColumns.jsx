@@ -143,7 +143,7 @@ export function useProductColumns({ onDelete }) {
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 font-semibold"
+          className="p-0 font-semibold "
         >
           Variants
           <ArrowUpDown className="w-4 h-4 ml-2" />
@@ -152,7 +152,7 @@ export function useProductColumns({ onDelete }) {
       cell: ({ row }) => {
         const count = row.original.variant_count || 0;
         return (
-          <span className="text-sm text-gray-600">
+          <span className="text-xs text-gray-600">
             {count} {count === 1 ? "variant" : "variants"}
           </span>
         );
@@ -192,12 +192,15 @@ export function useProductColumns({ onDelete }) {
         );
       },
       sortingFn: (rowA, rowB) => {
-        return (
-          new Date(rowA.original.created_at) -
-          new Date(rowB.original.created_at)
-        );
+        const dateA = new Date(rowA.original.created_at).getTime();
+        const dateB = new Date(rowB.original.created_at).getTime();
+
+        if (dateA === dateB) return 0;
+        return dateA > dateB ? 1 : -1;
       },
+
       enableSorting: true,
+      sortingFn: "datetime",
     },
 
     // 🔄 UPDATED AT - Modern Date Display

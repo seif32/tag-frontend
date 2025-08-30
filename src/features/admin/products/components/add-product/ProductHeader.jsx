@@ -46,12 +46,7 @@ export default function ProductHeader({
       </div>
 
       <div className="flex gap-2">
-        {isViewMode ? (
-          <Button onClick={() => setMode("edit")}>
-            <Edit size={16} className="mr-2" />
-            Edit
-          </Button>
-        ) : (
+        {!isViewMode && (
           <>
             <Button variant="outline">Discard</Button>
             <Button onClick={() => handleSubmit(onSubmit)}>Save</Button>

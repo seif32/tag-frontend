@@ -3,7 +3,12 @@ import ProductCard from "./ProductCard";
 import AddProductSheet from "./AddProductSheet";
 import useProductStore from "@/features/admin/store/productStore";
 
-function ProductInstancesSection({ variantsList, append, onEditProduct }) {
+function ProductInstancesSection({
+  variantsList,
+  append,
+  onEditProduct,
+  productName,
+}) {
   const mode = useProductStore((state) => state.mode);
   const isAddMode = mode === "add";
   const isViewMode = mode === "view";
@@ -18,7 +23,8 @@ function ProductInstancesSection({ variantsList, append, onEditProduct }) {
       </CardHeader>
       <ProductCard
         variantsList={variantsList}
-        onEditProduct={onEditProduct} // Pass it down
+        onEditProduct={onEditProduct}
+        productName={productName}
       />
     </Card>
   );

@@ -129,10 +129,10 @@ export const useCategoryColumns = ({ onEdit, onDelete, onView }) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem onClick={() => onView?.(subcategory)}>
+              {/* <DropdownMenuItem onClick={() => onView?.(subcategory)}>
                 <Eye className="mr-2 h-4 w-4" />
                 View products
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem onClick={() => onEdit?.(subcategory)}>
                 <Edit2 className="mr-2 h-4 w-4" />
                 Edit subcategory

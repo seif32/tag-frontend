@@ -1,3 +1,4 @@
+import { consoleObject } from "@/utils/consoleObject";
 import { FaStar } from "react-icons/fa";
 
 function ProductInfoSection({ product, selectedVariant }) {
@@ -13,13 +14,20 @@ function ProductInfoSection({ product, selectedVariant }) {
 
   const filledStars = Math.floor(rating);
 
+  consoleObject(selectedVariant.types);
+
   return (
     <div className="space-y-1">
       <p className="text-sm text-muted-foreground">
         {categoryName} {subCategoryName && `• ${subCategoryName}`}
       </p>
 
-      <h2 className="text-6xl font-bold font-degular">{displayName}</h2>
+      <h2 className="text-6xl font-bold font-degular">
+        {displayName}{" "}
+        {selectedVariant.types.map((type) => (
+          <span key={type.type_id}>{type.value.name} </span>
+        ))}
+      </h2>
 
       <div className="flex items-end gap-2">
         <div className="flex gap-1">

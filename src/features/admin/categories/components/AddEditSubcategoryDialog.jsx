@@ -82,11 +82,13 @@ function AddEditSubcategoryDialog({
         <Button
           variant="outline"
           size="sm"
-          className="h-8 gap-3"
+          className="h-8 gap-3 group"
           onClick={onAdd}
         >
-          <Tag className="w-4 h-4 text-accent" />
-          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap text-accent">
+          <span className="text-accent group-hover:text-white">
+            <Tag className="w-4 h-4" />
+          </span>
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap text-accent group-hover:text-white">
             Add Subcategory
           </span>
         </Button>
