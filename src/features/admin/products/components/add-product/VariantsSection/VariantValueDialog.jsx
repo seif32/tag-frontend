@@ -53,7 +53,7 @@ function VariantValueDialog({ typeId, typeName }) {
                 setIsDialogOpen={setIsDialogOpen}
               />
               <div className="border" />
-              {/* <VariantManualValueInput typeId={typeId} typeName={typeName} /> */}
+              <VariantManualValueInput typeId={typeId} typeName={typeName} />
             </div>
           </DialogDescription>
         </DialogHeader>

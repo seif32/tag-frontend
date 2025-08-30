@@ -57,14 +57,21 @@ async function apiRequest(endpoint, options = {}) {
 
     // Handle different response types
     if (!response.ok) {
-      // Try to get error message from response
       let errorMessage = `API Error: ${response.status}`;
       let errorDetails = null;
 
       try {
         const errorData = await response.json();
-        errorMessage = errorData.message || errorMessage;
-        errorDetails = errorData;
+        // ✅ IMPROVED: Use the server's actual error message
+        errorMessage =
+          errorData.message ||
+          errorData.error ||
+          `${response.status}: ${response.statusText}`;
+        errorDetails = {
+          ...errorData,
+          status: response.status,
+          statusText: response.statusText,
+        };
       } catch {
         // If can't parse JSON, use status text
         errorMessage = `${response.status}: ${response.statusText}`;
@@ -90,6 +97,11 @@ async function apiRequest(endpoint, options = {}) {
       error.url = url;
       error.method = config.method || "GET";
       error.responseTime = responseTime;
+      error.response = {
+        status: response.status,
+        statusText: response.statusText,
+      }; // ✅ Added this
+      error.isNotFound = response.status === 404; // ✅ Convenience property
 
       throw error;
     }

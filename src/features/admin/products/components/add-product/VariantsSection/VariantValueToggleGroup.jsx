@@ -36,7 +36,13 @@ function VariantValueToggleGroup({
 
   if (isLoading) return <LoadingState />;
 
-  if (error) {
+  const isTypeNotFound =
+    error &&
+    (error.status === 404 ||
+      error.isNotFound ||
+      error.message?.toLowerCase().includes("not found"));
+
+  if (error && !isTypeNotFound) {
     return (
       <div className="flex flex-col items-center justify-center p-6 text-center">
         <div className="text-red-400 mb-2">❌</div>
@@ -45,6 +51,22 @@ function VariantValueToggleGroup({
           {error.message || "Failed to load values"}
         </p>
         <p className="text-xs">Please try again later</p>
+      </div>
+    );
+  }
+
+  if (isTypeNotFound || (Array.isArray(values) && values.length === 0)) {
+    return (
+      <div className="flex flex-col items-center justify-center p-6 text-center">
+        <h5 className="text-sm font-medium mb-1">
+          {isTypeNotFound ? "New variant type" : "No values available"}
+        </h5>
+        <p className="text-xs text-gray-500 mb-3">
+          {isTypeNotFound
+            ? `This ${typeName?.toLowerCase()} type needs its first values!`
+            : `No ${typeName?.toLowerCase()} values have been configured yet.`}
+        </p>
+        <p className="text-xs font-bold mb-3">Add values below ⬇</p>
       </div>
     );
   }
@@ -58,7 +80,7 @@ function VariantValueToggleGroup({
         <p className="text-xs text-gray-500 mb-3">
           No {typeName?.toLowerCase()} values have been configured yet.
         </p>
-        <p className="text-xs font-bold mb-3">Add from below</p>
+        <p className="text-xs font-bold mb-3">Add from below ⬇</p>
       </div>
     );
   }
@@ -71,7 +93,7 @@ function VariantValueToggleGroup({
             Choose {typeName?.toLowerCase() || "value"}
           </h5>
           <h6 className="text-primary/50 text-xs leading-none mb-2.5">
-            Select multiple options by clicking them! ✨
+            Select multiple options by clicking them!
           </h6>
         </div>
 

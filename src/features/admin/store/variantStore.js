@@ -31,6 +31,24 @@ const useVariantStore = create((set, get) => ({
     })),
 
   setSelectedValues: (values) => set({ selectedValues: values }),
+  addVariantValue: (typeId, value) => {
+    set((state) => {
+      const currentValues = state.availableValues[typeId] || [];
+      return {
+        ...state,
+        availableValues: {
+          ...state.availableValues,
+          [typeId]: [
+            ...currentValues,
+            {
+              id: `temp-${Date.now()}`, // Temporary ID
+              value: value.trim(),
+            },
+          ],
+        },
+      };
+    });
+  },
   setSelectedValuesForType: (typeId, typeName, values) =>
     set((state) => {
       const existingIndex = state.selectedValues.findIndex(

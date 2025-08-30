@@ -12,11 +12,33 @@ export function useManualVariantValueInput() {
     }
   };
 
-  function handleAddValue(variantId, value) {
+  // ✅ IMPROVED: Don't clear input here - let component handle it
+  function handleAddValue(typeId, value) {
     if (!value.trim()) return;
-    addVariantValue(variantId, value);
-    setNewValueInputs({ ...newValueInputs, [variantId]: "" });
+
+    // Add to store optimistically (optional - you might want to do this after API success)
+    addVariantValue(typeId, value);
+
+    // Don't clear input here - let the component clear it after API success
+    // setNewValueInputs({ ...newValueInputs, [typeId]: "" });
   }
 
-  return { handleKeyPress, handleAddValue, newValueInputs, setNewValueInputs };
+  // ✅ NEW: Separate function to clear input (called after API success)
+  function clearInput(typeId) {
+    setNewValueInputs((prev) => ({ ...prev, [typeId]: "" }));
+  }
+
+  // ✅ NEW: Clear all inputs
+  function clearAllInputs() {
+    setNewValueInputs({});
+  }
+
+  return {
+    handleKeyPress,
+    handleAddValue,
+    newValueInputs,
+    setNewValueInputs,
+    clearInput, // ✅ Export new function
+    clearAllInputs,
+  };
 }

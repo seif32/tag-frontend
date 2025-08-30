@@ -3,36 +3,51 @@ import { Input } from "@/components/ui/input";
 import { useManualVariantValueInput } from "../../../hooks/useManualVariantValueInput";
 import useVariants from "@/hooks/useVariants";
 
-function VariantManualValueInput({ variant }) {
-  const { handleAddValue, handleKeyPress, newValueInputs, setNewValueInputs } =
-    useManualVariantValueInput();
+function VariantManualValueInput({ typeId, typeName, onValueCreated }) {
+  const {
+    handleAddValue,
+    handleKeyPress,
+    newValueInputs,
+    setNewValueInputs,
+    clearInput, // ✅ Use the new function
+  } = useManualVariantValueInput();
 
   const { createManyValues, isPendingVariantValues } =
-    useVariants.useCreateManyValues();
+    useVariants.useCreateManyValues({
+      onSuccess: (data) => {
+        // ✅ Clear input only after API success
+        clearInput(typeId);
 
-  // 🎯 Handle form submission
+        if (onValueCreated) {
+          onValueCreated();
+        }
+
+        console.log("✅ Value created successfully:", data);
+      },
+      onError: (error) => {
+        console.error("❌ Failed to create value:", error);
+        // Input stays populated on error - user can retry
+      },
+    });
+
   const handleCreateValue = () => {
-    const inputValue = newValueInputs[variant.id] || "";
+    const inputValue = newValueInputs[typeId] || "";
 
-    // ✅ Validation - don't send empty values
     if (!inputValue.trim()) {
       console.warn("Cannot create empty value");
       return;
     }
 
-    // 🚀 Call your hook's add function
-    handleAddValue(variant.id, inputValue);
+    // Add to store (optimistic update)
+    handleAddValue(typeId, inputValue);
 
-    // 🎯 Send to API with the actual input value
+    // Send to API
     createManyValues({
-      variant_type_id: variant.type,
-      values: [inputValue.trim()], // ✅ Pass the actual input value!
+      variant_type_id: typeId,
+      values: [inputValue.trim()],
     });
-
-    console.log("Creating value:", inputValue, "for variant:", variant);
   };
 
-  // 🎯 Enhanced key press handler
   const handleInputKeyPress = (e) => {
     handleKeyPress(e, handleCreateValue);
   };
@@ -41,27 +56,26 @@ function VariantManualValueInput({ variant }) {
     <div>
       <h5 className="leading-none mb-1">You don't find what you want?</h5>
       <h6 className="text-primary/50 text-xs leading-none mb-2.5">
-        It's fine, just create your new one!
+        It's fine, just create your new one! ✨
       </h6>
       <div className="flex gap-4 items-center">
         <Input
-          value={newValueInputs[variant.id] || ""}
+          value={newValueInputs[typeId] || ""} // ✅ Use typeId
           onChange={(e) =>
             setNewValueInputs({
               ...newValueInputs,
-              [variant.id]: e.target.value,
+              [typeId]: e.target.value, // ✅ Use typeId
             })
           }
-          placeholder="Enter new value..."
+          placeholder={`Enter new ${typeName?.toLowerCase() || "value"}...`}
           onKeyPress={handleInputKeyPress}
-          disabled={isPendingVariantValues} // ✅ Disable during API call
+          disabled={isPendingVariantValues}
         />
         <Button
           onClick={handleCreateValue}
           disabled={
-            !(
-              newValueInputs[variant.id] && newValueInputs[variant.id].trim()
-            ) || isPendingVariantValues // ✅ Disable during API call
+            !(newValueInputs[typeId] && newValueInputs[typeId].trim()) ||
+            isPendingVariantValues
           }
         >
           {isPendingVariantValues ? "Creating..." : "Create"}
