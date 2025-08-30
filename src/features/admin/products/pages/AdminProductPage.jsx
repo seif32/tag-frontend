@@ -36,7 +36,6 @@ export default function AdminProductPage({ mode }) {
     (state) => state.clearSelectedCombination
   );
 
-  // Dialog state - moved to parent
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -53,6 +52,8 @@ export default function AdminProductPage({ mode }) {
   useEffect(() => {
     return () => {
       resetProductState();
+      clearSelectedTypes();
+      clearSelectedValues();
     };
   }, []);
 
@@ -118,7 +119,7 @@ export default function AdminProductPage({ mode }) {
       };
 
       consoleObject(editTransformedData);
-      // updateProduct({ id, data: editTransformedData });
+      updateProduct({ id, data: editTransformedData });
     } else {
       const validVariants =
         data?.variants?.filter(
@@ -187,6 +188,8 @@ export default function AdminProductPage({ mode }) {
 
   const isPending = isCreating || isUpdating;
 
+  consoleObject(product);
+
   return (
     <>
       <Form {...form}>
@@ -206,7 +209,7 @@ export default function AdminProductPage({ mode }) {
             />
             <div className="flex flex-col flex-1 gap-4 lg:flex-row">
               <div className="flex flex-col gap-4 flex-5/8">
-                <GeneralInfoSection form={form} />
+                <GeneralInfoSection />
                 <VariantsSection
                   variantValues={product?.variant_values}
                   variantTypes={product?.variant_types}

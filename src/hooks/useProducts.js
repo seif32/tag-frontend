@@ -187,7 +187,6 @@ const useProducts = {
 
       // ⚡ Optimistic updates for better UX
       onMutate: async ({ id, data }) => {
-        // Cancel outgoing refetches
         await queryClient.cancelQueries({ queryKey: ["products", id] });
 
         // Snapshot previous value
@@ -208,7 +207,7 @@ const useProducts = {
         // Built-in functionality
         queryClient.setQueryData(["products", variables.id], data);
         queryClient.invalidateQueries({ queryKey: ["products"] });
-        toast.success("✅ Product updated successfully!");
+        toast.success("Product updated successfully!");
 
         // Your custom logic
         if (options.onSuccess) {
