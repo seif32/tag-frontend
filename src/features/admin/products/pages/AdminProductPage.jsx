@@ -87,7 +87,7 @@ export default function AdminProductPage({ mode }) {
 
   useEffect(() => {
     if (product && mode !== "add") {
-      form.reset(product);
+      form.reset({ ...product, variants: [] });
     }
   }, [product, form, mode]);
 
@@ -105,18 +105,18 @@ export default function AdminProductPage({ mode }) {
   function onSubmit(data) {
     if (isViewMode) return;
 
-    const editTransformedData = {
-      name: data.name,
-      description: data.description,
-      short_description: data.short_description,
-      category_id: data.category_id,
-      subcategory_id: data.subcategory_id,
-      brand_id: data.brand_id,
-      featured: data.featured,
-      active: Boolean(data.active),
-    };
-
     if (isEditMode) {
+      const editTransformedData = {
+        name: data.name,
+        description: data.description,
+        short_description: data.short_description,
+        category_id: data.category_id,
+        subcategory_id: data.subcategory_id,
+        brand_id: data.brand_id,
+        featured: data.featured,
+        active: Boolean(data.active),
+      };
+
       consoleObject(editTransformedData);
       // updateProduct({ id, data: editTransformedData });
     } else {
@@ -189,7 +189,6 @@ export default function AdminProductPage({ mode }) {
 
   return (
     <>
-      {/* Main Form */}
       <Form {...form}>
         <form
           noValidate
@@ -208,17 +207,14 @@ export default function AdminProductPage({ mode }) {
             <div className="flex flex-col flex-1 gap-4 lg:flex-row">
               <div className="flex flex-col gap-4 flex-5/8">
                 <GeneralInfoSection form={form} />
-                {!isEditMode && (
-                  <VariantsSection
-                    variantValues={product?.variant_values}
-                    variantTypes={product?.variant_types}
-                  />
-                )}
+                <VariantsSection
+                  variantValues={product?.variant_values}
+                  variantTypes={product?.variant_types}
+                />
                 <ProductInstancesSection
                   variantsList={displayVariants}
-                  // variantsList={variantsList}
                   append={append}
-                  onEditProduct={handleEditProduct} // Pass the handler
+                  onEditProduct={handleEditProduct}
                 />
               </div>
 
@@ -238,7 +234,6 @@ export default function AdminProductPage({ mode }) {
         <DevTool control={form.control} />
       </Form>
 
-      {/* Dialog Outside Form - This is the key! 🔑 */}
       <EditProductDialog
         isDialogOpen={isDialogOpen}
         selectedProduct={selectedProduct}

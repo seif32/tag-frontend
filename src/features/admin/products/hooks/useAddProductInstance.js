@@ -1,6 +1,9 @@
 import useVariantStore from "../../store/variantStore";
+import useProductStore from "../../store/productStore"; // ✅ Add product store
+import useProducts from "@/hooks/useProducts"; // ✅ Add products hook
 import { useState } from "react";
 import { toast } from "sonner";
+import { consoleObject } from "@/utils/consoleObject";
 
 export function useAddProductInstance(
   control,
@@ -11,6 +14,33 @@ export function useAddProductInstance(
 ) {
   const [currentSelections, setCurrentSelections] = useState({});
   const [tempImages, setTempImages] = useState([]);
+  const [newVariant, setNewVariant] = useState(null);
+
+  // ✅ Add mode and product state
+  const mode = useProductStore((state) => state.mode);
+  const isEditMode = mode === "edit";
+  const productId = useProductStore((state) => state.productId);
+
+  // ✅ Add hooks for API calls
+  const { refetchProduct } = useProducts.useById(productId, {
+    enabled: !!productId,
+  });
+
+  const { addVariant, isPendingVariants } = useProducts.useAddVariant({
+    onSuccess: () => {
+      refetchProduct();
+
+      resetField("variants.0.quantity", { defaultValue: "" });
+      resetField("variants.0.price", { defaultValue: "" });
+      resetField("variants.0.currency", { defaultValue: "USD" });
+      resetField("variants.0.compare_at_price", { defaultValue: "" });
+      resetField("variants.0.cost_price", { defaultValue: "" });
+
+      // ✅ Clear local state after successful add
+      setCurrentSelections({});
+      setTempImages([]);
+    },
+  });
 
   const updateSelectedCombination = useVariantStore(
     (state) => state.updateSelectedCombination
@@ -19,11 +49,9 @@ export function useAddProductInstance(
 
   const isVariants = selectedValues.length !== 0;
 
-  // ✅ Validation function for required fields
   function validateVariantData(variantData) {
     const errors = [];
 
-    // Check required numeric fields
     if (
       !variantData.quantity ||
       variantData.quantity.toString().trim() === "" ||
@@ -56,13 +84,11 @@ export function useAddProductInstance(
     return errors;
   }
 
-  // ✅ Check if user selected variant types
   function validateCurrentSelections() {
     if (Object.keys(currentSelections).length === 0) {
       return ["Please select values for variant types"];
     }
 
-    // Check if user selected for all available types
     const availableTypeIds = selectedValues.map((sv) => sv.typeId);
     const selectedTypeIds = Object.keys(currentSelections).map((id) =>
       parseInt(id)
@@ -82,8 +108,7 @@ export function useAddProductInstance(
     return [];
   }
 
-  function handleAddVariant() {
-    // Get variant data first
+  async function handleAddVariant() {
     const variantData = getValues("variants.0");
 
     // ✅ Validate variant form data
@@ -121,31 +146,69 @@ export function useAddProductInstance(
 
       updateSelectedCombination(combinationArray);
 
-      const newVariant = {
+      // ✅ Build the new variant
+      const builtVariant = {
         ...variantData,
         types: combinationArray,
         images: tempImages,
       };
 
-      append(newVariant);
+      // ✅ Update state so it can be exported
+      setNewVariant(builtVariant);
 
-      resetField("variants.0.quantity", { defaultValue: "" });
-      resetField("variants.0.price", { defaultValue: "" });
-      resetField("variants.0.currency", { defaultValue: "USD" });
-      resetField("variants.0.compare_at_price", { defaultValue: "" });
-      resetField("variants.0.cost_price", { defaultValue: "" });
+      // ✅ Conditional logic based on mode
+      if (isEditMode) {
+        console.log("🔄 Adding variant to existing product via API...");
 
-      // ✅ Clear local state after successful add
-      setCurrentSelections({});
-      setTempImages([]);
+        consoleObject({
+          productId: productId,
+          variantData: {
+            quantity: parseInt(builtVariant.quantity),
+            price: parseFloat(builtVariant.price),
+            compare_at_price: parseFloat(builtVariant.compare_at_price || 0),
+            cost_price: parseFloat(builtVariant.cost_price || 0),
+            currency: builtVariant.currency,
+            types: builtVariant.types.map((combo) => ({
+              type_id: combo.typeId,
+              value_id: combo.selectedValue.id,
+            })),
+            images: builtVariant.images,
+          },
+        });
 
-      // ✅ Success toast with variant details
+        addVariant({
+          productId: productId,
+          variantData: {
+            quantity: parseInt(builtVariant.quantity),
+            price: parseFloat(builtVariant.price),
+            compare_at_price: parseFloat(builtVariant.compare_at_price || 0),
+            cost_price: parseFloat(builtVariant.cost_price || 0),
+            currency: builtVariant.currency,
+            types: builtVariant.types.map((combo) => ({
+              type_id: combo.typeId,
+              value_id: combo.selectedValue.id,
+            })),
+            images: builtVariant.images,
+          },
+        });
+      } else {
+        // ✨ Add mode: Normal flow - append to form
+        console.log("✨ Adding variant to form...");
+        append(builtVariant);
+        resetField("variants.0.quantity", { defaultValue: "" });
+        resetField("variants.0.price", { defaultValue: "" });
+        resetField("variants.0.currency", { defaultValue: "USD" });
+        resetField("variants.0.compare_at_price", { defaultValue: "" });
+        resetField("variants.0.cost_price", { defaultValue: "" });
+
+        // ✅ Clear local state after successful add
+        setCurrentSelections({});
+        setTempImages([]);
+      }
+
       const variantName = combinationArray
         .map((c) => c.selectedValue.value)
         .join(" ");
-      toast.success("Variant added successfully!", {
-        duration: 3000,
-      });
     } catch (error) {
       // ✅ Error handling
       console.error("Error adding variant:", error);
@@ -153,7 +216,13 @@ export function useAddProductInstance(
         description: "Something went wrong. Please try again.",
         duration: 4000,
       });
+      setNewVariant(null); // Clear on error
     }
+  }
+
+  // ✅ Function to clear the newVariant (optional)
+  function clearNewVariant() {
+    setNewVariant(null);
   }
 
   return {
@@ -165,5 +234,9 @@ export function useAddProductInstance(
     selectedValues,
     currentSelections,
     setCurrentSelections,
+    newVariant,
+    clearNewVariant,
+    isEditMode, // ✅ Export mode info
+    isPendingVariants, // ✅ Export loading state
   };
 }

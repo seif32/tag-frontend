@@ -238,8 +238,8 @@ const productsApi = {
       throw new Error("Product ID is required");
     }
 
-    if (!variantData.variant_sku || !variantData.price) {
-      throw new Error("Variant SKU and price are required");
+    if (!variantData.price) {
+      throw new Error("Price are required");
     }
 
     try {

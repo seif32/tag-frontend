@@ -347,7 +347,7 @@ const useProducts = {
           queryKey: ["products", variables.productId],
         });
         queryClient.invalidateQueries({ queryKey: ["products"] });
-        toast.success("✨ Variant added successfully!");
+        toast.success("Variant added successfully!");
 
         if (options.onSuccess) {
           options.onSuccess(data, variables);

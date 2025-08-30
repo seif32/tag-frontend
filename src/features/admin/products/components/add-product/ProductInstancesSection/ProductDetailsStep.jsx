@@ -21,10 +21,10 @@ function ProductDetailsStep({ currentSelections }) {
         <div className="flex flex-wrap gap-1">
           {Object.values(currentSelections).map((selection, index) => (
             <span
-              key={selection.id || index}
+              key={selection?.id || index}
               className="text-xs h-fit bg-white rounded-sm px-4 py-0.5 ca"
             >
-              {selection.value}
+              {selection?.value}
             </span>
           ))}
         </div>

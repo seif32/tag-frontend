@@ -4,6 +4,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import useProductStore from "@/features/admin/store/productStore";
 
 function ProductSheetHeader({ onAddVariant }) {
   return (

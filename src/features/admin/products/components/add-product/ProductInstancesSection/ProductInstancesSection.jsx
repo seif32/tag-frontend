@@ -6,12 +6,13 @@ import useProductStore from "@/features/admin/store/productStore";
 function ProductInstancesSection({ variantsList, append, onEditProduct }) {
   const mode = useProductStore((state) => state.mode);
   const isAddMode = mode === "add";
+  const isViewMode = mode === "view";
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-4 space-y-0">
         <h2 className="font-semibold text-md">Products</h2>
-        {isAddMode && (
+        {!isViewMode && (
           <AddProductSheet append={append} variantsList={variantsList} />
         )}
       </CardHeader>
