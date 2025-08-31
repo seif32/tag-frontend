@@ -47,6 +47,8 @@ const productsApi = {
     try {
       const queryParams = new URLSearchParams();
 
+      if (filters.page) queryParams.append("page", filters.page);
+      if (filters.limit) queryParams.append("limit", filters.limit);
       if (filters.active !== undefined)
         queryParams.append("active", filters.active);
       if (filters.category_id)

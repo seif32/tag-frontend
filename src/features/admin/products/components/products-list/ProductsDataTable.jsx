@@ -43,33 +43,29 @@ export function ProductsDataTable({
   isErrorProducts,
   errorProducts,
   onDelete,
+  setCurrentPage,
+  currentPage,
+  setPageSize,
+  pageSize,
 }) {
-  // 🎨 Local state for table interactions
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
 
   const productColumns = useProductColumns({ onDelete });
 
   const memoizedProducts = useMemo(() => {
-    return products.data || [];
+    return products?.data || [];
   }, [products]);
 
   const table = useReactTable({
     data: memoizedProducts || [],
     columns: productColumns,
-    // 🔄 State management
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    onPaginationChange: setPagination,
     // 📊 Feature configuration
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     // 🎨 Current state
@@ -77,8 +73,9 @@ export function ProductsDataTable({
       sorting,
       columnFilters,
       globalFilter,
-      pagination,
     },
+    manualPagination: true,
+    pageCount: products?.pagination?.totalPages || 0,
   });
 
   // 🔄 Loading State - Clean and Professional
@@ -112,8 +109,6 @@ export function ProductsDataTable({
     );
   }
 
-  consoleObject(products.data);
-
   // 🎨 Main Table Render
   return (
     <div className="w-full space-y-4">
@@ -123,10 +118,13 @@ export function ProductsDataTable({
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
             <Input
-              placeholder="Search products..."
+              placeholder="Search products in this page..."
               value={globalFilter ?? ""}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              className="w-64 pl-8"
+              onChange={(e) => {
+                setGlobalFilter(e.target.value);
+                setCurrentPage(1); // 👈 HERE! Reset when searching
+              }}
+              className="w-70 pl-8"
             />
           </div>
         </div>
@@ -206,9 +204,10 @@ export function ProductsDataTable({
         <div className="flex items-center space-x-2">
           <p className="text-sm text-gray-700">Rows per page</p>
           <Select
-            value={`${table.getState().pagination.pageSize}`}
+            value={`${pageSize}`}
             onValueChange={(value) => {
-              table.setPageSize(Number(value));
+              setPageSize(Number(value));
+              setCurrentPage(1);
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
@@ -226,16 +225,16 @@ export function ProductsDataTable({
 
         <div className="flex items-center space-x-2">
           <p className="text-sm text-gray-700">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
+            Page {products?.pagination?.page || 1} of{" "}
+            {products?.pagination?.totalPages || 1}
           </p>
 
           <div className="flex items-center space-x-1">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage <= 1}
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -243,8 +242,8 @@ export function ProductsDataTable({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage >= (products?.pagination?.totalPages || 1)}
             >
               Next
               <ChevronRight className="w-4 h-4" />

@@ -10,37 +10,16 @@ function VariantsValues({ typeId, typeName, variantValues }) {
   const mode = useProductStore((state) => state.mode);
   const isEditMode = mode === "edit";
 
-  const cleanedVariantValues = useMemo(() => {
-    if (!variantValues || !Array.isArray(variantValues)) return [];
-
-    return variantValues.map((typeGroup) => ({
-      ...typeGroup,
-      values: typeGroup.values.filter(
-        (value, index, array) =>
-          array.findIndex((v) => v.id === value.id) === index
-      ),
-    }));
-  }, [variantValues]);
-
   useEffect(() => {
     if (isEditMode) {
-      setSelectedValues(cleanedVariantValues);
+      setSelectedValues(variantValues);
     }
-  }, [isEditMode, cleanedVariantValues, setSelectedValues]);
+  }, [isEditMode, variantValues, setSelectedValues]);
 
-  // ✅ Fixed: Moved valuesForThisType logic inside useMemo
   const uniqueValues = useMemo(() => {
     const valuesForThisType =
       selectedValues.find((sv) => sv.typeId === typeId)?.values || [];
-
-    const seen = new Set();
-    return valuesForThisType.filter((item) => {
-      if (seen.has(item.id)) {
-        return false;
-      }
-      seen.add(item.id);
-      return true;
-    });
+    return valuesForThisType;
   }, [selectedValues, typeId]);
 
   const safeValues = uniqueValues.map((item) => ({

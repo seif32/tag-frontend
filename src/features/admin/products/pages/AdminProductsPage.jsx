@@ -4,15 +4,21 @@ import { ProductsDataTable } from "../components/products-list/ProductsDataTable
 import useProducts from "@/hooks/useProducts";
 import ProductsStats from "../components/products-list/ProductsStats";
 import ProductsHeader from "../components/products-list/ProductsHeader";
+import { useState } from "react";
 
 export default function AdminProductsPage() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const {
     products,
     isLoadingProducts,
     errorProducts,
     isErrorProducts,
     refetchProducts,
-  } = useProducts.useAllWithoutVariants();
+  } = useProducts.useAllWithoutVariants({
+    page: currentPage,
+    limit: pageSize,
+  });
 
   const { stats, isLoadingStats, refetchStats } = useProducts.useStats();
 
@@ -56,6 +62,10 @@ export default function AdminProductsPage() {
         isErrorProducts={isErrorProducts}
         errorProducts={errorProducts}
         onDelete={handleDelete}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
       />
     </div>
   );
