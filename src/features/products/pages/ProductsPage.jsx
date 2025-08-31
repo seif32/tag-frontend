@@ -6,16 +6,28 @@ import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import { useNavigate, useParams } from "react-router";
-import { Package } from "lucide-react";
-import { consoleObject } from "@/utils/consoleObject";
+import { ChevronLeft, ChevronRight, Package } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function ProductsPage() {
   const { categoryId, subcategoryId } = useParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const filters = {
     active: 1,
     ...(categoryId && { category_id: parseInt(categoryId) }),
     ...(subcategoryId && { subcategory_id: parseInt(subcategoryId) }),
+    ...(currentPage && { page: parseInt(currentPage) }),
+    ...(pageSize && { limit: parseInt(pageSize) }),
   };
 
   const {
@@ -32,7 +44,6 @@ function ProductsPage() {
     navigate(`/products/${productId}`);
   }
 
-  // 🎯 Get category/subcategory names from products data
   const getPageInfo = () => {
     if (!products || products.length === 0) {
       return {
@@ -93,12 +104,6 @@ function ProductsPage() {
       />
     );
 
-  const productsCountArray =
-    products?.data?.map((product) => product.variant_count) || [];
-  const totalVariantsCount = productsCountArray.reduce(
-    (acc, curr) => acc + curr,
-    0
-  );
   const totalProductsCount = products?.data?.length || 0;
 
   const pageInfo = getPageInfo();
@@ -144,19 +149,41 @@ function ProductsPage() {
           </div>
 
           {/* 📊 Product Count */}
-          <p className="text-muted-foreground">
-            {totalProductsCount > 0 ? (
-              <>
-                Showing {totalProductsCount} product
-                {totalProductsCount !== 1 ? "s" : ""}
-                {/* {totalVariantsCount > totalProductsCount && (
-                  <span> with {totalVariantsCount} variants</span>
-                )} */}
-              </>
-            ) : (
-              "No products found"
-            )}
-          </p>
+          <div className="flex justify-between items-baseline">
+            <p className="text-muted-foreground">
+              {totalProductsCount > 0 ? (
+                <>
+                  Showing {totalProductsCount} product
+                  {totalProductsCount !== 1 ? "s" : ""}
+                </>
+              ) : (
+                "No products found"
+              )}
+            </p>
+            <div className="flex items-center space-x-2">
+              <p className="text-sm text-gray-700">Products per page</p>
+              <Select
+                value={`${pageSize}`}
+                onValueChange={(value) => {
+                  setPageSize(Number(value));
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="h-8 w-[70px]">
+                  <SelectValue
+                    placeholder={pageSize} // ✅ Use your own pageSize state
+                  />
+                </SelectTrigger>
+                <SelectContent side="top">
+                  {[10, 20, 30, 40, 50].map((pageSize) => (
+                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                      {pageSize}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
 
         {/* <ProductsHeader productCount={totalProductsCount} /> */}
@@ -196,6 +223,33 @@ function ProductsPage() {
             })}
           </div>
         )}
+        <div className="mt-8 justify-self-end flex-col flex items-start space-y-2">
+          <p className="text-sm text-gray-700">
+            Page {products?.pagination?.page || 1} of{" "}
+            {products?.pagination?.totalPages || 1}
+          </p>
+
+          <div className="flex items-center space-x-1">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage <= 1}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage >= (products?.pagination?.totalPages || 1)}
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
       </main>
     </SidebarProvider>
   );
