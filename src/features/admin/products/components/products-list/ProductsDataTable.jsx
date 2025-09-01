@@ -3,7 +3,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -24,18 +23,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Search,
-  Loader2,
-  AlertCircle,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, AlertCircle } from "lucide-react";
 
 import { useProductColumns } from "./useProductColumns";
 import LoadingState from "@/ui/LoadingState";
 import { consoleObject } from "@/utils/consoleObject";
+import { useSearchParams } from "react-router";
+import { useUpdateUrlParams } from "@/hooks/useUpdateUrlParams";
 
 export function ProductsDataTable({
   products = [],
@@ -43,14 +37,16 @@ export function ProductsDataTable({
   isErrorProducts,
   errorProducts,
   onDelete,
-  setCurrentPage,
-  currentPage,
-  setPageSize,
-  pageSize,
 }) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const updateUrlParams = useUpdateUrlParams();
+
+  const currentPage = parseInt(searchParams.get("page")) || 1;
+  const pageSize = parseInt(searchParams.get("limit")) || 10;
 
   const productColumns = useProductColumns({ onDelete });
 
@@ -117,7 +113,7 @@ export function ProductsDataTable({
         <div className="flex items-center space-x-2">
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-            <Input
+            {/* <Input
               placeholder="Search products in this page..."
               value={globalFilter ?? ""}
               onChange={(e) => {
@@ -125,7 +121,7 @@ export function ProductsDataTable({
                 setCurrentPage(1); // 👈 HERE! Reset when searching
               }}
               className="w-70 pl-8"
-            />
+            /> */}
           </div>
         </div>
 
@@ -206,8 +202,10 @@ export function ProductsDataTable({
           <Select
             value={`${pageSize}`}
             onValueChange={(value) => {
-              setPageSize(Number(value));
-              setCurrentPage(1);
+              updateUrlParams({
+                limit: value,
+                page: 1, // ✅ Reset to page 1 when changing page size
+              });
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
@@ -216,7 +214,7 @@ export function ProductsDataTable({
               />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
+              {[2, 10, 20, 30, 40, 50].map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
@@ -235,7 +233,7 @@ export function ProductsDataTable({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage(currentPage - 1)}
+              onClick={() => updateUrlParams({ page: currentPage - 1 })} // ✅ Update URL
               disabled={currentPage <= 1}
             >
               <ChevronLeft className="w-4 h-4" />
@@ -244,7 +242,7 @@ export function ProductsDataTable({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage(currentPage + 1)}
+              onClick={() => updateUrlParams({ page: currentPage + 1 })} // ✅ Update URL
               disabled={currentPage >= (products?.pagination?.totalPages || 1)}
             >
               Next

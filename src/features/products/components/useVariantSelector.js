@@ -1,17 +1,21 @@
-// src/hooks/useVariantSelector.js
+"use client";
+
 import { useState, useMemo, useEffect } from "react";
 
 const useVariantSelector = (variants = []) => {
-  // 🎯 Find the primary variant (or first available)
-  const primaryVariant = useMemo(() => {
-    const primary = variants.find((v) => v.is_primary === 1);
-    return primary || variants[0] || null;
-  }, [variants]);
+  const safeVariants = Array.isArray(variants) ? variants : [];
 
-  // 📊 Current selected variant
+  // Find the primary variant (or first available)
+  const primaryVariant = useMemo(() => {
+    if (safeVariants.length === 0) return null;
+    const primary = safeVariants.find((v) => v.is_primary === 1);
+    return primary || safeVariants[0] || null;
+  }, [safeVariants]);
+
+  // Current selected variant
   const [selectedVariant, setSelectedVariant] = useState(null);
 
-  // 🚀 Auto-select primary variant on load
+  // Auto-select primary variant on load
   useEffect(() => {
     if (primaryVariant && !selectedVariant) {
       setSelectedVariant(primaryVariant);
@@ -19,11 +23,11 @@ const useVariantSelector = (variants = []) => {
   }, [primaryVariant, selectedVariant]);
 
   const variantBlocks = useMemo(() => {
-    return variants.map((variant) => {
+    return safeVariants.map((variant) => {
       // Create display name from variant types
-      const combinationName = variant.types
-        ?.map((type) => type.value.name)
-        .join(" • ");
+      const combinationName =
+        variant.types?.map((type) => type.value.name).join(" • ") ||
+        `Variant ${variant.id}`;
 
       return {
         id: variant.id,
@@ -36,22 +40,20 @@ const useVariantSelector = (variants = []) => {
         images: variant.images || [],
       };
     });
-  }, [variants, selectedVariant]);
+  }, [safeVariants, selectedVariant]);
 
-  // 🔄 Handle variant block selection
+  // Handle variant block selection
   const handleVariantSelection = (variantBlock) => {
     setSelectedVariant(variantBlock.variant);
   };
 
-  // 🖼️ Get images for current variant
+  // Get images for current variant
   const currentImages = useMemo(() => {
     if (!selectedVariant?.images) return [];
 
     return selectedVariant.images.map((img) => ({
       original: img.image_url,
       thumbnail: img.image_url,
-      // originalAlt: selectedVariant.variant_name,
-      // thumbnailAlt: selectedVariant.variant_name,
     }));
   }, [selectedVariant]);
 
@@ -60,7 +62,7 @@ const useVariantSelector = (variants = []) => {
     variantBlocks,
     currentImages,
     handleVariantSelection,
-    isLoading: !selectedVariant && variants.length > 0,
+    isLoading: !selectedVariant && safeVariants.length > 0,
   };
 };
 

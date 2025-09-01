@@ -1,13 +1,10 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { ProductsSidebar } from "../components/ProductsSidebar";
 import ProductCard from "../components/ProductCard";
-import { ProductsHeader } from "../components/ProductsHeader";
 import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import { ChevronLeft, ChevronRight, Package } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -16,19 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useUpdateUrlParams } from "@/hooks/useUpdateUrlParams";
 
 function ProductsPage() {
+  const updateUrlParams = useUpdateUrlParams();
+  const [searchParams] = useSearchParams();
   const { categoryId, subcategoryId } = useParams();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
 
-  const filters = {
-    active: 1,
-    ...(categoryId && { category_id: parseInt(categoryId) }),
-    ...(subcategoryId && { subcategory_id: parseInt(subcategoryId) }),
-    ...(currentPage && { page: parseInt(currentPage) }),
-    ...(pageSize && { limit: parseInt(pageSize) }),
-  };
+  const page = parseInt(searchParams.get("page")) || 1;
+  const limit = parseInt(searchParams.get("limit")) || 10;
 
   const {
     products,
@@ -36,7 +29,10 @@ function ProductsPage() {
     errorProducts,
     isErrorProducts,
     refetchProducts,
-  } = useProducts.useAllWithoutVariants(filters);
+  } = useProducts.useAllWithoutVariants({
+    category_id: categoryId,
+    id: subcategoryId,
+  });
 
   const navigate = useNavigate();
 
@@ -163,16 +159,16 @@ function ProductsPage() {
             <div className="flex items-center space-x-2">
               <p className="text-sm text-gray-700">Products per page</p>
               <Select
-                value={`${pageSize}`}
+                value={`${limit}`}
                 onValueChange={(value) => {
-                  setPageSize(Number(value));
-                  setCurrentPage(1);
+                  updateUrlParams({
+                    limit: value,
+                    page: 1,
+                  });
                 }}
               >
                 <SelectTrigger className="h-8 w-[70px]">
-                  <SelectValue
-                    placeholder={pageSize} // ✅ Use your own pageSize state
-                  />
+                  <SelectValue placeholder={limit} />
                 </SelectTrigger>
                 <SelectContent side="top">
                   {[10, 20, 30, 40, 50].map((pageSize) => (
@@ -233,8 +229,8 @@ function ProductsPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage <= 1}
+              onClick={() => updateUrlParams({ page: page - 1 })}
+              disabled={page <= 1}
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -242,8 +238,8 @@ function ProductsPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage >= (products?.pagination?.totalPages || 1)}
+              onClick={() => updateUrlParams({ page: page + 1 })}
+              disabled={page >= (products?.pagination?.totalPages || 1)}
             >
               Next
               <ChevronRight className="w-4 h-4" />

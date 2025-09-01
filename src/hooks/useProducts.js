@@ -1,5 +1,6 @@
 import productsApi from "@/services/productsApi";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams, useSearchParams } from "react-router";
 import { toast } from "sonner";
 
 const useProducts = {
@@ -42,11 +43,24 @@ const useProducts = {
    * Example: const { products } = useProducts.useAllWithoutVariants({ active: 1 });
    */
   useAllWithoutVariants: (filters = {}, options = {}) => {
+    const [searchParams] = useSearchParams();
+
+    // Read page and limit from URL params or fallback to filters or default values
+    const page = parseInt(searchParams.get("page")) || filters.page || 1;
+    const limit = parseInt(searchParams.get("limit")) || filters.limit || 10;
+
+    // Merge pagination values into filters
+    const mergedFilters = {
+      ...filters,
+      page,
+      limit,
+    };
+
     const query = useQuery({
-      queryKey: ["products", "without-variants", filters], // Include filters for proper cache separation
-      queryFn: () => productsApi.getAllWithoutVariants(filters), // Pass filters to API
-      staleTime: 5 * 60 * 1000, // 5 minutes - simpler data, can cache longer
-      cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+      queryKey: ["products", "without-variants", mergedFilters], // Include all filters for proper caching
+      queryFn: () => productsApi.getAllWithoutVariants(mergedFilters),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
       ...options,
     });
 
