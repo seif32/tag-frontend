@@ -34,10 +34,10 @@ const ProgressSteps = ({ currentStep }) => {
   };
 
   return (
-    <div className="w-full bg-white border-b border-gray-200 py-6 px-4 mb-8">
+    <div className="w-full px-4 py-6 mb-8 bg-white border-b border-gray-200">
       <div className="max-w-4xl mx-auto">
         {/* Desktop Progress Bar */}
-        <div className="hidden md:flex items-center justify-between">
+        <div className="items-center justify-between hidden md:flex">
           {steps.map((step, index) => {
             const status = getStepStatus(step.number);
             const Icon = step.icon;
@@ -53,7 +53,7 @@ const ProgressSteps = ({ currentStep }) => {
                       status === "completed"
                         ? "bg-green-500 border-green-500 text-white"
                         : status === "active"
-                        ? "bg-blue-500 border-blue-500 text-white animate-pulse"
+                        ? "bg-primary border-primary text-white animate-pulse"
                         : "bg-white border-gray-300 text-gray-400"
                     }
                   `}
@@ -66,7 +66,7 @@ const ProgressSteps = ({ currentStep }) => {
 
                     {/* Active step ring */}
                     {status === "active" && (
-                      <div className="absolute -inset-1 rounded-full border-2 border-blue-200 animate-ping" />
+                      <div className="absolute border-2 rounded-full border-primary/20 -inset-1 animate-ping" />
                     )}
                   </div>
 
@@ -116,7 +116,7 @@ const ProgressSteps = ({ currentStep }) => {
           <div className="relative mb-8">
             <div className="absolute top-6 left-0 w-full h-0.5 bg-gray-300" />
             <div
-              className="absolute top-6 left-0 h-0.5 bg-blue-500 transition-all duration-500 ease-out"
+              className="absolute top-6 left-0 h-0.5 bg-primary transition-all duration-500 ease-out"
               style={{
                 width: `${((currentStep - 1) / (steps.length - 1)) * 100}%`,
               }}
@@ -137,7 +137,7 @@ const ProgressSteps = ({ currentStep }) => {
                         status === "completed"
                           ? "border-green-500 text-green-500"
                           : status === "active"
-                          ? "border-blue-500 text-blue-500"
+                          ? "border-primary text-accent"
                           : "border-gray-300 text-gray-400"
                       }
                     `}

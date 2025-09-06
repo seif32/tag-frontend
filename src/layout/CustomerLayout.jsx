@@ -5,9 +5,8 @@ import ProgressSteps from "@/features/cart/components/ProgressSteps";
 
 function CustomerLayout() {
   const location = useLocation();
-  const isProductsPage = location.pathname.startsWith("/products");
+  const isProductsPage = location.pathname.startsWith("/productsss");
 
-  // Check if we're in the cart flow
   const isCartFlow =
     ["/cart", "/checkout"].some((path) => location.pathname.includes(path)) ||
     location.pathname.includes("/success");
