@@ -1,4 +1,6 @@
+import { Package } from "lucide-react";
 import CartItem from "../components/CartItem";
+import OrderSummary from "../components/OrderSummary";
 
 const cartItems = [
   {
@@ -41,12 +43,25 @@ const cartItems = [
 function CartPage() {
   return (
     <div className="bg-[#F5F5F5] flex rounded-md p-4 gap-2">
-      <div className="flex flex-col gap-3 p-3 bg-white border rounded-md flex-2">
-        {cartItems.map((item) => (
-          <CartItem key={item.id} {...item} />
-        ))}{" "}
+      <div className="flex flex-col gap-4 p-3 bg-white border rounded-md flex-2">
+        <div>
+          <h2 className="text-lg font-semibold ">Shopping Cart</h2>
+          <div className="flex items-center gap-1">
+            <Package className=" text-muted-foreground" size={16} />
+            <p className="text-sm text-muted-foreground">
+              {cartItems.length} items
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3">
+          {cartItems.map((item) => (
+            <CartItem key={item.id} {...item} />
+          ))}
+        </div>
       </div>
-      <div className="flex-1 p-3 bg-white border rounded-md">right</div>
+      <div className="flex-1 ">
+        <OrderSummary delivery={45} discount={32} tax={0} total={1500} />
+      </div>
     </div>
   );
 }

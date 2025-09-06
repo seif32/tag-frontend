@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/utils/formatCurrency";
 import { useState } from "react";
 import { BsTrash3 } from "react-icons/bs";
 
@@ -21,11 +22,7 @@ function CartItem({ id, name, variants = [], quantity, price }) {
             ))}
           </div>
           <span className="text-xs ">
-            unit price:{" "}
-            {new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-            }).format(price)}
+            unit price: <span>{formatCurrency(price)}</span>
           </span>
         </div>
       </div>
@@ -49,10 +46,7 @@ function CartItem({ id, name, variants = [], quantity, price }) {
       </div>
 
       <p className="self-center font-semibold">
-        {new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-        }).format(qty * price)}
+        <p>{formatCurrency(qty * price)}</p>
       </p>
       <BsTrash3
         className="self-center text-gray-500 cursor-pointer hover:text-red-500"
