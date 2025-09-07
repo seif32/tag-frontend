@@ -42,7 +42,7 @@ const cartItems = [
 
 function CartPage() {
   return (
-    <div className="bg-[#F5F5F5] flex rounded-md p-4 gap-2">
+    <div className="bg-[#F5F5F5] flex flex-col md:flex-row rounded-md p-4 gap-2">
       <div className="flex flex-col gap-4 p-3 bg-white border rounded-md flex-2">
         <div>
           <h2 className="text-lg font-semibold ">Shopping Cart</h2>

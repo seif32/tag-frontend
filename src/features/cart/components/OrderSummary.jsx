@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { useNavigate } from "react-router";
 
 function OrderSummary({ discount, delivery, tax, total }) {
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4 p-3 py-6 bg-white border rounded-xl">
@@ -47,7 +50,9 @@ function OrderSummary({ discount, delivery, tax, total }) {
           <Button variant={"outline"} className={"flex-1"}>
             Cancel Order
           </Button>
-          <Button className={"flex-2"}>Checkout</Button>
+          <Button className={"flex-2"} onClick={() => navigate("/checkout")}>
+            Checkout
+          </Button>
         </div>
       </div>
     </div>
