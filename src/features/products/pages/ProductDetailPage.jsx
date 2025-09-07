@@ -9,6 +9,8 @@ import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import useVariantSelector from "../components/useVariantSelector";
+import { useState } from "react";
+import ProductCard from "../components/ProductCard";
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -43,10 +45,6 @@ function ProductDetailPage() {
       />
     );
 
-  function handleViewProductDetails(productId) {
-    navigate(`/products/${productId}`);
-  }
-
   return (
     <div className="flex flex-col space-y-8">
       <div className="flex flex-col md:flex-row md:gap-8">
@@ -58,7 +56,6 @@ function ProductDetailPage() {
             showNav={false}
           />
         </div>
-
         <div className="flex-1 space-y-8">
           <ProductInfoSection
             product={product}
@@ -80,8 +77,52 @@ function ProductDetailPage() {
           />
         </div>
       </div>
+      <FullDescription description={product.description} />
+      <div className="my-8 border"></div>
+      <RelatedProducts subcategoryId={product.subcategory_id} />
     </div>
   );
 }
 
 export default ProductDetailPage;
+
+function FullDescription({ description }) {
+  return <div className="text-muted-foreground">{description}</div>;
+}
+
+function RelatedProducts({ subcategoryId }) {
+  const navigate = useNavigate();
+
+  function handleViewProductDetails(productId) {
+    navigate(`/products/${productId}`);
+  }
+
+  const filters = {
+    limit: 4,
+    active: 1,
+    subcategory_id: subcategoryId,
+  };
+  const { products, isLoadingProducts } =
+    useProducts.useAllWithoutVariants(filters);
+
+  if (isLoadingProducts)
+    return <LoadingState type="card" rows={4} columns={2} />;
+  return (
+    <div className="grid grid-cols-4 gap-6">
+      {products?.data?.map((product) => {
+        return (
+          <ProductCard
+            key={product.id}
+            image={product.primary_image}
+            category={product.category_name}
+            name={product.name}
+            variantCount={product.variant_count}
+            brand={product.brand_name}
+            onViewProductDetails={handleViewProductDetails}
+            productId={product.id}
+          />
+        );
+      })}
+    </div>
+  );
+}
