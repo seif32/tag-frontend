@@ -55,6 +55,7 @@ const productsApi = {
         queryParams.append("category_id", filters.category_id);
       if (filters.subcategory_id)
         queryParams.append("subcategory_id", filters.subcategory_id);
+      if (filters.search) queryParams.append("search", filters.search);
 
       const queryString = queryParams.toString();
       const url = queryString

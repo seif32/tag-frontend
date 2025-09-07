@@ -12,13 +12,13 @@ const SearchInput = () => {
   const navigate = useNavigate();
 
   // Fetch products based on search term
-  const { products, isLoadingProducts } = useProducts.useAll(
+  const { products, isLoadingProducts } = useProducts.useAllWithoutVariants(
     {
-      search: debouncedSearchTerm, // Add this parameter to your API
-      active: 1, // Only search active products
+      search: debouncedSearchTerm,
+      active: 1,
     },
     {
-      enabled: debouncedSearchTerm.length > 2, // Only search after 3+ characters
+      enabled: debouncedSearchTerm.length > 2,
     }
   );
 
@@ -57,7 +57,7 @@ const SearchInput = () => {
   return (
     <div className="relative w-full max-w-sm">
       <div className="relative">
-        <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Search className="absolute w-4 h-4 -translate-y-1/2 left-2 top-1/2 text-muted-foreground" />
         <Input
           type="text"
           placeholder="Search products..."
@@ -69,43 +69,40 @@ const SearchInput = () => {
         {searchTerm && (
           <button
             onClick={clearSearch}
-            className="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className="absolute w-4 h-4 -translate-y-1/2 right-2 top-1/2 text-muted-foreground hover:text-foreground"
           >
-            <X className="h-4 w-4" />
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
       {/* Search Results Dropdown */}
       {isOpen && debouncedSearchTerm.length > 2 && (
-        <div className="absolute top-full z-50 mt-1 w-full rounded-md border bg-popover shadow-lg">
+        <div className="absolute z-50 w-full mt-1 border rounded-md shadow-lg top-full bg-popover">
           {isLoadingProducts ? (
-            <div className="p-4 text-center text-sm text-muted-foreground">
+            <div className="p-4 text-sm text-center text-muted-foreground">
               Searching...
             </div>
-          ) : products && products.length > 0 ? (
-            <div className="max-h-64 overflow-y-auto">
-              {products.slice(0, 8).map((product) => (
+          ) : products.data && products.data.length > 0 ? (
+            <div className="overflow-y-auto max-h-64">
+              {products.data.slice(0, 8).map((product) => (
                 <div
                   key={product.id}
                   onClick={() => handleProductSelect(product)}
-                  className="cursor-pointer border-b p-3 hover:bg-accent last:border-b-0"
+                  className="p-3 border-b cursor-pointer hover:bg-accent last:border-b-0"
                 >
                   <div className="flex items-start gap-3">
                     {/* Product Image Placeholder */}
-                    <div className="h-12 w-12 rounded-md bg-muted flex items-center justify-center">
+                    <div className="flex items-center justify-center w-12 h-12 rounded-md bg-muted">
                       📱
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-sm truncate">
+                      <h4 className="text-sm font-medium truncate">
                         {product.name}
                       </h4>
                       <p className="text-xs text-muted-foreground">
                         {product.category_name} • {product.brand_name}
-                      </p>
-                      <p className="text-xs text-green-600 font-medium mt-1">
-                        From ${product.variants?.[0]?.price || "N/A"}
                       </p>
                     </div>
                   </div>
@@ -113,7 +110,7 @@ const SearchInput = () => {
               ))}
             </div>
           ) : (
-            <div className="p-4 text-center text-sm text-muted-foreground">
+            <div className="p-4 text-sm text-center text-muted-foreground">
               No products found for "{debouncedSearchTerm}"
             </div>
           )}

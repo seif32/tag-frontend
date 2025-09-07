@@ -9,9 +9,6 @@ import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import useVariantSelector from "../components/useVariantSelector";
-import { useMemo } from "react";
-import ProductCard from "../components/ProductCard";
-import { consoleObject } from "@/utils/consoleObject";
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -32,19 +29,6 @@ function ProductDetailPage() {
     handleVariantSelection,
     isLoading: isVariantLoading,
   } = useVariantSelector(product?.variants);
-
-  const filters = useMemo(() => {
-    if (!product) return null;
-    return {
-      active: 1,
-      ...(product.category_id && {
-        category_id: parseInt(product.category_id),
-      }),
-      ...(product.subcategory_id && {
-        subcategory_id: parseInt(product.subcategory_id),
-      }),
-    };
-  }, [product]);
 
   if (isLoadingProduct || isVariantLoading) {
     return <LoadingState type="card" rows={20} columns={3} />;
