@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { useCartStore } from "@/store/cartStore";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { useState } from "react";
 import { BsTrash3 } from "react-icons/bs";
 
 function CartItem({ id, name, variants = [], quantity, price }) {
-  const [qty, setQty] = useState(quantity);
-
+  const increment = useCartStore((state) => state.increment);
+  const decrement = useCartStore((state) => state.decrement);
+  const removeItem = useCartStore((state) => state.removeItem);
   return (
     <div className="flex flex-col justify-between gap-5 p-3 border rounded-md md:flex-row">
       <div className="flex gap-2 ">
@@ -30,29 +31,30 @@ function CartItem({ id, name, variants = [], quantity, price }) {
       <div className="flex flex-1 justify-evenly ">
         <div className="flex items-center gap-2">
           <Button
-            size={"sm"}
-            className={"cursor-pointer bg-primary"}
-            onClick={() => setQty((q) => (q > 0 ? q - 1 : 0))}
+            size="sm"
+            className="bg-primary"
+            onClick={() => decrement(id)}
           >
             -
           </Button>
-          <span className="text-sm font-semibold">{qty}</span>
+
+          <span className="text-sm font-semibold">{quantity}</span>
           <Button
-            size={"sm"}
-            className={"cursor-pointer bg-primary"}
-            onClick={() => setQty((q) => q + 1)}
+            size="sm"
+            className="bg-primary"
+            onClick={() => increment(id)}
           >
             +
           </Button>
         </div>
 
         <p className="self-center font-semibold">
-          <p>{formatCurrency(qty * price)}</p>
+          <p>{formatCurrency(quantity * price)}</p>
         </p>
       </div>
       <BsTrash3
         className="self-end text-gray-500 cursor-pointer md:self-center hover:text-red-500"
-        onClick={() => console.log("Delete", id)}
+        onClick={() => removeItem(id)}
       />
     </div>
   );

@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
+import { useCartStore } from "@/store/cartStore";
 import { consoleObject } from "@/utils/consoleObject";
 import { Minus, Plus, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 
-function ActionButtons({ selectedVariant }) {
+function ActionButtons({ selectedVariant, product }) {
   const [quantity, setQuantity] = useState(1);
   const [showMaxWarning, setShowMaxWarning] = useState(false);
   const [notifyWhenAvailable, setNotifyWhenAvailable] = useState(false);
@@ -11,6 +12,8 @@ function ActionButtons({ selectedVariant }) {
   const maxQuantity = selectedVariant?.quantity || 0;
   const inStock = selectedVariant?.quantity > 0;
   const variantPrice = selectedVariant?.price || 0;
+
+  const addItem = useCartStore((state) => state.addItem);
 
   const handleDecrease = () => {
     if (showMaxWarning) setShowMaxWarning(false);
@@ -26,15 +29,26 @@ function ActionButtons({ selectedVariant }) {
     setQuantity((prev) => Math.min(maxQuantity, prev + 1));
   };
 
-  const handleAddToCart = () => {
+  function handleAddToCart() {
     if (!selectedVariant || !inStock) return;
+
     const item = {
-      ...selectedVariant,
-      orderedQuantity: quantity,
-      warehouseQuantity: selectedVariant.quantity,
+      id: selectedVariant.id,
+      product_id: selectedVariant.product_id,
+      price: selectedVariant.price,
+      currency: selectedVariant.currency,
+      types: selectedVariant.types,
+
+      name: product.name,
+      description: product.description,
+      short_description: product.short_description,
+      category: product.category_name,
+      subcategory: product.sub_category_name,
+      brand: product.brand,
     };
     consoleObject(item);
-  };
+    addItem(item, quantity);
+  }
 
   const handleBuyNow = () => {
     if (!selectedVariant || !inStock) return;
