@@ -52,10 +52,10 @@ function CheckoutForm({ form, onSubmit }) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="p-6 space-y-4 border rounded-xl"
+        className="p-6 space-y-4 bg-white border rounded-xl"
       >
         <div>
-          <h2 className="mb-2 text-xl font-semibold">Shipping Information</h2>
+          <h2 className="mb-2 text-xl font-semibold">Address Information</h2>
           <div className="border border-gray-100"></div>
         </div>
 
@@ -73,7 +73,7 @@ function CheckoutForm({ form, onSubmit }) {
                         variant="outline"
                         role="combobox"
                         aria-expanded={openCountry}
-                        className="justify-between w-full text-gray-500 border-gray-200 hover:bg-primary"
+                        className="justify-between w-full text-gray-500 border-gray-200 hover:bg-primary bg-[#F9FAFB]"
                       >
                         {field.value
                           ? countries.find(
@@ -137,7 +137,7 @@ function CheckoutForm({ form, onSubmit }) {
                         variant="outline"
                         role="combobox"
                         aria-expanded={openCity}
-                        className="justify-between w-full text-gray-500 border-gray-200 hover:bg-primary"
+                        className="justify-between w-full text-gray-500 border-gray-200 hover:bg-primary bg-[#F9FAFB]"
                       >
                         {field.value
                           ? cities.find(
@@ -238,7 +238,7 @@ function CheckoutForm({ form, onSubmit }) {
             <FormItem
               className={"flex flex-row-reverse justify-end gap-2 mt-8"}
             >
-              <FormLabel>This is my default location</FormLabel>
+              <FormLabel>Default location</FormLabel>
               <FormControl>
                 <Switch
                   checked={field.value}

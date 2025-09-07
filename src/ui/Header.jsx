@@ -48,7 +48,7 @@ const Header = () => {
 
         {/* Cart */}
         <Link
-          to={ROUTES.CART}
+          to={ROUTES.CUSTOMER.CART}
           className="relative p-2 text-gray-600 hover:text-gray-800"
         >
           🛒

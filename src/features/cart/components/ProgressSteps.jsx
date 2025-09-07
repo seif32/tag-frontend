@@ -29,7 +29,9 @@ const ProgressSteps = ({ currentStep }) => {
 
   const getStepStatus = (stepNumber) => {
     if (stepNumber < currentStep) return "completed";
-    if (stepNumber === currentStep) return "active";
+    if (stepNumber === currentStep) {
+      return currentStep === 3 ? "completed" : "active";
+    }
     return "pending";
   };
 
@@ -49,13 +51,13 @@ const ProgressSteps = ({ currentStep }) => {
                   {/* Step Circle */}
                   <div
                     className={`
-                      relative w-16 mb-3 h-16 rounded-full border-3 flex items-center justify-center transition-all duration-300 shadow-lg
+                      relative w-16 mb-3 h-16 rounded-full border-2 flex items-center justify-center transition-all duration-300 shadow-lg
                       ${
                         status === "completed"
                           ? "bg-green-500 border-green-500 text-white "
                           : status === "active"
                           ? "bg-primary border-primary text-white animate-pulse "
-                          : "bg-white border-gray-300 text-gray-400 "
+                          : "bg-white  border-gray-300 text-gray-400 "
                       }
                     `}
                   >

@@ -1,6 +1,6 @@
 import { Package } from "lucide-react";
 import CartItem from "../components/CartItem";
-import OrderSummary from "../components/OrderSummary";
+import OrderControls from "../components/OrderControls";
 
 const cartItems = [
   {
@@ -42,7 +42,7 @@ const cartItems = [
 
 function CartPage() {
   return (
-    <div className="bg-[#F5F5F5] flex flex-col md:flex-row rounded-md p-4 gap-2">
+    <div className="flex flex-col gap-2 rounded-md md:flex-row">
       <div className="flex flex-col gap-4 p-3 bg-white border rounded-md flex-2">
         <div>
           <h2 className="text-lg font-semibold ">Shopping Cart</h2>
@@ -60,7 +60,7 @@ function CartPage() {
         </div>
       </div>
       <div className="flex-1 ">
-        <OrderSummary delivery={45} discount={32} tax={0} total={1500} />
+        <OrderControls delivery={45} discount={32} tax={0} total={1500} />
       </div>
     </div>
   );

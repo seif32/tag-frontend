@@ -19,11 +19,11 @@ function CustomerLayout() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-stone-50">
       {/* {!isCartFlow && <Header />} */}
       <Header />
 
-      {isCartFlow && <ProgressSteps currentStep={getCurrentStep()} />}
+      {/* {isCartFlow && <ProgressSteps currentStep={getCurrentStep()} />} */}
 
       <main
         className={`flex-1 py-8 ${

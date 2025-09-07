@@ -7,7 +7,7 @@ function CustomerInfo() {
   const fullName = `${user.first_name} ${user.last_name}`;
 
   return (
-    <div className="flex flex-col gap-6 px-6 py-6 border border-gray-200 rounded-xl">
+    <div className="flex flex-col gap-6 px-6 py-6 bg-white border border-gray-200 rounded-xl">
       <div>
         <h2 className="mb-2 text-xl font-semibold">Customer Information</h2>
         <div className="border border-gray-100"></div>

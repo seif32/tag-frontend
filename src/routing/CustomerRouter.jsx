@@ -28,7 +28,7 @@ function CustomerRouter() {
 
         <Route path="cart" element={<CartPage />} />
         <Route path="checkout" element={<CheckoutPage />} />
-        <Route path="success/:orderId" element={<OrderSuccessPage />} />
+        <Route path="order/success/:orderId" element={<OrderSuccessPage />} />
       </Route>
     </Routes>
   );
