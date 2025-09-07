@@ -35,7 +35,7 @@ function AdminBrandsPage() {
 
   // ✅ Calculate brand statistics
   const brandStats = useMemo(() => {
-    if (!brands || brands.length === 0) {
+    if (!brands || brands.data.length === 0) {
       return {
         total: 0,
         withProducts: 0,
@@ -49,18 +49,18 @@ function AdminBrandsPage() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const recentlyAdded = brands.filter(
+    const recentlyAdded = brands.data.filter(
       (brand) => new Date(brand.created_at) >= weekAgo
     ).length;
 
-    const activeToday = brands.filter((brand) => {
+    const activeToday = brands.data.filter((brand) => {
       const updatedDate = new Date(brand.updated_at);
       updatedDate.setHours(0, 0, 0, 0);
       return updatedDate.getTime() === today.getTime();
     }).length;
 
     return {
-      total: brands.length,
+      total: brands.data.length,
       recentlyAdded,
       activeToday,
     };
@@ -78,7 +78,7 @@ function AdminBrandsPage() {
     );
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container p-6 mx-auto space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">
@@ -140,7 +140,7 @@ function AdminBrandsPage() {
       </div>
 
       <BrandsDataTable
-        data={brands}
+        data={brands.data}
         handleEdit={handleEdit}
         handleDelete={handleDelete}
       />

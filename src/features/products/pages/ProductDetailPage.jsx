@@ -1,6 +1,5 @@
-// src/features/products/pages/ProductDetailPage.jsx
 import ReactImageGallery from "react-image-gallery";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import ProductInfoSection from "../components/product-details/ProductInfoSection";
 import VariantsSection from "../components/product-details/VariantsSection";
 import ActionButtons from "../components/product-details/ActionButtons";
@@ -9,13 +8,9 @@ import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import useVariantSelector from "../components/useVariantSelector";
-import { useMemo } from "react";
-import ProductCard from "../components/ProductCard";
-import { consoleObject } from "@/utils/consoleObject";
 
 function ProductDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const {
     product,
@@ -33,19 +28,6 @@ function ProductDetailPage() {
     isLoading: isVariantLoading,
   } = useVariantSelector(product?.variants);
 
-  const filters = useMemo(() => {
-    if (!product) return null;
-    return {
-      active: 1,
-      ...(product.category_id && {
-        category_id: parseInt(product.category_id),
-      }),
-      ...(product.subcategory_id && {
-        subcategory_id: parseInt(product.subcategory_id),
-      }),
-    };
-  }, [product]);
-
   if (isLoadingProduct || isVariantLoading) {
     return <LoadingState type="card" rows={20} columns={3} />;
   }
@@ -58,10 +40,6 @@ function ProductDetailPage() {
         onDismiss={() => refetchProduct()}
       />
     );
-
-  function handleViewProductDetails(productId) {
-    navigate(`/products/${productId}`);
-  }
 
   return (
     <div className="flex flex-col space-y-8">

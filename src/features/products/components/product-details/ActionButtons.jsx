@@ -1,9 +1,9 @@
-// src/features/products/components/product-details/ActionButtons.jsx
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, AlertCircle, Bell, Heart, RefreshCw } from "lucide-react";
+import { consoleObject } from "@/utils/consoleObject";
+import { Minus, Plus, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 
-function ActionButtons({ selectedVariant, product }) {
+function ActionButtons({ selectedVariant }) {
   const [quantity, setQuantity] = useState(1);
   const [showMaxWarning, setShowMaxWarning] = useState(false);
   const [notifyWhenAvailable, setNotifyWhenAvailable] = useState(false);
@@ -28,12 +28,12 @@ function ActionButtons({ selectedVariant, product }) {
 
   const handleAddToCart = () => {
     if (!selectedVariant || !inStock) return;
-    console.log("Adding to cart:", {
-      variantId: selectedVariant.id,
-      // variantName: selectedVariant.variant_name,
-      quantity,
-      price: variantPrice,
-    });
+    const item = {
+      ...selectedVariant,
+      orderedQuantity: quantity,
+      warehouseQuantity: selectedVariant.quantity,
+    };
+    consoleObject(item);
   };
 
   const handleBuyNow = () => {

@@ -58,7 +58,7 @@ function AddEditSubcategoryDialog({
 
   const selectCategories =
     !isLoadingCategories && categories
-      ? categories.map((category) => ({
+      ? categories.data.map((category) => ({
           value: category.id,
           label: category.name,
         }))

@@ -1,11 +1,7 @@
 import { Form } from "@/components/ui/form";
 import { useFieldArray, useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import {
-  addProductDefaultValues,
-  editProductSchema,
-  productSchema,
-} from "../data/formDefaults";
+import { addProductDefaultValues, productSchema } from "../data/formDefaults";
 import VariantsSection from "../components/add-product/VariantsSection/VariantsSection";
 import ProductInstancesSection from "../components/add-product/ProductInstancesSection/ProductInstancesSection";
 import SettingsSection from "../components/add-product/SettingsSection";
@@ -16,7 +12,6 @@ import { useEffect, useState } from "react";
 import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import useProductStore from "../../store/productStore";
-import { consoleObject } from "@/utils/consoleObject";
 import ProductHeader from "../components/add-product/ProductHeader";
 import useVariantStore from "../../store/variantStore";
 import { toast } from "sonner";
