@@ -1,39 +1,19 @@
 import { Button } from "@/components/ui/button";
 import Lottie from "lottie-react";
-import { Package } from "lucide-react";
 import { useNavigate } from "react-router";
 import successAnimation from "../../../animations/success.json";
 import { useCartStore } from "@/store/cartStore";
 import { formatCurrency } from "@/utils/formatCurrency";
+import OrderContainer from "@/features/order/components/OrderContainer";
 
 function OrderSuccessPage() {
   const navigate = useNavigate();
-  const cartItems = useCartStore((state) => state.cartItems);
 
   return (
     <div className="flex flex-col items-center gap-8 ">
       <Title />
       <OrderDetails delivery={45} tax={22} />
-      <div className="w-full max-w-200 ">
-        <div className="mb-4">
-          <h2 className="text-xl leading-none">Products</h2>
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <Package size={16} />
-            <p>{cartItems.length} items</p>
-          </div>
-        </div>
-        {cartItems.map((item) => (
-          <OrderSummary
-            key={item.id}
-            name={item.name}
-            quantity={item.quantity}
-            totalPrice={item.price * item.quantity}
-            unitPrice={item.price}
-            variants={item.types.map((variant) => variant.value.name)}
-          />
-        ))}
-      </div>
-
+      <OrderContainer />
       <div className="flex justify-end w-full mt-4 max-w-200">
         <Button variant={"outline"} onClick={() => navigate("/products")}>
           Return Shopping
@@ -103,38 +83,5 @@ function OrderDetails({ delivery, tax }) {
         </div>
       </div>
     </div>
-  );
-}
-
-function OrderSummary({
-  name,
-  quantity,
-  totalPrice,
-  unitPrice,
-  variants = [],
-}) {
-  return (
-    <>
-      <div className="flex flex-col ">
-        <div className="flex items-baseline justify-between">
-          <p className="font-bold">{name}</p>
-          <p className="text-sm text-muted-foreground">
-            <span className="text-xs">{quantity}x </span>
-            {formatCurrency(unitPrice)}
-          </p>
-        </div>
-        <div className="flex items-baseline justify-between">
-          <div className="flex gap-1">
-            {variants.map((variant, index) => (
-              <span key={index} className="text-sm text-gray-400">
-                {variant} {index < variants.length - 1 && <span>•</span>}
-              </span>
-            ))}
-          </div>
-          <p>{formatCurrency(totalPrice)}</p>
-        </div>
-      </div>
-      <div className="my-4 border border-gray-200 border-dashed"></div>
-    </>
   );
 }
