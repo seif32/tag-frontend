@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import FlyingToCart from "@/features/cart/components/FlyingToCart";
 import { useCartStore } from "@/store/cartStore";
 import { consoleObject } from "@/utils/consoleObject";
 import { Minus, Plus, AlertCircle } from "lucide-react";
@@ -8,6 +9,8 @@ function ActionButtons({ selectedVariant, product }) {
   const [quantity, setQuantity] = useState(1);
   const [showMaxWarning, setShowMaxWarning] = useState(false);
   const [notifyWhenAvailable, setNotifyWhenAvailable] = useState(false);
+
+  const [flyItem, setFlyItem] = useState(null);
 
   const maxQuantity = selectedVariant?.quantity || 0;
   const inStock = selectedVariant?.quantity > 0;
@@ -30,6 +33,27 @@ function ActionButtons({ selectedVariant, product }) {
   };
 
   function handleAddToCart() {
+    const currentQuantity =
+      useCartStore.getState().cartItems.find((i) => i.id === selectedVariant.id)
+        ?.quantity || 0;
+
+    if (currentQuantity + quantity > maxQuantity) {
+      setShowMaxWarning(true);
+      return;
+    }
+
+    const startEl = document.querySelector("#add-to-cart-btn");
+    const endEl = document.querySelector("#cart-icon");
+
+    const startRect = startEl.getBoundingClientRect();
+    const endRect = endEl.getBoundingClientRect();
+
+    setFlyItem({
+      text: product.name,
+      start: { x: startRect.left, y: startRect.top },
+      end: { x: endRect.left, y: endRect.top },
+    });
+
     if (!selectedVariant || !inStock) return;
 
     const item = {
@@ -172,16 +196,25 @@ function ActionButtons({ selectedVariant, product }) {
             <Plus className="text-black group-hover:text-white" />
           </Button>
         </div>
-
-        <Button
-          onClick={handleAddToCart}
-          disabled={!inStock || !selectedVariant}
-          className="w-40 text-accent"
-          variant="outline"
-        >
-          Add to Cart
-        </Button>
-
+        <>
+          <Button
+            onClick={handleAddToCart}
+            disabled={!inStock || !selectedVariant}
+            className="w-40 text-accent"
+            variant="outline"
+            id="add-to-cart-btn" // Add this!
+          >
+            Add to Cart
+          </Button>
+          {flyItem && (
+            <FlyingToCart
+              text={flyItem.text}
+              start={flyItem.start}
+              end={flyItem.end}
+              onComplete={() => setFlyItem(null)}
+            />
+          )}
+        </>
         <Button
           onClick={handleBuyNow}
           disabled={!inStock || !selectedVariant}

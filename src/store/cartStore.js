@@ -5,6 +5,7 @@ export const useCartStore = create((set) => ({
   cartItems: [],
   totalItems: 0,
   totalPrice: 0,
+  uniqueItems: 0,
 
   addItem: (product, quantity = 1) => {
     set((state) => {
@@ -23,18 +24,7 @@ export const useCartStore = create((set) => ({
         updatedItems = [...state.cartItems, { ...product, quantity }];
       }
 
-      const totalItems = updatedItems.reduce((sum, item) => {
-        return sum + item.quantity;
-      }, 0);
-      const totalPrice = updatedItems.reduce((sum, item) => {
-        return sum + item.price * item.quantity;
-      }, 0);
-
-      return {
-        cartItems: updatedItems,
-        totalItems,
-        totalPrice,
-      };
+      return recalc(updatedItems);
     });
   },
   removeItem: (productId) => {
@@ -43,20 +33,7 @@ export const useCartStore = create((set) => ({
         (item) => item.id !== productId
       );
 
-      const totalItems = updatedItems.reduce(
-        (sum, item) => sum + item.quantity,
-        0
-      );
-      const totalPrice = updatedItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-      );
-
-      return {
-        cartItems: updatedItems,
-        totalItems,
-        totalPrice,
-      };
+      return recalc(updatedItems);
     });
   },
 
@@ -109,10 +86,11 @@ export const useCartStore = create((set) => ({
 }));
 
 function recalc(cartItems) {
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0); // all quantities
+  const uniqueItems = cartItems.length; // distinct products
   const totalPrice = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  return { cartItems, totalItems, totalPrice };
+  return { cartItems, totalItems, uniqueItems, totalPrice };
 }
