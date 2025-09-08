@@ -1,5 +1,5 @@
 import ReactImageGallery from "react-image-gallery";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import ProductInfoSection from "../components/product-details/ProductInfoSection";
 import VariantsSection from "../components/product-details/VariantsSection";
 import ActionButtons from "../components/product-details/ActionButtons";

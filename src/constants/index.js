@@ -4,7 +4,7 @@ export const ROUTES = {
   CUSTOMER: {
     HOME: "/",
     PRODUCTS: "/products",
-    PRODUCT_DETAIL: "/products/:id", // 🎯 Add dynamic routes
+    PRODUCT_DETAIL: "/products/:id",
     CATEGORIES: "/categories",
     CATEGORY_DETAIL: "/categories/:slug",
     CART: "/cart",

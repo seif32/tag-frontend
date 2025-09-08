@@ -1,5 +1,4 @@
 import { Outlet, useLocation } from "react-router";
-import Footer from "@/ui/Footer";
 import Header from "@/ui/Header";
 import ProgressSteps from "@/features/cart/components/ProgressSteps";
 
@@ -23,10 +22,10 @@ function CustomerLayout() {
       {/* {!isCartFlow && <Header />} */}
       <Header />
 
-      {/* {isCartFlow && <ProgressSteps currentStep={getCurrentStep()} />} */}
+      {isCartFlow && <ProgressSteps currentStep={getCurrentStep()} />}
 
       <main
-        className={`flex-1 py-8 ${
+        className={` flex-1 py-8 ${
           !isProductsPage ? "container px-8 mx-auto" : ""
         }`}
       >

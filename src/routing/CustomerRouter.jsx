@@ -7,6 +7,7 @@ import CustomerLayout from "@/layout/CustomerLayout";
 import CategoriesPage from "@/features/categories/pages/CategoriesPage";
 import CheckoutPage from "@/features/cart/pages/CheckoutPage";
 import OrderSuccessPage from "@/features/cart/pages/OrderSuccessPage";
+import OrdersHistoryPage from "@/features/order/pages/OrdersHistoryPage";
 
 function CustomerRouter() {
   return (
@@ -29,6 +30,8 @@ function CustomerRouter() {
         <Route path="cart" element={<CartPage />} />
         <Route path="checkout" element={<CheckoutPage />} />
         <Route path="order/success/:orderId" element={<OrderSuccessPage />} />
+
+        <Route path="orders" element={<OrdersHistoryPage />} />
       </Route>
     </Routes>
   );

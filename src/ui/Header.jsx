@@ -1,15 +1,14 @@
-import authApi from "@/auth/services/authApi";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
 import { Link, useLocation } from "react-router";
 import SearchInput from "./SearchInput";
-import { useCartStore } from "@/store/cartStore";
 import CartBadge from "@/features/cart/components/CartBadge";
+import { useAuthStore } from "@/auth/store/authStore";
+import { FiPackage, FiShoppingCart } from "react-icons/fi";
 
 const Header = () => {
   const location = useLocation();
-
-  const uniqueItems = useCartStore((state) => state.uniqueItems);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   async function handleLogout() {}
 
@@ -48,28 +47,40 @@ const Header = () => {
           <SearchInput />
         </div>
 
-        {/* Cart */}
-        <Link
-          to={ROUTES.CUSTOMER.CART}
-          id="cart-icon"
-          className="relative p-2 text-gray-600 hover:text-gray-800"
-        >
-          🛒
-          <CartBadge />
-        </Link>
-
-        {/* Auth buttons */}
-        <div className="flex items-center space-x-2">
-          <Link to={ROUTES.LOGIN} className="text-gray-600 hover:text-gray-800">
-            Login
-          </Link>
-          <Button
-            onClick={handleLogout}
-            className="px-4 py-2 text-white transition-colors rounded-lg hover:bg-primary/90 bg-primary"
-          >
-            Sign Up
-          </Button>
-        </div>
+        {isAuthenticated ? (
+          <div className="flex items-center">
+            <Link
+              to={ROUTES.CUSTOMER.ORDER_HISTORY}
+              id="cart-icon"
+              className="relative p-1.5 text-gray-600 hover:text-gray-800"
+            >
+              <FiPackage size={20} />
+            </Link>
+            <Link
+              to={ROUTES.CUSTOMER.CART}
+              id="cart-icon"
+              className="relative p-1.5 text-gray-600 hover:text-gray-800"
+            >
+              <FiShoppingCart size={20} />
+              <CartBadge />
+            </Link>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-2">
+            <Link
+              to={ROUTES.LOGIN}
+              className="text-gray-600 hover:text-gray-800"
+            >
+              Login
+            </Link>
+            <Button
+              onClick={handleLogout}
+              className="px-4 py-2 text-white transition-colors rounded-lg hover:bg-primary/90 bg-primary"
+            >
+              Sign Up
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Mobile menu toggle */}

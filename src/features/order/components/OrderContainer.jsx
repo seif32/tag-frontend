@@ -1,13 +1,12 @@
+import { useCartStore } from "@/store/cartStore";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { Package } from "lucide-react";
-
-const { useCartStore } = require("@/store/cartStore");
 
 export default function OrderContainer() {
   const cartItems = useCartStore((state) => state.cartItems);
 
   return (
-    <div className="w-full max-w-200 ">
+    <div className="w-full  ">
       <div className="mb-4">
         <h2 className="text-xl leading-none">Products</h2>
         <div className="flex items-center gap-1 text-muted-foreground">
