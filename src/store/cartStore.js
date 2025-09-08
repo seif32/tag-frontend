@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { create } from "zustand";
 
 export const useCartStore = create((set) => ({
@@ -61,9 +62,19 @@ export const useCartStore = create((set) => ({
 
   increment: (productId) =>
     set((state) => {
+      const item = state.cartItems.find((item) => item.id === productId);
+      if (!item) return state;
+
+      if (item.quantity >= item.stock) {
+        toast.error(`You can only add up to ${item.stock} of this item.`);
+
+        return state;
+      }
+
       const items = state.cartItems.map((item) =>
         item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
       );
+
       return recalc(items);
     }),
 

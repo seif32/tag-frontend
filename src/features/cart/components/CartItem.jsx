@@ -3,10 +3,14 @@ import { useCartStore } from "@/store/cartStore";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { BsTrash3 } from "react-icons/bs";
 
-function CartItem({ id, name, variants = [], quantity, price }) {
+function CartItem({ id, name, variants = [], quantity, price, stock }) {
   const increment = useCartStore((state) => state.increment);
   const decrement = useCartStore((state) => state.decrement);
   const removeItem = useCartStore((state) => state.removeItem);
+
+  console.log("quantity in component", quantity);
+  console.log("stock in component", stock);
+
   return (
     <div className="flex flex-col justify-between gap-5 p-3 border rounded-md md:flex-row">
       <div className="flex gap-2 ">
@@ -43,6 +47,7 @@ function CartItem({ id, name, variants = [], quantity, price }) {
             size="sm"
             className="bg-primary"
             onClick={() => increment(id)}
+            // disabled={quantity >= stock}
           >
             +
           </Button>

@@ -38,6 +38,7 @@ function ActionButtons({ selectedVariant, product }) {
       price: selectedVariant.price,
       currency: selectedVariant.currency,
       types: selectedVariant.types,
+      stock: selectedVariant.quantity,
 
       name: product.name,
       description: product.description,

@@ -29,6 +29,7 @@ function CartPage() {
                 price={Number(item.price)}
                 quantity={item.quantity}
                 variants={item.types.map((t) => t.value.name)}
+                stock={item.stock}
               />
             ))
           )}
