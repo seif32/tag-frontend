@@ -8,9 +8,6 @@ function CartItem({ id, name, variants = [], quantity, price, stock }) {
   const decrement = useCartStore((state) => state.decrement);
   const removeItem = useCartStore((state) => state.removeItem);
 
-  console.log("quantity in component", quantity);
-  console.log("stock in component", stock);
-
   return (
     <div className="flex flex-col justify-between gap-5 p-3 border rounded-md md:flex-row">
       <div className="flex gap-2 ">
