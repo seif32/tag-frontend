@@ -1,6 +1,5 @@
-// src/features/products/pages/ProductDetailPage.jsx
 import ReactImageGallery from "react-image-gallery";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import ProductInfoSection from "../components/product-details/ProductInfoSection";
 import VariantsSection from "../components/product-details/VariantsSection";
 import ActionButtons from "../components/product-details/ActionButtons";
@@ -14,7 +13,6 @@ import ProductCard from "../components/ProductCard";
 
 function ProductDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
 
   const {
     product,

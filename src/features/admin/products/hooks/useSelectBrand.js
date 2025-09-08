@@ -6,7 +6,7 @@ export function useSelectBrand(mode) {
   const { allBrands } = useMemo(() => {
     if (isLoadingBrands || !brands) return { allBrands: [] };
 
-    const allBrands = brands.map((brand) => ({
+    const allBrands = brands.data.map((brand) => ({
       value: brand.id,
       label: brand.name,
     }));

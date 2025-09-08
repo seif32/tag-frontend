@@ -41,7 +41,7 @@ export default function AdminCategoriesPage() {
   const flatSubCategories = React.useMemo(() => {
     if (!allSubCategories || isLoadingAllSubCategories) return [];
 
-    return allSubCategories;
+    return allSubCategories.data;
   }, [allSubCategories, isLoadingAllSubCategories]);
 
   const calculatedStats = React.useMemo(() => {
@@ -127,8 +127,8 @@ export default function AdminCategoriesPage() {
   if (isLoadingAllSubCategories) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center space-y-2">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+        <div className="space-y-2 text-center">
+          <div className="w-8 h-8 mx-auto border-b-2 rounded-full animate-spin border-primary"></div>
           <p className="text-sm text-muted-foreground">
             Loading allSubCategories...
           </p>
@@ -140,8 +140,8 @@ export default function AdminCategoriesPage() {
   if (errorAllSubCategories) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center space-y-4">
-          <div className="text-red-500 text-lg">
+        <div className="space-y-4 text-center">
+          <div className="text-lg text-red-500">
             ⚠️ Error loading allSubCategories
           </div>
           <p className="text-sm text-muted-foreground">
@@ -156,7 +156,7 @@ export default function AdminCategoriesPage() {
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="p-6 space-y-6">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -207,7 +207,7 @@ export default function AdminCategoriesPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-red-500" />
+              <AlertTriangle className="w-5 h-5 text-red-500" />
               Delete Subcategory
             </DialogTitle>
             <DialogDescription>
@@ -220,7 +220,7 @@ export default function AdminCategoriesPage() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 gap-2 mt-6">
+          <div className="flex flex-col-reverse gap-2 mt-6 sm:flex-row sm:justify-end sm:space-x-2">
             <Button
               variant="outline"
               onClick={cancelDelete}
@@ -235,12 +235,12 @@ export default function AdminCategoriesPage() {
             >
               {isPendingDeleteSubCategory ? (
                 <>
-                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                  <div className="w-4 h-4 mr-2 border-2 rounded-full animate-spin border-background border-t-transparent" />
                   Deleting...
                 </>
               ) : (
                 <>
-                  <Trash2 className="mr-2 h-4 w-4" />
+                  <Trash2 className="w-4 h-4 mr-2" />
                   Delete Subcategory
                 </>
               )}

@@ -1,6 +1,8 @@
-// src/features/products/components/product-details/ActionButtons.jsx
 import { Button } from "@/components/ui/button";
-import { Minus, Plus, AlertCircle, Bell, Heart, RefreshCw } from "lucide-react";
+import FlyingToCart from "@/features/cart/components/FlyingToCart";
+import { useCartStore } from "@/store/cartStore";
+import { consoleObject } from "@/utils/consoleObject";
+import { Minus, Plus, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 
 function ActionButtons({ selectedVariant, product }) {
@@ -8,9 +10,13 @@ function ActionButtons({ selectedVariant, product }) {
   const [showMaxWarning, setShowMaxWarning] = useState(false);
   const [notifyWhenAvailable, setNotifyWhenAvailable] = useState(false);
 
+  const [flyItem, setFlyItem] = useState(null);
+
   const maxQuantity = selectedVariant?.quantity || 0;
   const inStock = selectedVariant?.quantity > 0;
   const variantPrice = selectedVariant?.price || 0;
+
+  const addItem = useCartStore((state) => state.addItem);
 
   const handleDecrease = () => {
     if (showMaxWarning) setShowMaxWarning(false);
@@ -26,15 +32,48 @@ function ActionButtons({ selectedVariant, product }) {
     setQuantity((prev) => Math.min(maxQuantity, prev + 1));
   };
 
-  const handleAddToCart = () => {
-    if (!selectedVariant || !inStock) return;
-    console.log("Adding to cart:", {
-      variantId: selectedVariant.id,
-      // variantName: selectedVariant.variant_name,
-      quantity,
-      price: variantPrice,
+  function handleAddToCart() {
+    const currentQuantity =
+      useCartStore.getState().cartItems.find((i) => i.id === selectedVariant.id)
+        ?.quantity || 0;
+
+    if (currentQuantity + quantity > maxQuantity) {
+      setShowMaxWarning(true);
+      return;
+    }
+
+    const startEl = document.querySelector("#add-to-cart-btn");
+    const endEl = document.querySelector("#cart-icon");
+
+    const startRect = startEl.getBoundingClientRect();
+    const endRect = endEl.getBoundingClientRect();
+
+    setFlyItem({
+      text: product.name,
+      start: { x: startRect.left, y: startRect.top },
+      end: { x: endRect.left, y: endRect.top },
     });
-  };
+
+    if (!selectedVariant || !inStock) return;
+
+    const item = {
+      id: selectedVariant.id,
+      product_id: selectedVariant.product_id,
+      price: selectedVariant.price,
+      currency: selectedVariant.currency,
+      types: selectedVariant.types,
+      stock: selectedVariant.quantity,
+
+      name: product.name,
+      description: product.description,
+      short_description: product.short_description,
+      category: product.category_name,
+      subcategory: product.sub_category_name,
+      brand: product.brand,
+    };
+    consoleObject(item);
+    addItem(item, quantity);
+  }
 
   const handleBuyNow = () => {
     if (!selectedVariant || !inStock) return;
@@ -157,16 +196,25 @@ function ActionButtons({ selectedVariant, product }) {
             <Plus className="text-black group-hover:text-white" />
           </Button>
         </div>
-
-        <Button
-          onClick={handleAddToCart}
-          disabled={!inStock || !selectedVariant}
-          className="w-40 text-accent"
-          variant="outline"
-        >
-          Add to Cart
-        </Button>
-
+        <>
+          <Button
+            onClick={handleAddToCart}
+            disabled={!inStock || !selectedVariant}
+            className="w-40 text-accent"
+            variant="outline"
+            id="add-to-cart-btn" // Add this!
+          >
+            Add to Cart
+          </Button>
+          {flyItem && (
+            <FlyingToCart
+              text={flyItem.text}
+              start={flyItem.start}
+              end={flyItem.end}
+              onComplete={() => setFlyItem(null)}
+            />
+          )}
+        </>
         <Button
           onClick={handleBuyNow}
           disabled={!inStock || !selectedVariant}

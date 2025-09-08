@@ -15,7 +15,7 @@ export function useSelectCategory() {
           hasSubcategories: false,
         };
 
-      const mainCategories = categories.map((category) => ({
+      const mainCategories = categories.data.map((category) => ({
         value: category.id,
         label: category.name,
       }));
@@ -23,7 +23,7 @@ export function useSelectCategory() {
       const subcategoriesByParent = {};
       let hasSubcategories = false;
 
-      categories.forEach((mainCategory) => {
+      categories.data.forEach((mainCategory) => {
         if (
           mainCategory.subcategories &&
           mainCategory.subcategories.length > 0

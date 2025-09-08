@@ -3,13 +3,15 @@ import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
 import { Link, useLocation } from "react-router";
 import SearchInput from "./SearchInput";
+import { useCartStore } from "@/store/cartStore";
+import CartBadge from "@/features/cart/components/CartBadge";
 
 const Header = () => {
   const location = useLocation();
 
-  async function handleLogout() {
-    await authApi.logout();
-  }
+  const uniqueItems = useCartStore((state) => state.uniqueItems);
+
+  async function handleLogout() {}
 
   const navItems = [
     { name: "Home", path: ROUTES.CUSTOMER.HOME },
@@ -48,13 +50,12 @@ const Header = () => {
 
         {/* Cart */}
         <Link
-          to={ROUTES.CART}
+          to={ROUTES.CUSTOMER.CART}
+          id="cart-icon"
           className="relative p-2 text-gray-600 hover:text-gray-800"
         >
           🛒
-          <span className="absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full -top-1 -right-1">
-            0
-          </span>
+          <CartBadge />
         </Link>
 
         {/* Auth buttons */}

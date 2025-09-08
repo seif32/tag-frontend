@@ -13,12 +13,14 @@ export function TagsSection({ productTags }) {
   const mode = useProductStore((state) => state.mode);
   const { control } = useFormContext();
 
+  console.log("TagsSection", categoryTags);
+
   const isViewMode = mode === "view";
 
   if (isLoadingCategoryTags) return <LoadingState type="form" rows={2} />;
 
   const tags =
-    categoryTags?.map((tag) => ({
+    categoryTags?.results.map((tag) => ({
       value: tag.id,
       label: tag.name,
     })) || [];
@@ -28,7 +30,7 @@ export function TagsSection({ productTags }) {
       <CardContent>
         <div className="space-y-3">
           <div className="flex items-center gap-2 mb-6">
-            <label className=" font-bold ">Tags</label>
+            <label className="font-bold ">Tags</label>
             {isViewMode && productTags?.length > 0 && (
               <span className="text-xs text-gray-500">
                 ({productTags.length})
@@ -49,7 +51,7 @@ export function TagsSection({ productTags }) {
 
 const ViewModeTags = ({ tags }) => {
   if (!tags || tags.length === 0) {
-    return <div className="text-sm text-gray-500 py-2">No tags assigned</div>;
+    return <div className="py-2 text-sm text-gray-500">No tags assigned</div>;
   }
 
   return (
@@ -58,7 +60,7 @@ const ViewModeTags = ({ tags }) => {
         <Badge
           key={tag.id || index}
           variant="secondary"
-          className="px-3 py-1 text-sm bg-gray-100 text-gray-700 "
+          className="px-3 py-1 text-sm text-gray-700 bg-gray-100 "
         >
           {tag.name || tag.label}
         </Badge>

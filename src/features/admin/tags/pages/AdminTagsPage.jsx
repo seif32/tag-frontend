@@ -49,18 +49,18 @@ function AdminTagsPage() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const recentlyAdded = tags.filter(
+    const recentlyAdded = tags.results.filter(
       (tag) => new Date(tag.created_at) >= weekAgo
     ).length;
-    const activeToday = tags.filter((tag) => {
+    const activeToday = tags.results.filter((tag) => {
       const updatedDate = new Date(tag.updated_at);
       updatedDate.setHours(0, 0, 0, 0);
       return updatedDate.getTime() === today.getTime();
     }).length;
-    const categories = new Set(tags.map((tag) => tag.category_id)).size;
+    const categories = new Set(tags.results.map((tag) => tag.category_id)).size;
 
     setStats({
-      total: tags.length,
+      total: tags.results.length,
       categories,
       recentlyAdded,
       activeToday,
@@ -79,10 +79,10 @@ function AdminTagsPage() {
     );
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container p-6 mx-auto space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
             Tags Management
           </h1>
           <p className="text-muted-foreground">
@@ -139,7 +139,7 @@ function AdminTagsPage() {
       </div>
 
       <TagsDataTable
-        data={tags}
+        data={tags.results}
         onRefresh={refetchTags}
         handleDelete={handleDelete}
         handleEdit={handleEdit}

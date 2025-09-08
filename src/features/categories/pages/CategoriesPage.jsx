@@ -43,12 +43,12 @@ function CategoriesPage() {
     <>
       <CategoriesHeader />
       <div className="mb-40 space-y-40">
-        {categories.map((category) => {
+        {categories.data.map((category) => {
           return (
             category.subcategories.length !== 0 && (
               <div key={category.id} className="">
                 <h2
-                  className="text-2xl font-bold text-foreground cursor-pointer inline hover:text-accent"
+                  className="inline text-2xl font-bold cursor-pointer text-foreground hover:text-accent"
                   onClick={() => handleViewCategoryProducts(category.id)}
                 >
                   {category.name}
