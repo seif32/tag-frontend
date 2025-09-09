@@ -131,7 +131,7 @@ function OrderHistoryCard({
   totalItems,
 }) {
   return (
-    <div className="bg-white border p-8 rounded-md">
+    <div className="bg-white border p-4 rounded-md">
       <div className="">
         <h3 className="text-lg ">Order #{orderId}</h3>
         <div className="flex justify-between items-end ">
@@ -166,9 +166,9 @@ function OrderHistoryCard({
         </div>
         <div className="border mx-5"></div>
         <div className="flex flex-col justify-between gap-8">
-          <div className="gap-2 flex flex-col">
+          <div className="gap-1 flex flex-col">
             <h4 className="font-bold w-full">Shipping Address</h4>
-            <div className="flex flex-col gap-1 text-sm whitespace-nowrap">
+            <div className="flex flex-col  text-sm whitespace-nowrap">
               <span>{address?.street_address}</span>
               <span>
                 {address?.city}, {address?.postal_code}
@@ -179,14 +179,19 @@ function OrderHistoryCard({
           </div>
           <div className="self-end flex flex-col items-end gap-1">
             <div>
-              <p className="font-bold leading-none">
+              <p className="text-xs text-muted-foreground">Total Price</p>
+              <p className="font-medium leading-none">
                 {formatCurrency(totalPrice)}
               </p>
-              <p className="text-sm text-muted-foreground">
+              {/* <p className="text-xs text-muted-foreground">
                 {totalItems} items{" "}
-              </p>
+              </p> */}
             </div>
-            <Button variant={"outline"} size={"sm"} className={"text-xs"}>
+            <Button
+              variant={"outline"}
+              size={"sm"}
+              className={"text-xs w-full"}
+            >
               View Details
             </Button>
           </div>

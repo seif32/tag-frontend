@@ -9,7 +9,7 @@ function OrderSuccessPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col gap-8  max-w-200 mx-auto ">
+    <div className="flex flex-col gap-12  max-w-200 mx-auto ">
       <Title />
       <OrderReceipt delivery={45} tax={22} />
       <OrderContainer />
