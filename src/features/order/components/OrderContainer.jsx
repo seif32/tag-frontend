@@ -1,28 +1,25 @@
-import { useCartStore } from "@/store/cartStore";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { Package } from "lucide-react";
 import { PiPackageThin } from "react-icons/pi";
 
-export default function OrderContainer() {
-  const cartItems = useCartStore((state) => state.cartItems);
-
+export default function OrderContainer({ items = [], style }) {
   return (
-    <div className="w-full ">
+    <div className={`w-full ${style}`}>
       <div className="mb-6">
-        <h2 className="text-xl ">Products</h2>
-        <div className="flex items-center gap-1 text-muted-foreground text-xs">
+        <h2 className="text-xl">Products</h2>
+        <div className="flex items-center gap-1 text-xs text-muted-foreground">
           <PiPackageThin size={16} />
-          <p>{cartItems.length} items</p>
+          <p>{items?.length} items</p>
         </div>
       </div>
-      {cartItems.map((item) => (
+
+      {items?.map((item) => (
         <OrderItem
           key={item.id}
           name={item.name}
           quantity={item.quantity}
           totalPrice={item.price * item.quantity}
           unitPrice={item.price}
-          variants={item.types.map((variant) => variant.value.name)}
+          variants={item.types?.map((variant) => variant.value.name) || []}
         />
       ))}
     </div>
@@ -32,8 +29,8 @@ export default function OrderContainer() {
 function OrderItem({ name, quantity, totalPrice, unitPrice, variants = [] }) {
   return (
     <>
-      <div className="flex  items-center gap-2">
-        <div className="w-15 h-15 bg-gray-100 rounded-md">
+      <div className="flex items-center gap-2">
+        <div className="bg-gray-100 rounded-md w-15 h-15">
           <img src="" alt="" />
         </div>
         <div className="flex flex-col flex-1">

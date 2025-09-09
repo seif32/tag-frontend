@@ -82,7 +82,7 @@ const orders = [
 
 function OrdersHistoryPage() {
   return (
-    <div className="w-full max-w-250 mx-auto">
+    <div className="w-full mx-auto max-w-250">
       <Title />
       <OrderHistoryCardContainer />
     </div>
@@ -134,21 +134,21 @@ function OrderHistoryCard({
 }) {
   const navigate = useNavigate();
   return (
-    <div className="bg-white border p-4 rounded-md">
+    <div className="p-4 bg-white border rounded-md">
       <div className="">
         <h3 className="text-lg ">Order #{orderId}</h3>
-        <div className="flex justify-between items-end ">
-          <p className="text-muted-foreground text-sm">
+        <div className="flex items-end justify-between ">
+          <p className="text-sm text-muted-foreground">
             {/* {formatDateFull(orderDate)} */}
             {formatDateShort(orderDate)}
           </p>
-          <div className="py-2 px-4 border bg-gray-200 rounded-md text-xs">
+          <div className="px-4 py-2 text-xs bg-gray-200 border rounded-md">
             <p>{orderStatus}</p>
           </div>
         </div>
       </div>
-      <div className="border my-5"></div>
-      <div className="flex flex-col sm:flex-row justify-between gap-8 sm:gap-2 ">
+      <div className="my-5 border"></div>
+      <div className="flex flex-col justify-between gap-8 sm:flex-row sm:gap-2 ">
         <div className="flex flex-wrap gap-x-2">
           {products?.map((product) => {
             return (
@@ -159,7 +159,7 @@ function OrderHistoryCard({
                 <h4 className="truncate max-w-[10ch] text-xs">
                   {product?.name}
                 </h4>
-                <div className="flex text-muted-foreground items-center gap-1">
+                <div className="flex items-center gap-1 text-muted-foreground">
                   <PiPackageThin />
                   <p className="text-xs">x{product?.quantity}</p>
                 </div>
@@ -167,16 +167,16 @@ function OrderHistoryCard({
             );
           })}
         </div>
-        <div className="border mx-5"></div>
+        {/* <div className="mx-5 border"></div> */}
         <div className="flex flex-col justify-between gap-8">
-          <ShippingAddress
+          {/* <ShippingAddress
             city={address.city}
             country={address.city}
             postalCode={address.postal_code}
             streetAddress={address.street_address}
             phoneNumber={phoneNumber}
-          />
-          <div className="self-end flex flex-col items-end gap-1">
+          /> */}
+          <div className="flex flex-col items-end self-end justify-between h-full gap-1 ">
             <div>
               <p className="text-xs text-muted-foreground">Total Price</p>
               <p className="font-medium leading-none">

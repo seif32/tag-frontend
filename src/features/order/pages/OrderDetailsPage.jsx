@@ -3,8 +3,10 @@ import { TfiPackage } from "react-icons/tfi";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { formatDateShort } from "@/utils/dateUtils";
 import ShippingAddress from "../components/ShippingAddress";
-import OrderSummary from "@/features/cart/components/OrderSummary";
 import OrderReceipt from "../components/OrderReceipt";
+import OrderContainer from "../components/OrderContainer";
+import { useCartStore } from "@/store/cartStore";
+import { Button } from "@/components/ui/button";
 
 const address = {
   street_address: "Flat 14B, 25 Baker Street",
@@ -16,10 +18,13 @@ const address = {
 
 function OrderDetailsPage() {
   const { orderId } = useParams();
+
+  const cartItems = useCartStore((state) => state.cartItems);
+
   return (
     <div className="flex flex-col ">
       <h1 className="mb-5 text-3xl">Order Details</h1>
-      <div className="p-3 border rounded-2xl ">
+      <div className="flex flex-col gap-3 p-3 border rounded-3xl ">
         <div className="flex gap-3 ">
           <IconCard
             icon={TfiPackage}
@@ -32,19 +37,31 @@ function OrderDetailsPage() {
             subtitle={"Estimated Arrival"}
             title={formatDateShort("2025-09-09 14:45:30")}
           />
-          {/* <ShippingAddress
-          city={address.city}
-          country={address.country}
-          postalCode={address.postal_code}
-          streetAddress={address.street_address}
-          phoneNumber={address.phone_number}
-          /> */}
+
           <OrderReceipt
             isOrderDetails={false}
             style={"rounded-3xl border border-gray-200"}
           />
         </div>
-        <div></div>
+        <div className="flex gap-3">
+          <div className="flex-1">
+            <OrderContainer
+              items={cartItems}
+              style={"bg-white p-8 rounded-2xl border"}
+            />
+          </div>
+          <div className="flex flex-col gap-3">
+            <ShippingAddress
+              city={address.city}
+              country={address.country}
+              postalCode={address.postal_code}
+              streetAddress={address.street_address}
+              phoneNumber={address.phone_number}
+              style={"bg-white p-8 rounded-2xl border"}
+            />
+            <Button className={"w-full"}>Invoice</Button>
+          </div>
+        </div>
       </div>
     </div>
   );

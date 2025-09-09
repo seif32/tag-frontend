@@ -4,11 +4,12 @@ function ShippingAddress({
   postalCode,
   country,
   phoneNumber,
+  style,
 }) {
   return (
-    <div className="gap-1 flex flex-col ">
-      <h4 className="font-bold w-full">Shipping Address</h4>
-      <div className="flex flex-col  text-sm whitespace-nowrap justify-between ">
+    <div className={`flex flex-col gap-1 ${style}`}>
+      <h4 className="w-full font-bold">Shipping Address</h4>
+      <div className="flex flex-col justify-between text-sm whitespace-nowrap ">
         <span>{streetAddress}</span>
         <span>
           {city}, {postalCode}
