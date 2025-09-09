@@ -1,8 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
 
 const useVariantSelector = (variants = []) => {
-  const safeVariants = Array.isArray(variants) ? variants : [];
-
+  const safeVariants = useMemo(
+    () => (Array.isArray(variants) ? variants : []),
+    [variants]
+  );
   const primaryVariant = useMemo(() => {
     if (safeVariants.length === 0) return null;
     const primary = safeVariants.find((v) => v.is_primary === 1);
@@ -10,6 +12,12 @@ const useVariantSelector = (variants = []) => {
   }, [safeVariants]);
 
   const [selectedVariant, setSelectedVariant] = useState(null);
+
+  useEffect(() => {
+    if (primaryVariant) {
+      setSelectedVariant(primaryVariant);
+    }
+  }, [primaryVariant]);
 
   useEffect(() => {
     if (primaryVariant && !selectedVariant) {
