@@ -1,12 +1,19 @@
 import { useCartStore } from "@/store/cartStore";
 import { formatCurrency } from "@/utils/formatCurrency";
 
-export default function OrderReceipt({ delivery, tax }) {
+export default function OrderReceipt({
+  delivery,
+  tax,
+  isOrderDetails = true,
+  style,
+}) {
   const totalPrice = useCartStore((state) => state.totalPrice);
 
   return (
-    <div className="flex flex-col w-full px-4 py-3 bg-white border border-gray-100 ">
-      <h3 className="mb-2.5 text-xl">Order Details</h3>
+    <div
+      className={`flex flex-col w-full px-4 py-3 bg-white border border-gray-100 ${style}`}
+    >
+      {isOrderDetails && <h3 className="mb-2.5 text-xl">Order Details</h3>}
       <div className="space-y-1 text-sm">
         <div className="flex justify-between w-full ">
           <p className=" text-primary/70">Order number:</p>

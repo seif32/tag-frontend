@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { formatDateShort } from "@/utils/dateUtils";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { PiPackageThin } from "react-icons/pi";
+import { useNavigate } from "react-router";
+import ShippingAddress from "../components/ShippingAddress";
 
 const orders = [
   {
@@ -130,6 +132,7 @@ function OrderHistoryCard({
   totalPrice,
   totalItems,
 }) {
+  const navigate = useNavigate();
   return (
     <div className="bg-white border p-4 rounded-md">
       <div className="">
@@ -166,17 +169,13 @@ function OrderHistoryCard({
         </div>
         <div className="border mx-5"></div>
         <div className="flex flex-col justify-between gap-8">
-          <div className="gap-1 flex flex-col">
-            <h4 className="font-bold w-full">Shipping Address</h4>
-            <div className="flex flex-col  text-sm whitespace-nowrap">
-              <span>{address?.street_address}</span>
-              <span>
-                {address?.city}, {address?.postal_code}
-              </span>
-              <span>{address?.country}</span>
-              <span className="">Phone: {phoneNumber}</span>
-            </div>
-          </div>
+          <ShippingAddress
+            city={address.city}
+            country={address.city}
+            postalCode={address.postal_code}
+            streetAddress={address.street_address}
+            phoneNumber={phoneNumber}
+          />
           <div className="self-end flex flex-col items-end gap-1">
             <div>
               <p className="text-xs text-muted-foreground">Total Price</p>
@@ -191,6 +190,7 @@ function OrderHistoryCard({
               variant={"outline"}
               size={"sm"}
               className={"text-xs w-full"}
+              onClick={() => navigate(`/orders/${orderId}`)}
             >
               View Details
             </Button>
