@@ -125,10 +125,10 @@ const ProgressSteps = ({ currentStep }) => {
       <div className="md:hidden">
         <div className="max-w-sm mx-auto">
           {/* Progress Background Line */}
-          <div className="relative mb-12">
+          <div className="relative ">
             <div className="absolute h-1 bg-gray-300 rounded-full top-8 left-8 right-8" />
             <div
-              className="absolute h-1 transition-all duration-700 ease-out rounded-full shadow-sm bg-primary top-8 left-8"
+              className="absolute h-1 transition-all duration-700 ease-out rounded-full shadow-sm bg-green-500 top-8 left-8"
               style={{
                 width: `calc(${
                   ((currentStep - 1) / (steps.length - 1)) * 100
@@ -152,7 +152,7 @@ const ProgressSteps = ({ currentStep }) => {
                           status === "completed"
                             ? "border-green-500 text-green-500 shadow-green-100"
                             : status === "active"
-                            ? "border-primary text-blue-500 shadow-blue-100"
+                            ? "border-primary text-primary shadow-primary/10"
                             : "border-gray-300 text-gray-400 shadow-gray-100"
                         }
                       `}
@@ -171,7 +171,7 @@ const ProgressSteps = ({ currentStep }) => {
                           inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full
                           ${
                             status === "completed" || status === "active"
-                              ? "bg-blue-100 text-blue-600"
+                              ? "bg-primary/10 text-primary"
                               : "bg-gray-100 text-gray-400"
                           }
                         `}

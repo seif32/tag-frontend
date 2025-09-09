@@ -7,7 +7,7 @@ function ProductCardActions({ onViewProductDetails, productId }) {
     <CardFooter className={"flex flex-row px-4 gap-2"}>
       <Button
         className={
-          "uppercase flex-1 h-12 md:h-10 cursor-pointer hover:scale-105 transition-all duration-300"
+          "uppercase flex-1 h-8 md:h-10 cursor-pointer hover:scale-105 transition-all duration-300"
         }
         onClick={() => onViewProductDetails(productId)}
       >
