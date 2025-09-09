@@ -179,9 +179,7 @@ function OrderHistoryCard({
           <div className="flex flex-col items-end self-end justify-between h-full gap-1 ">
             <div>
               <p className="text-xs text-muted-foreground">Total Price</p>
-              <p className="font-medium leading-none">
-                {formatCurrency(totalPrice)}
-              </p>
+              <p className="font-medium ">{formatCurrency(totalPrice)}</p>
               {/* <p className="text-xs text-muted-foreground">
                 {totalItems} items{" "}
               </p> */}

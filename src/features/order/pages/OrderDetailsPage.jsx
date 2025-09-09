@@ -25,7 +25,7 @@ function OrderDetailsPage() {
     <div className="flex flex-col ">
       <h1 className="mb-5 text-3xl">Order Details</h1>
       <div className="flex flex-col gap-3 p-3 border rounded-3xl ">
-        <div className="flex gap-3 ">
+        <div className="flex flex-col gap-3 md:flex-row">
           <IconCard
             icon={TfiPackage}
             badge={"delivered"}
@@ -43,7 +43,7 @@ function OrderDetailsPage() {
             style={"rounded-3xl border border-gray-200"}
           />
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 md:flex-row">
           <div className="flex-1">
             <OrderContainer
               items={cartItems}
@@ -77,7 +77,7 @@ function IconCard({ icon: Icon, title, subtitle, badge }) {
   };
   const status = badge ? statusMap[badge] : null;
   return (
-    <div className="flex flex-col justify-between w-full p-5 bg-white border rounded-3xl max-w-70 ">
+    <div className="flex flex-col justify-between w-full p-5 bg-white border min-h-40 rounded-3xl md:max-w-70 ">
       <div className="flex items-center justify-between">
         <Icon size={22} />
         {status && (
