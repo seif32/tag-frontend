@@ -33,7 +33,6 @@ function AdminBrandsPage() {
     deleteBrand(brand.id);
   }
 
-  // ✅ Calculate brand statistics
   const brandStats = useMemo(() => {
     if (!brands || brands.data.length === 0) {
       return {
@@ -78,7 +77,7 @@ function AdminBrandsPage() {
     );
 
   return (
-    <div className="container p-6 mx-auto space-y-6">
+    <div className="p-6 space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">

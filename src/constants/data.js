@@ -70,32 +70,32 @@ export const AdminSidebarGroups = [
             content: "5",
             variant: "destructive",
           },
-          submenuButtons: [
-            {
-              name: "All Orders",
-              path: "/admin/orders",
-              iconName: "ShoppingCart",
-            },
-            {
-              name: "Pending",
-              path: "/admin/orders/pending",
-              iconName: "RefreshCw",
-              badge: {
-                content: "5",
-                variant: "secondary",
-              },
-            },
-            {
-              name: "Shipping",
-              path: "/admin/orders/shipping",
-              iconName: "Truck",
-            },
-            {
-              name: "Payments",
-              path: "/admin/orders/payments",
-              iconName: "CreditCard",
-            },
-          ],
+          // submenuButtons: [
+          //   {
+          //     name: "All Orders",
+          //     path: "/admin/orders",
+          //     iconName: "ShoppingCart",
+          //   },
+          //   {
+          //     name: "Pending",
+          //     path: "/admin/orders/pending",
+          //     iconName: "RefreshCw",
+          //     badge: {
+          //       content: "5",
+          //       variant: "secondary",
+          //     },
+          //   },
+          //   {
+          //     name: "Shipping",
+          //     path: "/admin/orders/shipping",
+          //     iconName: "Truck",
+          //   },
+          //   {
+          //     name: "Payments",
+          //     path: "/admin/orders/payments",
+          //     iconName: "CreditCard",
+          //   },
+          // ],
         },
       },
       {

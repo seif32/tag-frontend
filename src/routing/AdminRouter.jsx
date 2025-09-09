@@ -4,6 +4,7 @@ import AdminBrandsPage from "@/features/admin/brands/pages/AdminBrandsPage";
 import AdminAddCategoryPage from "@/features/admin/categories/pages/AdminAddCategoryPage";
 import AdminCategoriesPage from "@/features/admin/categories/pages/AdminCategoriesPage";
 import AdminDashboardPage from "@/features/admin/dashboard/pages/AdminDashboardPage";
+import AdminOrdersPage from "@/features/admin/orders/pages/AdminOrdersPage";
 import AdminProductPage from "@/features/admin/products/pages/AdminProductPage";
 import AdminProductsPage from "@/features/admin/products/pages/AdminProductsPage";
 import AdminTagsPage from "@/features/admin/tags/pages/AdminTagsPage";
@@ -38,6 +39,8 @@ function AdminRouter() {
         />
         <Route path={ROUTES.ADMIN.BRANDS} element={<AdminBrandsPage />} />
         <Route path={ROUTES.ADMIN.TAGS} element={<AdminTagsPage />} />
+
+        <Route path={"orders"} element={<AdminOrdersPage />} />
       </Route>
     </Routes>
   );

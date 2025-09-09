@@ -39,7 +39,7 @@ export default function AdminProductsPage() {
   }
 
   return (
-    <div className="container  mx-auto space-y-6 ">
+    <div className="space-y-6 ">
       <ProductsHeader
         isLoadingProducts={isLoadingProducts}
         isLoadingStats={isLoadingStats}

@@ -3,7 +3,6 @@ import { formatDateShort } from "@/utils/dateUtils";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { PiPackageThin } from "react-icons/pi";
 import { useNavigate } from "react-router";
-import ShippingAddress from "../components/ShippingAddress";
 
 const orders = [
   {
@@ -147,7 +146,7 @@ function OrderHistoryCard({
           </div>
         </div>
       </div>
-      <div className="my-5 border"></div>
+      <div className="my-3 border border-gray-50"></div>
       <div className="flex flex-col justify-between gap-8 sm:flex-row sm:gap-2 ">
         <div className="flex flex-wrap gap-x-2">
           {products?.map((product) => {
