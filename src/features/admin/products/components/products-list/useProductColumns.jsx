@@ -1,4 +1,4 @@
-import { ArrowUpDown, Eye, Edit, Trash2, Calendar, Clock } from "lucide-react";
+import { ArrowUpDown, Eye, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,29 +8,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router";
 import { Badge } from "@/components/ui/badge";
+import { formatDateShort } from "@/utils/dateUtils";
 
 export function useProductColumns({ onDelete }) {
   const navigate = useNavigate();
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = (now - date) / (1000 * 60 * 60);
-
-    // Show relative time for recent dates
-    if (diffInHours < 24) {
-      return `${Math.floor(diffInHours)}h ago`;
-    } else if (diffInHours < 72) {
-      return `${Math.floor(diffInHours / 24)}d ago`;
-    } else {
-      // Show formatted date for older dates
-      return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-    }
-  };
 
   return [
     // 🏷️ PRODUCT NAME - Main Identifier
@@ -180,7 +161,7 @@ export function useProductColumns({ onDelete }) {
         return (
           <div className="flex flex-col gap-0.5">
             <span className="text-xs font-medium text-slate-700">
-              {formatDate(dateString)}
+              {formatDateShort(dateString)}
             </span>
             <span className="text-[10px] text-slate-500">
               {date.toLocaleTimeString("en-US", {
@@ -223,7 +204,7 @@ export function useProductColumns({ onDelete }) {
         return (
           <div className="flex flex-col gap-0.5">
             <span className="text-xs font-medium text-slate-700">
-              {formatDate(dateString)}
+              {formatDateShort(dateString)}
             </span>
             <span className="text-[10px] text-slate-500">
               {date.toLocaleTimeString("en-US", {

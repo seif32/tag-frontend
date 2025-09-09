@@ -1,12 +1,9 @@
+import { useState } from "react";
 import StatsCard from "../../ui/StatsCard";
 
-import {
-  DollarSign,
-  ShoppingBag,
-  Clock,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { ShoppingBag, Clock, CheckCircle, XCircle } from "lucide-react";
+import { useOrderColumns } from "../components/useOrderColumns";
+import { useNavigate } from "react-router";
 
 const statsData = [
   // {
@@ -35,6 +32,7 @@ const statsData = [
     // ,
     subtitle: "92.7% success rate",
   },
+
   {
     title: "Cancelled Orders",
     icon: XCircle,
@@ -46,6 +44,32 @@ const statsData = [
 ];
 
 function AdminOrdersPage() {
+  const navigate = useNavigate();
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [sorting, setSorting] = useState([]);
+  const [filters, setFilters] = useState({ search: "", status: "" });
+
+  // const { data, isLoading } = useOrders({
+  //   page: pagination.pageIndex + 1,
+  //   limit: pagination.pageSize,
+  //   sortBy: sorting[0]?.id,
+  //   sortOrder: sorting[0]?.desc ? "desc" : "asc",
+  //   search: filters.search,
+  //   status: filters.status,
+  // });
+
+  function handleEditOrder() {}
+  function handleDeleteOrder() {}
+
+  const columns = useOrderColumns({
+    onView: (order) => navigate(`/admin/orders/${order.id}`),
+    onEdit: handleEditOrder,
+    onDelete: handleDeleteOrder,
+  });
+
   return (
     <div className="p-6 space-y-6">
       <div>
@@ -55,6 +79,20 @@ function AdminOrdersPage() {
         </p>
       </div>
       <StatsContainer />
+
+      {/* <OrderDataTable
+        columns={columns}
+        data={data?.orders || []}
+        pageCount={Math.ceil(data?.totalCount / pagination.pageSize)}
+        totalCount={data?.totalCount || 0}
+        pagination={pagination}
+        sorting={sorting}
+        filters={filters}
+        onPaginationChange={setPagination}
+        onSortingChange={setSorting}
+        onFiltersChange={setFilters}
+        isLoading={isLoading}
+      /> */}
     </div>
   );
 }
