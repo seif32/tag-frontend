@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/auth/store/authStore";
-import { formatPhone } from "@/utils/formatPhone";
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 
 function CustomerInfo() {
   const user = useAuthStore((state) => state.user);
@@ -22,7 +22,7 @@ function CustomerInfo() {
         </p>
         <p className="">
           <span className="mr-2 text-muted-foreground">Phone:</span>{" "}
-          {formatPhone(user.phone_number)}
+          {formatPhoneNumber(user.phone_number)}
         </p>
       </div>
     </div>
