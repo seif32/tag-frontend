@@ -36,7 +36,7 @@ const ProgressSteps = ({ currentStep }) => {
   };
 
   return (
-    <div className="w-full px-4 py-8 border-b border-gray-200 ">
+    <div className="w-full px-4 py-8  ">
       {/* Desktop Progress Bar */}
       <div className="hidden md:block">
         <div className="flex items-center justify-center max-w-4xl mx-auto">

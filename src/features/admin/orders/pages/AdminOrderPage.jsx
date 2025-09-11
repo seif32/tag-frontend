@@ -123,7 +123,9 @@ function Title({ orderId, orderDate }) {
     <section className="flex justify-between items-center">
       <div>
         <h1 className="text-3xl">Order #{orderId} </h1>
-        <p>Placed on {formatDateFull(orderDate)}</p>
+        <p className="text-muted-foreground">
+          Placed on {formatDateFull(orderDate)}
+        </p>
       </div>
       <div className="flex gap-2 ">
         <Button size={"sm"} variant={"outline"} className={"text-xs"}>
