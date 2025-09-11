@@ -27,7 +27,6 @@ import { ChevronLeft, ChevronRight, Search, AlertCircle } from "lucide-react";
 
 import { useProductColumns } from "./useProductColumns";
 import LoadingState from "@/ui/LoadingState";
-import { consoleObject } from "@/utils/consoleObject";
 import { useSearchParams } from "react-router";
 import { useUpdateUrlParams } from "@/hooks/useUpdateUrlParams";
 

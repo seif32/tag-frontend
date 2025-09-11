@@ -1,5 +1,6 @@
 "use client";
 
+import { consoleObject } from "@/utils/consoleObject";
 import { useState } from "react";
 
 export default function VariantsSection({
@@ -60,7 +61,6 @@ export default function VariantsSection({
         </div>
       )}
 
-      {/* Show more/less button */}
       {hasMore && (
         <button
           onClick={() => setShowAll(!showAll)}
@@ -74,7 +74,10 @@ export default function VariantsSection({
 }
 
 function CompactVariantCard({ block, onClick }) {
-  const hasDiscount = block.comparePrice && block.comparePrice > block.price;
+  const comparePrice = parseFloat(block.comparePrice);
+  const price = parseFloat(block.price);
+
+  const hasDiscount = comparePrice && comparePrice > price;
 
   return (
     <div
@@ -90,14 +93,12 @@ function CompactVariantCard({ block, onClick }) {
         }
       `}
     >
-      {/* Availability dot */}
       <div
         className={`absolute top-2 right-2 w-2 h-2 rounded-full ${
           block.isAvailable ? "bg-green-500" : "bg-red-400"
         }`}
       />
 
-      {/* Discount badge */}
       {hasDiscount && (
         <div className="absolute -top-1 -left-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded text-[10px]">
           -
@@ -127,7 +128,7 @@ function CompactVariantCard({ block, onClick }) {
             ${Number.parseFloat(block.price).toFixed(2)}
           </span>
 
-          {hasDiscount && (
+          {/* {hasDiscount && (
             <span
               className={`text-xs line-through ${
                 block.isSelected ? "text-gray-300" : "text-gray-400"
@@ -135,7 +136,7 @@ function CompactVariantCard({ block, onClick }) {
             >
               ${Number.parseFloat(block.comparePrice).toFixed(2)}
             </span>
-          )}
+          )} */}
         </div>
       </div>
     </div>

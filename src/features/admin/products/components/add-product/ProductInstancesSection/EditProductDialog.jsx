@@ -24,7 +24,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useProducts from "@/hooks/useProducts";
-import { consoleObject } from "@/utils/consoleObject";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";

@@ -1,9 +1,9 @@
 import { ROUTES } from "@/constants";
-import AdminAddBrandPage from "@/features/admin/brands/components/AdminAddBrandDialog";
 import AdminBrandsPage from "@/features/admin/brands/pages/AdminBrandsPage";
 import AdminAddCategoryPage from "@/features/admin/categories/pages/AdminAddCategoryPage";
 import AdminCategoriesPage from "@/features/admin/categories/pages/AdminCategoriesPage";
 import AdminDashboardPage from "@/features/admin/dashboard/pages/AdminDashboardPage";
+import AdminOrderPage from "@/features/admin/orders/pages/AdminOrderPage";
 import AdminOrdersPage from "@/features/admin/orders/pages/AdminOrdersPage";
 import AdminProductPage from "@/features/admin/products/pages/AdminProductPage";
 import AdminProductsPage from "@/features/admin/products/pages/AdminProductsPage";
@@ -41,6 +41,7 @@ function AdminRouter() {
         <Route path={ROUTES.ADMIN.TAGS} element={<AdminTagsPage />} />
 
         <Route path={"orders"} element={<AdminOrdersPage />} />
+        <Route path={"orders/:orderId"} element={<AdminOrderPage />} />
       </Route>
     </Routes>
   );

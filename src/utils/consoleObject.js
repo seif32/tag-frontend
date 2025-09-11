@@ -1,3 +1,3 @@
-export function consoleObject(object) {
-  console.log(JSON.stringify(object, null, 2));
+export function consoleObject(text = "", object) {
+  console.log(text, JSON.stringify(object, null, 2));
 }

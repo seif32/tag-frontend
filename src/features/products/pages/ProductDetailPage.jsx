@@ -8,8 +8,8 @@ import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import useVariantSelector from "../components/useVariantSelector";
-import { useState } from "react";
 import ProductCard from "../components/ProductCard";
+import { consoleObject } from "@/utils/consoleObject";
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -42,6 +42,8 @@ function ProductDetailPage() {
         onDismiss={() => refetchProduct()}
       />
     );
+
+  consoleObject("selectedVariant", selectedVariant);
 
   return (
     <div className="flex flex-col space-y-8">

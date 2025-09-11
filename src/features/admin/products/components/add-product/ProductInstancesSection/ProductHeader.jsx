@@ -1,12 +1,9 @@
 import useProductStore from "@/features/admin/store/productStore";
-import { consoleObject } from "@/utils/consoleObject";
 
 function ProductHeader({ product, productName }) {
   const mode = useProductStore((state) => state.mode);
 
   const notAddMode = mode !== "add";
-
-  consoleObject(product);
 
   return (
     <div className="flex items-start justify-between mb-4">

@@ -1,4 +1,3 @@
-import { consoleObject } from "@/utils/consoleObject";
 import { FaStar } from "react-icons/fa";
 
 function ProductInfoSection({ product, selectedVariant }) {
@@ -13,8 +12,6 @@ function ProductInfoSection({ product, selectedVariant }) {
   const subCategoryName = product?.sub_category_name || "";
 
   const filledStars = Math.floor(rating);
-
-  consoleObject(selectedVariant.types);
 
   return (
     <div className="space-y-1">

@@ -1,7 +1,13 @@
 import { useState } from "react";
 import StatsCard from "../../ui/StatsCard";
 
-import { ShoppingBag, Clock, CheckCircle, XCircle } from "lucide-react";
+import {
+  ShoppingBag,
+  Clock,
+  CheckCircle,
+  XCircle,
+  PlusCircle,
+} from "lucide-react";
 import { useOrderColumns } from "../components/useOrderColumns";
 import { useNavigate } from "react-router";
 
@@ -12,6 +18,12 @@ const statsData = [
   //   value: "$24,847.50",
   //   subtitle: "All completed orders",
   // },
+  {
+    title: "New Orders",
+    icon: PlusCircle,
+    value: "15",
+    subtitle: "Recently placed orders",
+  },
   {
     title: "Total Orders",
     icon: ShoppingBag,

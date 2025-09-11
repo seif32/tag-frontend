@@ -10,7 +10,6 @@ import AddVariantModal from "./AddVariantModal";
 import { useState } from "react";
 import useVariantStore from "@/features/admin/store/variantStore";
 import CreateVariantModal from "./CreateVariantModal";
-import { consoleObject } from "@/utils/consoleObject";
 import useVariants from "@/hooks/useVariants";
 
 function AddVariantDialog() {
@@ -36,7 +35,6 @@ function AddVariantDialog() {
 
     if (typeToAdd) {
       addSelectedType(typeToAdd);
-      consoleObject(typeToAdd);
 
       setCurrentSelectedType(null);
       setCustomTypeName("");

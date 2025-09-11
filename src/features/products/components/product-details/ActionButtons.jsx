@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import FlyingToCart from "@/features/cart/components/FlyingToCart";
 import { useCartStore } from "@/store/cartStore";
-import { consoleObject } from "@/utils/consoleObject";
 import { Minus, Plus, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 
@@ -71,7 +70,6 @@ function ActionButtons({ selectedVariant, product }) {
       subcategory: product.sub_category_name,
       brand: product.brand,
     };
-    consoleObject(item);
     addItem(item, quantity);
   }
 

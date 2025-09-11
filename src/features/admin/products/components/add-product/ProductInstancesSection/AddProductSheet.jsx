@@ -8,9 +8,6 @@ import EmptyState from "@/features/admin/ui/EmptyState";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useAddProductInstance } from "../../../hooks/useAddProductInstance";
-import useProductStore from "@/features/admin/store/productStore";
-import useProducts from "@/hooks/useProducts";
-import { consoleObject } from "@/utils/consoleObject";
 
 function AddProductSheet({ variantsList, append }) {
   const { control, getValues, resetField } = useFormContext();
