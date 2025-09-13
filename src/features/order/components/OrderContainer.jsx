@@ -15,11 +15,11 @@ export default function OrderContainer({ items = [], style }) {
       {items?.map((item) => (
         <OrderItem
           key={item?.id}
-          name={item?.name}
+          name={item?.product?.name}
           quantity={item?.quantity}
           totalPrice={item?.total_price}
           unitPrice={item?.unit_price}
-          variants={item?.types?.map((variant) => variant.value.name) || []}
+          // variants={item?.types?.map((variant) => variant.value.name) || []}
         />
       ))}
     </div>

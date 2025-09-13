@@ -1,25 +1,20 @@
 import { create } from "zustand";
 
 export const useOrderStore = create((set, get) => ({
-  currentOrder: null,
+  order: null,
   orderItems: [],
 
   setOrderSuccess: (orderData) => {
+    const { items, ...PlainOrderInfo } = orderData;
     set({
-      currentOrder: orderData.order,
-      orderItems: orderData.items.map((item) => ({
-        id: item.id,
-        variant_id: item.variant_id,
-        quantity: item.quantity,
-        unit_price: parseFloat(item.unit_price),
-        total_price: item.total_price,
-      })),
+      order: PlainOrderInfo,
+      orderItems: items,
     });
   },
 
   clearOrderSuccess: () => {
     set({
-      currentOrder: null,
+      order: null,
       orderItems: [],
     });
   },

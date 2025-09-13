@@ -49,8 +49,8 @@ function CheckoutPage() {
   const cartItems = useCartStore((state) => state.cartItems);
   const promoCode = useCartStore((state) => state.promoCode);
   const clearCart = useCartStore((state) => state.clearCart);
-  const taxPercent = useCartStore((state) => state.clearCart);
-  const shippingAmount = useCartStore((state) => state.clearCart);
+  const taxPercent = useCartStore((state) => state.taxPercent);
+  const shippingAmount = useCartStore((state) => state.shippingAmount);
   const setOrderSuccess = useOrderStore((state) => state.setOrderSuccess);
   const user = useAuthStore((state) => state.user);
 
@@ -93,13 +93,11 @@ function CheckoutPage() {
         })),
       };
 
-      console.log("order", order);
-
       const newOrderData = await createOrderAsync(order);
 
       setOrderSuccess(newOrderData);
 
-      navigate(`/order/success/${newOrderData.order.id}`);
+      navigate(`/order/success/${newOrderData.id}`);
       clearCart();
     } catch (error) {
       console.error("Checkout failed:", error);

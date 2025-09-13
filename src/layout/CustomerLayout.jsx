@@ -6,9 +6,9 @@ function CustomerLayout() {
   const location = useLocation();
   const isProductsPage = location.pathname.startsWith("/productsss");
 
-  const isCartFlow =
-    ["/cart", "/checkout"].some((path) => location.pathname.includes(path)) ||
-    location.pathname.includes("/success");
+  const isCartFlow = ["/cart", "/checkout"].some((path) =>
+    location.pathname.includes(path)
+  );
 
   const getCurrentStep = () => {
     if (location.pathname === "/cart") return 1;

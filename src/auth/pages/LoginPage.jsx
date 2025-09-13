@@ -1,10 +1,6 @@
-import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useNavigate } from "react-router";
 import { useAuthStore } from "../store/authStore";
-import authApi from "../services/authApi";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {

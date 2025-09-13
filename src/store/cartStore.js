@@ -231,7 +231,8 @@ function calculateTaxRate(address) {
     us: 8.5, // US average
   };
 
-  return taxRates[address?.country] || 0;
+  // return taxRates[address?.country] || 0;
+  return taxRates[address?.country] || 10;
 }
 
 function calculateShipping(address, items, subtotal, method) {
@@ -239,8 +240,8 @@ function calculateShipping(address, items, subtotal, method) {
   // if (subtotal >= 50) return 0; // Free shipping over £50
 
   const shippingRates = {
-    standard: 8,
-    express: 15,
+    standard: 50,
+    express: 100,
   };
 
   return shippingRates[method] || shippingRates["standard"];

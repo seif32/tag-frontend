@@ -4,22 +4,21 @@ import { useNavigate } from "react-router";
 import successAnimation from "../../../animations/success.json";
 import OrderContainer from "@/features/order/components/OrderContainer";
 import OrderReceipt from "@/features/order/components/OrderReceipt";
-import { useCartStore } from "@/store/cartStore";
 import { useOrderStore } from "@/store/orderStore";
 
 function OrderSuccessPage() {
   const navigate = useNavigate();
 
-  const currentOrder = useOrderStore((state) => state.currentOrder);
+  const order = useOrderStore((state) => state.order);
   const orderItems = useOrderStore((state) => state.orderItems);
 
   return (
     <div className="flex flex-col gap-12 mx-auto max-w-200 ">
       <Title />
-      <OrderReceipt order={currentOrder} />
+      <OrderReceipt order={order} />
       <OrderContainer items={orderItems} />
       <div className="self-end flex gap-2">
-        <Button variant={"outline"} onClick={() => navigate("/products")}>
+        <Button variant={"outline"} onClick={() => navigate("/orders")}>
           Go to Orders History
         </Button>
         <Button onClick={() => navigate("/products")}>Return Shopping</Button>
