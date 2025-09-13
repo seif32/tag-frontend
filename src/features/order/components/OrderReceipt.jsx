@@ -1,14 +1,8 @@
+import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/store/cartStore";
 import { formatCurrency } from "@/utils/formatCurrency";
 
-export default function OrderReceipt({
-  delivery,
-  tax,
-  isOrderDetails = true,
-  style,
-}) {
-  const totalPrice = useCartStore((state) => state.totalPrice);
-
+export default function OrderReceipt({ order, isOrderDetails = true, style }) {
   return (
     <div
       className={`flex flex-col w-full px-4 py-3 bg-white border border-gray-100 ${style}`}
@@ -17,15 +11,19 @@ export default function OrderReceipt({
       <div className="space-y-1 text-sm">
         <div className="flex justify-between w-full ">
           <p className=" text-primary/70">Order number:</p>
-          <p className="">#5965000</p>
+          <p className="">#{order.id}</p>
         </div>
         <div className="flex justify-between w-full">
           <p className=" text-primary/70">Date:</p>
-          <p className="">May 6, 2025</p>
+          <p className="">
+            May 6, 2025 <Badge>UI </Badge>
+          </p>
         </div>
         <div className="flex justify-between w-full">
           <p className=" text-primary/70">Payment Method:</p>
-          <p className="">Credit Card</p>
+          <p className="">
+            Credit Card <Badge>UI </Badge>
+          </p>
         </div>
       </div>
       <div className="my-4 border border-dashed"></div>
@@ -33,15 +31,15 @@ export default function OrderReceipt({
         <div className="flex flex-col gap-1 text-sm">
           <h4>Subtotal</h4>
           <h4>Delivery</h4>
-          <h4>Taxes VAT(20%)</h4>
+          <h4>Taxes VAT</h4>
           <h4 className="font-semibold text-md">Total</h4>
         </div>
         <div className="flex flex-col gap-1 text-sm text-right">
-          <p>{formatCurrency(totalPrice)}</p>
-          <p>{formatCurrency(delivery)}</p>
-          <p>{formatCurrency(tax)}</p>
+          <p>{formatCurrency(order.subtotal)}</p>
+          <p>{formatCurrency(order.shipping_amount)}</p>
+          <p>{formatCurrency(order.tax_amount)}</p>
           <p className="font-semibold text-md">
-            {formatCurrency(totalPrice + delivery + tax)}
+            {formatCurrency(order.total_amount)}
           </p>
         </div>
       </div>

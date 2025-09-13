@@ -38,9 +38,6 @@ function LoginPage() {
 
   async function onSubmit(data) {
     try {
-      console.log("Attempting login with:", data.email);
-
-      // ✅ Call store's login instead of directly authApi
       const user = await login(data.email, data.password);
 
       console.log("Store login successful:", user);

@@ -14,12 +14,12 @@ export default function OrderContainer({ items = [], style }) {
 
       {items?.map((item) => (
         <OrderItem
-          key={item.id}
-          name={item.name}
-          quantity={item.quantity}
-          totalPrice={item.price * item.quantity}
-          unitPrice={item.price}
-          variants={item.types?.map((variant) => variant.value.name) || []}
+          key={item?.id}
+          name={item?.name}
+          quantity={item?.quantity}
+          totalPrice={item?.total_price}
+          unitPrice={item?.unit_price}
+          variants={item?.types?.map((variant) => variant.value.name) || []}
         />
       ))}
     </div>
@@ -35,7 +35,7 @@ function OrderItem({ name, quantity, totalPrice, unitPrice, variants = [] }) {
         </div>
         <div className="flex flex-col flex-1">
           <div className="flex items-baseline justify-between">
-            <p className="font-bold">{name}</p>
+            <p className="font-bold">{name || "Product X"}</p>
             <p className="text-sm text-muted-foreground">
               <span className="text-xs">{quantity}x </span>
               {formatCurrency(unitPrice)}

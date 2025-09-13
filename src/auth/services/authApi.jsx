@@ -115,6 +115,38 @@ const authApi = {
   },
 
   /**
+   * 🔥 GET USER BY FIREBASE UID
+   * Fetches user profile data using Firebase UID from your /api/users/uid/{uid} endpoint
+   * Perfect for getting backend user data after Firebase authentication
+   * Includes user addresses and complete profile information
+   * Example: const profile = await authApi.getUserByUid("Yl3a2XETvSVW1JI6XEW7ZZrxJwA2", token);
+   */
+  getUserByUid: async (firebaseUid, token, options = {}) => {
+    if (!firebaseUid) {
+      throw new Error("Firebase UID is required");
+    }
+
+    if (!token) {
+      throw new Error("Authorization token is required");
+    }
+
+    try {
+      return await api.get(`/users/uid/${firebaseUid}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        ...options,
+      });
+    } catch (error) {
+      console.error(`Failed to fetch user by Firebase UID ${firebaseUid}:`, {
+        uid: firebaseUid,
+        error: error.details,
+      });
+      throw error;
+    }
+  },
+
+  /**
    * 👤 GET USER BY ID
    * Fetches user profile data from your /api/users/{id} endpoint
    * Uses the user ID to get profile information

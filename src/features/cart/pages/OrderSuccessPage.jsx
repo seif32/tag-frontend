@@ -5,24 +5,25 @@ import successAnimation from "../../../animations/success.json";
 import OrderContainer from "@/features/order/components/OrderContainer";
 import OrderReceipt from "@/features/order/components/OrderReceipt";
 import { useCartStore } from "@/store/cartStore";
+import { useOrderStore } from "@/store/orderStore";
 
 function OrderSuccessPage() {
   const navigate = useNavigate();
 
-  const cartItems = useCartStore((state) => state.cartItems);
+  const currentOrder = useOrderStore((state) => state.currentOrder);
+  const orderItems = useOrderStore((state) => state.orderItems);
 
   return (
     <div className="flex flex-col gap-12 mx-auto max-w-200 ">
       <Title />
-      <OrderReceipt delivery={45} tax={22} />
-      <OrderContainer items={cartItems} />
-      <Button
-        variant={"outline"}
-        onClick={() => navigate("/products")}
-        className={"self-end "}
-      >
-        Return Shopping
-      </Button>
+      <OrderReceipt order={currentOrder} />
+      <OrderContainer items={orderItems} />
+      <div className="self-end flex gap-2">
+        <Button variant={"outline"} onClick={() => navigate("/products")}>
+          Go to Orders History
+        </Button>
+        <Button onClick={() => navigate("/products")}>Return Shopping</Button>
+      </div>
     </div>
   );
 }

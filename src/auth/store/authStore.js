@@ -15,8 +15,7 @@ export const useAuthStore = create((set, get) => ({
 
       let backendProfile = null;
       try {
-        // We need to add getUserByFirebaseUid to authApi
-        backendProfile = await authApi.getUserByFirebaseUid(
+        backendProfile = await authApi.getUserByUid(
           userCredential.user.uid,
           token
         );
@@ -30,7 +29,7 @@ export const useAuthStore = create((set, get) => ({
         first_name: backendProfile?.first_name || null,
         last_name: backendProfile?.last_name || null,
         phone_number: backendProfile?.phone_number || null,
-        role: backendProfile?.role || "customer",
+        role: backendProfile?.role || "user",
 
         // Firebase data
         name:
@@ -72,7 +71,7 @@ export const useAuthStore = create((set, get) => ({
       // 🔥 Try to get complete profile from backend
       let completeProfile = null;
       try {
-        completeProfile = await authApi.getUserByFirebaseUid(
+        completeProfile = await authApi.getUserByUid(
           userCredential.user.uid,
           token
         );
@@ -90,7 +89,7 @@ export const useAuthStore = create((set, get) => ({
         first_name: completeProfile?.first_name || userData.first_name,
         last_name: completeProfile?.last_name || userData.last_name,
         phone_number: completeProfile?.phone_number || userData.phone_number,
-        role: completeProfile?.role || backendUser?.role || "customer",
+        role: completeProfile?.role || backendUser?.role || "user",
 
         // Firebase data
         name:
@@ -146,7 +145,7 @@ export const useAuthStore = create((set, get) => ({
           // 🔥 Try to get backend profile
           let backendProfile = null;
           try {
-            backendProfile = await authApi.getUserByFirebaseUid(
+            backendProfile = await authApi.getUserByUid(
               firebaseUser.uid,
               token
             );
@@ -163,7 +162,7 @@ export const useAuthStore = create((set, get) => ({
             first_name: backendProfile?.first_name || null,
             last_name: backendProfile?.last_name || null,
             phone_number: backendProfile?.phone_number || null,
-            role: backendProfile?.role || "customer",
+            role: backendProfile?.role || "user",
 
             // Firebase data
             name:
@@ -213,10 +212,7 @@ export const useAuthStore = create((set, get) => ({
 
     try {
       const token = await authApi.getCurrentUserToken();
-      const backendProfile = await authApi.getUserByFirebaseUid(
-        currentUser.uid,
-        token
-      );
+      const backendProfile = await authApi.getUserByUid(currentUser.uid, token);
 
       const updatedUser = {
         ...currentUser,

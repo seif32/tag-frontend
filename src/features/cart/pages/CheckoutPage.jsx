@@ -15,6 +15,7 @@ import { useState } from "react";
 import { CiCircleInfo } from "react-icons/ci";
 import { useCartStore } from "@/store/cartStore";
 import useOrders from "@/hooks/useOrders";
+import { useOrderStore } from "@/store/orderStore";
 
 const formSchema = z.object({
   description: z.string().optional(),
@@ -50,13 +51,15 @@ function CheckoutPage() {
   const clearCart = useCartStore((state) => state.clearCart);
   const taxPercent = useCartStore((state) => state.clearCart);
   const shippingAmount = useCartStore((state) => state.clearCart);
+  const setOrderSuccess = useOrderStore((state) => state.setOrderSuccess);
+  const user = useAuthStore((state) => state.user);
 
   const { createAddressAsync, isPendingAddresses: isCreatingAddress } =
     useAddress.useCreate();
   const { updateAddressAsync, isPendingAddresses: isUpdatingAddress } =
     useAddress.useUpdate();
   const { addresses, isLoadingAddresses, isErrorAddresses, errorAddresses } =
-    useAddress.useByUserId(1);
+    useAddress.useByUserId(user?.id);
   const { createOrderAsync, isPendingOrders } = useOrders.useCreate();
 
   const [selectAddress, setSelectAddress] = useState(null);
@@ -93,6 +96,8 @@ function CheckoutPage() {
       console.log("order", order);
 
       const newOrderData = await createOrderAsync(order);
+
+      setOrderSuccess(newOrderData);
 
       navigate(`/order/success/${newOrderData.order.id}`);
       clearCart();
