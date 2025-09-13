@@ -3,6 +3,7 @@ import { create } from "zustand";
 
 export const useCartStore = create((set) => ({
   cartItems: [],
+  promoCode: null,
   totalItems: 0,
   totalPrice: 0,
   uniqueItems: 0,
@@ -82,7 +83,14 @@ export const useCartStore = create((set) => ({
       return recalc(items);
     }),
 
-  clearCart: () => set({ cartItems: [], totalItems: 0, totalPrice: 0 }),
+  clearCart: () =>
+    set({
+      cartItems: [],
+      totalItems: 0,
+      totalPrice: 0,
+      promoCode: null,
+      uniqueItems: 0,
+    }),
 }));
 
 function recalc(cartItems) {

@@ -51,3 +51,26 @@ export const getStatusColor = (status, type = "item") => {
 
   return statusMap[type]?.[normalizedStatus] || "bg-gray-100 text-gray-800";
 };
+
+// Helper functions
+export function calculateTaxRate(location, items) {
+  // UK: 20%, Egypt: 14%, etc.
+  const taxRates = {
+    uk: 20,
+    eg: 14,
+    us: 8.5, // average
+  };
+  return taxRates[location.country] || 0;
+}
+
+export function calculateShippingCost(address, items, method = "standard") {
+  // Free shipping over £50
+  const totalValue = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  if (totalValue >= 50) return 0;
+
+  // Otherwise calculate based on distance/method
+  return method === "express" ? 15 : 8;
+}

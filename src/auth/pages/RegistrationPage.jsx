@@ -6,33 +6,34 @@ import { useNavigate } from "react-router";
 import { useAuthStore } from "../store/authStore";
 import authApi from "../services/authApi";
 import { toast } from "sonner";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-const schema = yup.object({
-  first_name: yup
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+const registerSchema = z.object({
+  first_name: z.string().min(2, "First name is required"),
+  last_name: z.string().min(2, "Last name is required"),
+  email: z.string().email("Invalid email"),
+  phone_number: z
     .string()
-    .required("First name is required")
-    .min(2, "Too short"),
-  last_name: yup.string().required("Last name is required").min(2, "Too short"),
-  email: yup.string().email("Invalid email").required("Email is required"),
-  phone_number: yup.string().required("Phone number is required"),
-  // .matches(/^\+[1-9]\d{1,14}$/, "Invalid phone format"),
-  password: yup
-    .string()
-    .required("Password is required")
-    .min(8, "Password must be at least 8 characters"),
-  // .matches(
-  //   /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-  //   "Password must contain uppercase, lowercase, and number"
-  // ),
+    .min(10, "Phone number must be valid")
+    .regex(/^[0-9+]+$/, "Only digits or + allowed"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 function RegistrationPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
+  const form = useForm({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       first_name: "",
       last_name: "",
@@ -42,33 +43,24 @@ function RegistrationPage() {
     },
   });
   const navigate = useNavigate();
-  const setUser = useAuthStore((state) => state.setUser);
-
+  const register = useAuthStore((state) => state.register);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function onSubmit(data) {
     setIsSubmitting(true);
     try {
-      // Fix phone number format
+      // ✅ Normalize phone number format
       const formattedData = {
         ...data,
-        // Convert Egyptian number to E.164 format
         phone_number: data.phone_number.startsWith("+")
           ? data.phone_number
-          : `+20${data.phone_number.replace(/^0/, "")}`, // 👈 Use +20 not +21
+          : `+20${data.phone_number.replace(/^0/, "")}`,
       };
 
-      console.log("Sending registration data:", formattedData);
+      const response = await register(formattedData);
 
-      const response = await authApi.register(formattedData);
+      toast.success("Registration successful!");
 
-      console.log("Registration response:", response);
-
-      setUser(response);
-
-      toast.success(" Registration successful!");
-
-      // Route based on role
       if (response.role === "admin") {
         navigate("/admin");
       } else {
@@ -76,7 +68,7 @@ function RegistrationPage() {
       }
     } catch (error) {
       console.error("Registration error:", error);
-      alert(`❌ Registration failed: ${error.message}`);
+      toast.error(`❌ Registration failed: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -92,138 +84,97 @@ function RegistrationPage() {
           <p className="text-gray-600">Join us today and get started ✨</p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                First Name
-              </label>
-              <input
-                type="text"
-                {...register("first_name")}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none ${
-                  errors.first_name ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="John"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="first_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              {errors.first_name && (
-                <p className="text-red-500 text-xs mt-1">
-                  ⚠️ {errors.first_name.message}
-                </p>
-              )}
+
+              <FormField
+                control={form.control}
+                name="last_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Last Name
-              </label>
-              <input
-                type="text"
-                {...register("last_name")}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none ${
-                  errors.last_name ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="Doe"
-              />
-              {errors.last_name && (
-                <p className="text-red-500 text-xs mt-1">
-                  ⚠️ {errors.last_name.message}
-                </p>
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="john@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              {...register("email")}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none ${
-                errors.email ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="john@example.com"
             />
-            {errors.email && (
-              <p className="text-red-500 text-xs mt-1">
-                ⚠️ {errors.email.message}
-              </p>
-            )}
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              {...register("phone_number")}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none ${
-                errors.phone_number ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="+201234567890"
+            <FormField
+              control={form.control}
+              name="phone_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <Input type="tel" placeholder="+201234567890" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.phone_number && (
-              <p className="text-red-500 text-xs mt-1">
-                ⚠️ {errors.phone_number.message}
-              </p>
-            )}
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              {...register("password")}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none ${
-                errors.password ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="Enter strong password"
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Enter strong password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">
-                ⚠️ {errors.password.message}
-              </p>
-            )}
-          </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? (
-              <span className="flex items-center justify-center">
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Creating Account...
-              </span>
-            ) : (
-              "Create Account 🚀"
-            )}
-          </button>
-        </form>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? "Creating Account..." : "Create Account 🚀"}
+            </Button>
+          </form>
+        </Form>
 
         <div className="mt-6 text-center">
           <p className="text-gray-600">
@@ -240,5 +191,4 @@ function RegistrationPage() {
     </div>
   );
 }
-
 export default RegistrationPage;

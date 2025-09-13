@@ -1,28 +1,37 @@
 import { Package } from "lucide-react";
-import OrderControls from "../components/OrderControls";
 import { useCartStore } from "@/store/cartStore";
 
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { BsTrash3 } from "react-icons/bs";
 import EmptyState from "@/ui/EmptyState";
+import OrderCoupon from "../components/OrderCoupon";
+import OrderSummary from "../components/OrderSummary";
+import { useNavigate } from "react-router";
 
 function CartPage() {
   const cartItems = useCartStore((state) => state.cartItems);
+  const isCartEmpty = cartItems.length === 0;
   return (
     <div className="flex flex-col gap-2 rounded-md md:flex-row">
-      <div className="flex flex-col gap-4 p-3 bg-white border rounded-md flex-2">
-        <div>
-          <h2 className="text-lg font-semibold ">Shopping Cart</h2>
-          <div className="flex items-center gap-1">
-            <Package className=" text-muted-foreground" size={16} />
-            <p className="text-sm text-muted-foreground">
-              {cartItems.length} items
-            </p>
+      <div
+        className={`flex flex-col gap-4 p-5 bg-white border rounded-md flex-2 ${
+          isCartEmpty && "py-32"
+        }`}
+      >
+        {!isCartEmpty && (
+          <div>
+            <h2 className="text-lg font-semibold "> Cart</h2>
+            <div className="flex items-center gap-1">
+              <Package className=" text-muted-foreground" size={16} />
+              <p className="text-sm text-muted-foreground">
+                {cartItems.length} items
+              </p>
+            </div>
           </div>
-        </div>
+        )}
         <div className="flex flex-col gap-3">
-          {cartItems.length === 0 ? (
+          {isCartEmpty ? (
             <EmptyState />
           ) : (
             cartItems.map((item) => (
@@ -39,9 +48,11 @@ function CartPage() {
           )}
         </div>
       </div>
-      <div className="flex-1 ">
-        <OrderControls delivery={45} discount={32} tax={0} total={1500} />
-      </div>
+      {!isCartEmpty && (
+        <div className="flex-1 ">
+          <OrderControls delivery={50} discount={100} tax={0} total={1500} />
+        </div>
+      )}
     </div>
   );
 }
@@ -63,7 +74,7 @@ function CartItem({ id, name, variants = [], quantity, price, stock }) {
           <h3 className="font-semibold max-w-[24ch]">{name} </h3>
           <div className="flex items-center gap-1 gap-y-0 max-w-[24ch] flex-wrap ">
             {variants.map((variant, index) => (
-              <span key={index} className="text-sm text-gray-400">
+              <span key={index} className="text-xs text-gray-400">
                 {variant} {index < variants.length - 1 && <span>•</span>}
               </span>
             ))}
@@ -84,7 +95,7 @@ function CartItem({ id, name, variants = [], quantity, price, stock }) {
             -
           </Button>
 
-          <span className="text-sm font-semibold">{quantity}</span>
+          <span className="text-sm font-base">{quantity}</span>
           <Button
             size="sm"
             className="bg-primary"
@@ -103,6 +114,41 @@ function CartItem({ id, name, variants = [], quantity, price, stock }) {
         className="self-end text-gray-500 cursor-pointer md:self-center hover:text-red-500"
         onClick={() => removeItem(id)}
       />
+    </div>
+  );
+}
+
+function OrderControls({ discount, delivery, tax, total }) {
+  return (
+    <div className="flex flex-col gap-4">
+      <OrderCoupon />
+      <OrderSummary
+        delivery={delivery}
+        discount={discount}
+        tax={tax}
+        total={total}
+      />
+      <OrderActions />
+    </div>
+  );
+}
+
+function OrderActions() {
+  const navigate = useNavigate();
+  return (
+    <div className="flex flex-col gap-4 p-3 py-6 bg-white border rounded-xl">
+      <h2 className="font-semibold">Actions</h2>
+
+      <div className="border border-gray-100"></div>
+
+      <div className="flex gap-2">
+        <Button variant={"outline"} className={"flex-1"}>
+          Cancel Order
+        </Button>
+        <Button className={"flex-2"} onClick={() => navigate("/checkout")}>
+          Checkout
+        </Button>
+      </div>
     </div>
   );
 }

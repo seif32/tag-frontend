@@ -28,7 +28,7 @@ function OrderSummary({ discount, delivery, tax, total }) {
         <div className="flex items-baseline justify-between text-sm">
           <p className="text-muted-foreground">Total: </p>
           <span className="text-lg font-semibold">
-            {formatCurrency(totalPrice + discount + delivery + tax)}
+            {formatCurrency(totalPrice - discount + delivery + tax)}
           </span>
         </div>
       </div>

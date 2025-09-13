@@ -5,12 +5,17 @@ import SearchInput from "./SearchInput";
 import CartBadge from "@/features/cart/components/CartBadge";
 import { useAuthStore } from "@/auth/store/authStore";
 import { FiPackage, FiShoppingCart } from "react-icons/fi";
+import authApi from "@/auth/services/authApi";
 
 const Header = () => {
   const location = useLocation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
 
-  async function handleLogout() {}
+  function handleLogout() {
+    logout();
+  }
 
   const navItems = [
     { name: "Home", path: ROUTES.CUSTOMER.HOME },
@@ -38,6 +43,7 @@ const Header = () => {
             {item.name}
           </Link>
         ))}
+        <p>{user?.name}</p>
       </nav>
 
       {/* Right side actions */}
@@ -64,19 +70,16 @@ const Header = () => {
               <FiShoppingCart size={20} />
               <CartBadge />
             </Link>
+            <Button className={"ml-3"} onClick={handleLogout}>
+              Log Out
+            </Button>
           </div>
         ) : (
           <div className="flex items-center space-x-2">
-            <Link
-              to={ROUTES.LOGIN}
-              className="text-gray-600 hover:text-gray-800"
-            >
+            <Link to={"/login"} className="text-gray-600 hover:text-gray-800">
               Login
             </Link>
-            <Button
-              onClick={handleLogout}
-              className="px-4 py-2 text-white transition-colors rounded-lg hover:bg-primary/90 bg-primary"
-            >
+            <Button className="px-4 py-2 text-white transition-colors rounded-lg hover:bg-primary/90 bg-primary">
               Sign Up
             </Button>
           </div>
