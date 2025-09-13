@@ -14,10 +14,6 @@ import LoadingState from "@/ui/LoadingState";
 import { useState } from "react";
 import { CiCircleInfo } from "react-icons/ci";
 import { useCartStore } from "@/store/cartStore";
-import {
-  calculateShippingCost,
-  calculateTaxRate,
-} from "@/features/admin/services/utils";
 import useOrders from "@/hooks/useOrders";
 
 const formSchema = z.object({
@@ -52,6 +48,8 @@ function CheckoutPage() {
   const cartItems = useCartStore((state) => state.cartItems);
   const promoCode = useCartStore((state) => state.promoCode);
   const clearCart = useCartStore((state) => state.clearCart);
+  const taxPercent = useCartStore((state) => state.clearCart);
+  const shippingAmount = useCartStore((state) => state.clearCart);
 
   const { createAddressAsync, isPendingAddresses: isCreatingAddress } =
     useAddress.useCreate();
@@ -66,137 +64,25 @@ function CheckoutPage() {
 
   if (isLoadingAddresses) return <LoadingState />;
 
-  // function onSubmit(address) {
-  //   let addressId;
-
-  //   // const calculatedTax = calculateTaxRate(address, cartItems);
-  //   // const calculatedShipping = calculateShippingCost(
-  //   //   address,
-  //   //   cartItems,
-  //   //   shippingMethod
-  //   // );
-
-  //   const calculatedTax = 65;
-  //   const calculatedShipping = 50;
-
-  //   if (!selectAddress) {
-  //     console.log("Creating new address...");
-
-  //     createAddress(address, {
-  //       onSuccess: (newAddressData) => {
-  //         console.log("Address created successfully:", newAddressData);
-  //         addressId = newAddressData.id;
-
-  //         const order = {
-  //           user_id: 1,
-  //           address_id: addressId,
-  //           tax_percent: calculatedTax,
-  //           shipping_amount: calculatedShipping,
-  //           promo_code_id: promoCode || null,
-  //           items: cartItems.map((item) => ({
-  //             variant_id: item.id,
-  //             quantity: item.quantity,
-  //           })),
-  //         };
-
-  //         console.log("Order object:", order);
-  //         createOrder(order, {
-  //           onSuccess: (newOrderData) => {
-  //             navigate(`/order/success/${newOrderData.order.id}`);
-  //             clearCart();
-  //           },
-  //         });
-  //       },
-  //     });
-  //   } else if (!isEditMode) {
-  //     console.log("Using existing address without changes...", selectAddress);
-  //     addressId = selectAddress.id;
-
-  //     const order = {
-  //       user_id: 1,
-  //       address_id: addressId,
-  //       tax_percent: calculatedTax,
-  //       shipping_amount: calculatedShipping,
-  //       promo_code_id: promoCode || null,
-  //       items: cartItems.map((item) => ({
-  //         variant_id: item.id,
-  //         quantity: item.quantity,
-  //       })),
-  //     };
-
-  //     console.log("Order object:", order);
-  //     createOrder(order, {
-  //       onSuccess: (newOrderData) => {
-  //         navigate(`/order/success/${newOrderData.order.id}`);
-  //         clearCart();
-  //       },
-  //     });
-  //   } else {
-  //     console.log("Updating existing address...", address);
-
-  //     updateAddress(
-  //       { id: selectAddress.id, data: address },
-  //       {
-  //         onSuccess: () => {
-  //           addressId = selectAddress.id;
-
-  //           const order = {
-  //             user_id: 1,
-  //             address_id: addressId,
-  //             tax_percent: calculatedTax,
-  //             shipping_amount: calculatedShipping,
-  //             promo_code_id: promoCode || null,
-  //             items: cartItems.map((item) => ({
-  //               variant_id: item.id,
-  //               quantity: item.quantity,
-  //             })),
-  //           };
-
-  //           console.log("Order object:", order);
-  //           createOrder(order, {
-  //             onSuccess: (newOrderData) => {
-  //               navigate(`/order/success/${newOrderData.order.id}`);
-  //               clearCart();
-  //             },
-  //           });
-  //         },
-  //       }
-  //     );
-  //   }
-  // }
-
   async function onSubmit(address) {
     try {
       let addressId;
 
-      // const calculatedTax = calculateTaxRate(address, cartItems);
-      // const calculatedShipping = calculateShippingCost(
-      //   address,
-      //   cartItems,
-      //   shippingMethod
-      // );
-
-      const calculatedTax = 65;
-      const calculatedShipping = 50;
-
       if (!selectAddress) {
         const newAddressData = await createAddressAsync(address);
         addressId = newAddressData.id;
-        console.log("1 addressId", addressId);
       } else if (!isEditMode) {
         addressId = selectAddress.id;
-        console.log("2 addressId", addressId);
       } else {
         await updateAddressAsync({ id: selectAddress.id, data: address });
         addressId = selectAddress.id;
-        console.log("3 addressId", addressId);
       }
 
       const order = {
         user_id: 1,
         address_id: addressId,
-        tax_percent: calculatedTax,
-        shipping_amount: calculatedShipping,
+        tax_percent: taxPercent,
+        shipping_amount: shippingAmount,
         promo_code_id: promoCode || null,
         items: cartItems.map((item) => ({
           variant_id: item.id,
