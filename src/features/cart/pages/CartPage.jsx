@@ -1,13 +1,12 @@
 import { Package } from "lucide-react";
-import { useCartStore } from "@/store/cartStore";
-
-import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/utils/formatCurrency";
 import { BsTrash3 } from "react-icons/bs";
+import { useCartStore } from "@/store/cartStore";
+import { useNavigate } from "react-router";
+import { formatCurrency } from "@/utils/formatCurrency";
+import { Button } from "@/components/ui/button";
 import EmptyState from "@/ui/EmptyState";
 import OrderCoupon from "../components/OrderCoupon";
 import OrderSummary from "../components/OrderSummary";
-import { Navigate, useNavigate } from "react-router";
 
 function CartPage() {
   const cartItems = useCartStore((state) => state.cartItems);
@@ -57,7 +56,7 @@ function CartPage() {
       </div>
       {!isCartEmpty && (
         <div className="flex-1 ">
-          <OrderControls delivery={50} discount={100} tax={0} total={1500} />
+          <OrderControls />
         </div>
       )}
     </div>
@@ -125,16 +124,11 @@ function CartItem({ id, name, variants = [], quantity, price, stock }) {
   );
 }
 
-function OrderControls({ discount, delivery, tax, total }) {
+function OrderControls() {
   return (
     <div className="flex flex-col gap-4">
       <OrderCoupon />
-      <OrderSummary
-        delivery={delivery}
-        discount={discount}
-        tax={tax}
-        total={total}
-      />
+      <OrderSummary />
       <OrderActions />
     </div>
   );

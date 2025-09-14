@@ -1,15 +1,5 @@
 import { AlertTriangle, X } from "lucide-react";
 
-/**
- * 🎨 Modern Error Message Component
- * Perfect for forms, API errors, and user feedback
- *
- * @param {string} message - The error message to display
- * @param {string} variant - 'destructive' | 'warning' | 'info'
- * @param {boolean} dismissible - Whether the error can be dismissed
- * @param {function} onDismiss - Callback when error is dismissed
- * @param {string} className - Additional Tailwind classes
- */
 const ErrorMessage = ({
   message,
   variant = "destructive",
@@ -65,6 +55,7 @@ const ErrorMessage = ({
       {/* ❌ Dismiss Button (Optional) */}
       {dismissible && (
         <button
+          type="button"
           onClick={onDismiss}
           className={`
             flex-shrink-0 p-1 rounded-md

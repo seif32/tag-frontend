@@ -6,7 +6,6 @@ import { IoArrowBack } from "react-icons/io5";
 import { Navigate, useNavigate } from "react-router";
 import OrderSummary from "../components/OrderSummary";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { useAuthStore } from "@/auth/store/authStore";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import useAddress from "@/hooks/useAddress";
@@ -58,17 +57,20 @@ function CheckoutPage() {
     useAddress.useCreate();
   const { updateAddressAsync, isPendingAddresses: isUpdatingAddress } =
     useAddress.useUpdate();
-  const { addresses, isLoadingAddresses, isErrorAddresses, errorAddresses } =
-    useAddress.useByUserId(user?.id);
   const { createOrderAsync, isPendingOrders } = useOrders.useCreate();
+  const {
+    addresses,
+    isLoadingAddresses,
+    isErrorAddresses,
+    errorAddresses,
+    refetchAddresses,
+  } = useAddress.useByUserId(user?.id);
 
   const [selectAddress, setSelectAddress] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
 
   const isCartEmpty = cartItems.length === 0;
   if (isCartEmpty) return <Navigate to="/cart" replace />;
-
-  if (isLoadingAddresses) return <LoadingState />;
 
   async function onSubmit(address) {
     try {
@@ -128,13 +130,17 @@ function CheckoutPage() {
             setSelectAddress={setSelectAddress}
             isEditMode={isEditMode}
             setIsEditMode={setIsEditMode}
+            isLoadingAddresses={isLoadingAddresses}
+            errorAddresses={errorAddresses}
+            isErrorAddresses={isErrorAddresses}
+            refetchAddresses={refetchAddresses}
           />
 
           <AddressGuide />
           {/* <ShippingMethod /> */}
         </div>
         <div className="flex flex-col flex-1 gap-3">
-          <OrderSummary delivery={45} discount={32} tax={0} total={1500} />
+          <OrderSummary />
           <div className="p-6 bg-white border rounded-xl">
             <Button
               type="submit"
