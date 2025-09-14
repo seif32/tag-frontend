@@ -90,7 +90,7 @@ function OrderHistoryCard({
             {formatDateFull(orderDate)}
           </p>
           <div
-            className={`px-3  py-1 text-xs  rounded-md ${getStatusColor(
+            className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusColor(
               orderStatus,
               "order"
             )}`}
@@ -137,7 +137,7 @@ function OrderHistoryCard({
               </p> */}
             </div>
             <Button
-              variant={"outline"}
+              // variant={"outline"}
               size={"sm"}
               className={"text-xs w-full"}
               onClick={() => navigate(`/orders/${orderId}`)}
