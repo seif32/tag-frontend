@@ -59,7 +59,27 @@ const ordersApi = {
     }
 
     try {
-      return await api.get(`/orders/user/${userId}`, options);
+      // Build query string from pagination options
+      const queryParams = new URLSearchParams();
+
+      // Extract pagination params with defaults
+      const { page = 1, limit = 10, ...restOptions } = options;
+
+      // Always add pagination params
+      queryParams.append("page", page.toString());
+      queryParams.append("limit", limit.toString());
+
+      // Add any additional filters if they exist
+      if (options.status) queryParams.append("status", options.status);
+      if (options.dateFrom) queryParams.append("dateFrom", options.dateFrom);
+      if (options.dateTo) queryParams.append("dateTo", options.dateTo);
+
+      const queryString = queryParams.toString();
+      const url = queryString
+        ? `/orders/user/${userId}?${queryString}`
+        : `/orders/user/${userId}`;
+
+      return await api.get(url, restOptions);
     } catch (error) {
       console.error(
         `Failed to fetch orders for user ${userId}:`,

@@ -1,122 +1,70 @@
+import { useAuthStore } from "@/auth/store/authStore";
 import { Button } from "@/components/ui/button";
-import { formatDateShort } from "@/utils/dateUtils";
+import { getStatusColor } from "@/features/admin/services/utils";
+import useOrders from "@/hooks/useOrders";
+import LoadingState from "@/ui/LoadingState";
+import Pagination from "@/ui/Pagination";
+import { formatDateFull } from "@/utils/dateUtils";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { PiPackageThin } from "react-icons/pi";
-import { useNavigate } from "react-router";
-
-const orders = [
-  {
-    id: 1,
-    date: "2025-09-09 14:45:30",
-    status: "delivered",
-    phone_number: "+44 7911 123456",
-    total_price: 475,
-    total_items: 24,
-    address: {
-      street_address: "Flat 14B, 25 Baker Street",
-      country: "United Kingdom",
-      city: "London",
-      postalCode: "W1U 8AN",
-    },
-    products: [
-      {
-        name: "Iphone 11",
-        quantity: 42,
-      },
-      {
-        name: "Samsung Galaxy",
-        quantity: 14,
-      },
-      {
-        name: "Black Suit",
-        quantity: 9,
-      },
-      {
-        name: "LG Television",
-        quantity: 12,
-      },
-      {
-        name: "Tablet 5s",
-        quantity: 77,
-      },
-    ],
-  },
-  {
-    id: 2,
-    date: "2025-09-09 14:45:30",
-    status: "delivered",
-    phone_number: "+44 7911 123456",
-    total_price: 475,
-    total_items: 24,
-    address: {
-      street_address: "Flat 14B, 25 Baker Street",
-      country: "United Kingdom",
-      city: "London",
-      postalCode: "W1U 8AN",
-    },
-    products: [
-      {
-        name: "Iphone 11",
-        quantity: 42,
-      },
-      {
-        name: "Samsung Galaxy",
-        quantity: 14,
-      },
-      {
-        name: "Black Suit",
-        quantity: 9,
-      },
-      {
-        name: "LG Television",
-        quantity: 12,
-      },
-      {
-        name: "Tablet 5s",
-        quantity: 77,
-      },
-    ],
-  },
-];
+import { useNavigate, useSearchParams } from "react-router";
 
 function OrdersHistoryPage() {
+  const user = useAuthStore((state) => state.user);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page") || "1");
+  const limit = 10;
+  const { userOrders, isLoadingUserOrders, isFetchingUserOrders } =
+    useOrders.useByUserId(user.id, {
+      page: currentPage,
+      limit,
+    });
+
+  if (isLoadingUserOrders) return <LoadingState type="page" />;
+
   return (
-    <div className="w-full mx-auto max-w-250">
-      <Title />
-      <OrderHistoryCardContainer />
+    <div className="w-full mx-auto max-w-250 flex flex-col">
+      <Title limit={userOrders.limit} total={userOrders.total} />
+      <OrderHistoryCardContainer orders={userOrders?.data} />
+      <Pagination
+        setSearchParams={setSearchParams}
+        currentPage={currentPage}
+        data={userOrders}
+        isFetching={isFetchingUserOrders}
+        totalPages={userOrders.totalPages}
+      />
     </div>
   );
 }
 
 export default OrdersHistoryPage;
 
-function Title() {
+function Title({ limit, total }) {
   return (
     <div className="mb-8">
       <h1 className="text-3xl">Orders History</h1>
       <p className="text-muted-foreground">
-        Check all your orders history in here!
+        Showing {limit} orders out of {total} total
       </p>
     </div>
   );
 }
 
-function OrderHistoryCardContainer() {
+function OrderHistoryCardContainer({ orders }) {
   return (
     <div className="flex flex-col gap-2">
-      {orders?.map((order) => (
-        <OrderHistoryCard
-          key={order?.id}
-          orderId={order?.id}
-          orderDate={order?.date}
-          orderStatus={order?.status}
-          products={order?.products}
-          address={order?.address}
-          phoneNumber={order?.phone_number}
-          totalPrice={order?.total_price}
-          totalItems={order?.total_items}
-        />
-      ))}
+      {orders?.map((order) => {
+        return (
+          <OrderHistoryCard
+            key={order?.id}
+            orderId={order?.id}
+            orderDate={order?.created_at}
+            orderStatus={order?.order_status}
+            products={order?.items}
+            totalPrice={order?.total_amount}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -126,22 +74,27 @@ function OrderHistoryCard({
   orderDate,
   orderStatus,
   products = [],
-  address,
-  phoneNumber,
   totalPrice,
-  totalItems,
 }) {
   const navigate = useNavigate();
   return (
     <div className="p-4 bg-white border rounded-md">
       <div className="">
-        <h3 className="text-lg ">Order #{orderId}</h3>
+        <h3 className="text-xl font-degular">
+          Order <span className="text-xs">#</span>
+          {orderId}
+        </h3>
         <div className="flex items-end justify-between ">
           <p className="text-sm text-muted-foreground">
             {/* {formatDateFull(orderDate)} */}
-            {formatDateShort(orderDate)}
+            {formatDateFull(orderDate)}
           </p>
-          <div className="px-4 py-2 text-xs bg-gray-200 border rounded-md">
+          <div
+            className={`px-3  py-1 text-xs  rounded-md ${getStatusColor(
+              orderStatus,
+              "order"
+            )}`}
+          >
             <p>{orderStatus}</p>
           </div>
         </div>
@@ -151,12 +104,12 @@ function OrderHistoryCard({
         <div className="flex flex-wrap gap-x-2">
           {products?.map((product) => {
             return (
-              <div key={product?.id} className="flex flex-col">
+              <div key={product?.id} className="flex flex-col gap-0.5">
                 <div className="w-20 h-20 bg-gray-200 rounded-md">
                   <img />
                 </div>
                 <h4 className="truncate max-w-[10ch] text-xs">
-                  {product?.name}
+                  {product?.product?.name}
                 </h4>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <PiPackageThin />

@@ -61,13 +61,16 @@ const useOrders = {
    * Example: const { isLoadingUserOrders, userOrders } = useOrders.useByUserId(456);
    */
   useByUserId: (userId, options = {}) => {
+    const { page = 1, limit = 10, ...queryOptions } = options;
+
     const query = useQuery({
-      queryKey: ["orders", "user", userId],
-      queryFn: () => ordersApi.getByUserId(userId),
-      enabled: !!userId, // Only run if userId exists
-      staleTime: 2 * 60 * 1000, // 2 minutes
-      cacheTime: 10 * 60 * 1000, // Keep longer for user's own orders
-      ...options,
+      queryKey: ["orders", "user", userId, { page, limit }],
+      queryFn: () => ordersApi.getByUserId(userId, { page, limit }),
+      enabled: !!userId,
+      staleTime: 2 * 60 * 1000,
+      cacheTime: 10 * 60 * 1000,
+      keepPreviousData: true,
+      ...queryOptions,
     });
 
     return {
@@ -76,6 +79,8 @@ const useOrders = {
       errorUserOrders: query.error,
       isErrorUserOrders: query.isError,
       refetchUserOrders: query.refetch,
+      isFetchingUserOrders: query.isFetching,
+      isPreviousData: query.isPreviousData,
     };
   },
 

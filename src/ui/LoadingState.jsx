@@ -4,6 +4,8 @@ export default function LoadingState({
   rows = 2,
   columns = 4,
   className = "",
+  title = "Loading...", // 👈 New prop for page mode
+  description = "", // 👈 New prop for page mode
 }) {
   // 📏 Size configurations for different loading types
   const sizes = {
@@ -12,23 +14,205 @@ export default function LoadingState({
       skeleton: "h-3",
       card: "h-32",
       row: "h-4",
+      pageSpinner: "h-8 w-8", // 👈 Page mode spinner
     },
     md: {
       spinner: "h-6 w-6",
       skeleton: "h-4",
       card: "h-40",
       row: "h-6",
+      pageSpinner: "h-12 w-12", // 👈 Page mode spinner
     },
     lg: {
       spinner: "h-8 w-8",
       skeleton: "h-6",
       card: "h-48",
       row: "h-8",
+      pageSpinner: "h-16 w-16", // 👈 Page mode spinner
     },
   };
-
   // 🎭 Loading type configurations
   const loadingModes = {
+    page: () => (
+      <div
+        className={`min-h-screen bg-gray-50 flex items-center justify-center p-4 ${className}`}
+      >
+        <div className="text-center space-y-6 max-w-md mx-auto">
+          {/* Main spinner */}
+          <div className="flex justify-center">
+            <div
+              className={`animate-spin rounded-full border-4 border-t-transparent border-accent ${sizes[size].pageSpinner}`}
+            />
+          </div>
+
+          {/* Title */}
+          <div className="space-y-2">
+            <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+            {description && (
+              <p className="text-gray-600 text-sm">{description}</p>
+            )}
+          </div>
+
+          {/* Animated dots */}
+          <div className="flex justify-center space-x-1">
+            <div className="w-2 h-2 bg-accent rounded-full animate-bounce" />
+            <div
+              className="w-2 h-2 bg-accent rounded-full animate-bounce"
+              style={{ animationDelay: "0.1s" }}
+            />
+            <div
+              className="w-2 h-2 bg-accent rounded-full animate-bounce"
+              style={{ animationDelay: "0.2s" }}
+            />
+          </div>
+
+          {/* Optional skeleton content preview */}
+          <div className="mt-8 space-y-4 opacity-50">
+            <div className="animate-pulse bg-gray-200 rounded-lg h-4 w-3/4 mx-auto" />
+            <div className="animate-pulse bg-gray-200 rounded-lg h-4 w-1/2 mx-auto" />
+            <div className="animate-pulse bg-gray-200 rounded-lg h-4 w-2/3 mx-auto" />
+          </div>
+        </div>
+      </div>
+    ),
+
+    // 📄 App initialization loading (specific for auth)
+    app: () => (
+      <div
+        className={`min-h-screen flex items-center justify-center p-4 ${className}`}
+      >
+        <div className="text-center space-y-8 max-w-sm mx-auto">
+          {/* App logo/brand area */}
+          <div className="space-y-4">
+            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-accent to-accent/70 rounded-2xl flex items-center justify-center animate-pulse">
+              <div className="text-white text-2xl font-bold">TAG</div>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {title || "Welcome"}
+            </h1>
+          </div>
+
+          {/* Loading animation */}
+          <div className="relative">
+            <div
+              className={`animate-spin rounded-full border-4 border-t-transparent border-accent ${sizes[size].pageSpinner} mx-auto`}
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-6 h-6 bg-accent rounded-full animate-ping opacity-20" />
+            </div>
+          </div>
+
+          {/* Status text */}
+          <div className="space-y-2">
+            <p className="text-gray-700 font-medium">
+              {description || "Initializing application..."}
+            </p>
+            <div className="flex justify-center space-x-1">
+              <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse" />
+              <div
+                className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse"
+                style={{ animationDelay: "0.2s" }}
+              />
+              <div
+                className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse"
+                style={{ animationDelay: "0.4s" }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+
+    // 📄 Dashboard page loading
+    dashboard: () => (
+      <div className={`min-h-screen bg-gray-50 ${className}`}>
+        {/* Header skeleton */}
+        <div className="bg-white shadow-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="animate-pulse bg-gray-200 rounded h-8 w-48" />
+              <div className="flex space-x-3">
+                <div className="animate-pulse bg-gray-200 rounded-full h-8 w-8" />
+                <div className="animate-pulse bg-gray-200 rounded-full h-8 w-8" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Stats cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-white p-6 rounded-lg shadow-sm border">
+                <div className="animate-pulse space-y-3">
+                  <div className="bg-gray-200 rounded h-4 w-2/3" />
+                  <div className="bg-gray-300 rounded h-8 w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Chart section */}
+          <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+            <div className="animate-pulse space-y-4">
+              <div className="bg-gray-200 rounded h-6 w-1/4" />
+              <div className="bg-gray-100 rounded h-64 w-full" />
+            </div>
+          </div>
+
+          {/* Table section */}
+          <div className="bg-white rounded-lg shadow-sm border">
+            <div className="p-6 border-b">
+              <div className="animate-pulse bg-gray-200 rounded h-6 w-1/3" />
+            </div>
+            <div className="p-6 space-y-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex space-x-4">
+                  <div className="animate-pulse bg-gray-200 rounded-full h-10 w-10" />
+                  <div className="flex-1 space-y-2">
+                    <div className="animate-pulse bg-gray-200 rounded h-4 w-3/4" />
+                    <div className="animate-pulse bg-gray-200 rounded h-3 w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+
+    // 📄 Authentication page loading
+    auth: () => (
+      <div
+        className={`min-h-screen  flex items-center justify-center p-4 ${className}`}
+      >
+        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="animate-pulse space-y-4">
+              <div className="bg-gray-200 rounded h-8 w-3/4 mx-auto" />
+              <div className="bg-gray-200 rounded h-4 w-1/2 mx-auto" />
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="animate-pulse bg-gray-200 rounded h-4 w-1/4" />
+                <div className="animate-pulse bg-gray-200 rounded-md h-10 w-full" />
+              </div>
+            ))}
+
+            <div className="animate-pulse bg-gradient-to-r from-purple-200 to-pink-200 rounded-lg h-12 w-full" />
+          </div>
+
+          <div className="mt-6 text-center">
+            <div className="animate-pulse bg-gray-200 rounded h-4 w-2/3 mx-auto" />
+          </div>
+        </div>
+      </div>
+    ),
+
     // Basic spinner (your existing one)
     spinner: () => (
       <div className={`flex justify-center items-center p-8 ${className}`}>
