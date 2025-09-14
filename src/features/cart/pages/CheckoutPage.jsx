@@ -9,12 +9,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "@/auth/store/authStore";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import useAddress from "@/hooks/useAddress";
-import LoadingState from "@/ui/LoadingState";
 import { useState } from "react";
 import { CiCircleInfo } from "react-icons/ci";
 import { useCartStore } from "@/store/cartStore";
 import useOrders from "@/hooks/useOrders";
 import { useOrderStore } from "@/store/orderStore";
+import LoadingState from "@/ui/LoadingState";
 
 const formSchema = z.object({
   description: z.string().optional(),
@@ -44,12 +44,16 @@ function CheckoutPage() {
     },
   });
 
+  const [selectAddress, setSelectAddress] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(true);
+
   const navigate = useNavigate();
   const promoCode = useCartStore((state) => state.promoCode);
   const clearCart = useCartStore((state) => state.clearCart);
   const taxPercent = useCartStore((state) => state.taxPercent);
   const shippingAmount = useCartStore((state) => state.shippingAmount);
   const setOrderSuccess = useOrderStore((state) => state.setOrderSuccess);
+  const order = useOrderStore((state) => state.order);
   const user = useAuthStore((state) => state.user);
   const cartItems = useCartStore((state) => state.cartItems);
 
@@ -66,11 +70,11 @@ function CheckoutPage() {
     refetchAddresses,
   } = useAddress.useByUserId(user?.id);
 
-  const [selectAddress, setSelectAddress] = useState(null);
-  const [isEditMode, setIsEditMode] = useState(true);
-
-  const isCartEmpty = cartItems.length === 0;
-  if (isCartEmpty) return <Navigate to="/cart" replace />;
+  const isBusy =
+    isCreatingAddress ||
+    isUpdatingAddress ||
+    isPendingOrders ||
+    isLoadingAddresses;
 
   async function onSubmit(address) {
     try {
@@ -109,6 +113,8 @@ function CheckoutPage() {
     }
   }
 
+  if (cartItems.length === 0 && !order) return <Navigate to="/cart" replace />;
+
   return (
     <div className="flex flex-col gap-4">
       <Button
@@ -141,15 +147,7 @@ function CheckoutPage() {
         </div>
         <div className="flex flex-col flex-1 gap-3">
           <OrderSummary />
-          <div className="p-6 bg-white border rounded-xl">
-            <Button
-              type="submit"
-              onClick={form.handleSubmit(onSubmit)}
-              className="w-full"
-            >
-              Complete Order
-            </Button>
-          </div>
+          <ActionButton form={form} isBusy={isBusy} onSubmit={onSubmit} />
         </div>
       </div>
     </div>
@@ -250,6 +248,30 @@ function AddressGuide() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ActionButton({ form, onSubmit, isBusy }) {
+  return (
+    <div className="p-6 bg-white border rounded-xl">
+      <Button
+        type="submit"
+        onClick={form.handleSubmit(onSubmit)}
+        className={`w-full flex items-center justify-center gap-2 ${
+          isBusy && "bg-accent/50  hover:cursor-not-allowed hover:bg-accent/50"
+        }`}
+        disabled={isBusy}
+      >
+        {isBusy ? (
+          <>
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Completing...</span>
+          </>
+        ) : (
+          "Complete Order"
+        )}
+      </Button>
     </div>
   );
 }
