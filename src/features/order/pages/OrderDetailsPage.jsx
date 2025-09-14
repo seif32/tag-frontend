@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import { TfiPackage } from "react-icons/tfi";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { addDays, formatDateShort } from "@/utils/dateUtils";
@@ -11,14 +11,8 @@ import IconCard from "@/ui/IconCard";
 import useOrders from "@/hooks/useOrders";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
-
-const address = {
-  street_address: "Flat 14B, 25 Baker Street",
-  country: "United Kingdom",
-  city: "London",
-  postalCode: "W1U 8AN",
-  phone_number: "+44 7911 123456",
-};
+import { BsBackspaceReverse } from "react-icons/bs";
+import { FaArrowLeft } from "react-icons/fa6";
 
 function OrderDetailsPage() {
   const { orderId } = useParams();
@@ -69,12 +63,15 @@ function OrderDetailsPage() {
           </div>
           <div className="flex flex-col gap-3 flex-1">
             <ShippingAddress
-              city={address.city}
-              country={address.country}
-              postalCode={address.postal_code}
-              streetAddress={address.street_address}
-              phoneNumber={address.phone_number}
-              style={"bg-white p-5 rounded-2xl border"}
+              streetAddress={order.address.street_name}
+              apartmentNumber={order.address.apartment_number}
+              buildingNumber={order.address.building_number}
+              city={order.address.city}
+              postalCode={order.address.postal_code}
+              country={order.address.country}
+              description={order.address.description}
+              phoneNumber={order.user.phone_number}
+              className="bg-white "
             />
           </div>
         </div>
@@ -87,9 +84,20 @@ export default OrderDetailsPage;
 
 function Title() {
   return (
-    <div className="flex justify-between">
-      <h1 className="mb-5 text-3xl">Order Details</h1>
+    <section className="flex justify-between">
+      <div>
+        <div className="flex  items-center gap-1.5 group">
+          <FaArrowLeft className="text-accent size-3 group-hover:text-accent/70 cursor-pointer" />
+          <Link
+            to={"/orders"}
+            className="text-accent group-hover:text-accent/70 text-sm"
+          >
+            Back to orders
+          </Link>
+        </div>
+        <h1 className="mb-5 text-3xl">Order Details</h1>
+      </div>
       <Button variant={"outline"}>Invoice</Button>
-    </div>
+    </section>
   );
 }

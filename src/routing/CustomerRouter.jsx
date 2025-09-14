@@ -9,6 +9,7 @@ import CheckoutPage from "@/features/cart/pages/CheckoutPage";
 import OrderSuccessPage from "@/features/cart/pages/OrderSuccessPage";
 import OrdersHistoryPage from "@/features/order/pages/OrdersHistoryPage";
 import OrderDetailsPage from "@/features/order/pages/OrderDetailsPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 function CustomerRouter() {
   return (
@@ -29,11 +30,39 @@ function CustomerRouter() {
         <Route path="products/:id" element={<ProductDetailPage />} />
 
         <Route path="cart" element={<CartPage />} />
-        <Route path="checkout" element={<CheckoutPage />} />
-        <Route path="order/success/:orderId" element={<OrderSuccessPage />} />
+        <Route
+          path="checkout"
+          element={
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="order/success/:orderId"
+          element={
+            <ProtectedRoute>
+              <OrderSuccessPage />
+            </ProtectedRoute>
+          }
+        />
 
-        <Route path="orders" element={<OrdersHistoryPage />} />
-        <Route path="orders/:orderId" element={<OrderDetailsPage />} />
+        <Route
+          path="orders"
+          element={
+            <ProtectedRoute>
+              <OrdersHistoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="orders/:orderId"
+          element={
+            <ProtectedRoute>
+              <OrderDetailsPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
     </Routes>
   );

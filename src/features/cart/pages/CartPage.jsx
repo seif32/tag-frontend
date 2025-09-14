@@ -7,11 +7,12 @@ import { BsTrash3 } from "react-icons/bs";
 import EmptyState from "@/ui/EmptyState";
 import OrderCoupon from "../components/OrderCoupon";
 import OrderSummary from "../components/OrderSummary";
-import { useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 
 function CartPage() {
   const cartItems = useCartStore((state) => state.cartItems);
   const isCartEmpty = cartItems.length === 0;
+
   return (
     <div className="flex flex-col gap-2 rounded-md md:flex-row">
       <div
@@ -30,9 +31,15 @@ function CartPage() {
             </div>
           </div>
         )}
+
         <div className="flex flex-col gap-3">
           {isCartEmpty ? (
-            <EmptyState />
+            <EmptyState
+              title={"Ready to place your first order?"}
+              subtitle={"Discover amazing products and start shopping today!"}
+              goTo={"/products"}
+              btn={"Browse products"}
+            />
           ) : (
             cartItems.map((item) => (
               <CartItem

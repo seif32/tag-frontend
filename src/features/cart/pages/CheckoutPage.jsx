@@ -3,7 +3,7 @@ import CheckoutForm from "../components/CheckoutForm";
 import { Button } from "@/components/ui/button";
 import z from "zod";
 import { IoArrowBack } from "react-icons/io5";
-import { useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 import OrderSummary from "../components/OrderSummary";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -46,13 +46,13 @@ function CheckoutPage() {
   });
 
   const navigate = useNavigate();
-  const cartItems = useCartStore((state) => state.cartItems);
   const promoCode = useCartStore((state) => state.promoCode);
   const clearCart = useCartStore((state) => state.clearCart);
   const taxPercent = useCartStore((state) => state.taxPercent);
   const shippingAmount = useCartStore((state) => state.shippingAmount);
   const setOrderSuccess = useOrderStore((state) => state.setOrderSuccess);
   const user = useAuthStore((state) => state.user);
+  const cartItems = useCartStore((state) => state.cartItems);
 
   const { createAddressAsync, isPendingAddresses: isCreatingAddress } =
     useAddress.useCreate();
@@ -64,6 +64,9 @@ function CheckoutPage() {
 
   const [selectAddress, setSelectAddress] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
+
+  const isCartEmpty = cartItems.length === 0;
+  if (isCartEmpty) return <Navigate to="/cart" replace />;
 
   if (isLoadingAddresses) return <LoadingState />;
 

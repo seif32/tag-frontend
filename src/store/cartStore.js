@@ -5,7 +5,6 @@ export const useCartStore = create((set, get) => ({
   cartItems: [],
   promoCode: null,
   totalItems: 0,
-  totalPrice: 0,
   uniqueItems: 0,
 
   subtotal: 0,
@@ -166,7 +165,6 @@ export const useCartStore = create((set, get) => ({
       cartItems: [],
       promoCode: null,
       totalItems: 0,
-      totalPrice: 0,
       uniqueItems: 0,
       subtotal: 0,
       taxAmount: 0,

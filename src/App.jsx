@@ -16,7 +16,7 @@ function App() {
     return () => unsubscribe();
   }, [initAuth]);
 
-  if (loading) return <LoadingState />;
+  if (loading) return <LoadingState type="app" />;
 
   return (
     <QueryClientProvider client={queryClient}>
