@@ -32,14 +32,7 @@ import useOrders from "@/hooks/useOrders";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import { formatCurrency } from "@/utils/formatCurrency";
-
-const address = {
-  street_address: "Flat 14B, 25 Baker Street",
-  country: "United Kingdom",
-  city: "London",
-  postal_code: "W1U 8AN",
-  phone_number: "+44 7911 123456",
-};
+import ShippingAddress from "@/features/order/components/ShippingAddress";
 
 function AdminOrderPage() {
   const { orderId } = useParams();
@@ -68,7 +61,7 @@ function AdminOrderPage() {
       />
       <div className="flex gap-5">
         <OrderContents order={order} />
-        <OrderInformation />
+        <OrderInformation user={order?.user} address={order?.address} />
       </div>
     </div>
   );
@@ -141,17 +134,26 @@ function StatsContainer({
   );
 }
 
-function OrderInformation() {
+function OrderInformation({ user, address }) {
   return (
     <div className="flex flex-1 flex-col gap-5">
-      <CustomerInformation />
-      <ShippingAddress />
+      <CustomerInformation customer={user} />
+      <ShippingAddress
+        apartmentNumber={address?.apartment_number}
+        buildingNumber={address?.building_number}
+        city={address?.city}
+        country={address?.country}
+        description={address?.description}
+        phoneNumber={user?.phone_number}
+        postalCode={address?.postal_code}
+        streetAddress={address?.street_name}
+      />
       <PaymentShipping />
     </div>
   );
 }
 
-function CustomerInformation() {
+function CustomerInformation({ customer }) {
   return (
     <section className="border p-4 rounded-2xl">
       <div className=" flex items-center gap-2 mb-5">
@@ -162,7 +164,9 @@ function CustomerInformation() {
       <div className="flex gap-2 items-center  text-sm mb-4">
         <div className="h-10 w-10 bg-gray-100 rounded-full"></div>
         <div>
-          <p className="font-medium">Seif Mohamed</p>
+          <p className="font-medium">
+            {customer?.first_name} {customer?.last_name}
+          </p>
           <p className="text-muted-foreground">Customer</p>
         </div>
       </div>
@@ -170,11 +174,11 @@ function CustomerInformation() {
         <div className="space-y-1.5 text-sm">
           <div className="flex gap-2 items-center">
             <MdOutlineMailOutline className="text-gray-400" />
-            <p className="">seif@gmail.com</p>
+            <p className="">{customer?.email}</p>
           </div>
           <div className="flex gap-2 items-center">
             <BsTelephone className="text-gray-400" />
-            <p className="">{formatPhoneNumber(1099727988)}</p>
+            <p className="">{formatPhoneNumber(customer?.phone_number)}</p>
           </div>
         </div>
         <Link
@@ -186,25 +190,6 @@ function CustomerInformation() {
           Chat{" "}
         </Link>
       </div>
-    </section>
-  );
-}
-
-function ShippingAddress() {
-  return (
-    <section className="border p-4 rounded-2xl">
-      <div className="flex items-center gap-2 mb-5">
-        <HiOutlineMapPin size={24} />
-        <h3 className="font-semibold">Shipping Address</h3>
-      </div>
-      <div className="flex flex-col justify-between  whitespace-nowrap gap-0.5 text-sm">
-        <span>{address.street_address}</span>
-        <span>
-          {address.city}, {address.postal_code}
-        </span>
-        <span>{address.country}</span>
-        <span className="">Phone: {address.phone_number}</span>
-      </div>{" "}
     </section>
   );
 }

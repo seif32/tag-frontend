@@ -1,3 +1,4 @@
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import { MapPin, Phone } from "lucide-react";
 
 function ShippingAddress({
@@ -49,7 +50,9 @@ function ShippingAddress({
         {phoneNumber && (
           <div className="flex items-center gap-1.5 pt-1">
             <Phone className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-sm text-slate-600">{phoneNumber}</span>
+            <span className="text-sm text-slate-600">
+              {formatPhoneNumber(phoneNumber)}
+            </span>
           </div>
         )}
       </div>
