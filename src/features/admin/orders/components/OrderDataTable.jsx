@@ -30,6 +30,7 @@ import {
   Search,
   Filter,
 } from "lucide-react";
+import useDebounce from "@/hooks/useDebounce";
 
 export default function OrderDataTable({
   // Data props
@@ -56,19 +57,13 @@ export default function OrderDataTable({
   onRowSelectionChange,
 }) {
   const [searchInput, setSearchInput] = useState(filters.search || "");
+  const debouncedSearch = useDebounce(searchInput, 500);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (onFiltersChange && searchInput !== filters.search) {
-        onFiltersChange({
-          ...filters,
-          search: searchInput,
-        });
-      }
-    }, 500); // 500ms debounce
-
-    return () => clearTimeout(timer);
-  }, [searchInput, filters, onFiltersChange]);
+    if (onFiltersChange && debouncedSearch !== filters.search) {
+      onFiltersChange({ ...filters, search: debouncedSearch });
+    }
+  }, [debouncedSearch]); // Only depends on debounced value!
 
   const table = useReactTable({
     data,

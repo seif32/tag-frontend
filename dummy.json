@@ -84,9 +84,9 @@
             "compare_at_price": "300.00",
             "cost_price": "50.00",
             "currency": "USD",
-            "quantity": 89,
+            "quantity": 84,
             "created_at": "2025-08-30T14:55:17.000Z",
-            "updated_at": "2025-09-13T01:04:33.000Z",
+            "updated_at": "2025-09-14T11:08:49.000Z",
             "images": [],
             "types": [
               {
@@ -275,9 +275,9 @@
             "compare_at_price": "8111.00",
             "cost_price": "300.00",
             "currency": "USD",
-            "quantity": 132196,
+            "quantity": 132178,
             "created_at": "2025-08-30T00:50:07.000Z",
-            "updated_at": "2025-09-13T23:08:03.000Z",
+            "updated_at": "2025-09-17T04:36:51.000Z",
             "images": [],
             "types": [
               {
@@ -344,9 +344,9 @@
             "compare_at_price": "600.00",
             "cost_price": "200.00",
             "currency": "USD",
-            "quantity": 30,
+            "quantity": 21,
             "created_at": "2025-08-29T21:47:08.000Z",
-            "updated_at": "2025-09-14T01:12:06.000Z",
+            "updated_at": "2025-09-17T04:36:51.000Z",
             "images": [],
             "types": [
               {

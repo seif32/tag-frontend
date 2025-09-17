@@ -1,7 +1,14 @@
 import IconCard from "@/ui/IconCard";
 import { formatDateFull } from "@/utils/dateUtils";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
-import { CreditCard, DollarSign, Package, ShoppingBag } from "lucide-react";
+import {
+  CreditCard,
+  DollarSign,
+  LucidePackage2,
+  LucidePackageX,
+  Package,
+  ShoppingBag,
+} from "lucide-react";
 import { BsTelephone } from "react-icons/bs";
 import { Link, useParams } from "react-router";
 import { GoPerson } from "react-icons/go";
@@ -21,33 +28,10 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { IoChatbubblesOutline } from "react-icons/io5";
-
-const orderStats = [
-  {
-    icon: Package,
-    title: "Order Status",
-    // subtitle: "Current order progress",
-    badge: "pending", // maps to statusMap in IconCard
-  },
-  {
-    icon: CreditCard,
-    title: "Payment Status",
-    // subtitle: "Latest payment state",
-    badge: "paid", // you might extend statusMap for payment
-  },
-  {
-    icon: DollarSign,
-    title: "245.99",
-    subtitle: "Total Amount",
-    badge: null,
-  },
-  {
-    icon: ShoppingBag,
-    title: "3 items",
-    subtitle: "Items",
-    badge: null,
-  },
-];
+import useOrders from "@/hooks/useOrders";
+import LoadingState from "@/ui/LoadingState";
+import ErrorMessage from "@/ui/ErrorMessage";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 const address = {
   street_address: "Flat 14B, 25 Baker Street",
@@ -57,59 +41,33 @@ const address = {
   phone_number: "+44 7911 123456",
 };
 
-const mockOrderData = {
-  order_number: "ORD-123456",
-  subtotal: 449.91,
-  tax: 36.0,
-  shipping: 9.99,
-  total: 495.9,
-  items_count: 6,
-  order_items: [
-    {
-      id: 1,
-      product_name: "Wireless Headphones",
-      product_sku: "WH-001",
-      category: "Electronics",
-      sub_category: "Mobiles",
-      quantity: 2,
-      unit_price: 99.99,
-      total_price: 199.98,
-      status: "Shipped",
-      product_image_url: "/headphones.jpg",
-      variant_attributes: {
-        Color: "Black",
-        Size: "Medium",
-      },
-    },
-    {
-      id: 2,
-      product_name: "USB-C Cable",
-      product_sku: "USB-002",
-      category: "Electronics",
-      sub_category: "Cables",
-      quantity: 1,
-      unit_price: 29.99,
-      total_price: 29.99,
-      status: "Processing",
-      product_image_url: "/cable.jpg",
-      variant_attributes: {
-        Length: "2m",
-        Color: "White",
-      },
-    },
-  ],
-};
 function AdminOrderPage() {
   const { orderId } = useParams();
+  const { order, isLoadingOrder, errorOrder, isErrorOrder, refetchOrder } =
+    useOrders.useById(orderId);
 
-  const orderData = mockOrderData;
+  if (isLoadingOrder) return <LoadingState type="page" />;
+
+  if (isErrorOrder)
+    return (
+      <ErrorMessage
+        message={errorOrder.message || "Failed to load data"}
+        dismissible={true}
+        onDismiss={() => refetchOrder()}
+      />
+    );
 
   return (
     <div className="flex flex-col gap-5">
-      <Title orderId={orderId} orderDate={"2025-09-09 14:45:30"} />
-      <StatsContainer />
+      <Title orderId={orderId} orderDate={order?.created_at} />
+      <StatsContainer
+        orderStatus={order?.order_status}
+        paymentStatus={order?.payment_status}
+        totalAmount={order?.total_amount}
+        totalItems={order?.items?.length}
+      />
       <div className="flex gap-5">
-        <OrderContents order={orderData} />
+        <OrderContents order={order} />
         <OrderInformation />
       </div>
     </div>
@@ -139,12 +97,46 @@ function Title({ orderId, orderDate }) {
   );
 }
 
-function StatsContainer() {
+function StatsContainer({
+  orderStatus,
+  paymentStatus,
+  totalAmount,
+  totalItems,
+}) {
+  function orderStats(orderStatus, paymentStatus, totalAmount, totalItems) {
+    return [
+      {
+        icon: Package,
+        title: "Order Status",
+        badge: orderStatus,
+      },
+      {
+        icon: CreditCard,
+        title: "Payment Status",
+        badge: paymentStatus,
+      },
+      {
+        icon: DollarSign,
+        title: totalAmount,
+        subtitle: "Total Amount",
+        badge: null,
+      },
+      {
+        icon: ShoppingBag,
+        title: `${totalItems} items`,
+        subtitle: "Items",
+        badge: null,
+      },
+    ];
+  }
+
   return (
     <div className="grid grid-cols-4 w-full">
-      {orderStats.map((stat, index) => (
-        <IconCard key={index} {...stat} />
-      ))}
+      {orderStats(orderStatus, paymentStatus, totalAmount, totalItems).map(
+        (stat, index) => (
+          <IconCard key={index} {...stat} />
+        )
+      )}
     </div>
   );
 }
@@ -253,31 +245,44 @@ function OrderContents({ order }) {
 function OrderItems({ order }) {
   return (
     <section className="border p-4 rounded-2xl">
-      <h3>Order Items</h3>
+      <div className="flex gap-1 items-center">
+        <LucidePackage2 className="size-5" />
+        <h3 className="font-semibold">Order Items</h3>
+      </div>
       <ItemsTable
-        orderItems={order.order_items || []}
-        orderNumber={order.order_number}
+        orderItems={order?.items || []}
+        orderNumber={order?.id}
+        orderShipping={order?.shipping_amount}
+        orderSubtotal={order?.subtotal}
+        orderTax={order?.tax_amount}
+        orderTotal={order?.total_amount}
+        orderDiscount={order?.discount_amount}
       />
     </section>
   );
 }
 
-function ItemsTable({ orderNumber, orderItems }) {
-  const calculateOrderTotal = () => {
-    return orderItems.reduce((sum, item) => sum + item.total_price, 0);
-  };
+function ItemsTable({
+  orderNumber,
+  orderItems,
+  orderSubtotal,
+  orderTax,
+  orderShipping,
+  orderTotal,
+  orderDiscount,
+}) {
   return (
     <Table>
       <TableCaption>
-        Items in order {orderNumber} - {orderItems.length} item
+        Items in order #{orderNumber} - {orderItems.length} item
         {orderItems.length !== 1 ? "s" : ""}
       </TableCaption>
 
       <TableHeader>
         <TableRow>
           <TableHead className="w-[300px]">Product</TableHead>
+          <TableHead className="w-[300px]">Category</TableHead>
           <TableHead className="w-[120px]">SKU</TableHead>
-          <TableHead className="w-[120px] ">Status</TableHead>
           <TableHead className="w-[80px] text-center">Qty</TableHead>
           <TableHead className="w-[100px] text-right">Unit Price</TableHead>
           <TableHead className="w-[100px] text-right">Total</TableHead>
@@ -291,32 +296,34 @@ function ItemsTable({ orderNumber, orderItems }) {
               <TableCell>
                 <div className="flex items-center space-x-3">
                   <img
-                    src={item.product_image_url || "/placeholder.jpg"}
-                    alt={item.product_name}
+                    src={
+                      item?.product?.variants[0].images[0] || "/placeholder.jpg"
+                    }
+                    alt={item?.product?.name}
                     className="w-12 h-12 object-cover rounded border"
                   />
                   <div className="flex flex-col">
                     <span className="font-medium text-sm">
-                      {item.product_name}
+                      {item?.product?.name}
                     </span>
-                    {item.variant_attributes && (
+                    {/* {item.variant_attributes && (
                       <span className="text-xs text-muted-foreground">
                         {Object.entries(item.variant_attributes)
                           .map(([key, value]) => `${key}: ${value}`)
                           .join(", ")}
                       </span>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </TableCell>
               <TableCell>
                 <div className="flex flex-wrap gap-1">
                   <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700">
-                    {item.category || "N/A"}
+                    {item?.product?.category_name || "N/A"}
                   </span>
-                  {item.sub_category && (
+                  {item?.product?.sub_category_name && (
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-700">
-                      {item.sub_category}
+                      {item?.product?.sub_category_name}
                     </span>
                   )}
                 </div>
@@ -324,23 +331,23 @@ function ItemsTable({ orderNumber, orderItems }) {
 
               <TableCell>
                 <span className="font-mono text-xs text-gray-600">
-                  {item.product_sku || "N/A"}
+                  {item?.product?.variants[0]?.sku || "N/A"}
                 </span>
               </TableCell>
 
               <TableCell className="text-center">
-                <span className="font-semibold">{item.quantity}</span>
+                <span className="font-semibold">{item?.quantity}</span>
               </TableCell>
 
               <TableCell className="text-right">
-                <span className="font-medium">
-                  ${item.unit_price.toFixed(2)}
+                <span className="font-medium text-xs">
+                  {formatCurrency(item?.unit_price)}
                 </span>
               </TableCell>
 
               <TableCell className="text-right">
-                <span className="font-semibold">
-                  ${item.total_price.toFixed(2)}
+                <span className="font-semibold text-xs">
+                  {formatCurrency(item?.total_price)}
                 </span>
               </TableCell>
             </TableRow>
@@ -357,17 +364,39 @@ function ItemsTable({ orderNumber, orderItems }) {
         )}
 
         {orderItems.length > 0 && (
-          <TableRow className="bg-gray-50 border-t-2">
-            <TableCell colSpan={5} className="text-right font-semibold ">
-              Order Total:
-            </TableCell>
-            <TableCell className="text-right">
-              <span className="font-bold text-lg">
-                ${calculateOrderTotal().toFixed(2)}
-              </span>
-            </TableCell>
-            <TableCell></TableCell>
-          </TableRow>
+          <>
+            <TableRow className="bg-gray-50 border-t-2">
+              <TableCell colSpan={5} className="text-right">
+                <div className="flex flex-col">
+                  <span>Subtotal:</span>
+                  <span>Shipping:</span>
+                  <span>Tax:</span>
+                  <span className="text-red-600">Discount:</span>
+                </div>
+              </TableCell>
+              <TableCell className="text-right flex flex-col">
+                <div className="flex flex-col">
+                  <span className="">{formatCurrency(orderSubtotal)}</span>
+                  <span className="">{formatCurrency(orderShipping)}</span>
+                  <span className="">{formatCurrency(orderTax)}</span>
+                  <span className="text-red-600">
+                    -{formatCurrency(orderDiscount)}
+                  </span>
+                </div>
+              </TableCell>
+            </TableRow>
+
+            <TableRow className="bg-gray-50 border-t-2">
+              <TableCell colSpan={5} className="text-right font-semibold ">
+                Total:
+              </TableCell>
+              <TableCell className="text-right">
+                <span className="font-bold text-lg">
+                  {formatCurrency(orderTotal)}
+                </span>
+              </TableCell>
+            </TableRow>
+          </>
         )}
       </TableBody>
     </Table>

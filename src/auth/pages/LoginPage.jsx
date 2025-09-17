@@ -38,8 +38,11 @@ function LoginPage() {
 
       console.log("Store login successful:", user);
 
-      // Navigate based on role
-      navigate(user.role === "admin" ? "/admin" : "/");
+      const redirectPath = user.role === "admin" ? "/admin" : "/";
+      navigate(redirectPath);
+
+      // force reload after navigating
+      window.location.reload();
     } catch (error) {
       console.error("Login error:", error);
       alert(`❌ Login failed: ${error.message}`);

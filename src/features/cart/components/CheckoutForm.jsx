@@ -140,7 +140,6 @@ function AddressContainer({
     );
   }
 
-  // 🟡 Success
   return (
     <div>
       {!newAddress && (
@@ -226,16 +225,22 @@ function AddressDropdown({
 
             <div className="border my-2 "></div>
 
-            {addresses.map((addr) => (
-              <CommandItem
-                key={addr.id}
-                value={addr.id}
-                onSelect={() => handleSelect(addr.id)}
-                className={"text-xs "}
-              >
-                {addr.description} – {addr.city}
-              </CommandItem>
-            ))}
+            {addresses.length !== 0 ? (
+              addresses.map((addr) => (
+                <CommandItem
+                  key={addr.id}
+                  value={addr.id}
+                  onSelect={() => handleSelect(addr.id)}
+                  className={"text-xs "}
+                >
+                  {addr.description} – {addr.city}
+                </CommandItem>
+              ))
+            ) : (
+              <div className="text-xs text-muted-foreground p-2">
+                No Saved Addresses
+              </div>
+            )}
           </CommandList>
         </Command>
       </PopoverContent>

@@ -9,15 +9,12 @@ export const useAuthStore = create((set, get) => ({
   _isLoggingIn: false, // 👈 Add flag to track login process
 
   login: async (email, password) => {
-    console.log("🔵 Auth store login started");
     set({ loading: true, error: null, _isLoggingIn: true }); // 👈 Set flag
 
     try {
       const userCredential = await authApi.login(email, password);
-      console.log("🟢 Firebase login successful:", userCredential.user.uid);
 
       const token = await userCredential.user.getIdToken();
-      console.log("🟢 Token obtained");
 
       let backendProfile = null;
       try {
@@ -25,7 +22,6 @@ export const useAuthStore = create((set, get) => ({
           userCredential.user.uid,
           token
         );
-        console.log("🟢 Backend profile fetched:", backendProfile);
       } catch (profileError) {
         console.warn("⚠️ Could not fetch backend profile:", profileError);
       }
@@ -48,13 +44,6 @@ export const useAuthStore = create((set, get) => ({
         email: userCredential.user.email,
         token,
       };
-
-      console.log("🟢 Setting auth state:", {
-        isAuthenticated: true,
-        loading: false,
-        userId: user.id,
-        role: user.role,
-      });
 
       set({
         user,
@@ -154,23 +143,14 @@ export const useAuthStore = create((set, get) => ({
   },
 
   initAuth: () => {
-    console.log("🔵 Initializing auth state listener...");
-
     const unsubscribe = authApi.onAuthStateChanged(async (firebaseUser) => {
-      console.log(
-        "🔵 Auth state changed:",
-        firebaseUser ? firebaseUser.uid : "null"
-      );
-
       // 👈 Skip if currently logging in via login method
       const currentState = get();
       if (currentState._isLoggingIn) {
-        console.log("⏭️ Skipping listener update - login in progress");
         return;
       }
 
       if (firebaseUser) {
-        console.log("🟢 Firebase user found, fetching profile...");
         try {
           const token = await firebaseUser.getIdToken();
 
@@ -179,10 +159,6 @@ export const useAuthStore = create((set, get) => ({
             backendProfile = await authApi.getUserByUid(
               firebaseUser.uid,
               token
-            );
-            console.log(
-              "🟢 Backend profile fetched via listener:",
-              backendProfile
             );
           } catch (profileError) {
             console.warn(
@@ -218,8 +194,6 @@ export const useAuthStore = create((set, get) => ({
             isAuthenticated: true,
             loading: false,
           });
-
-          console.log("🟢 Auth state updated via listener");
         } catch (tokenError) {
           console.error("🔴 Failed to get user token during init:", tokenError);
           set({
@@ -230,7 +204,6 @@ export const useAuthStore = create((set, get) => ({
           });
         }
       } else {
-        console.log("🔴 No Firebase user, clearing auth state");
         set({
           user: null,
           isAuthenticated: false,

@@ -2,6 +2,8 @@ import { useAuthStore } from "@/auth/store/authStore";
 import { Button } from "@/components/ui/button";
 import { getStatusColor } from "@/features/admin/services/utils";
 import useOrders from "@/hooks/useOrders";
+import EmptyState from "@/ui/EmptyState";
+import ErrorMessage from "@/ui/ErrorMessage";
 import LoadingState from "@/ui/LoadingState";
 import Pagination from "@/ui/Pagination";
 import { formatDateFull } from "@/utils/dateUtils";
@@ -14,25 +16,51 @@ function OrdersHistoryPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") || "1");
   const limit = 10;
-  const { userOrders, isLoadingUserOrders, isFetchingUserOrders } =
-    useOrders.useByUserId(user.id, {
-      page: currentPage,
-      limit,
-    });
+  const {
+    userOrders,
+    isLoadingUserOrders,
+    isFetchingUserOrders,
+    errorUserOrders,
+    isErrorUserOrders,
+    refetchUserOrders,
+  } = useOrders.useByUserId(user.id, {
+    page: currentPage,
+    limit,
+  });
 
   if (isLoadingUserOrders) return <LoadingState type="page" />;
+
+  if (isErrorUserOrders)
+    return (
+      <ErrorMessage
+        message={errorUserOrders.message || "Failed to load data"}
+        dismissible={true}
+        onDismiss={() => refetchUserOrders()}
+      />
+    );
 
   return (
     <div className="w-full mx-auto max-w-250 flex flex-col">
       <Title limit={userOrders.limit} total={userOrders.total} />
-      <OrderHistoryCardContainer orders={userOrders?.data} />
-      <Pagination
-        setSearchParams={setSearchParams}
-        currentPage={currentPage}
-        data={userOrders}
-        isFetching={isFetchingUserOrders}
-        totalPages={userOrders.totalPages}
-      />
+      {userOrders.total > 0 ? (
+        <OrderHistoryCardContainer orders={userOrders?.data} />
+      ) : (
+        <EmptyState
+          title={"Ready to place your first order?"}
+          subtitle={"Discover amazing products and start shopping today!"}
+          goTo={"/products"}
+          btn={"Browse products"}
+        />
+      )}
+      {userOrders?.totalPages && (
+        <Pagination
+          setSearchParams={setSearchParams}
+          currentPage={currentPage}
+          data={userOrders}
+          isFetching={isFetchingUserOrders}
+          totalPages={userOrders?.totalPages}
+        />
+      )}
     </div>
   );
 }
@@ -41,11 +69,15 @@ export default OrdersHistoryPage;
 
 function Title({ limit, total }) {
   return (
-    <div className="mb-8">
-      <h1 className="text-3xl">Orders History</h1>
-      <p className="text-muted-foreground">
-        Showing {limit} orders out of {total} total
-      </p>
+    <div className="mb-8 space-y-2">
+      <h1 className="text-4xl font-bold">Orders History</h1>
+      {total !== 0 && (
+        <p className="text-muted-foreground">
+          {total > limit
+            ? ` Showing  ${limit} orders out of ${total} total`
+            : `Showing ${total} orders`}{" "}
+        </p>
+      )}
     </div>
   );
 }

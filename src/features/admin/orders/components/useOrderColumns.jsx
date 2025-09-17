@@ -8,15 +8,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Eye, Edit, Trash2 } from "lucide-react";
-import { isOrderFromToday } from "../../services/utils";
+import { getStatusColor, isOrderFromToday } from "../../services/utils";
+import { formatCurrency } from "@/utils/formatCurrency";
+import { formatDateShort } from "@/utils/dateUtils";
 
 export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
   const columns = [
     {
-      accessorKey: "order_number",
+      accessorKey: "id",
       header: "Order ID",
       cell: ({ row }) => {
-        const orderNumber = row.getValue("order_number");
+        const orderNumber = row.getValue("id");
         const order = row.original;
         const isTodayOrder = isOrderFromToday(order.created_at);
 
@@ -37,17 +39,21 @@ export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
       enableSorting: true,
     },
     {
-      accessorKey: "customer",
+      accessorFn: (row) =>
+        `${row.user?.first_name ?? ""} ${row.user?.last_name ?? ""}`,
+      id: "customer",
       header: "Customer",
       cell: ({ row }) => {
-        const order = row.original;
+        const user = row.original.user;
         return (
           <div className="flex flex-col space-y-1">
             <span className="text-sm font-medium">
-              {order.customer_name || "Unknown Customer"}
+              {user?.first_name && user?.last_name
+                ? `${user.first_name} ${user.last_name}`
+                : "Unknown Customer"}
             </span>
             <span className="text-xs text-muted-foreground">
-              {order.customer_email || "No email"}
+              {user?.email || "No email"}
             </span>
           </div>
         );
@@ -60,12 +66,12 @@ export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
       cell: ({ row }) => {
         const order = row.original;
         const totalAmount = order.total_amount || 0;
-        const itemCount = order.order_items?.length || 0;
+        const itemCount = order.items?.length || 0;
 
         return (
           <div className="flex flex-col space-y-1">
             <span className="text-sm font-semibold">
-              ${totalAmount.toFixed(2)}
+              {formatCurrency(totalAmount)}
             </span>
             <span className="text-xs text-muted-foreground">
               {itemCount} item{itemCount !== 1 ? "s" : ""}
@@ -81,18 +87,13 @@ export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
       cell: ({ row }) => {
         const order = row.original;
         const date = new Date(order.created_at);
-        const formattedDate = date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
 
         return (
           <div className="flex flex-col space-y-1">
-            <span className="text-sm font-medium">{formattedDate}</span>
+            <span className="text-sm font-medium">{formatDateShort(date)}</span>
             <span className="text-xs text-muted-foreground">
-              {order.shipping_city && order.shipping_state
-                ? `${order.shipping_city}, ${order.shipping_state}`
+              {order.address.city && order.address.street_name
+                ? `${order.address.street_name}, ${order.address.city}`
                 : "Address not available"}
             </span>
           </div>
@@ -101,34 +102,15 @@ export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
       enableSorting: true,
     },
     {
-      accessorKey: "status",
+      accessorKey: "order_status",
       header: "Order Status",
       cell: ({ row }) => {
-        const status = row.getValue("status");
-
-        const getStatusColor = (status) => {
-          switch (status?.toLowerCase()) {
-            case "pending":
-              return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200";
-            case "processing":
-              return "bg-blue-100 text-blue-800 hover:bg-blue-200";
-            case "shipped":
-              return "bg-purple-100 text-purple-800 hover:bg-purple-200";
-            case "delivered":
-              return "bg-green-100 text-green-800 hover:bg-green-200";
-            case "cancelled":
-              return "bg-red-100 text-red-800 hover:bg-red-200";
-            case "refunded":
-              return "bg-gray-100 text-gray-800 hover:bg-gray-200";
-            default:
-              return "bg-gray-100 text-gray-800 hover:bg-gray-200";
-          }
-        };
+        const status = row.getValue("order_status");
 
         return (
           <Badge
             variant="secondary"
-            className={`${getStatusColor(status)} border-0`}
+            className={`${getStatusColor(status, "order")} border-0`}
           >
             {status || "Unknown"}
           </Badge>
@@ -142,25 +124,10 @@ export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
       cell: ({ row }) => {
         const paymentStatus = row.getValue("payment_status");
 
-        const getPaymentColor = (status) => {
-          switch (status?.toLowerCase()) {
-            case "pending":
-              return "bg-yellow-100 text-yellow-800 hover:bg-yellow-200";
-            case "completed":
-              return "bg-green-100 text-green-800 hover:bg-green-200";
-            case "failed":
-              return "bg-red-100 text-red-800 hover:bg-red-200";
-            case "refunded":
-              return "bg-purple-100 text-purple-800 hover:bg-purple-200";
-            default:
-              return "bg-gray-100 text-gray-800 hover:bg-gray-200";
-          }
-        };
-
         return (
           <Badge
             variant="secondary"
-            className={`${getPaymentColor(paymentStatus)} border-0`}
+            className={`${getStatusColor(paymentStatus, "payment")} border-0`}
           >
             {paymentStatus || "Unknown"}
           </Badge>

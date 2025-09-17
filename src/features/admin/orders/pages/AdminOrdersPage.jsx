@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 import { useOrderColumns } from "../components/useOrderColumns";
 import { useNavigate } from "react-router";
+import useOrders from "@/hooks/useOrders";
+import LoadingState from "@/ui/LoadingState";
+import OrderDataTable from "../components/OrderDataTable";
 
 const statsData = [
   // {
@@ -19,17 +22,18 @@ const statsData = [
   //   subtitle: "All completed orders",
   // },
   {
-    title: "New Orders",
-    icon: PlusCircle,
-    value: "15",
-    subtitle: "Recently placed orders",
-  },
-  {
     title: "Total Orders",
     icon: ShoppingBag,
     value: "1,247",
     subtitle: "All orders ever placed",
   },
+  {
+    title: "New Orders",
+    icon: PlusCircle,
+    value: "15",
+    subtitle: "Recently placed orders",
+  },
+
   {
     title: "Pending Orders",
     icon: Clock,
@@ -45,14 +49,14 @@ const statsData = [
     subtitle: "92.7% success rate",
   },
 
-  {
-    title: "Cancelled Orders",
-    icon: XCircle,
-    value: "68",
-    // subtitle: `${((stats?.cancelledOrders / stats?.totalOrders) * 100).toFixed(1)}% cancellation rate`
-    // ,
-    subtitle: "5.5% cancellation rate",
-  },
+  // {
+  //   title: "Cancelled Orders",
+  //   icon: XCircle,
+  //   value: "68",
+  //   // subtitle: `${((stats?.cancelledOrders / stats?.totalOrders) * 100).toFixed(1)}% cancellation rate`
+  //   // ,
+  //   subtitle: "5.5% cancellation rate",
+  // },
 ];
 
 function AdminOrdersPage() {
@@ -64,16 +68,18 @@ function AdminOrdersPage() {
   const [sorting, setSorting] = useState([]);
   const [filters, setFilters] = useState({ search: "", status: "" });
 
-  // const { data, isLoading } = useOrders({
-  //   page: pagination.pageIndex + 1,
-  //   limit: pagination.pageSize,
-  //   sortBy: sorting[0]?.id,
-  //   sortOrder: sorting[0]?.desc ? "desc" : "asc",
-  //   search: filters.search,
-  //   status: filters.status,
-  // });
+  const { orders, isLoadingOrders } = useOrders.useAll({
+    page: pagination.pageIndex + 1,
+    limit: pagination.pageSize,
+    sortBy: sorting[0]?.id,
+    sortOrder: sorting[0]?.desc ? "desc" : "asc",
+    search: filters.search,
+    status: filters.status,
+  });
 
-  function handleEditOrder() {}
+  function handleEditOrder(order) {
+    navigate(`/admin/orders/${order?.id}`);
+  }
   function handleDeleteOrder() {}
 
   const columns = useOrderColumns({
@@ -81,6 +87,8 @@ function AdminOrdersPage() {
     onEdit: handleEditOrder,
     onDelete: handleDeleteOrder,
   });
+
+  if (isLoadingOrders) return <LoadingState />;
 
   return (
     <div className="p-6 space-y-6">
@@ -92,19 +100,19 @@ function AdminOrdersPage() {
       </div>
       <StatsContainer />
 
-      {/* <OrderDataTable
+      <OrderDataTable
         columns={columns}
-        data={data?.orders || []}
-        pageCount={Math.ceil(data?.totalCount / pagination.pageSize)}
-        totalCount={data?.totalCount || 0}
+        data={orders?.data || []}
+        pageCount={orders?.totalPages}
+        totalCount={orders?.total || 0}
         pagination={pagination}
         sorting={sorting}
         filters={filters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
         onFiltersChange={setFilters}
-        isLoading={isLoading}
-      /> */}
+        isLoading={isLoadingOrders}
+      />
     </div>
   );
 }

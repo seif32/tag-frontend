@@ -6,6 +6,7 @@ import CartBadge from "@/features/cart/components/CartBadge";
 import { useAuthStore } from "@/auth/store/authStore";
 import { FiPackage, FiShoppingCart } from "react-icons/fi";
 import authApi from "@/auth/services/authApi";
+import { IoIosLogOut } from "react-icons/io";
 
 const Header = () => {
   const location = useLocation();
@@ -70,9 +71,12 @@ const Header = () => {
               <FiShoppingCart size={20} />
               <CartBadge />
             </Link>
-            <Button className={"ml-3"} onClick={handleLogout}>
-              Log Out
-            </Button>
+            <div>
+              <IoIosLogOut
+                className="text-accent size-7 ml-8 cursor-pointer hover:text-accent/80"
+                onClick={handleLogout}
+              />
+            </div>
           </div>
         ) : (
           <div className="flex items-center space-x-2">

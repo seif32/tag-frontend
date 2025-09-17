@@ -14,7 +14,6 @@ import { CiCircleInfo } from "react-icons/ci";
 import { useCartStore } from "@/store/cartStore";
 import useOrders from "@/hooks/useOrders";
 import { useOrderStore } from "@/store/orderStore";
-import LoadingState from "@/ui/LoadingState";
 
 const formSchema = z.object({
   description: z.string().optional(),
@@ -91,7 +90,7 @@ function CheckoutPage() {
       }
 
       const order = {
-        user_id: 1,
+        user_id: user?.id,
         address_id: addressId,
         tax_percent: taxPercent,
         shipping_amount: shippingAmount,
