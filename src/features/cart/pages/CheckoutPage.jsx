@@ -14,6 +14,7 @@ import { CiCircleInfo } from "react-icons/ci";
 import { useCartStore } from "@/store/cartStore";
 import useOrders from "@/hooks/useOrders";
 import { useOrderStore } from "@/store/orderStore";
+import { generateOrderInvoicePDF } from "@/utils/generateInvoicePDF";
 
 const formSchema = z.object({
   description: z.string().optional(),
@@ -103,10 +104,15 @@ function CheckoutPage() {
 
       const newOrderData = await createOrderAsync(order);
 
+      console.log("newOrderData", newOrderData);
       setOrderSuccess(newOrderData);
 
       navigate(`/order/success/${newOrderData.id}`);
       clearCart();
+
+      // generateOrderInvoicePDF(newOrderData).catch((error) => {
+      //   console.error("Invoice generation failed:", error);
+      // });
     } catch (error) {
       console.error("Checkout failed:", error);
     }

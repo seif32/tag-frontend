@@ -6,14 +6,13 @@ import OrderContainer from "@/features/order/components/OrderContainer";
 import OrderReceipt from "@/features/order/components/OrderReceipt";
 import { useOrderStore } from "@/store/orderStore";
 import EmptyState from "@/ui/EmptyState";
+import { generateOrderInvoicePDF } from "@/utils/generateInvoicePDF";
+import { useState } from "react";
+import { toast } from "sonner";
 
 function OrderSuccessPage() {
-  const navigate = useNavigate();
-
   const order = useOrderStore((state) => state.order);
   const orderItems = useOrderStore((state) => state.orderItems);
-
-  console.log("order", order);
 
   if (!order)
     return (
@@ -32,12 +31,7 @@ function OrderSuccessPage() {
       <Title />
       <OrderReceipt order={order} />
       <OrderContainer items={orderItems} />
-      <div className="self-end flex gap-2">
-        <Button variant={"outline"} onClick={() => navigate("/orders")}>
-          Go to Orders History
-        </Button>
-        <Button onClick={() => navigate("/products")}>Return Shopping</Button>
-      </div>
+      <SuccessAction order={order} orderItems={orderItems} />
     </div>
   );
 }
@@ -60,6 +54,36 @@ function Title() {
       <p className="text-sm text-muted-foreground">
         You will receive an email with receipt
       </p>
+    </div>
+  );
+}
+
+function SuccessAction({ order, orderItems }) {
+  const navigate = useNavigate();
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+  async function handleDownloadInvoice() {
+    setIsGeneratingPDF(true);
+    try {
+      await generateOrderInvoicePDF({ ...order, items: orderItems });
+      toast.success("Invoice downloaded successfully!");
+    } catch (error) {
+      console.error("Invoice generation failed:", error);
+      toast.error("Failed to generate invoice");
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  }
+
+  return (
+    <div className="self-end flex gap-2">
+      <Button variant={"outline"} onClick={() => navigate("/orders")}>
+        Go to Orders History
+      </Button>
+      {/* <Button onClick={() => navigate("/products")}>Return Shopping</Button> */}
+      <Button onClick={handleDownloadInvoice} disabled={isGeneratingPDF}>
+        {isGeneratingPDF ? "📄 Generating..." : "Download Invoice"}
+      </Button>
     </div>
   );
 }

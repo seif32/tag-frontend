@@ -88,6 +88,32 @@ function ActionButtons({ selectedVariant, product }) {
     console.log("Notify when available:", selectedVariant.id);
   };
 
+  const handleQuantityChange = (e) => {
+    const value = e.target.value;
+
+    // Allow empty input while typing
+    if (value === "") return;
+
+    const numValue = parseInt(value);
+
+    // Validate and set quantity
+    if (!isNaN(numValue) && numValue >= 1) {
+      setQuantity(Math.min(numValue, maxQuantity));
+    }
+  };
+
+  const handleQuantityBlur = (e) => {
+    const value = e.target.value;
+
+    // If empty or invalid, reset to 1
+    if (!value || isNaN(parseInt(value)) || parseInt(value) < 1) {
+      setQuantity(1);
+    }
+
+    // Clear warning on valid input
+    if (showMaxWarning) setShowMaxWarning(false);
+  };
+
   useEffect(() => {
     setQuantity(1);
   }, [selectedVariant]);
@@ -178,10 +204,15 @@ function ActionButtons({ selectedVariant, product }) {
           >
             <Minus className="text-black group-hover:text-white" />
           </Button>
-
-          <span className="min-w-[2rem] text-center font-medium">
-            {quantity}
-          </span>
+          <input
+            type="number"
+            value={quantity}
+            onChange={handleQuantityChange}
+            onBlur={handleQuantityBlur}
+            min={1}
+            max={maxQuantity}
+            className="w-16 px-2 py-1 text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          />
 
           <Button
             onClick={handleIncrease}
@@ -213,13 +244,13 @@ function ActionButtons({ selectedVariant, product }) {
             />
           )}
         </>
-        <Button
+        {/* <Button
           onClick={handleBuyNow}
           disabled={!inStock || !selectedVariant}
           className="w-40"
         >
           Buy Now
-        </Button>
+        </Button> */}
 
         {maxQuantity > 0 && maxQuantity <= 5 && inStock && (
           <span className="ml-2 text-xs font-medium text-orange-600">

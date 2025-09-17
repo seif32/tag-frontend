@@ -88,7 +88,7 @@ function AdminOrdersPage() {
     onDelete: handleDeleteOrder,
   });
 
-  if (isLoadingOrders) return <LoadingState />;
+  if (isLoadingOrders) return <LoadingState type="dashboard" />;
 
   return (
     <div className="p-6 space-y-6">

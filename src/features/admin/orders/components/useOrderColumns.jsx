@@ -157,20 +157,6 @@ export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
                 <Eye className="w-4 h-4 mr-2" />
                 View Details
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => onEdit?.(order)}
-                className="cursor-pointer"
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Edit Order
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => onDelete?.(order)}
-                className="text-red-600 cursor-pointer"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete Order
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
