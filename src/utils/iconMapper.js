@@ -20,6 +20,7 @@ import {
   Settings,
   Tag,
   Award,
+  SwatchBook,
 } from "lucide-react";
 
 export const iconMap = {
@@ -43,6 +44,7 @@ export const iconMap = {
   Settings,
   Tag,
   Award,
+  SwatchBook,
 };
 
 // Helper function to get icon component

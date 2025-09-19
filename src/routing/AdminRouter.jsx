@@ -8,6 +8,9 @@ import AdminOrdersPage from "@/features/admin/orders/pages/AdminOrdersPage";
 import AdminProductPage from "@/features/admin/products/pages/AdminProductPage";
 import AdminProductsPage from "@/features/admin/products/pages/AdminProductsPage";
 import AdminTagsPage from "@/features/admin/tags/pages/AdminTagsPage";
+import AdminVariantsPage from "@/features/admin/variants/pages/AdminVariantsPage";
+import AdminVariantsTypesPage from "@/features/admin/variants/pages/AdminVariantsTypesPage";
+import AdminVariantsValuesPage from "@/features/admin/variants/pages/AdminVariantsValuesPage";
 import AdminLayout from "@/layout/AdminLayout";
 import { Routes, Route } from "react-router";
 
@@ -39,6 +42,13 @@ function AdminRouter() {
         />
         <Route path={ROUTES.ADMIN.BRANDS} element={<AdminBrandsPage />} />
         <Route path={ROUTES.ADMIN.TAGS} element={<AdminTagsPage />} />
+
+        <Route path={"variants"} element={<AdminVariantsPage />} />
+        <Route path={"variants/types"} element={<AdminVariantsTypesPage />} />
+        <Route
+          path={"variants/values/:typeId"}
+          element={<AdminVariantsValuesPage />}
+        />
 
         <Route path={"orders"} element={<AdminOrdersPage />} />
         <Route path={"orders/:orderId"} element={<AdminOrderPage />} />

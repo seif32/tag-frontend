@@ -1,71 +1,185 @@
 {
-  "status": "success",
-  "fetchStatus": "idle",
-  "isPending": false,
-  "isSuccess": true,
-  "isError": false,
-  "isInitialLoading": false,
-  "isLoading": false,
-  "data": {
-    "data": [
-      {
-        "id": 1,
-        "name": "Color"
-      },
-      {
-        "id": 5,
-        "name": "Length"
-      },
-      {
-        "id": 3,
-        "name": "Material"
-      },
-      {
-        "id": 8,
-        "name": "Pixel"
-      },
-      {
-        "id": 2,
-        "name": "Size"
-      },
-      {
-        "id": 4,
-        "name": "Style"
-      },
-      {
-        "id": 7,
-        "name": "Warranty Period"
-      },
-      {
-        "id": 6,
-        "name": "Width"
-      }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 10,
-      "total": 8,
-      "totalPages": 1
+  "id": 13,
+  "name": "Iphone 7",
+  "sku": "SKU-C8002E-1756585581655",
+  "description": "ay haga ",
+  "short_description": "ay haga tany",
+  "category_id": 1,
+  "subcategory_id": 1,
+  "brand_id": 1,
+  "featured": 0,
+  "active": 1,
+  "rating": "0.00",
+  "rating_count": 0,
+  "created_at": "2025-08-30T20:26:21.000Z",
+  "updated_at": "2025-08-30T20:26:21.000Z",
+  "category_name": "Electronics",
+  "sub_category_name": "Mobiles",
+  "brand_name": "Apple",
+  "tags": [
+    {
+      "id": 1,
+      "name": "modern"
     }
-  },
-  "dataUpdatedAt": 1758267383347,
-  "error": null,
-  "errorUpdatedAt": 0,
-  "failureCount": 0,
-  "failureReason": null,
-  "errorUpdateCount": 0,
-  "isFetched": true,
-  "isFetchedAfterMount": true,
-  "isFetching": false,
-  "isRefetching": false,
-  "isLoadingError": false,
-  "isPaused": false,
-  "isPlaceholderData": false,
-  "isRefetchError": false,
-  "isStale": false,
-  "promise": {
-    "status": "rejected",
-    "reason": {}
-  },
-  "isEnabled": true
+  ],
+  "variants": [
+    {
+      "id": 20,
+      "product_id": 13,
+      "variant_sku": "SKU-7E2BE7-1756585581657",
+      "variant_name": null,
+      "is_primary": 1,
+      "price": "200.00",
+      "compare_at_price": "500.00",
+      "cost_price": "20.00",
+      "currency": "USD",
+      "quantity": 797,
+      "created_at": "2025-08-30T20:26:21.000Z",
+      "updated_at": "2025-09-17T09:36:09.000Z",
+      "types": [
+        {
+          "type_id": 1,
+          "type_name": "Color",
+          "value": {
+            "id": 10,
+            "name": "Black"
+          }
+        },
+        {
+          "type_id": 2,
+          "type_name": "Size",
+          "value": {
+            "id": 35,
+            "name": "kbeer fashkh"
+          }
+        }
+      ],
+      "images": []
+    },
+    {
+      "id": 21,
+      "product_id": 13,
+      "variant_sku": "SKU-009B29-1756585581662",
+      "variant_name": null,
+      "is_primary": 0,
+      "price": "56000.00",
+      "compare_at_price": "70000.00",
+      "cost_price": "50.00",
+      "currency": "USD",
+      "quantity": 68,
+      "created_at": "2025-08-30T20:26:21.000Z",
+      "updated_at": "2025-09-17T09:36:09.000Z",
+      "types": [
+        {
+          "type_id": 1,
+          "type_name": "Color",
+          "value": {
+            "id": 8,
+            "name": "Blue"
+          }
+        },
+        {
+          "type_id": 2,
+          "type_name": "Size",
+          "value": {
+            "id": 13,
+            "name": "Medium"
+          }
+        }
+      ],
+      "images": []
+    },
+    {
+      "id": 22,
+      "product_id": 13,
+      "variant_sku": "SKU-5D7BFC-1756586016843",
+      "variant_name": null,
+      "is_primary": 0,
+      "price": "5000.00",
+      "compare_at_price": "120000.00",
+      "cost_price": "50.00",
+      "currency": "USD",
+      "quantity": 38,
+      "created_at": "2025-08-30T20:33:36.000Z",
+      "updated_at": "2025-09-17T09:36:09.000Z",
+      "types": [
+        {
+          "type_id": 1,
+          "type_name": "Color",
+          "value": {
+            "id": 7,
+            "name": "Red"
+          }
+        },
+        {
+          "type_id": 2,
+          "type_name": "Size",
+          "value": {
+            "id": 13,
+            "name": "Medium"
+          }
+        }
+      ],
+      "images": []
+    }
+  ],
+  "variant_values": [
+    {
+      "typeId": 1,
+      "typeName": "Color",
+      "values": [
+        {
+          "id": 10,
+          "value": "Black",
+          "variant_type_id": 1,
+          "created_at": "2025-08-29T19:17:53.000Z",
+          "updated_at": "2025-08-29T19:17:53.000Z"
+        },
+        {
+          "id": 8,
+          "value": "Blue",
+          "variant_type_id": 1,
+          "created_at": "2025-08-29T19:17:53.000Z",
+          "updated_at": "2025-08-29T19:17:53.000Z"
+        },
+        {
+          "id": 7,
+          "value": "Red",
+          "variant_type_id": 1,
+          "created_at": "2025-08-29T19:17:53.000Z",
+          "updated_at": "2025-08-29T19:17:53.000Z"
+        }
+      ]
+    },
+    {
+      "typeId": 2,
+      "typeName": "Size",
+      "values": [
+        {
+          "id": 35,
+          "value": "kbeer fashkh",
+          "variant_type_id": 2,
+          "created_at": "2025-08-30T20:25:10.000Z",
+          "updated_at": "2025-08-30T20:25:10.000Z"
+        },
+        {
+          "id": 13,
+          "value": "Medium",
+          "variant_type_id": 2,
+          "created_at": "2025-08-29T19:17:58.000Z",
+          "updated_at": "2025-08-29T19:17:58.000Z"
+        }
+      ]
+    }
+  ],
+  "variant_types": [
+    {
+      "id": 1,
+      "name": "Color"
+    },
+    {
+      "id": 2,
+      "name": "Size"
+    }
+  ]
 }

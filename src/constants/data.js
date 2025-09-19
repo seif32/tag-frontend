@@ -30,15 +30,15 @@ export const AdminSidebarGroups = [
               path: "/admin/categories",
               iconName: "Tags",
             },
-            {
-              name: "Inventory",
-              path: "/admin/inventory",
-              iconName: "Warehouse",
-              badge: {
-                content: "12 Low",
-                variant: "outline",
-              },
-            },
+            // {
+            //   name: "Inventory",
+            //   path: "/admin/inventory",
+            //   iconName: "Warehouse",
+            //   badge: {
+            //     content: "12 Low",
+            //     variant: "outline",
+            //   },
+            // },
           ],
         },
       },
@@ -57,6 +57,11 @@ export const AdminSidebarGroups = [
               name: "Tags",
               path: "/admin/tags",
               iconName: "Tag", // Classic tag icon
+            },
+            {
+              name: "Variants",
+              path: "/admin/variants",
+              iconName: "SwatchBook", // Classic tag icon
             },
           ],
         },
