@@ -8,7 +8,6 @@ const useVariantStore = create((set, get) => ({
   selectedCombination: [],
 
   setAvailableTypes: (types) => set({ availableTypes: types }),
-  setAvailableTypes: (types) => set({ availableTypes: types }),
   clearTypes: () => set({ availableTypes: [] }),
 
   setSelectedTypes: (types) => set({ selectedTypes: types }),

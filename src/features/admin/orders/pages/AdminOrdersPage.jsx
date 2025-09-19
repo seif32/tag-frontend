@@ -1,13 +1,7 @@
 import { useState } from "react";
 import StatsCard from "../../ui/StatsCard";
 
-import {
-  ShoppingBag,
-  Clock,
-  CheckCircle,
-  XCircle,
-  PlusCircle,
-} from "lucide-react";
+import { ShoppingBag, Clock, CheckCircle, PlusCircle } from "lucide-react";
 import { useOrderColumns } from "../components/useOrderColumns";
 import { useNavigate } from "react-router";
 import useOrders from "@/hooks/useOrders";
@@ -17,10 +11,6 @@ import ErrorMessage from "@/ui/ErrorMessage";
 
 function AdminOrdersPage() {
   const navigate = useNavigate();
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
   const [sorting, setSorting] = useState([]);
   const [filters, setFilters] = useState({ search: "", status: "" });
 
@@ -32,8 +22,6 @@ function AdminOrdersPage() {
     isErrorOrdersLight,
     refetchOrdersLight,
   } = useOrders.useAllWithoutItems({
-    page: pagination.pageIndex + 1,
-    limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
     sortOrder: sorting[0]?.desc ? "desc" : "asc",
     search: filters.search,
@@ -82,10 +70,8 @@ function AdminOrdersPage() {
         data={ordersLight?.data || []}
         pageCount={ordersLight?.totalPages}
         totalCount={ordersLight?.total || 0}
-        pagination={pagination}
         sorting={sorting}
         filters={filters}
-        onPaginationChange={setPagination}
         onSortingChange={setSorting}
         onFiltersChange={setFilters}
         isLoading={isLoadingOrdersLight}

@@ -13,8 +13,6 @@ export function TagsSection({ productTags }) {
   const mode = useProductStore((state) => state.mode);
   const { control } = useFormContext();
 
-  console.log("TagsSection", categoryTags);
-
   const isViewMode = mode === "view";
 
   if (isLoadingCategoryTags) return <LoadingState type="form" rows={2} />;

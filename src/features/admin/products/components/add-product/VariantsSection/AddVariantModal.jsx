@@ -27,7 +27,7 @@ function AddVariantModal({ setDialogMode, onTypeSelected }) {
 
   const filteredTypes = useMemo(() => {
     const selectedIds = new Set(selectedTypes.map((t) => t.id));
-    return availableTypes.filter((type) => !selectedIds.has(type.id));
+    return availableTypes?.filter((type) => !selectedIds.has(type.id));
   }, [availableTypes, selectedTypes]);
 
   function handleTypeSelection(value) {
@@ -45,6 +45,7 @@ function AddVariantModal({ setDialogMode, onTypeSelected }) {
       setDialogMode("select");
     }
   }
+
   if (isLoadingVariantTypes) return <LoadingState />;
 
   if (isErrorVariantTypes)
@@ -65,7 +66,7 @@ function AddVariantModal({ setDialogMode, onTypeSelected }) {
             <SelectValue placeholder="Select variant type" />
           </SelectTrigger>
           <SelectContent>
-            {filteredTypes.map((type) => (
+            {filteredTypes?.map((type) => (
               <SelectItem key={type.id} value={type.id.toString()}>
                 {type.name}
               </SelectItem>
@@ -78,7 +79,7 @@ function AddVariantModal({ setDialogMode, onTypeSelected }) {
               Add Custom Type
             </SelectItem>
 
-            {filteredTypes.length === 0 && (
+            {filteredTypes?.length === 0 && (
               <div className="px-2 py-1.5 text-sm text-gray-500 italic">
                 All variant types are already added
               </div>

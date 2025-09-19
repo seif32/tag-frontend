@@ -1,5 +1,6 @@
 import ordersApi from "@/services/ordersApi";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import { toast } from "sonner";
 
 const useOrders = {
@@ -36,9 +37,20 @@ const useOrders = {
    * Example: const { isLoadingOrdersLight, ordersLight } = useOrders.useAllWithoutItems({page: 1});
    */
   useAllWithoutItems: (queryParams = {}, options = {}) => {
+    const [searchParams] = useSearchParams();
+
+    const page = parseInt(searchParams.get("page"));
+    const limit = parseInt(searchParams.get("limit"));
+
+    const mergedFilters = {
+      ...queryParams,
+      page,
+      limit,
+    };
+
     const query = useQuery({
-      queryKey: ["orders", "without-items", queryParams],
-      queryFn: () => ordersApi.getAllWithoutItems(queryParams),
+      queryKey: ["orders", "without-items", mergedFilters],
+      queryFn: () => ordersApi.getAllWithoutItems(mergedFilters),
       staleTime: 1 * 60 * 1000, // 1 minute - lighter data can be fresher
       cacheTime: 3 * 60 * 1000, // Keep in cache for 3 minutes
       ...options,

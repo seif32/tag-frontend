@@ -1,69 +1,71 @@
 {
-  "id": 164,
-  "order_id": 51,
-  "variant_id": 6,
-  "quantity": 4,
-  "unit_price": "745.00",
-  "total_price": "2980.00",
-  "currency": "GBP",
-  "created_at": "2025-09-18T15:24:43.000Z",
-  "updated_at": "2025-09-18T15:24:43.000Z",
-  "product": {
-    "id": 2,
-    "name": "Iphone 11",
-    "sku": "SKU-BC6B20-1756504028086",
-    "description": "very cool mobile with lots of features",
-    "short_description": "a modern tech mobile",
-    "category_id": 1,
-    "subcategory_id": 1,
-    "brand_id": 1,
-    "featured": 0,
-    "active": 1,
-    "rating": "0.00",
-    "rating_count": 0,
-    "created_at": "2025-08-29T21:47:08.000Z",
-    "updated_at": "2025-08-30T01:32:58.000Z",
-    "category_name": "Electronics",
-    "sub_category_name": "Mobiles",
-    "brand_name": "Apple",
-    "tags": [
+  "status": "success",
+  "fetchStatus": "idle",
+  "isPending": false,
+  "isSuccess": true,
+  "isError": false,
+  "isInitialLoading": false,
+  "isLoading": false,
+  "data": {
+    "data": [
       {
         "id": 1,
-        "name": "modern"
-      }
-    ],
-    "variants": [
+        "name": "Color"
+      },
+      {
+        "id": 5,
+        "name": "Length"
+      },
+      {
+        "id": 3,
+        "name": "Material"
+      },
+      {
+        "id": 8,
+        "name": "Pixel"
+      },
+      {
+        "id": 2,
+        "name": "Size"
+      },
+      {
+        "id": 4,
+        "name": "Style"
+      },
+      {
+        "id": 7,
+        "name": "Warranty Period"
+      },
       {
         "id": 6,
-        "product_id": 2,
-        "is_primary": 1,
-        "price": "745.00",
-        "compare_at_price": "8111.00",
-        "cost_price": "300.00",
-        "currency": "USD",
-        "quantity": 132103,
-        "created_at": "2025-08-30T00:50:07.000Z",
-        "updated_at": "2025-09-18T15:24:43.000Z",
-        "images": [],
-        "types": [
-          {
-            "type_id": 1,
-            "type_name": "Color",
-            "value": {
-              "id": 9,
-              "name": "Green"
-            }
-          },
-          {
-            "type_id": 6,
-            "type_name": "Width",
-            "value": {
-              "id": 27,
-              "name": "Narrow"
-            }
-          }
-        ]
+        "name": "Width"
       }
-    ]
-  }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 8,
+      "totalPages": 1
+    }
+  },
+  "dataUpdatedAt": 1758267383347,
+  "error": null,
+  "errorUpdatedAt": 0,
+  "failureCount": 0,
+  "failureReason": null,
+  "errorUpdateCount": 0,
+  "isFetched": true,
+  "isFetchedAfterMount": true,
+  "isFetching": false,
+  "isRefetching": false,
+  "isLoadingError": false,
+  "isPaused": false,
+  "isPlaceholderData": false,
+  "isRefetchError": false,
+  "isStale": false,
+  "promise": {
+    "status": "rejected",
+    "reason": {}
+  },
+  "isEnabled": true
 }

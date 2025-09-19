@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router";
 import { api } from "./api";
 
 const ordersApi = {
@@ -10,6 +11,7 @@ const ordersApi = {
   getAll: async (queryParams = {}, options = {}) => {
     try {
       const params = new URLSearchParams();
+
       if (queryParams.page) params.append("page", queryParams.page);
       if (queryParams.limit) params.append("limit", queryParams.limit);
 

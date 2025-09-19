@@ -31,6 +31,8 @@ import {
   Filter,
 } from "lucide-react";
 import useDebounce from "@/hooks/useDebounce";
+import { useUpdateUrlParams } from "@/hooks/useUpdateUrlParams";
+import { useSearchParams } from "react-router";
 
 export default function OrderDataTable({
   // Data props
@@ -42,12 +44,10 @@ export default function OrderDataTable({
   totalCount = 0,
 
   // Current state
-  pagination = { pageIndex: 0, pageSize: 10 },
   sorting = [],
   filters = { search: "", status: "", dateRange: null },
 
   // Event handlers
-  onPaginationChange,
   onSortingChange,
   onFiltersChange,
 
@@ -58,6 +58,11 @@ export default function OrderDataTable({
 }) {
   const [searchInput, setSearchInput] = useState(filters.search || "");
   const debouncedSearch = useDebounce(searchInput, 500);
+  const updateUrlParams = useUpdateUrlParams();
+  const [searchParams] = useSearchParams();
+
+  const page = parseInt(searchParams.get("page"));
+  const limit = parseInt(searchParams.get("limit"));
 
   useEffect(() => {
     if (onFiltersChange && debouncedSearch !== filters.search) {
@@ -76,11 +81,9 @@ export default function OrderDataTable({
 
     state: {
       sorting,
-      pagination,
     },
 
     onSortingChange,
-    onPaginationChange,
 
     getCoreRowModel: getCoreRowModel(),
   });
@@ -94,8 +97,8 @@ export default function OrderDataTable({
     }
   }
 
-  const canPreviousPage = pagination.pageIndex > 0;
-  const canNextPage = pagination.pageIndex < pageCount - 1;
+  const canPreviousPage = page > 0;
+  const canNextPage = page < pageCount - 1;
 
   return (
     <div className="space-y-4">
@@ -104,13 +107,13 @@ export default function OrderDataTable({
         {/* Search & Filters */}
         <div className="flex flex-col flex-1 gap-2 sm:flex-row">
           {/* Search Input */}
-          <div className="relative">
+          <div className="relative ">
             <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
             <Input
-              placeholder="Search orders, customers..."
+              placeholder="Search by order id or customer name..."
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="max-w-xs pl-10"
+              className=" w-100 min-w-full  pl-10"
             />
           </div>
 
@@ -119,32 +122,39 @@ export default function OrderDataTable({
             value={filters.status || "all"}
             onValueChange={handleStatusFilter}
           >
-            <SelectTrigger className="w-[150px]">
+            <SelectTrigger className="w-[220px]">
               <Filter className="w-4 h-4 mr-2" />
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="processing">Processing</SelectItem>
-              <SelectItem value="shipped">Shipped</SelectItem>
-              <SelectItem value="delivered">Delivered</SelectItem>
-              <SelectItem value="cancelled">Cancelled</SelectItem>
+              <div className="border"></div>
+              <SelectItem value="pending-orders">Pending Orders</SelectItem>
+              <SelectItem value="shipped-orders">Shipped Orders</SelectItem>
+              <SelectItem value="delivered-orders">Delivered Orders</SelectItem>
+              <SelectItem value="cancelled-orders">Cancelled Orders</SelectItem>
+              <div className="border"></div>
+              <SelectItem value="pending-payments">Pending Payments</SelectItem>
+              <SelectItem value="failed-payments">Failed Payments</SelectItem>
+              <SelectItem value="paid-payments">Paid Payments</SelectItem>
+              <SelectItem value="refunded-payments">
+                Refunded Payments
+              </SelectItem>
             </SelectContent>
           </Select>
 
           {/* Page Size Selector */}
           <Select
-            value={pagination.pageSize.toString()}
+            value={limit.toString()}
             onValueChange={(value) =>
-              onPaginationChange?.({
-                pageIndex: 0,
-                pageSize: Number(value),
+              updateUrlParams({
+                page: 0,
+                limit: Number(value),
               })
             }
           >
             <SelectTrigger className="w-[80px]">
-              <SelectValue />
+              <SelectValue placeholder={limit} />
             </SelectTrigger>
             <SelectContent>
               {[10, 25, 50, 100].map((size) => (
@@ -202,7 +212,7 @@ export default function OrderDataTable({
           <TableBody>
             {isLoading ? (
               // Loading skeleton
-              Array.from({ length: pagination.pageSize }).map((_, i) => (
+              Array.from({ length: limit }).map((_, i) => (
                 <TableRow key={i}>
                   {columns.map((_, colIndex) => (
                     <TableCell key={colIndex}>
@@ -258,20 +268,9 @@ export default function OrderDataTable({
       <div className="flex flex-col items-center justify-between space-y-2 sm:flex-row sm:space-y-0">
         {/* Results info */}
         <div className="text-sm text-gray-700">
-          Showing{" "}
-          <strong>
-            {totalCount === 0
-              ? 0
-              : pagination.pageIndex * pagination.pageSize + 1}
-          </strong>{" "}
-          -{" "}
-          <strong>
-            {Math.min(
-              (pagination.pageIndex + 1) * pagination.pageSize,
-              totalCount
-            )}
-          </strong>{" "}
-          of <strong>{totalCount.toLocaleString()}</strong> orders
+          Showing <strong>{totalCount === 0 ? 0 : page * limit + 1}</strong> -{" "}
+          <strong>{Math.min((page + 1) * limit, totalCount)}</strong> of{" "}
+          <strong>{totalCount.toLocaleString()}</strong> orders
         </div>
 
         {/* Pagination buttons */}
@@ -279,9 +278,7 @@ export default function OrderDataTable({
           <Button
             variant="outline"
             size="sm"
-            onClick={() =>
-              onPaginationChange?.({ ...pagination, pageIndex: 0 })
-            }
+            onClick={() => updateUrlParams({ page: 0 })}
             disabled={!canPreviousPage || isLoading}
           >
             <ChevronsLeft className="w-4 h-4" />
@@ -290,12 +287,7 @@ export default function OrderDataTable({
           <Button
             variant="outline"
             size="sm"
-            onClick={() =>
-              onPaginationChange?.({
-                ...pagination,
-                pageIndex: pagination.pageIndex - 1,
-              })
-            }
+            onClick={() => updateUrlParams({ page: page - 1 })}
             disabled={!canPreviousPage || isLoading}
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
@@ -304,19 +296,14 @@ export default function OrderDataTable({
 
           <div className="flex items-center px-4 space-x-2">
             <span className="text-sm">
-              Page {pagination.pageIndex + 1} of {pageCount}
+              Page {page + 1} of {pageCount}
             </span>
           </div>
 
           <Button
             variant="outline"
             size="sm"
-            onClick={() =>
-              onPaginationChange?.({
-                ...pagination,
-                pageIndex: pagination.pageIndex + 1,
-              })
-            }
+            onClick={() => updateUrlParams({ page: page + 1 })}
             disabled={!canNextPage || isLoading}
           >
             Next
@@ -326,12 +313,7 @@ export default function OrderDataTable({
           <Button
             variant="outline"
             size="sm"
-            onClick={() =>
-              onPaginationChange?.({
-                ...pagination,
-                pageIndex: pageCount - 1,
-              })
-            }
+            onClick={() => updateUrlParams({ page: pageCount - 1 })}
             disabled={!canNextPage || isLoading}
           >
             <ChevronsRight className="w-4 h-4" />

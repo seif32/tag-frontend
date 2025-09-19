@@ -14,6 +14,33 @@ const useVariants = {
    * Returns: isLoadingVariantTypes, variantTypes, errorVariantTypes
    * Example: const { isLoadingVariantTypes, variantTypes } = useVariantTypesQueries.useAllTypes();
    */
+  // useAllTypes: (options = {}) => {
+  //   const setAvailableTypes = useVariantStore(
+  //     (state) => state.setAvailableTypes
+  //   );
+  //   const availableTypes = useVariantStore((state) => state.availableTypes);
+
+  //   const query = useQuery({
+  //     queryKey: ["variant-types"],
+  //     queryFn: variantsApi.getAllTypes,
+  //     staleTime: 10 * 60 * 1000,
+  //     cacheTime: 15 * 60 * 1000,
+  //     ...options,
+  //   });
+
+  //   if (query.isSuccess && query.data?.data && availableTypes.length === 0) {
+  //     console.log("🔥 Direct sync triggered!");
+  //     setAvailableTypes(query.data.data);
+  //   }
+
+  //   return {
+  //     isLoadingVariantTypes: query.isLoading,
+  //     variantTypes: query.data,
+  //     errorVariantTypes: query.error,
+  //     isErrorVariantTypes: query.isError,
+  //     refetchVariantTypes: query.refetch,
+  //   };
+  // },
   useAllTypes: (options = {}) => {
     const setAvailableTypes = useVariantStore(
       (state) => state.setAvailableTypes
@@ -27,12 +54,13 @@ const useVariants = {
       ...options,
     });
 
+    // ✅ Safe - runs after render
     useEffect(() => {
-      if (query.data) {
-        console.log("Syncing to Zustand:", query.data);
-        setAvailableTypes(query.data);
+      if (query.isSuccess && query.data?.data) {
+        console.log("🔥 Safe sync triggered!");
+        setAvailableTypes(query.data.data);
       }
-    }, [query.data, setAvailableTypes]);
+    }, [query.isSuccess, query.data?.data, setAvailableTypes]);
 
     return {
       isLoadingVariantTypes: query.isLoading,

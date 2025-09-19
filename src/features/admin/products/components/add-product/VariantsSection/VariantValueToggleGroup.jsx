@@ -16,21 +16,14 @@ function VariantValueToggleGroup({
     (state) => state.setSelectedValuesForType
   );
   const selectedValues = useVariantStore((state) => state.selectedValues);
-
   const existingValuesForType =
     selectedValues.find((sv) => sv.typeId === typeId)?.values || [];
-
   const [localSelectedValues, setLocalSelectedValues] = useState(
-    existingValuesForType || [] // This should already be array of {id, value}
+    existingValuesForType || []
   );
 
   function handleDone() {
     setSelectedValuesForType(typeId, typeName, localSelectedValues);
-
-    console.log("Selected values saved:", {
-      typeId,
-      values: localSelectedValues,
-    });
     setIsDialogOpen(false);
   }
 
@@ -55,7 +48,10 @@ function VariantValueToggleGroup({
     );
   }
 
-  if (isTypeNotFound || (Array.isArray(values) && values.length === 0)) {
+  if (
+    isTypeNotFound ||
+    (Array.isArray(values?.data) && values?.data?.length === 0)
+  ) {
     return (
       <div className="flex flex-col items-center justify-center p-6 text-center">
         <h5 className="text-sm font-medium mb-1">
@@ -71,8 +67,7 @@ function VariantValueToggleGroup({
     );
   }
 
-  // 3. Handle successful fetch but no values (empty array)
-  if (Array.isArray(values) && values.length === 0) {
+  if (Array.isArray(values?.data) && values?.data?.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-6 text-center">
         <div className="text-gray-400 mb-2">📭</div>
@@ -106,14 +101,16 @@ function VariantValueToggleGroup({
         value={localSelectedValues.map((item) => item.value)} // Extract strings for UI
         onValueChange={(selectedStrings) => {
           const selectedObjects = selectedStrings
-            .map((valueString) => values.find((v) => v.value === valueString))
+            .map((valueString) =>
+              values?.data?.find((v) => v.value === valueString)
+            )
             .filter(Boolean);
           setLocalSelectedValues(selectedObjects);
         }}
         type="multiple"
         className="gap-2 flex flex-wrap"
       >
-        {values.map((value) => (
+        {values?.data?.map((value) => (
           <ToggleGroupItem
             key={value.id}
             value={value.value}
