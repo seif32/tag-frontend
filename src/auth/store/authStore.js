@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import authApi from "../services/authApi";
+import { sendEmailVerification } from "firebase/auth";
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -72,6 +73,11 @@ export const useAuthStore = create((set, get) => ({
         userData.email,
         userData.password
       );
+
+      // 📧 ADD EMAIL VERIFICATION HERE - Right after Firebase login!
+      await sendEmailVerification(userCredential.user);
+      console.log("Verification email sent to:", userCredential.user.email);
+
       const token = await userCredential.user.getIdToken();
 
       // 🔥 Try to get complete profile from backend
@@ -104,6 +110,7 @@ export const useAuthStore = create((set, get) => ({
         phoneNumber: userCredential.user.phoneNumber || userData.phone_number,
         uid: userCredential.user.uid,
         email: userCredential.user.email,
+        emailVerified: userCredential.user.emailVerified, // 👈 Add this too!
         token,
 
         // Include any other backend fields

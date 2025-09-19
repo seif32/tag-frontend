@@ -5,7 +5,6 @@ import {
   CreditCard,
   DollarSign,
   LucidePackage2,
-  LucidePackageX,
   Package,
   ShoppingBag,
 } from "lucide-react";
@@ -13,7 +12,6 @@ import { BsTelephone } from "react-icons/bs";
 import { Link, useParams } from "react-router";
 import { GoPerson } from "react-icons/go";
 import { MdOutlineMailOutline } from "react-icons/md";
-import { HiOutlineMapPin } from "react-icons/hi2";
 import { CiCreditCard1 } from "react-icons/ci";
 
 import {
@@ -291,13 +289,17 @@ function ItemsTable({
                     <span className="font-medium text-sm">
                       {item?.product?.name}
                     </span>
-                    {/* {item.variant_attributes && (
-                      <span className="text-xs text-muted-foreground">
-                        {Object.entries(item.variant_attributes)
-                          .map(([key, value]) => `${key}: ${value}`)
-                          .join(", ")}
-                      </span>
-                    )} */}
+                    {item?.product?.variants[0]?.types?.map((type) => {
+                      return (
+                        <div
+                          key={type?.type_id}
+                          className="text-xs text-muted-foreground"
+                        >
+                          <span>{type?.type_name}: </span>
+                          <span>{type?.value?.name}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </TableCell>

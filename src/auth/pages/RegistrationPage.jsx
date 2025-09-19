@@ -59,13 +59,16 @@ function RegistrationPage() {
 
       const response = await register(formattedData);
 
-      toast.success("Registration successful!");
+      toast.success("Registration successful! Please check your email.");
 
-      if (response.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
+      // 📧 ALWAYS navigate to check email page after registration
+      // Regardless of role - verification comes first!
+      navigate("/check-email", {
+        state: {
+          email: response.email,
+          role: response.role, // Pass role for later use
+        },
+      });
     } catch (error) {
       console.error("Registration error:", error);
       toast.error(`❌ Registration failed: ${error.message}`);

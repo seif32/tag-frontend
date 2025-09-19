@@ -29,6 +29,56 @@ const useOrders = {
   },
 
   /**
+   * 📊 GET ALL ORDERS WITHOUT ITEMS HOOK
+   * Fetches basic order info for faster loading in lists/tables
+   * Perfect for admin dashboards where you need quick order overview
+   * Returns: isLoadingOrdersLight, ordersLight, errorOrdersLight
+   * Example: const { isLoadingOrdersLight, ordersLight } = useOrders.useAllWithoutItems({page: 1});
+   */
+  useAllWithoutItems: (queryParams = {}, options = {}) => {
+    const query = useQuery({
+      queryKey: ["orders", "without-items", queryParams],
+      queryFn: () => ordersApi.getAllWithoutItems(queryParams),
+      staleTime: 1 * 60 * 1000, // 1 minute - lighter data can be fresher
+      cacheTime: 3 * 60 * 1000, // Keep in cache for 3 minutes
+      ...options,
+    });
+
+    return {
+      isLoadingOrdersLight: query.isLoading,
+      ordersLight: query.data,
+      errorOrdersLight: query.error,
+      isErrorOrdersLight: query.isError,
+      refetchOrdersLight: query.refetch,
+    };
+  },
+
+  /**
+   * 📈 GET ORDER STATISTICS HOOK
+   * Fetches order analytics and business metrics
+   * Perfect for dashboards, analytics components, reporting
+   * Returns: isLoadingOrderStats, orderStats, errorOrderStats
+   * Example: const { isLoadingOrderStats, orderStats } = useOrders.useStats();
+   */
+  useStats: (options = {}) => {
+    const query = useQuery({
+      queryKey: ["orders", "stats"],
+      queryFn: () => ordersApi.getStats(),
+      staleTime: 5 * 60 * 1000, // 5 minutes - stats don't change rapidly
+      cacheTime: 10 * 60 * 1000, // Keep stats cached longer
+      ...options,
+    });
+
+    return {
+      isLoadingOrderStats: query.isLoading,
+      orderStats: query.data,
+      errorOrderStats: query.error,
+      isErrorOrderStats: query.isError,
+      refetchOrderStats: query.refetch,
+    };
+  },
+
+  /**
    * 🎯 GET SINGLE ORDER HOOK
    * Fetches complete order details with items and product information
    * Great for order detail pages, admin order management

@@ -13,51 +13,7 @@ import { useNavigate } from "react-router";
 import useOrders from "@/hooks/useOrders";
 import LoadingState from "@/ui/LoadingState";
 import OrderDataTable from "../components/OrderDataTable";
-
-const statsData = [
-  // {
-  //   title: "Total Revenue",
-  //   icon: DollarSign,
-  //   value: "$24,847.50",
-  //   subtitle: "All completed orders",
-  // },
-  {
-    title: "Total Orders",
-    icon: ShoppingBag,
-    value: "1,247",
-    subtitle: "All orders ever placed",
-  },
-  {
-    title: "New Orders",
-    icon: PlusCircle,
-    value: "15",
-    subtitle: "Recently placed orders",
-  },
-
-  {
-    title: "Pending Orders",
-    icon: Clock,
-    value: "23",
-    subtitle: "Needs immediate attention",
-  },
-  {
-    title: "Completed Orders",
-    icon: CheckCircle,
-    value: "1,156",
-    //           subtitle: `${((stats?.completedOrders / stats?.totalOrders) * 100).toFixed(1)}% success rate`
-    // ,
-    subtitle: "92.7% success rate",
-  },
-
-  // {
-  //   title: "Cancelled Orders",
-  //   icon: XCircle,
-  //   value: "68",
-  //   // subtitle: `${((stats?.cancelledOrders / stats?.totalOrders) * 100).toFixed(1)}% cancellation rate`
-  //   // ,
-  //   subtitle: "5.5% cancellation rate",
-  // },
-];
+import ErrorMessage from "@/ui/ErrorMessage";
 
 function AdminOrdersPage() {
   const navigate = useNavigate();
@@ -68,13 +24,24 @@ function AdminOrdersPage() {
   const [sorting, setSorting] = useState([]);
   const [filters, setFilters] = useState({ search: "", status: "" });
 
-  const { orders, isLoadingOrders } = useOrders.useAll({
+  // lama sasa y fix el filter ghayar
+  const {
+    ordersLight,
+    isLoadingOrdersLight,
+    errorOrdersLight,
+    isErrorOrdersLight,
+    refetchOrdersLight,
+  } = useOrders.useAllWithoutItems({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
     sortBy: sorting[0]?.id,
     sortOrder: sorting[0]?.desc ? "desc" : "asc",
     search: filters.search,
-    status: filters.status,
+    ...(filters.search &&
+      !isNaN(Number(filters.search)) && { id: Number(filters.search) }),
+    ...(filters.search &&
+      isNaN(Number(filters.search)) && { name: filters.search }),
+    ...(filters.status && { status: filters.status }),
   });
 
   function handleEditOrder(order) {
@@ -88,7 +55,17 @@ function AdminOrdersPage() {
     onDelete: handleDeleteOrder,
   });
 
-  if (isLoadingOrders) return <LoadingState type="dashboard" />;
+  if (isLoadingOrdersLight) return <LoadingState type="table" />;
+
+  if (isErrorOrdersLight) {
+    return (
+      <ErrorMessage
+        message={errorOrdersLight?.message || "Failed to load data"}
+        dismissible
+        onDismiss={refetchOrdersLight}
+      />
+    );
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -102,16 +79,16 @@ function AdminOrdersPage() {
 
       <OrderDataTable
         columns={columns}
-        data={orders?.data || []}
-        pageCount={orders?.totalPages}
-        totalCount={orders?.total || 0}
+        data={ordersLight?.data || []}
+        pageCount={ordersLight?.totalPages}
+        totalCount={ordersLight?.total || 0}
         pagination={pagination}
         sorting={sorting}
         filters={filters}
         onPaginationChange={setPagination}
         onSortingChange={setSorting}
         onFiltersChange={setFilters}
-        isLoading={isLoadingOrders}
+        isLoading={isLoadingOrdersLight}
       />
     </div>
   );
@@ -120,9 +97,62 @@ function AdminOrdersPage() {
 export default AdminOrdersPage;
 
 function StatsContainer() {
+  const {
+    orderStats,
+    isLoadingOrderStats,
+    isErrorOrderStats,
+    errorOrderStats,
+    refetchOrderStats,
+  } = useOrders.useStats();
+
+  if (isLoadingOrderStats) return <LoadingState type="stats" />;
+
+  if (isErrorOrderStats) {
+    return (
+      <ErrorMessage
+        message={errorOrderStats?.message || "Failed to load data"}
+        dismissible
+        onDismiss={refetchOrderStats}
+      />
+    );
+  }
+
+  function stats(stats) {
+    return [
+      {
+        title: "Total Orders",
+        icon: ShoppingBag,
+        value: stats.total_orders,
+        subtitle: "All orders ever placed",
+      },
+      {
+        title: "New Orders",
+        icon: PlusCircle,
+        value: stats.new_orders,
+        subtitle: "Recently placed orders",
+      },
+
+      {
+        title: "Pending Orders",
+        icon: Clock,
+        value: stats.pending_orders,
+        subtitle: "Needs immediate attention",
+      },
+      {
+        title: "Delivered Orders",
+        icon: CheckCircle,
+        value: stats.delivered_orders,
+        subtitle: `${(
+          (stats?.delivered_orders / stats?.total_orders) *
+          100
+        ).toFixed(1)}% success rate`,
+      },
+    ];
+  }
+
   return (
     <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-      {statsData.map((stat, index) => (
+      {stats(orderStats).map((stat, index) => (
         <StatsCard
           key={index}
           title={stat.title}

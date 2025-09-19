@@ -2,15 +2,24 @@ import { useAuthStore } from "@/auth/store/authStore";
 import { Navigate } from "react-router";
 
 function ProtectedAdminRoute({ children }) {
-  // const user = useAuthStore((state) => state.user);
-  // const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  // const { isAuthenticated, user } = useAuthStore((state) => ({
+  //   isAuthenticated: state.isAuthenticated,
+  //   user: state.user,
+  // }));
 
+  // // Check if user is logged in
   // if (!isAuthenticated) {
   //   return <Navigate to="/login" replace />;
   // }
 
-  // if (user?.role !== "admin") {
-  //   return <Navigate to="/" replace />;
+  // // Check if email is verified first
+  // if (user && !user.emailVerified) {
+  //   return <Navigate to="/check-email" replace />;
+  // }
+
+  // // Check if user is admin
+  // if (user && user.role !== "admin") {
+  //   return <Navigate to="/" replace />; // Redirect to customer area
   // }
 
   return children;

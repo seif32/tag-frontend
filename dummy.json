@@ -1,114 +1,69 @@
 {
-  "id": 49,
-  "order_status": "pending",
-  "payment_status": "pending",
-  "subtotal": "745.00",
-  "tax_percent": "10.00",
-  "tax_amount": "74.50",
-  "shipping_amount": "50.00",
-  "discount_percent": "0.00",
-  "discount_type": null,
-  "discount_amount": "0.00",
-  "total_amount": "869.50",
+  "id": 164,
+  "order_id": 51,
+  "variant_id": 6,
+  "quantity": 4,
+  "unit_price": "745.00",
+  "total_price": "2980.00",
   "currency": "GBP",
-  "created_at": "2025-09-17T09:47:36.000Z",
-  "updated_at": "2025-09-17T09:47:36.000Z",
-  "promo_code": null,
-  "user": {
-    "id": 1,
-    "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-    "first_name": "Seif",
-    "last_name": "Mohamed",
-    "email": "seif@gmail.com",
-    "phone_number": "+201077481236",
-    "role": "user",
-    "created_at": "2025-09-12T01:33:31.000Z",
-    "updated_at": "2025-09-12T23:35:22.000Z"
-  },
-  "address": {
-    "id": 8,
-    "user_id": 1,
-    "description": "mafesh sho'a' khalas",
-    "apartment_number": "108895",
-    "building_number": "510",
-    "street_name": "Amr Diab",
-    "city": "new-york",
-    "postal_code": "89",
-    "country": "uk",
-    "location_url": "",
-    "is_default": 0,
-    "created_at": "2025-09-13T00:02:25.000Z",
-    "updated_at": "2025-09-13T01:50:06.000Z"
-  },
-  "items": [
-    {
-      "id": 159,
-      "order_id": 49,
-      "variant_id": 6,
-      "quantity": 1,
-      "unit_price": "745.00",
-      "total_price": "745.00",
-      "currency": "GBP",
-      "created_at": "2025-09-17T09:47:36.000Z",
-      "updated_at": "2025-09-17T09:47:36.000Z",
-      "product": {
-        "id": 2,
-        "name": "Iphone 11",
-        "sku": "SKU-BC6B20-1756504028086",
-        "description": "very cool mobile with lots of features",
-        "short_description": "a modern tech mobile",
-        "category_id": 1,
-        "subcategory_id": 1,
-        "brand_id": 1,
-        "featured": 0,
-        "active": 1,
-        "rating": "0.00",
-        "rating_count": 0,
-        "created_at": "2025-08-29T21:47:08.000Z",
-        "updated_at": "2025-08-30T01:32:58.000Z",
-        "category_name": "Electronics",
-        "sub_category_name": "Mobiles",
-        "brand_name": "Apple",
-        "tags": [
+  "created_at": "2025-09-18T15:24:43.000Z",
+  "updated_at": "2025-09-18T15:24:43.000Z",
+  "product": {
+    "id": 2,
+    "name": "Iphone 11",
+    "sku": "SKU-BC6B20-1756504028086",
+    "description": "very cool mobile with lots of features",
+    "short_description": "a modern tech mobile",
+    "category_id": 1,
+    "subcategory_id": 1,
+    "brand_id": 1,
+    "featured": 0,
+    "active": 1,
+    "rating": "0.00",
+    "rating_count": 0,
+    "created_at": "2025-08-29T21:47:08.000Z",
+    "updated_at": "2025-08-30T01:32:58.000Z",
+    "category_name": "Electronics",
+    "sub_category_name": "Mobiles",
+    "brand_name": "Apple",
+    "tags": [
+      {
+        "id": 1,
+        "name": "modern"
+      }
+    ],
+    "variants": [
+      {
+        "id": 6,
+        "product_id": 2,
+        "is_primary": 1,
+        "price": "745.00",
+        "compare_at_price": "8111.00",
+        "cost_price": "300.00",
+        "currency": "USD",
+        "quantity": 132103,
+        "created_at": "2025-08-30T00:50:07.000Z",
+        "updated_at": "2025-09-18T15:24:43.000Z",
+        "images": [],
+        "types": [
           {
-            "id": 1,
-            "name": "modern"
-          }
-        ],
-        "variants": [
+            "type_id": 1,
+            "type_name": "Color",
+            "value": {
+              "id": 9,
+              "name": "Green"
+            }
+          },
           {
-            "id": 6,
-            "product_id": 2,
-            "is_primary": 1,
-            "price": "745.00",
-            "compare_at_price": "8111.00",
-            "cost_price": "300.00",
-            "currency": "USD",
-            "quantity": 132108,
-            "created_at": "2025-08-30T00:50:07.000Z",
-            "updated_at": "2025-09-17T09:47:36.000Z",
-            "images": [],
-            "types": [
-              {
-                "type_id": 1,
-                "type_name": "Color",
-                "value": {
-                  "id": 9,
-                  "name": "Green"
-                }
-              },
-              {
-                "type_id": 6,
-                "type_name": "Width",
-                "value": {
-                  "id": 27,
-                  "name": "Narrow"
-                }
-              }
-            ]
+            "type_id": 6,
+            "type_name": "Width",
+            "value": {
+              "id": 27,
+              "name": "Narrow"
+            }
           }
         ]
       }
-    }
-  ]
+    ]
+  }
 }

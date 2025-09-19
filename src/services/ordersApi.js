@@ -13,6 +13,13 @@ const ordersApi = {
       if (queryParams.page) params.append("page", queryParams.page);
       if (queryParams.limit) params.append("limit", queryParams.limit);
 
+      // 🔍 Add filtering support
+      if (queryParams.name) params.append("name", queryParams.name);
+      if (queryParams.id) params.append("id", queryParams.id);
+      if (queryParams.status) params.append("status", queryParams.status);
+      if (queryParams.dateFrom) params.append("dateFrom", queryParams.dateFrom);
+      if (queryParams.dateTo) params.append("dateTo", queryParams.dateTo);
+
       const queryString = params.toString();
       const url = `/orders${queryString ? `?${queryString}` : ""}`;
 
@@ -24,6 +31,52 @@ const ordersApi = {
         url: error.url,
         responseTime: error.responseTime,
       });
+      throw error;
+    }
+  },
+
+  /**
+   * 📊 GET ALL ORDERS WITHOUT ITEMS
+   * Fetches basic order info without full product details for faster loading
+   * Perfect for admin order lists, dashboards where you need quick overview
+   * Example: const orders = await ordersApi.getAllWithoutItems({page: 1, limit: 20});
+   */
+  getAllWithoutItems: async (queryParams = {}, options = {}) => {
+    try {
+      const params = new URLSearchParams();
+      if (queryParams.page) params.append("page", queryParams.page);
+      if (queryParams.limit) params.append("limit", queryParams.limit);
+      if (queryParams.name) params.append("name", queryParams.name);
+      if (queryParams.id) params.append("id", queryParams.id);
+
+      const queryString = params.toString();
+      const url = `/orders/without-items${
+        queryString ? `?${queryString}` : ""
+      }`;
+
+      return await api.get(url, options);
+    } catch (error) {
+      console.error("Failed to fetch orders without items:", {
+        status: error.status,
+        method: error.method,
+        url: error.url,
+        responseTime: error.responseTime,
+      });
+      throw error;
+    }
+  },
+
+  /**
+   * 📈 GET ORDER STATISTICS
+   * Fetches order analytics like total revenue, order count, avg order value
+   * Perfect for dashboards, analytics pages, business reporting
+   * Example: const stats = await ordersApi.getStats();
+   */
+  getStats: async (options = {}) => {
+    try {
+      return await api.get("/orders/stats", options);
+    } catch (error) {
+      console.error("Failed to fetch order statistics:", error.details);
       throw error;
     }
   },
