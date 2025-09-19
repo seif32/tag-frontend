@@ -57,6 +57,8 @@ const variantsApi = {
       throw new Error("Variant type ID is required for updates");
     }
 
+    console.log("variantsApi", updateData);
+
     try {
       return await api.put(`/variant-types/${id}`, updateData, options);
     } catch (error) {

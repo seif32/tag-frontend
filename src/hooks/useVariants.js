@@ -57,7 +57,6 @@ const useVariants = {
     // ✅ Safe - runs after render
     useEffect(() => {
       if (query.isSuccess && query.data?.data) {
-        console.log("🔥 Safe sync triggered!");
         setAvailableTypes(query.data.data);
       }
     }, [query.isSuccess, query.data?.data, setAvailableTypes]);
