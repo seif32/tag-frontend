@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import useVariants from "@/hooks/useVariants";
 import ErrorMessage from "@/ui/ErrorMessage";
 import LoadingState from "@/ui/LoadingState";
-import { Ellipsis, Package, Plus, SwatchBook, Tag } from "lucide-react";
+import { Ellipsis, Plus, SquarePen, SwatchBook } from "lucide-react";
 
 import {
   Dialog,
@@ -36,10 +36,11 @@ function AdminVariantsTypesPage() {
   const { updateVariantType, isPendingVariantTypes: isUpdateType } =
     useVariants.useUpdateType();
 
-  const resetDialogs = () => {
+  function resetDialogs() {
     setEditingType(null);
     setNewTypeName("");
-  };
+    setEditTypeId(null);
+  }
 
   function handleCreateType() {
     if (!newTypeName.trim()) return;
@@ -64,8 +65,6 @@ function AdminVariantsTypesPage() {
 
   function handleUpdateType() {
     if (!newTypeName.trim() || !editingType) return;
-
-    // console.log("newTypeName", newTypeName);
 
     updateVariantType(
       { id: editTypeId, data: { name: newTypeName } },
@@ -129,71 +128,6 @@ function Title({
   );
 }
 
-function AddTypeModal({
-  isTypeDialogOpen,
-  setIsTypeDialogOpen,
-  resetDialogs,
-  editingType,
-  newTypeName,
-  setNewTypeName,
-  handleCreateType,
-  handleUpdateType,
-}) {
-  return (
-    <Dialog
-      open={isTypeDialogOpen}
-      onOpenChange={(open) => {
-        setIsTypeDialogOpen(open);
-        if (!open) resetDialogs();
-      }}
-    >
-      <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Variant Type
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {editingType ? "Edit Variant Type" : "Create New Variant Type"}
-          </DialogTitle>
-          <DialogDescription>
-            {editingType
-              ? "Update the variant type details below."
-              : "Add a new variant type to organize your product variations."}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="type-name">Name</Label>
-            <Input
-              id="type-name"
-              value={newTypeName}
-              onChange={(e) => setNewTypeName(e.target.value)}
-              placeholder="e.g., Color, Size, Material"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setIsTypeDialogOpen(false);
-              resetDialogs();
-            }}
-          >
-            Cancel
-          </Button>
-          <Button onClick={editingType ? handleUpdateType : handleCreateType}>
-            {editingType ? "Update" : "Create"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
 function TypeCardContainer({ onEditType }) {
   const {
     variantTypes,
@@ -243,8 +177,8 @@ function CardHeader({ type, onEditType }) {
         </div>
         <span className="font-medium">{type?.name}</span>
       </div>
-      <Ellipsis
-        className="size-4"
+      <SquarePen
+        className="size-4 cursor-pointer hover:text-accent"
         onClick={() => {
           onEditType(type);
         }}
@@ -274,5 +208,72 @@ function CardButton() {
     <Button className={"w-full"} variant={"outline"}>
       Manage Values
     </Button>
+  );
+}
+
+function AddTypeModal({
+  isTypeDialogOpen,
+  setIsTypeDialogOpen,
+  resetDialogs,
+  editingType,
+  newTypeName,
+  setNewTypeName,
+  handleCreateType,
+  handleUpdateType,
+}) {
+  return (
+    <Dialog
+      open={isTypeDialogOpen}
+      onOpenChange={(open) => {
+        setIsTypeDialogOpen(open);
+        if (!open) resetDialogs();
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button className="gap-2">
+          <Plus className="h-4 w-4" />
+          Add Variant Type
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {editingType ? "Edit Variant Type" : "Create New Variant Type"}
+          </DialogTitle>
+          <DialogDescription>
+            {editingType
+              ? "Update the variant type details below."
+              : "Add a new variant type to organize your product variations."}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="type-name" className={"mb-2"}>
+              Name
+            </Label>
+            <Input
+              id="type-name"
+              value={newTypeName}
+              onChange={(e) => setNewTypeName(e.target.value)}
+              placeholder="e.g., Color, Size, Material"
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setIsTypeDialogOpen(false);
+              resetDialogs();
+            }}
+          >
+            Cancel
+          </Button>
+          <Button onClick={editingType ? handleUpdateType : handleCreateType}>
+            {editingType ? "Update" : "Create"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

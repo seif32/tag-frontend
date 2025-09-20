@@ -61,8 +61,8 @@ export default function OrderDataTable({
   const updateUrlParams = useUpdateUrlParams();
   const [searchParams] = useSearchParams();
 
-  const page = parseInt(searchParams.get("page"));
-  const limit = parseInt(searchParams.get("limit"));
+  const page = parseInt(searchParams.get("page")) || 1;
+  const limit = parseInt(searchParams.get("limit")) || 10;
 
   useEffect(() => {
     if (onFiltersChange && debouncedSearch !== filters.search) {
@@ -97,8 +97,8 @@ export default function OrderDataTable({
     }
   }
 
-  const canPreviousPage = page > 0;
-  const canNextPage = page < pageCount - 1;
+  const canPreviousPage = page > 1;
+  const canNextPage = page < pageCount;
 
   return (
     <div className="space-y-4">
@@ -268,8 +268,9 @@ export default function OrderDataTable({
       <div className="flex flex-col items-center justify-between space-y-2 sm:flex-row sm:space-y-0">
         {/* Results info */}
         <div className="text-sm text-gray-700">
-          Showing <strong>{totalCount === 0 ? 0 : page * limit + 1}</strong> -{" "}
-          <strong>{Math.min((page + 1) * limit, totalCount)}</strong> of{" "}
+          Showing{" "}
+          <strong>{totalCount === 0 ? 0 : (page - 1) * limit + 1}</strong> -{" "}
+          <strong>{Math.min(page * limit, totalCount)}</strong> of{" "}
           <strong>{totalCount.toLocaleString()}</strong> orders
         </div>
 
@@ -278,7 +279,7 @@ export default function OrderDataTable({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => updateUrlParams({ page: 0 })}
+            onClick={() => updateUrlParams({ page: 1 })}
             disabled={!canPreviousPage || isLoading}
           >
             <ChevronsLeft className="w-4 h-4" />
@@ -296,7 +297,7 @@ export default function OrderDataTable({
 
           <div className="flex items-center px-4 space-x-2">
             <span className="text-sm">
-              Page {page + 1} of {pageCount}
+              Page {page} of {pageCount}
             </span>
           </div>
 
@@ -313,7 +314,7 @@ export default function OrderDataTable({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => updateUrlParams({ page: pageCount - 1 })}
+            onClick={() => updateUrlParams({ page: pageCount })}
             disabled={!canNextPage || isLoading}
           >
             <ChevronsRight className="w-4 h-4" />
