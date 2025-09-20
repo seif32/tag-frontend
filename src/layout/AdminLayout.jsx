@@ -1,20 +1,129 @@
 import { Outlet } from "react-router";
-
 import AdminSidebar from "@/features/admin/ui/AdminSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import {
+  SidebarProvider,
+  SidebarTrigger,
+  SidebarInset,
+} from "@/components/ui/sidebar";
+// Import additional components we'll need
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Bell, Settings, LogOut, User, Moon, Sun } from "lucide-react";
 
 function AdminLayout() {
-  return (
-    <SidebarProvider>
-      <div className="flex h-screen bg-background">
-        <AdminSidebar />
+  // You can get this data from your auth context/store
+  const user = {
+    name: "Ahmed Hassan",
+    email: "ahmed@example.com",
+    avatar: "https://github.com/shadcn.png", // or your user's avatar
+    role: "Admin",
+  };
 
-        <div className="flex flex-col flex-1 overflow-hidden">
-          {/* <AdminHeader className="px-6 py-4 border-b" /> */}
-          <main className="flex-1 p-6 overflow-auto bg-[#fdfdfd]">
+  const notifications = 3; // Example notification count
+
+  return (
+    <SidebarProvider defaultOpen={true}>
+      <div className="flex min-h-screen w-full">
+        <AdminSidebar />
+        <SidebarInset className="flex flex-1 flex-col overflow-hidden">
+          <header className="flex h-16 shrink-0 items-center justify-between border-b bg-background px-4">
+            <div className="flex items-center gap-2">
+              <SidebarTrigger className="-ml-1" />
+              <div className="h-6 w-px bg-border mx-2" />
+              <h1 className="text-lg font-semibold">Dashboard</h1>
+            </div>
+
+            {/* Right side - User section */}
+            <div className="flex items-center gap-2">
+              {/* Notifications */}
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-4 w-4" />
+                {notifications > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs flex items-center justify-center"
+                  >
+                    {notifications}
+                  </Badge>
+                )}
+                <span className="sr-only">Notifications</span>
+              </Button>
+
+              {/* User Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-auto px-2">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.avatar} alt={user.name} />
+                        <AvatarFallback className="bg-primary text-primary-foreground">
+                          {user.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col text-left">
+                        <span className="text-sm font-medium leading-none">
+                          {user.name}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {user.role}
+                        </span>
+                      </div>
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user.name}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </header>
+
+          {/* Main Content */}
+          <main className="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-auto">
             <Outlet />
           </main>
-        </div>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   );

@@ -40,7 +40,8 @@ function AdminVariantsValuesPage() {
 
   const { createManyValues, isPendingVariantValues: isAddingValue } =
     useVariants.useCreateManyValues();
-  const { updateValue, isPendingVariantValues } = useVariants.useUpdateValue();
+  const { updateValue, isPendingVariantValues: isUpdatingValue } =
+    useVariants.useUpdateValue();
 
   const [isValueDialogOpen, setIsValueDialogOpen] = useState(false);
   const [editingValue, setEditingValue] = useState(null);
@@ -115,8 +116,9 @@ function AdminVariantsValuesPage() {
         setIsValueDialogOpen={setIsValueDialogOpen}
         setNewValueName={setNewValueName}
         isAddingValue={isAddingValue}
+        isUpdatingValue={isUpdatingValue}
       />
-      {errorVariantValues.message === "Not found" ? (
+      {errorVariantValues?.message === "Not found" ? (
         <div className="text-center mt-12 ">
           <p className="text-2xl font-bold">No values for $$type$$</p>
           <p className="text-muted-foreground ">
@@ -145,6 +147,7 @@ function Title({
   handleUpdateValue,
   handleCreateValue,
   isAddingValue,
+  isUpdatingValue,
 }) {
   return (
     <div className="flex justify-between items-center">
@@ -164,6 +167,7 @@ function Title({
         setIsValueDialogOpen={setIsValueDialogOpen}
         setNewValueName={setNewValueName}
         isAddingValue={isAddingValue}
+        isUpdatingValue={isUpdatingValue}
       />
     </div>
   );
@@ -179,6 +183,7 @@ function AddValueModal({
   handleUpdateValue,
   handleCreateValue,
   isAddingValue,
+  isUpdatingValue,
 }) {
   return (
     <Dialog
@@ -189,7 +194,7 @@ function AddValueModal({
       }}
     >
       <DialogTrigger asChild>
-        <Button className="gap-2" disabled={isAddingValue}>
+        <Button className="gap-2">
           <Plus className="h-4 w-4" />
           Add Value
         </Button>
@@ -230,6 +235,7 @@ function AddValueModal({
           </Button>
           <Button
             onClick={editingValue ? handleUpdateValue : handleCreateValue}
+            disabled={editingValue ? isUpdatingValue : isAddingValue}
           >
             {editingValue ? "Update" : "Add"}
           </Button>
@@ -255,10 +261,16 @@ function ValuesTable({ values = [], onEditValue }) {
       <TableBody>
         {values?.map((value) => (
           <TableRow key={value?.id}>
-            <TableCell className="font-medium font-mono">{value?.id}</TableCell>
-            <TableCell>{value?.value}</TableCell>
-            <TableCell>{formatDateShort(value?.created_at)}</TableCell>
-            <TableCell>{formatDateShort(value?.updated_at)}</TableCell>
+            <TableCell className="font-medium font-mono">
+              #{value?.id}
+            </TableCell>
+            <TableCell className={"font-medium"}>{value?.value}</TableCell>
+            <TableCell className={"text-muted-foreground "}>
+              {formatDateShort(value?.created_at)}
+            </TableCell>
+            <TableCell className={"text-muted-foreground "}>
+              {formatDateShort(value?.updated_at)}
+            </TableCell>
             <TableCell className={" flex justify-end text-accent"}>
               <SquarePen
                 className="text-right size-4 cursor-pointer"

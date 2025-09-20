@@ -1,17 +1,27 @@
-import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarFooter,
+} from "@/components/ui/sidebar";
 import { AdminSidebarGroups } from "@/constants/data";
 import TagSidebarGroup from "./TagSidebarGroup";
 import AdminSidebarHeader from "./AdminSidebarHeader";
 
 function AdminSidebar() {
   return (
-    <Sidebar className="w-64 border-r bg-sidebar">
-      <SidebarContent className={"bg-sidebar"}>
-        <AdminSidebarHeader />
+    <Sidebar className="border-r">
+      <SidebarContent>
+        <SidebarHeader>
+          <AdminSidebarHeader />
+        </SidebarHeader>
 
         {AdminSidebarGroups.map((group, index) => (
           <TagSidebarGroup key={index} group={group} />
         ))}
+
+        {/* Optional footer */}
+        <SidebarFooter>{/* Add footer content if needed */}</SidebarFooter>
       </SidebarContent>
     </Sidebar>
   );

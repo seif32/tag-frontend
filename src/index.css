@@ -2,7 +2,6 @@
 @import "tailwindcss";
 @import "react-image-gallery/styles/css/image-gallery.css";
 
-
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 @custom-variant dark (&:is(.dark *));
@@ -166,7 +165,13 @@
     @apply bg-background text-foreground font-poppins;
   }
 
+}
 
-
-
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
