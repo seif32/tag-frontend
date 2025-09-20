@@ -48,7 +48,7 @@ const useVariants = {
 
     const query = useQuery({
       queryKey: ["variant-types"],
-      queryFn: variantsApi.getAllTypes,
+      queryFn: () => variantsApi.getAllTypes(options),
       staleTime: 10 * 60 * 1000,
       cacheTime: 15 * 60 * 1000,
       ...options,

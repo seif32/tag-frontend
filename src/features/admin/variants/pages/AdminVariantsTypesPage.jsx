@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import useVariants from "@/hooks/useVariants";
 import ErrorMessage from "@/ui/ErrorMessage";
 import LoadingState from "@/ui/LoadingState";
-import { Ellipsis, Plus, SquarePen, SwatchBook } from "lucide-react";
+import { Plus, SquarePen, SwatchBook } from "lucide-react";
 
 import {
   Dialog,
@@ -16,14 +16,6 @@ import {
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-
-// const {
-//   variantValues,
-//   isLoadingVariantValues,
-//   errorVariantValues,
-//   isErrorVariantValues,
-//   refetchVariantValues,
-// } = useVariants.useAllValues();
 
 function AdminVariantsTypesPage() {
   const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
@@ -88,6 +80,8 @@ function AdminVariantsTypesPage() {
         setIsTypeDialogOpen={setIsTypeDialogOpen}
         editingType={editingType}
         resetDialogs={resetDialogs}
+        isPendingVariantTypes={isAddType}
+        isAddType={isUpdateType}
       />
       <TypeCardContainer onEditType={handleEditType} />
     </div>
@@ -105,6 +99,8 @@ function Title({
   resetDialogs,
   setIsTypeDialogOpen,
   setNewTypeName,
+  isAddType,
+  isUpdateType,
 }) {
   return (
     <div className="flex justify-between items-center">
@@ -123,6 +119,8 @@ function Title({
         resetDialogs={resetDialogs}
         setIsTypeDialogOpen={setIsTypeDialogOpen}
         setNewTypeName={setNewTypeName}
+        isAddType={isAddType}
+        isUpdateType={isUpdateType}
       />
     </div>
   );
@@ -135,7 +133,7 @@ function TypeCardContainer({ onEditType }) {
     isErrorVariantTypes,
     isLoadingVariantTypes,
     refetchVariantTypes,
-  } = useVariants.useAllTypes();
+  } = useVariants.useAllTypes({ limit: 999999 });
 
   if (isLoadingVariantTypes) return <LoadingState type="stats" />;
 
@@ -160,9 +158,11 @@ function TypeCardContainer({ onEditType }) {
 
 function TypeCard({ type, onEditType }) {
   return (
-    <div className="border rounded-2xl p-8 space-y-5 bg-white">
-      <CardHeader type={type} onEditType={onEditType} />
-      <CardValues />
+    <div className="border rounded-2xl p-8 flex flex-col space-y-5 justify-between bg-white">
+      <div className="space-y-3">
+        <CardHeader type={type} onEditType={onEditType} />
+        <CardValues values={type?.values} />
+      </div>
       <CardButton />
     </div>
   );
@@ -187,18 +187,34 @@ function CardHeader({ type, onEditType }) {
   );
 }
 
-function CardValues() {
+function CardValues({ values }) {
+  const isNoValues = values?.length === 0;
   return (
-    <div className="text-xs space-y-0">
-      <div className="flex justify-between">
+    <div className="text-xs space-y-2">
+      <div className="flex justify-between items-center">
         <span className="text-muted-foreground">Values</span>
-        <span className="p-1 text-center px-2 rounded-sm bg-gray-100">7</span>
+        <span
+          className={`p-1 text-center px-2 rounded-sm bg-gray-100 ${
+            isNoValues && "bg-red-100 text-red-500 font-bold"
+          }`}
+        >
+          {values?.length}
+        </span>
       </div>
-      <div className="flex flex-wrap gap-1">
-        <span className=" px-2 rounded-md border border-black">Red</span>
-        <span className=" px-2 rounded-md border border-black">Red</span>
-        <span className=" px-2 rounded-md border border-black">Red</span>
-      </div>
+      {isNoValues ? (
+        <div>No values in here</div>
+      ) : (
+        <div className="flex flex-wrap gap-1">
+          {values?.map((value) => (
+            <span
+              key={value?.id}
+              className=" px-2 rounded-md border border-black"
+            >
+              {value?.value}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -220,6 +236,8 @@ function AddTypeModal({
   setNewTypeName,
   handleCreateType,
   handleUpdateType,
+  isAddType,
+  isUpdateType,
 }) {
   return (
     <Dialog
@@ -269,7 +287,10 @@ function AddTypeModal({
           >
             Cancel
           </Button>
-          <Button onClick={editingType ? handleUpdateType : handleCreateType}>
+          <Button
+            onClick={editingType ? handleUpdateType : handleCreateType}
+            disabled={editingType ? isUpdateType : isAddType}
+          >
             {editingType ? "Update" : "Create"}
           </Button>
         </DialogFooter>

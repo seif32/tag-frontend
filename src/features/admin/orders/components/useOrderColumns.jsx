@@ -66,7 +66,7 @@ export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
       cell: ({ row }) => {
         const order = row.original;
         const totalAmount = order.total_amount || 0;
-        const itemCount = order.items?.length || 0;
+        const itemCount = order?.total_quantity || 0;
 
         return (
           <div className="flex flex-col space-y-1">
@@ -74,7 +74,7 @@ export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
               {formatCurrency(totalAmount)}
             </span>
             <span className="text-xs text-muted-foreground">
-              {itemCount} item{itemCount !== 1 ? "s" : ""}
+              {itemCount} unit{itemCount !== 1 ? "s" : ""}
             </span>
           </div>
         );

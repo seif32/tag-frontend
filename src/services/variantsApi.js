@@ -11,7 +11,14 @@ const variantsApi = {
    */
   getAllTypes: async (options = {}) => {
     try {
-      return await api.get("/variant-types", {
+      const params = new URLSearchParams();
+
+      if (options.limit) params.append("limit", options.limit);
+
+      const queryString = params.toString();
+      const url = `/variant-types${queryString ? `?${queryString}` : ""}`;
+
+      return await api.get(url, {
         ...options,
       });
     } catch (error) {

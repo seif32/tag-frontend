@@ -1,458 +1,192 @@
 {
   "data": [
     {
-      "id": 51,
-      "order_status": "pending",
-      "payment_status": "pending",
-      "subtotal": "58522.00",
-      "tax_amount": "5852.20",
-      "shipping_amount": "50.00",
-      "discount_percent": "0.00",
-      "discount_type": null,
-      "discount_amount": "0.00",
-      "total_amount": "64424.20",
-      "currency": "GBP",
-      "created_at": "2025-09-18T15:24:43.000Z",
-      "updated_at": "2025-09-18T15:24:43.000Z",
-      "promo_code": null,
-      "user": {
-        "id": 1,
-        "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-        "first_name": "Seif",
-        "last_name": "Mohamed",
-        "email": "seif@gmail.com",
-        "phone_number": "+201077481236",
-        "role": "user",
-        "created_at": "2025-09-12T01:33:31.000Z",
-        "updated_at": "2025-09-12T23:35:22.000Z",
-        "is_verified": 0
-      },
-      "address": {
-        "id": 11,
-        "user_id": 1,
-        "description": "momken yekoon arab keda 3n el mathaf",
-        "apartment_number": "77",
-        "building_number": "4",
-        "street_name": "Tameen Younis",
-        "city": "london",
-        "postal_code": "5625",
-        "country": "ca",
-        "location_url": "",
-        "is_default": 1,
-        "created_at": "2025-09-14T11:08:49.000Z",
-        "updated_at": "2025-09-14T11:08:49.000Z"
-      },
-      "number_of_items": 8,
-      "total_quantity": 111
+      "id": 1,
+      "name": "Color",
+      "values": [
+        {
+          "id": 10,
+          "value": "Black"
+        },
+        {
+          "id": 8,
+          "value": "Blue"
+        },
+        {
+          "id": 9,
+          "value": "Green"
+        },
+        {
+          "id": 7,
+          "value": "Red"
+        },
+        {
+          "id": 11,
+          "value": "White"
+        },
+        {
+          "id": 33,
+          "value": "Yellow"
+        },
+        {
+          "id": 34,
+          "value": "Purple"
+        }
+      ]
     },
     {
-      "id": 50,
-      "order_status": "pending",
-      "payment_status": "pending",
-      "subtotal": "2433.00",
-      "tax_amount": "243.30",
-      "shipping_amount": "50.00",
-      "discount_percent": "0.00",
-      "discount_type": null,
-      "discount_amount": "0.00",
-      "total_amount": "2726.30",
-      "currency": "GBP",
-      "created_at": "2025-09-18T15:21:16.000Z",
-      "updated_at": "2025-09-18T15:21:16.000Z",
-      "promo_code": null,
-      "user": {
-        "id": 1,
-        "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-        "first_name": "Seif",
-        "last_name": "Mohamed",
-        "email": "seif@gmail.com",
-        "phone_number": "+201077481236",
-        "role": "user",
-        "created_at": "2025-09-12T01:33:31.000Z",
-        "updated_at": "2025-09-12T23:35:22.000Z",
-        "is_verified": 0
-      },
-      "address": {
-        "id": 7,
-        "user_id": 1,
-        "description": "asr keda 3al ray'",
-        "apartment_number": "108",
-        "building_number": "51",
-        "street_name": "Tamer Hosny",
-        "city": "new-york",
-        "postal_code": "89",
-        "country": "uk",
-        "location_url": "",
-        "is_default": 0,
-        "created_at": "2025-09-13T00:00:10.000Z",
-        "updated_at": "2025-09-13T00:02:25.000Z"
-      },
-      "number_of_items": 4,
-      "total_quantity": 4
+      "id": 10,
+      "name": "Hardness",
+      "values": []
     },
     {
-      "id": 49,
-      "order_status": "pending",
-      "payment_status": "pending",
-      "subtotal": "745.00",
-      "tax_amount": "74.50",
-      "shipping_amount": "50.00",
-      "discount_percent": "0.00",
-      "discount_type": null,
-      "discount_amount": "0.00",
-      "total_amount": "869.50",
-      "currency": "GBP",
-      "created_at": "2025-09-17T09:47:36.000Z",
-      "updated_at": "2025-09-17T09:47:36.000Z",
-      "promo_code": null,
-      "user": {
-        "id": 1,
-        "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-        "first_name": "Seif",
-        "last_name": "Mohamed",
-        "email": "seif@gmail.com",
-        "phone_number": "+201077481236",
-        "role": "user",
-        "created_at": "2025-09-12T01:33:31.000Z",
-        "updated_at": "2025-09-12T23:35:22.000Z",
-        "is_verified": 0
-      },
-      "address": {
-        "id": 8,
-        "user_id": 1,
-        "description": "mafesh sho'a' khalas",
-        "apartment_number": "108895",
-        "building_number": "510",
-        "street_name": "Amr Diab",
-        "city": "new-york",
-        "postal_code": "89",
-        "country": "uk",
-        "location_url": "",
-        "is_default": 0,
-        "created_at": "2025-09-13T00:02:25.000Z",
-        "updated_at": "2025-09-13T01:50:06.000Z"
-      },
-      "number_of_items": 1,
-      "total_quantity": 1
+      "id": 5,
+      "name": "Length",
+      "values": [
+        {
+          "id": 26,
+          "value": "Long"
+        },
+        {
+          "id": 25,
+          "value": "Regular"
+        },
+        {
+          "id": 24,
+          "value": "Short"
+        }
+      ]
     },
     {
-      "id": 48,
-      "order_status": "pending",
-      "payment_status": "pending",
-      "subtotal": "400.00",
-      "tax_amount": "40.00",
-      "shipping_amount": "50.00",
-      "discount_percent": "0.00",
-      "discount_type": null,
-      "discount_amount": "0.00",
-      "total_amount": "490.00",
-      "currency": "GBP",
-      "created_at": "2025-09-17T09:39:25.000Z",
-      "updated_at": "2025-09-17T09:39:25.000Z",
-      "promo_code": null,
-      "user": {
-        "id": 1,
-        "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-        "first_name": "Seif",
-        "last_name": "Mohamed",
-        "email": "seif@gmail.com",
-        "phone_number": "+201077481236",
-        "role": "user",
-        "created_at": "2025-09-12T01:33:31.000Z",
-        "updated_at": "2025-09-12T23:35:22.000Z",
-        "is_verified": 0
-      },
-      "address": {
-        "id": 6,
-        "user_id": 1,
-        "description": "villa keda helwa",
-        "apartment_number": "10",
-        "building_number": "89",
-        "street_name": "Ahmed helmy",
-        "city": "new-york",
-        "postal_code": "89",
-        "country": "uk",
-        "location_url": "",
-        "is_default": 0,
-        "created_at": "2025-09-12T23:56:48.000Z",
-        "updated_at": "2025-09-13T00:00:10.000Z"
-      },
-      "number_of_items": 1,
-      "total_quantity": 2
+      "id": 3,
+      "name": "Material",
+      "values": [
+        {
+          "id": 16,
+          "value": "Cotton"
+        },
+        {
+          "id": 18,
+          "value": "Leather"
+        },
+        {
+          "id": 17,
+          "value": "Polyester"
+        },
+        {
+          "id": 19,
+          "value": "Wool"
+        }
+      ]
     },
     {
-      "id": 47,
-      "order_status": "pending",
-      "payment_status": "pending",
-      "subtotal": "64133.00",
-      "tax_amount": "6413.30",
-      "shipping_amount": "50.00",
-      "discount_percent": "0.00",
-      "discount_type": null,
-      "discount_amount": "0.00",
-      "total_amount": "70596.30",
-      "currency": "GBP",
-      "created_at": "2025-09-17T09:36:09.000Z",
-      "updated_at": "2025-09-17T09:36:09.000Z",
-      "promo_code": null,
-      "user": {
-        "id": 1,
-        "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-        "first_name": "Seif",
-        "last_name": "Mohamed",
-        "email": "seif@gmail.com",
-        "phone_number": "+201077481236",
-        "role": "user",
-        "created_at": "2025-09-12T01:33:31.000Z",
-        "updated_at": "2025-09-12T23:35:22.000Z",
-        "is_verified": 0
-      },
-      "address": {
-        "id": 9,
-        "user_id": 1,
-        "description": "router el gam3a",
-        "apartment_number": "12",
-        "building_number": "40",
-        "street_name": "Ayman Bahaa",
-        "city": "new-york",
-        "postal_code": "99",
-        "country": "ca",
-        "location_url": "",
-        "is_default": 0,
-        "created_at": "2025-09-13T01:50:06.000Z",
-        "updated_at": "2025-09-14T11:03:27.000Z"
-      },
-      "number_of_items": 8,
-      "total_quantity": 8
+      "id": 8,
+      "name": "Pixel",
+      "values": [
+        {
+          "id": 37,
+          "value": "12MB"
+        }
+      ]
     },
     {
-      "id": 46,
-      "order_status": "pending",
-      "payment_status": "pending",
-      "subtotal": "4363.00",
-      "tax_amount": "436.30",
-      "shipping_amount": "50.00",
-      "discount_percent": "0.00",
-      "discount_type": null,
-      "discount_amount": "0.00",
-      "total_amount": "4849.30",
-      "currency": "GBP",
-      "created_at": "2025-09-17T09:34:15.000Z",
-      "updated_at": "2025-09-17T09:34:15.000Z",
-      "promo_code": null,
-      "user": {
-        "id": 1,
-        "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-        "first_name": "Seif",
-        "last_name": "Mohamed",
-        "email": "seif@gmail.com",
-        "phone_number": "+201077481236",
-        "role": "user",
-        "created_at": "2025-09-12T01:33:31.000Z",
-        "updated_at": "2025-09-12T23:35:22.000Z",
-        "is_verified": 0
-      },
-      "address": {
-        "id": 11,
-        "user_id": 1,
-        "description": "momken yekoon arab keda 3n el mathaf",
-        "apartment_number": "77",
-        "building_number": "4",
-        "street_name": "Tameen Younis",
-        "city": "london",
-        "postal_code": "5625",
-        "country": "ca",
-        "location_url": "",
-        "is_default": 1,
-        "created_at": "2025-09-14T11:08:49.000Z",
-        "updated_at": "2025-09-14T11:08:49.000Z"
-      },
-      "number_of_items": 8,
-      "total_quantity": 8
+      "id": 2,
+      "name": "Size",
+      "values": [
+        {
+          "id": 15,
+          "value": "Extra Large"
+        },
+        {
+          "id": 14,
+          "value": "Large"
+        },
+        {
+          "id": 13,
+          "value": "Medium"
+        },
+        {
+          "id": 12,
+          "value": "Small"
+        },
+        {
+          "id": 35,
+          "value": "kbeer fashkh"
+        },
+        {
+          "id": 36,
+          "value": "xsmall"
+        }
+      ]
     },
     {
-      "id": 45,
-      "order_status": "pending",
-      "payment_status": "pending",
-      "subtotal": "6567.00",
-      "tax_amount": "656.70",
-      "shipping_amount": "50.00",
-      "discount_percent": "0.00",
-      "discount_type": null,
-      "discount_amount": "0.00",
-      "total_amount": "7273.70",
-      "currency": "GBP",
-      "created_at": "2025-09-17T09:29:54.000Z",
-      "updated_at": "2025-09-17T09:29:54.000Z",
-      "promo_code": null,
-      "user": {
-        "id": 1,
-        "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-        "first_name": "Seif",
-        "last_name": "Mohamed",
-        "email": "seif@gmail.com",
-        "phone_number": "+201077481236",
-        "role": "user",
-        "created_at": "2025-09-12T01:33:31.000Z",
-        "updated_at": "2025-09-12T23:35:22.000Z",
-        "is_verified": 0
-      },
-      "address": {
-        "id": 8,
-        "user_id": 1,
-        "description": "mafesh sho'a' khalas",
-        "apartment_number": "108895",
-        "building_number": "510",
-        "street_name": "Amr Diab",
-        "city": "new-york",
-        "postal_code": "89",
-        "country": "uk",
-        "location_url": "",
-        "is_default": 0,
-        "created_at": "2025-09-13T00:02:25.000Z",
-        "updated_at": "2025-09-13T01:50:06.000Z"
-      },
-      "number_of_items": 10,
-      "total_quantity": 10
+      "id": 4,
+      "name": "Style",
+      "values": [
+        {
+          "id": 20,
+          "value": "Casual"
+        },
+        {
+          "id": 21,
+          "value": "Formal"
+        },
+        {
+          "id": 22,
+          "value": "Sport"
+        },
+        {
+          "id": 23,
+          "value": "Traditional"
+        }
+      ]
     },
     {
-      "id": 44,
-      "order_status": "pending",
-      "payment_status": "pending",
-      "subtotal": "65279.00",
-      "tax_amount": "6527.90",
-      "shipping_amount": "50.00",
-      "discount_percent": "0.00",
-      "discount_type": null,
-      "discount_amount": "0.00",
-      "total_amount": "71856.90",
-      "currency": "GBP",
-      "created_at": "2025-09-17T09:25:00.000Z",
-      "updated_at": "2025-09-17T09:25:00.000Z",
-      "promo_code": null,
-      "user": {
-        "id": 1,
-        "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-        "first_name": "Seif",
-        "last_name": "Mohamed",
-        "email": "seif@gmail.com",
-        "phone_number": "+201077481236",
-        "role": "user",
-        "created_at": "2025-09-12T01:33:31.000Z",
-        "updated_at": "2025-09-12T23:35:22.000Z",
-        "is_verified": 0
-      },
-      "address": {
-        "id": 11,
-        "user_id": 1,
-        "description": "momken yekoon arab keda 3n el mathaf",
-        "apartment_number": "77",
-        "building_number": "4",
-        "street_name": "Tameen Younis",
-        "city": "london",
-        "postal_code": "5625",
-        "country": "ca",
-        "location_url": "",
-        "is_default": 1,
-        "created_at": "2025-09-14T11:08:49.000Z",
-        "updated_at": "2025-09-14T11:08:49.000Z"
-      },
-      "number_of_items": 12,
-      "total_quantity": 61
+      "id": 9,
+      "name": "test2",
+      "values": []
     },
     {
-      "id": 43,
-      "order_status": "pending",
-      "payment_status": "pending",
-      "subtotal": "4437.00",
-      "tax_amount": "443.70",
-      "shipping_amount": "50.00",
-      "discount_percent": "0.00",
-      "discount_type": null,
-      "discount_amount": "0.00",
-      "total_amount": "4930.70",
-      "currency": "GBP",
-      "created_at": "2025-09-17T08:55:17.000Z",
-      "updated_at": "2025-09-17T08:55:17.000Z",
-      "promo_code": null,
-      "user": {
-        "id": 1,
-        "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-        "first_name": "Seif",
-        "last_name": "Mohamed",
-        "email": "seif@gmail.com",
-        "phone_number": "+201077481236",
-        "role": "user",
-        "created_at": "2025-09-12T01:33:31.000Z",
-        "updated_at": "2025-09-12T23:35:22.000Z",
-        "is_verified": 0
-      },
-      "address": {
-        "id": 8,
-        "user_id": 1,
-        "description": "mafesh sho'a' khalas",
-        "apartment_number": "108895",
-        "building_number": "510",
-        "street_name": "Amr Diab",
-        "city": "new-york",
-        "postal_code": "89",
-        "country": "uk",
-        "location_url": "",
-        "is_default": 0,
-        "created_at": "2025-09-13T00:02:25.000Z",
-        "updated_at": "2025-09-13T01:50:06.000Z"
-      },
-      "number_of_items": 5,
-      "total_quantity": 5
+      "id": 7,
+      "name": "Warranty Period",
+      "values": [
+        {
+          "id": 30,
+          "value": "year"
+        },
+        {
+          "id": 31,
+          "value": "2 years"
+        },
+        {
+          "id": 32,
+          "value": "3 years"
+        }
+      ]
     },
     {
-      "id": 42,
-      "order_status": "pending",
-      "payment_status": "pending",
-      "subtotal": "745.00",
-      "tax_amount": "74.50",
-      "shipping_amount": "50.00",
-      "discount_percent": "0.00",
-      "discount_type": null,
-      "discount_amount": "0.00",
-      "total_amount": "869.50",
-      "currency": "GBP",
-      "created_at": "2025-09-17T08:54:20.000Z",
-      "updated_at": "2025-09-17T08:54:20.000Z",
-      "promo_code": null,
-      "user": {
-        "id": 1,
-        "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-        "first_name": "Seif",
-        "last_name": "Mohamed",
-        "email": "seif@gmail.com",
-        "phone_number": "+201077481236",
-        "role": "user",
-        "created_at": "2025-09-12T01:33:31.000Z",
-        "updated_at": "2025-09-12T23:35:22.000Z",
-        "is_verified": 0
-      },
-      "address": {
-        "id": 8,
-        "user_id": 1,
-        "description": "mafesh sho'a' khalas",
-        "apartment_number": "108895",
-        "building_number": "510",
-        "street_name": "Amr Diab",
-        "city": "new-york",
-        "postal_code": "89",
-        "country": "uk",
-        "location_url": "",
-        "is_default": 0,
-        "created_at": "2025-09-13T00:02:25.000Z",
-        "updated_at": "2025-09-13T01:50:06.000Z"
-      },
-      "number_of_items": 1,
-      "total_quantity": 1
+      "id": 6,
+      "name": "Width",
+      "values": [
+        {
+          "id": 27,
+          "value": "Narrow"
+        },
+        {
+          "id": 28,
+          "value": "Regular"
+        },
+        {
+          "id": 29,
+          "value": "Wide"
+        }
+      ]
     }
   ],
-  "total": 51,
-  "page": 1,
-  "limit": 10,
-  "totalPages": 6
+  "pagination": {
+    "page": 1,
+    "limit": 999999,
+    "total": 10,
+    "totalPages": 1
+  }
 }

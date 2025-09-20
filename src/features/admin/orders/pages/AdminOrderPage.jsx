@@ -318,7 +318,7 @@ function ItemsTable({
 
               <TableCell>
                 <span className="font-mono text-xs text-gray-600">
-                  {item?.product?.variants[0]?.sku || "N/A"}
+                  {item?.product?.variants[0]?.variant_sku || "N/A"}
                 </span>
               </TableCell>
 

@@ -14,7 +14,6 @@ function AdminOrdersPage() {
   const [sorting, setSorting] = useState([]);
   const [filters, setFilters] = useState({ search: "", status: "" });
 
-  // lama sasa y fix el filter ghayar
   const {
     ordersLight,
     isLoadingOrdersLight,
