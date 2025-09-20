@@ -16,6 +16,7 @@ import {
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router";
 
 function AdminVariantsTypesPage() {
   const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
@@ -163,7 +164,7 @@ function TypeCard({ type, onEditType }) {
         <CardHeader type={type} onEditType={onEditType} />
         <CardValues values={type?.values} />
       </div>
-      <CardButton />
+      <CardButton typeId={type?.id} />
     </div>
   );
 }
@@ -219,9 +220,14 @@ function CardValues({ values }) {
   );
 }
 
-function CardButton() {
+function CardButton({ typeId }) {
+  const navigate = useNavigate();
   return (
-    <Button className={"w-full"} variant={"outline"}>
+    <Button
+      className={"w-full"}
+      variant={"outline"}
+      onClick={() => navigate(`/admin/variants/values/${typeId}`)}
+    >
       Manage Values
     </Button>
   );

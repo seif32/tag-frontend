@@ -135,7 +135,16 @@ const variantsApi = {
     }
 
     try {
-      return await api.get(`/variant-types/values/${variantTypeId}`, options);
+      const params = new URLSearchParams();
+
+      if (options.limit) params.append("limit", options.limit);
+
+      const queryString = params.toString();
+      const url = `/variant-types/values/${variantTypeId}${
+        queryString ? `?${queryString}` : ""
+      }`;
+
+      return await api.get(url, options);
     } catch (error) {
       console.error(
         `Failed to fetch values for variant type ${variantTypeId}:`,

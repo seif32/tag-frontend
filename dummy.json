@@ -1,192 +1,59 @@
 {
   "data": [
     {
-      "id": 1,
-      "name": "Color",
-      "values": [
-        {
-          "id": 10,
-          "value": "Black"
-        },
-        {
-          "id": 8,
-          "value": "Blue"
-        },
-        {
-          "id": 9,
-          "value": "Green"
-        },
-        {
-          "id": 7,
-          "value": "Red"
-        },
-        {
-          "id": 11,
-          "value": "White"
-        },
-        {
-          "id": 33,
-          "value": "Yellow"
-        },
-        {
-          "id": 34,
-          "value": "Purple"
-        }
-      ]
-    },
-    {
       "id": 10,
-      "name": "Hardness",
-      "values": []
-    },
-    {
-      "id": 5,
-      "name": "Length",
-      "values": [
-        {
-          "id": 26,
-          "value": "Long"
-        },
-        {
-          "id": 25,
-          "value": "Regular"
-        },
-        {
-          "id": 24,
-          "value": "Short"
-        }
-      ]
-    },
-    {
-      "id": 3,
-      "name": "Material",
-      "values": [
-        {
-          "id": 16,
-          "value": "Cotton"
-        },
-        {
-          "id": 18,
-          "value": "Leather"
-        },
-        {
-          "id": 17,
-          "value": "Polyester"
-        },
-        {
-          "id": 19,
-          "value": "Wool"
-        }
-      ]
+      "variant_type_id": 1,
+      "value": "Black",
+      "created_at": "2025-08-29T19:17:53.000Z",
+      "updated_at": "2025-08-29T19:17:53.000Z"
     },
     {
       "id": 8,
-      "name": "Pixel",
-      "values": [
-        {
-          "id": 37,
-          "value": "12MB"
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "name": "Size",
-      "values": [
-        {
-          "id": 15,
-          "value": "Extra Large"
-        },
-        {
-          "id": 14,
-          "value": "Large"
-        },
-        {
-          "id": 13,
-          "value": "Medium"
-        },
-        {
-          "id": 12,
-          "value": "Small"
-        },
-        {
-          "id": 35,
-          "value": "kbeer fashkh"
-        },
-        {
-          "id": 36,
-          "value": "xsmall"
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "name": "Style",
-      "values": [
-        {
-          "id": 20,
-          "value": "Casual"
-        },
-        {
-          "id": 21,
-          "value": "Formal"
-        },
-        {
-          "id": 22,
-          "value": "Sport"
-        },
-        {
-          "id": 23,
-          "value": "Traditional"
-        }
-      ]
+      "variant_type_id": 1,
+      "value": "Blue",
+      "created_at": "2025-08-29T19:17:53.000Z",
+      "updated_at": "2025-08-29T19:17:53.000Z"
     },
     {
       "id": 9,
-      "name": "test2",
-      "values": []
+      "variant_type_id": 1,
+      "value": "Green",
+      "created_at": "2025-08-29T19:17:53.000Z",
+      "updated_at": "2025-08-29T19:17:53.000Z"
+    },
+    {
+      "id": 34,
+      "variant_type_id": 1,
+      "value": "Purple",
+      "created_at": "2025-08-30T20:23:48.000Z",
+      "updated_at": "2025-08-30T20:23:48.000Z"
     },
     {
       "id": 7,
-      "name": "Warranty Period",
-      "values": [
-        {
-          "id": 30,
-          "value": "year"
-        },
-        {
-          "id": 31,
-          "value": "2 years"
-        },
-        {
-          "id": 32,
-          "value": "3 years"
-        }
-      ]
+      "variant_type_id": 1,
+      "value": "Red",
+      "created_at": "2025-08-29T19:17:53.000Z",
+      "updated_at": "2025-08-29T19:17:53.000Z"
     },
     {
-      "id": 6,
-      "name": "Width",
-      "values": [
-        {
-          "id": 27,
-          "value": "Narrow"
-        },
-        {
-          "id": 28,
-          "value": "Regular"
-        },
-        {
-          "id": 29,
-          "value": "Wide"
-        }
-      ]
+      "id": 11,
+      "variant_type_id": 1,
+      "value": "White",
+      "created_at": "2025-08-29T19:17:53.000Z",
+      "updated_at": "2025-08-29T19:17:53.000Z"
+    },
+    {
+      "id": 33,
+      "variant_type_id": 1,
+      "value": "Yellow",
+      "created_at": "2025-08-30T19:19:33.000Z",
+      "updated_at": "2025-08-30T19:19:33.000Z"
     }
   ],
   "pagination": {
     "page": 1,
-    "limit": 999999,
-    "total": 10,
+    "limit": 10,
+    "total": 7,
     "totalPages": 1
   }
 }

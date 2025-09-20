@@ -251,7 +251,7 @@ const useVariants = {
 
     const query = useQuery({
       queryKey: ["variant-values", variantTypeId],
-      queryFn: () => variantsApi.getValuesByTypeId(variantTypeId),
+      queryFn: () => variantsApi.getValuesByTypeId(variantTypeId, options),
       enabled: !!variantTypeId, // Only run if we have a variant type ID
       staleTime: 5 * 60 * 1000,
       ...options,
