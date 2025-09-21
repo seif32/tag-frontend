@@ -7,13 +7,11 @@ import { useState, useEffect } from "react";
 function ActionButtons({ selectedVariant, product }) {
   const [quantity, setQuantity] = useState(1);
   const [showMaxWarning, setShowMaxWarning] = useState(false);
-  const [notifyWhenAvailable, setNotifyWhenAvailable] = useState(false);
 
   const [flyItem, setFlyItem] = useState(null);
 
   const maxQuantity = selectedVariant?.quantity || 0;
   const inStock = selectedVariant?.quantity > 0;
-  const variantPrice = selectedVariant?.price || 0;
 
   const addItem = useCartStore((state) => state.addItem);
 
@@ -72,21 +70,6 @@ function ActionButtons({ selectedVariant, product }) {
     };
     addItem(item, quantity);
   }
-
-  const handleBuyNow = () => {
-    if (!selectedVariant || !inStock) return;
-    console.log("Buy now:", {
-      variantId: selectedVariant.id,
-      quantity,
-      totalPrice: (parseFloat(variantPrice) * quantity).toFixed(2),
-    });
-  };
-
-  const handleNotifyMe = () => {
-    setNotifyWhenAvailable(!notifyWhenAvailable);
-    // TODO: Add logic to subscribe to back-in-stock notifications
-    console.log("Notify when available:", selectedVariant.id);
-  };
 
   const handleQuantityChange = (e) => {
     const value = e.target.value;

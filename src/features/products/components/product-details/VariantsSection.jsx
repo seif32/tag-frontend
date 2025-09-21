@@ -1,6 +1,4 @@
-"use client";
-
-import { consoleObject } from "@/utils/consoleObject";
+import { useAuthStore } from "@/auth/store/authStore";
 import { useState } from "react";
 
 export default function VariantsSection({
@@ -8,7 +6,8 @@ export default function VariantsSection({
   onVariantChange,
 }) {
   const [showAll, setShowAll] = useState(false);
-  const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState("list"); // 'grid' or 'list'
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   if (variantBlocks.length === 0) return null;
 
@@ -17,7 +16,6 @@ export default function VariantsSection({
 
   return (
     <div className="space-y-3">
-      {/* Header with view controls */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">Variants</span>
@@ -38,7 +36,6 @@ export default function VariantsSection({
         )}
       </div>
 
-      {/* Variants display */}
       {viewMode === "grid" ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {displayedBlocks.map((block) => (
@@ -110,7 +107,7 @@ function CompactVariantCard({ block, onClick }) {
       )}
 
       {/* Content */}
-      <div className="space-y-1">
+      <div className="space-y-1 ">
         <div
           className={`text-xs font-medium truncate ${
             block.isSelected ? "text-white" : "text-gray-900"
@@ -179,7 +176,7 @@ function CompactVariantRow({ block, onClick }) {
       </div>
 
       {/* Price section */}
-      <div className="flex items-center gap-2 flex-shrink-0">
+      {/* <div className="flex items-center gap-2 flex-shrink-0">
         {hasDiscount && (
           <span className="text-xs bg-red-500 text-white px-1.5 py-0.5 rounded">
             -
@@ -209,7 +206,7 @@ function CompactVariantRow({ block, onClick }) {
             </div>
           )}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -1,75 +1,34 @@
 {
-  "variant_type_id": "1",
-  "variant_type_name": "Color",
-  "data": [
+  "id": 7,
+  "product_id": 2,
+  "variant_sku": "SKU-33DDE7-1756515068419",
+  "variant_name": null,
+  "is_primary": 0,
+  "price": 500,
+  "compare_at_price": 800,
+  "cost_price": 250,
+  "currency": "USD",
+  "quantity": 62,
+  "created_at": "2025-08-30T00:51:08.000Z",
+  "updated_at": "2025-09-18T15:24:43.000Z",
+  "vat": 0,
+  "types": [
     {
-      "id": 38,
-      "variant_type_id": 1,
-      "value": "Baby Blue",
-      "created_at": "2025-09-20T08:45:33.000Z",
-      "updated_at": "2025-09-20T08:45:33.000Z"
+      "type_id": 1,
+      "type_name": "Color",
+      "value": {
+        "id": 11,
+        "name": "White"
+      }
     },
     {
-      "id": 10,
-      "variant_type_id": 1,
-      "value": "Black",
-      "created_at": "2025-08-29T19:17:53.000Z",
-      "updated_at": "2025-08-29T19:17:53.000Z"
-    },
-    {
-      "id": 8,
-      "variant_type_id": 1,
-      "value": "Blue",
-      "created_at": "2025-08-29T19:17:53.000Z",
-      "updated_at": "2025-08-29T19:17:53.000Z"
-    },
-    {
-      "id": 39,
-      "variant_type_id": 1,
-      "value": "Brown",
-      "created_at": "2025-09-20T08:47:29.000Z",
-      "updated_at": "2025-09-20T09:04:37.000Z"
-    },
-    {
-      "id": 9,
-      "variant_type_id": 1,
-      "value": "Green",
-      "created_at": "2025-08-29T19:17:53.000Z",
-      "updated_at": "2025-08-29T19:17:53.000Z"
-    },
-    {
-      "id": 34,
-      "variant_type_id": 1,
-      "value": "Purple",
-      "created_at": "2025-08-30T20:23:48.000Z",
-      "updated_at": "2025-08-30T20:23:48.000Z"
-    },
-    {
-      "id": 7,
-      "variant_type_id": 1,
-      "value": "Red",
-      "created_at": "2025-08-29T19:17:53.000Z",
-      "updated_at": "2025-08-29T19:17:53.000Z"
-    },
-    {
-      "id": 11,
-      "variant_type_id": 1,
-      "value": "White",
-      "created_at": "2025-08-29T19:17:53.000Z",
-      "updated_at": "2025-09-20T09:05:18.000Z"
-    },
-    {
-      "id": 33,
-      "variant_type_id": 1,
-      "value": "Yellow",
-      "created_at": "2025-08-30T19:19:33.000Z",
-      "updated_at": "2025-08-30T19:19:33.000Z"
+      "type_id": 6,
+      "type_name": "Width",
+      "value": {
+        "id": 28,
+        "name": "Regular"
+      }
     }
   ],
-  "pagination": {
-    "page": 1,
-    "limit": 999999,
-    "total": 9,
-    "totalPages": 1
-  }
+  "images": []
 }

@@ -259,7 +259,7 @@ const useVariants = {
 
     useEffect(() => {
       if (query.data && variantTypeId) {
-        setAvailableValues(variantTypeId, query.data);
+        setAvailableValues(variantTypeId, query.data.data);
       }
     }, [query.data, variantTypeId, setAvailableValues]);
 

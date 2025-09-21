@@ -36,6 +36,7 @@ const productSchema = z.object({
     .number()
     .min(0, "Compare at price must be positive"),
   cost_price: z.coerce.number().min(0, "Cost price must be positive"),
+  vat: z.coerce.number().min(0, "VAT must be positive"),
   currency: z.string().min(1, "Currency is required"),
 });
 
@@ -48,6 +49,7 @@ function EditProductDialog({ isDialogOpen, selectedProduct, onClose }) {
       compare_at_price: 0,
       cost_price: 0,
       currency: "USD",
+      vat: 0,
     },
   });
 
@@ -104,6 +106,27 @@ function EditProductDialog({ isDialogOpen, selectedProduct, onClose }) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="0.00"
+                        value={field.value || ""}
+                        onChange={(e) =>
+                          field.onChange(parseFloat(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="vat"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>VAT</FormLabel>
                     <FormControl>
                       <Input
                         type="number"

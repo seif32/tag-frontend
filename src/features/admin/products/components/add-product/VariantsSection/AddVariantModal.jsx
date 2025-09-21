@@ -20,7 +20,7 @@ function AddVariantModal({ setDialogMode, onTypeSelected }) {
     errorVariantTypes,
     isErrorVariantTypes,
     refetchVariantTypes,
-  } = useVariants.useAllTypes();
+  } = useVariants.useAllTypes({ limit: 99999 });
 
   const availableTypes = useVariantStore((state) => state.availableTypes);
   const selectedTypes = useVariantStore((state) => state.selectedTypes);

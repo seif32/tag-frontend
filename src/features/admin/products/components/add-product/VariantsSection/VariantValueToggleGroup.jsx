@@ -16,10 +16,12 @@ function VariantValueToggleGroup({
     (state) => state.setSelectedValuesForType
   );
   const selectedValues = useVariantStore((state) => state.selectedValues);
+
   const existingValuesForType =
     selectedValues.find((sv) => sv.typeId === typeId)?.values || [];
+
   const [localSelectedValues, setLocalSelectedValues] = useState(
-    existingValuesForType || []
+    existingValuesForType
   );
 
   function handleDone() {
@@ -48,10 +50,7 @@ function VariantValueToggleGroup({
     );
   }
 
-  if (
-    isTypeNotFound ||
-    (Array.isArray(values?.data) && values?.data?.length === 0)
-  ) {
+  if (isTypeNotFound || !Array.isArray(values) || values.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center p-6 text-center">
         <h5 className="text-sm font-medium mb-1">
@@ -63,19 +62,6 @@ function VariantValueToggleGroup({
             : `No ${typeName?.toLowerCase()} values have been configured yet.`}
         </p>
         <p className="text-xs font-bold mb-3">Add values below ⬇</p>
-      </div>
-    );
-  }
-
-  if (Array.isArray(values?.data) && values?.data?.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center p-6 text-center">
-        <div className="text-gray-400 mb-2">📭</div>
-        <h5 className="text-sm font-medium mb-1">No values available</h5>
-        <p className="text-xs text-gray-500 mb-3">
-          No {typeName?.toLowerCase()} values have been configured yet.
-        </p>
-        <p className="text-xs font-bold mb-3">Add from below ⬇</p>
       </div>
     );
   }
@@ -98,22 +84,20 @@ function VariantValueToggleGroup({
       </div>
 
       <ToggleGroup
-        value={localSelectedValues.map((item) => item.value)} // Extract strings for UI
-        onValueChange={(selectedStrings) => {
-          const selectedObjects = selectedStrings
-            .map((valueString) =>
-              values?.data?.find((v) => v.value === valueString)
-            )
+        value={localSelectedValues.map((item) => String(item.id))} // use ids
+        onValueChange={(selectedIds) => {
+          const selectedObjects = selectedIds
+            .map((id) => values?.find((v) => String(v.id) === id))
             .filter(Boolean);
           setLocalSelectedValues(selectedObjects);
         }}
         type="multiple"
         className="gap-2 flex flex-wrap"
       >
-        {values?.data?.map((value) => (
+        {values?.map((value) => (
           <ToggleGroupItem
             key={value.id}
-            value={value.value}
+            value={String(value.id)}
             className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:border-primary flex-none"
           >
             {value.value}

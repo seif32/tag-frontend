@@ -1,5 +1,4 @@
 import useProductStore from "@/features/admin/store/productStore";
-import useVariantStore from "@/features/admin/store/variantStore";
 import StepHeader from "@/features/admin/ui/StepHeader";
 import TagFormField from "@/features/admin/ui/TagFormField";
 import { useFormContext } from "react-hook-form";
@@ -7,8 +6,6 @@ import { useFormContext } from "react-hook-form";
 function ProductDetailsStep({ currentSelections }) {
   const baseName = useProductStore((state) => state.baseName);
   const { control } = useFormContext();
-
-  console.log("ProductDetailsStep", currentSelections);
 
   return (
     <div className="space-y-4">
@@ -30,12 +27,20 @@ function ProductDetailsStep({ currentSelections }) {
         </div>
       </div>
 
-      <TagFormField
-        control={control}
-        name="variants.0.quantity"
-        label="Quantity"
-        placeholder="e.g., 50"
-      />
+      <div className="grid grid-cols-2 gap-2">
+        <TagFormField
+          control={control}
+          name="variants.0.quantity"
+          label="Quantity"
+          placeholder="e.g., 50"
+        />
+        <TagFormField
+          control={control}
+          name="variants.0.vat"
+          label="VAT"
+          placeholder="e.g., 79"
+        />
+      </div>
 
       <div className="flex items-end gap-2">
         <div className="flex-1">

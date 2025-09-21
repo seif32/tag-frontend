@@ -313,6 +313,7 @@
 // };
 
 import jsPDF from "jspdf";
+import { formatCurrency } from "./formatCurrency";
 
 export const generateOrderInvoicePDF = async (orderData) => {
   try {
@@ -384,7 +385,7 @@ export const generateOrderInvoicePDF = async (orderData) => {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    const balanceText = `£${balanceDue.toFixed(2)}`;
+    const balanceText = `£${formatCurrency(balanceDue)}`;
     doc.text(
       balanceText,
       rightMargin - doc.getTextWidth(balanceText),
@@ -547,16 +548,8 @@ export const generateOrderInvoicePDF = async (orderData) => {
         leftMargin + 320,
         centerY
       );
-      doc.text(
-        parseFloat(item.unit_price).toFixed(2),
-        leftMargin + 380,
-        centerY
-      );
-      doc.text(
-        parseFloat(item.total_price).toFixed(2),
-        rightMargin - 80,
-        centerY
-      );
+      doc.text(formatCurrency(item?.unit_price), leftMargin + 380, centerY);
+      doc.text(formatCurrency(item.total_price), rightMargin - 80, centerY);
 
       // Update yPosition for next row
       yPosition += rowHeight;
@@ -575,17 +568,13 @@ export const generateOrderInvoicePDF = async (orderData) => {
     const totalsX = rightMargin - 200;
 
     doc.text("Sub Total", totalsX, yPosition);
-    doc.text(
-      parseFloat(orderData.subtotal).toFixed(2),
-      rightMargin - 80,
-      yPosition
-    );
+    doc.text(formatCurrency(orderData.subtotal), rightMargin - 80, yPosition);
     yPosition += 20;
 
     if (parseFloat(orderData.tax_amount) > 0) {
       doc.text(`Tax (${orderData.tax_percent}%)`, totalsX, yPosition);
       doc.text(
-        parseFloat(orderData.tax_amount).toFixed(2),
+        formatCurrency(orderData.tax_amount),
         rightMargin - 80,
         yPosition
       );
@@ -596,7 +585,7 @@ export const generateOrderInvoicePDF = async (orderData) => {
       doc.setTextColor(211, 47, 47);
       doc.text(`Discount (${orderData.discount_percent}%)`, totalsX, yPosition);
       doc.text(
-        `-${parseFloat(orderData.discount_amount).toFixed(2)}`,
+        `-${formatCurrency(orderData.discount_amount)}`,
         rightMargin - 80,
         yPosition
       );
@@ -606,7 +595,7 @@ export const generateOrderInvoicePDF = async (orderData) => {
 
     doc.text("Shipping charge", totalsX, yPosition);
     doc.text(
-      parseFloat(orderData.shipping_amount).toFixed(2),
+      formatCurrency(orderData.shipping_amount),
       rightMargin - 80,
       yPosition
     );
@@ -621,7 +610,7 @@ export const generateOrderInvoicePDF = async (orderData) => {
     doc.setFontSize(14);
     doc.text("Total", totalsX, yPosition);
     doc.text(
-      `£${parseFloat(orderData.total_amount).toFixed(2)}`,
+      `£${formatCurrency(orderData.total_amount)}`,
       rightMargin - 80,
       yPosition
     );
@@ -643,7 +632,7 @@ export const generateOrderInvoicePDF = async (orderData) => {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(14);
     doc.text("Balance Due", totalsX, yPosition);
-    doc.text(`£${balanceDue.toFixed(2)}`, rightMargin - 80, yPosition);
+    doc.text(`£${formatCurrency(balanceDue)}`, rightMargin - 80, yPosition);
 
     // Save the PDF
     const filename = `invoice-INV-${String(orderData.id).padStart(

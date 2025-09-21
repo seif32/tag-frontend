@@ -38,7 +38,7 @@ function VariantsSection({ variantValues, variantTypes }) {
     });
   }, [variantValues]);
 
-  console.log("adnan", variantTypes);
+  console.log("variantTypes", variantTypes);
 
   const getColorStyle = (color) => {
     const colorMap = {

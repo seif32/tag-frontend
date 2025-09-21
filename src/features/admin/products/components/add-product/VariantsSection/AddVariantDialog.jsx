@@ -24,22 +24,31 @@ function AddVariantDialog() {
     useVariants.useCreateType();
 
   function handleAddVariantType() {
-    let typeToAdd = null;
-
     if (dialogMode === "select" && currentSelectedType) {
-      typeToAdd = currentSelectedType;
-    } else if (dialogMode === "create" && customTypeName.trim()) {
-      typeToAdd = { name: customTypeName.trim() };
-      createVariantType(typeToAdd);
-    }
+      // Case 1: User selected an existing type
+      addSelectedType(currentSelectedType);
 
-    if (typeToAdd) {
-      addSelectedType(typeToAdd);
-
+      // Reset dialog state
       setCurrentSelectedType(null);
       setCustomTypeName("");
       setIsAddDialogOpen(false);
       setDialogMode("select");
+    } else if (dialogMode === "create" && customTypeName.trim()) {
+      // Case 2: User wants to create a new type
+      const payload = { name: customTypeName.trim() };
+
+      createVariantType(payload, {
+        onSuccess: (data) => {
+          // Backend gives us { message, id }
+          addSelectedType({ id: data.id, name: payload.name });
+
+          // Reset dialog state
+          setCurrentSelectedType(null);
+          setCustomTypeName("");
+          setIsAddDialogOpen(false);
+          setDialogMode("select");
+        },
+      });
     }
   }
 

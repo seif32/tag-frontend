@@ -1,7 +1,11 @@
+import { useAuthStore } from "@/auth/store/authStore";
+import { formatCurrency } from "@/utils/formatCurrency";
 import { FaStar } from "react-icons/fa";
 
 function ProductInfoSection({ product, selectedVariant }) {
   const displayName = product?.name || "Product Name";
+  const vat = selectedVariant?.vat || "N/A";
+
   const currentPrice = selectedVariant?.price || "0.00";
   const comparePrice = selectedVariant?.compare_at_price;
   const rating = parseFloat(product?.rating || 0);
@@ -12,6 +16,8 @@ function ProductInfoSection({ product, selectedVariant }) {
   const subCategoryName = product?.sub_category_name || "";
 
   const filledStars = Math.floor(rating);
+
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   return (
     <div className="space-y-1">
@@ -42,17 +48,22 @@ function ProductInfoSection({ product, selectedVariant }) {
         </div>
       </div>
 
-      <div className="flex items-baseline gap-1">
-        <p className="text-4xl font-medium font-degular">
-          ${parseFloat(currentPrice).toFixed(2)}
-        </p>
-        {comparePrice && (
-          <p className="font-medium line-through text-muted-foreground">
-            ${parseFloat(comparePrice).toFixed(2)}
+      {isAuthenticated && (
+        <div className="flex items-baseline gap-1">
+          <p className="text-4xl font-medium font-degular">
+            {formatCurrency(currentPrice)}
           </p>
-        )}
-      </div>
+          {comparePrice && (
+            <p className="font-medium line-through text-muted-foreground">
+              {formatCurrency(comparePrice)}
+            </p>
+          )}
+        </div>
+      )}
 
+      <p className="text-xs font-semibold text-red-600">
+        + <span className="tracking-tighter">VAT</span>: {formatCurrency(vat)}
+      </p>
       <p className="text-sm leading-snug text-muted-foreground">
         {shortDescription}
       </p>

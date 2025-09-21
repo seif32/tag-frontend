@@ -35,6 +35,7 @@ export function useAddProductInstance(
       resetField("variants.0.currency", { defaultValue: "USD" });
       resetField("variants.0.compare_at_price", { defaultValue: "" });
       resetField("variants.0.cost_price", { defaultValue: "" });
+      resetField("variants.0.vat", { defaultValue: "" });
 
       // ✅ Clear local state after successful add
       setCurrentSelections({});
@@ -65,6 +66,13 @@ export function useAddProductInstance(
       isNaN(Number(variantData.price))
     ) {
       errors.push("Price is required and must be a valid number");
+    }
+    if (
+      !variantData.vat ||
+      variantData.vat.toString().trim() === "" ||
+      isNaN(Number(variantData.vat))
+    ) {
+      errors.push("VAT is required and must be a valid number");
     }
     if (
       !variantData.compare_at_price ||
@@ -180,6 +188,7 @@ export function useAddProductInstance(
           productId: productId,
           variantData: {
             quantity: parseInt(builtVariant.quantity),
+            vat: parseInt(builtVariant.vat),
             price: parseFloat(builtVariant.price),
             compare_at_price: parseFloat(builtVariant.compare_at_price || 0),
             cost_price: parseFloat(builtVariant.cost_price || 0),
@@ -200,6 +209,7 @@ export function useAddProductInstance(
         resetField("variants.0.currency", { defaultValue: "USD" });
         resetField("variants.0.compare_at_price", { defaultValue: "" });
         resetField("variants.0.cost_price", { defaultValue: "" });
+        resetField("variants.0.vat", { defaultValue: "" });
 
         // ✅ Clear local state after successful add
         setCurrentSelections({});

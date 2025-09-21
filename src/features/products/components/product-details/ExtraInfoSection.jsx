@@ -1,4 +1,8 @@
+import { useAuthStore } from "@/auth/store/authStore";
+
 function ExtraInfoSection({ product, selectedVariant }) {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   const brandName = product?.brand_name || "Unknown";
   const variantSku = selectedVariant?.variant_sku || product?.sku || "N/A";
   const tags = product?.tags?.map((tag) => tag.name).join(", ") || "No tags";
@@ -26,7 +30,7 @@ function ExtraInfoSection({ product, selectedVariant }) {
       </div>
 
       {/* ⚡ Variant-specific info */}
-      {selectedVariant && (
+      {selectedVariant && isAuthenticated && (
         <>
           <div className="flex gap-1 text-sm text-muted-foreground">
             <p className="font-semibold">Stock: </p>

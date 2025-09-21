@@ -9,10 +9,11 @@ import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import useVariantSelector from "../components/useVariantSelector";
 import ProductCard from "../components/ProductCard";
-import { consoleObject } from "@/utils/consoleObject";
+import { useAuthStore } from "@/auth/store/authStore";
 
 function ProductDetailPage() {
   const { id } = useParams();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const {
     product,
@@ -43,8 +44,6 @@ function ProductDetailPage() {
       />
     );
 
-  consoleObject("selectedVariant", selectedVariant);
-
   return (
     <div className="flex flex-col space-y-8">
       <div className="flex flex-col md:flex-row md:gap-8">
@@ -67,8 +66,12 @@ function ProductDetailPage() {
             onVariantChange={handleVariantSelection}
           />
 
-          <ActionButtons selectedVariant={selectedVariant} product={product} />
-
+          {isAuthenticated && (
+            <ActionButtons
+              selectedVariant={selectedVariant}
+              product={product}
+            />
+          )}
           <div className="border"></div>
 
           <ExtraInfoSection
