@@ -16,6 +16,7 @@ const Header = () => {
 
   function handleLogout() {
     logout();
+    localStorage.setItem("isAgeVerified", "false");
   }
 
   const navItems = [

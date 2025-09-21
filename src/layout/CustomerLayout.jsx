@@ -1,10 +1,28 @@
 import { Outlet, useLocation } from "react-router";
 import Header from "@/ui/Header";
 import ProgressSteps from "@/features/cart/components/ProgressSteps";
+import { useEffect, useState } from "react";
+import AgeVerificationModal from "@/ui/AgeVerificationModal";
+import Footer from "@/ui/Footer";
 
 function CustomerLayout() {
   const location = useLocation();
-  const isProductsPage = location.pathname.startsWith("/productsss");
+
+  const [isAgeVerified, setIsAgeVerified] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  useEffect(() => {
+    const verified = localStorage.getItem("isAgeVerified");
+    if (verified === "true") {
+      setIsAgeVerified(true);
+    }
+    setIsInitializing(false);
+  }, []);
+
+  const handleConfirm = () => {
+    localStorage.setItem("isAgeVerified", "true");
+    setIsAgeVerified(true);
+  };
 
   const isCartFlow = ["/cart", "/checkout"].some((path) =>
     location.pathname.includes(path)
@@ -24,14 +42,14 @@ function CustomerLayout() {
 
       {isCartFlow && <ProgressSteps currentStep={getCurrentStep()} />}
 
-      <main
-        className={` flex-1 py-8 ${
-          !isProductsPage ? "container px-8 mx-auto" : ""
-        }`}
-      >
+      <main className={` flex-1 py-8 container px-8 mx-auto`}>
         <Outlet />
       </main>
-      {/* <Footer /> */}
+      {!isInitializing && !isAgeVerified && (
+        <AgeVerificationModal onConfirm={handleConfirm} />
+      )}
+
+      <Footer />
     </div>
   );
 }

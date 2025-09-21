@@ -1,115 +1,274 @@
-import { Link } from "react-router";
-import { ROUTES } from "@/constants";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
+  ArrowUp,
+  CreditCard,
+  Shield,
+  Truck,
+  RotateCcw,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
-const Footer = () => {
+export default function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer className="mt-auto text-white bg-primary">
-      <div className="container px-4 py-8 mx-auto">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          {/* Company Info */}
-          <div>
-            <h3 className="mb-4 text-lg font-semibold">TAG</h3>
-            <p className="text-gray-400">
-              Your one-stop shop for all categories of products. Quality
-              guaranteed!
+    <footer className="bg-slate-900 text-slate-100">
+      {/* Newsletter Section */}
+      {/* <div className="bg-slate-800 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold mb-2">Stay Updated</h3>
+            <p className="text-slate-300 mb-6">
+              Get the latest products and exclusive offers delivered to your
+              inbox
             </p>
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                className="bg-white text-slate-900 border-0 flex-1"
+              />
+              <Button className="bg-blue-600 hover:bg-blue-700 px-8">
+                Subscribe
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div> */}
+
+      {/* Main Footer Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Company Info */}
+          <div className="lg:col-span-1">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-white mb-2">
+                Tag Enterprises
+              </h2>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Your trusted partner for premium products and exceptional
+                service. Serving customers worldwide with quality and
+                reliability.
+              </p>
+            </div>
+
+            {/* Contact Info */}
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-slate-300">
+                  <p className="font-medium text-white">
+                    Tag Enterprises (London) Limited
+                  </p>
+                  <p>32 George V Avenue</p>
+                  <p>Pinner, London HA5 5SE</p>
+                  <p>United Kingdom</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Phone className="h-5 w-5 text-blue-400" />
+                <a
+                  href="tel:+44..."
+                  className="text-sm text-slate-300 hover:text-white transition-colors"
+                >
+                  +44 (0) 20 1234 5678
+                </a>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-blue-400" />
+                <a
+                  href="mailto:info@tagenterprises.co.uk"
+                  className="text-sm text-slate-300 hover:text-white transition-colors"
+                >
+                  info@tagenterprises.co.uk
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="mb-4 font-medium text-md">Quick Links</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li>
-                <Link
-                  to={ROUTES.HOME}
-                  className="transition-colors hover:text-white"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={ROUTES.PRODUCTS}
-                  className="transition-colors hover:text-white"
-                >
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={ROUTES.CATEGORIES}
-                  className="transition-colors hover:text-white"
-                >
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={ROUTES.CART}
-                  className="transition-colors hover:text-white"
-                >
-                  Cart
-                </Link>
-              </li>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Quick Links
+            </h3>
+            <ul className="space-y-2">
+              {[
+                "About Us",
+                "Our Products",
+                "Services",
+                "Contact",
+                "Careers",
+                "Blog",
+              ].map((link) => (
+                <li key={link}>
+                  <a
+                    href="#"
+                    className="text-sm text-slate-300 hover:text-white transition-colors hover:translate-x-1 inline-block"
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Categories */}
+          {/* Customer Service */}
           <div>
-            <h4 className="mb-4 font-medium text-md">Categories</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li>
-                <Link
-                  to="/categories/electronics"
-                  className="transition-colors hover:text-white"
-                >
-                  Electronics
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/categories/clothing"
-                  className="transition-colors hover:text-white"
-                >
-                  Clothing
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/categories/home"
-                  className="transition-colors hover:text-white"
-                >
-                  Home & Garden
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/categories/sports"
-                  className="transition-colors hover:text-white"
-                >
-                  Sports
-                </Link>
-              </li>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Customer Service
+            </h3>
+            <ul className="space-y-2">
+              {[
+                "Track Your Order",
+                "Shipping Info",
+                "Returns & Exchanges",
+                "Size Guide",
+                "FAQ",
+                "Support Center",
+              ].map((link) => (
+                <li key={link}>
+                  <a
+                    href="#"
+                    className="text-sm text-slate-300 hover:text-white transition-colors hover:translate-x-1 inline-block"
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Trust Indicators */}
           <div>
-            <h4 className="mb-4 font-medium text-md">Contact</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li>📧 support@productstore.com</li>
-              <li>📞 +1 (555) 123-4567</li>
-              <li>📍 123 Commerce St, City, State</li>
-            </ul>
-          </div>
-        </div>
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Why Choose Us
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Truck className="h-5 w-5 text-green-400" />
+                <div>
+                  <p className="text-sm font-medium text-white">
+                    Free Shipping
+                  </p>
+                  <p className="text-xs text-slate-400">On orders over £50</p>
+                </div>
+              </div>
 
-        <div className="pt-8 mt-8 text-center text-gray-400 border-t border-gray-700">
-          <p>&copy; 2025 ProductStore. All rights reserved.</p>
+              <div className="flex items-center gap-3">
+                <RotateCcw className="h-5 w-5 text-blue-400" />
+                <div>
+                  <p className="text-sm font-medium text-white">Easy Returns</p>
+                  <p className="text-xs text-slate-400">30-day return policy</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Shield className="h-5 w-5 text-purple-400" />
+                <div>
+                  <p className="text-sm font-medium text-white">
+                    Secure Payment
+                  </p>
+                  <p className="text-xs text-slate-400">SSL encrypted</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <CreditCard className="h-5 w-5 text-yellow-400" />
+                <div>
+                  <p className="text-sm font-medium text-white">
+                    Multiple Payment
+                  </p>
+                  <p className="text-xs text-slate-400">
+                    Cards & PayPal accepted
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <Separator className="bg-slate-700" />
+
+      {/* Bottom Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          {/* Copyright */}
+          <div className="text-center md:text-left">
+            <p className="text-sm text-slate-400">
+              © 2025 Tag Enterprises (London) Limited. All rights reserved.
+            </p>
+            <p className="text-xs text-slate-500 mt-1">
+              Company No. 12345678 | VAT No. GB123456789
+            </p>
+          </div>
+
+          {/* Social Media */}
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-slate-400 hidden sm:block">
+              Follow us:
+            </span>
+            {[
+              { icon: Facebook, label: "Facebook", href: "#" },
+              { icon: Twitter, label: "Twitter", href: "#" },
+              { icon: Instagram, label: "Instagram", href: "#" },
+              { icon: Linkedin, label: "LinkedIn", href: "#" },
+            ].map(({ icon: Icon, label, href }) => (
+              <a
+                key={label}
+                href={href}
+                className="p-2 bg-slate-800 hover:bg-slate-700 rounded-full transition-colors group"
+                aria-label={label}
+              >
+                <Icon className="h-4 w-4 text-slate-400 group-hover:text-white" />
+              </a>
+            ))}
+          </div>
+
+          {/* Legal Links */}
+          <div className="flex items-center gap-4 text-xs">
+            <a
+              href="#"
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="#"
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              Terms of Service
+            </a>
+            <a
+              href="#"
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              Cookies
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Back to Top Button */}
+      <Button
+        onClick={scrollToTop}
+        className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110"
+        size="icon"
+      >
+        <ArrowUp className="h-4 w-4" />
+      </Button>
     </footer>
   );
-};
-
-export default Footer;
+}

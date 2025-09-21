@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import authApi from "../services/authApi";
-import { sendEmailVerification } from "firebase/auth";
 
 export const useAuthStore = create((set, get) => ({
   user: null,
@@ -69,7 +68,11 @@ export const useAuthStore = create((set, get) => ({
         _isLoggingIn: false,
       });
 
-      return user;
+      return {
+        user,
+        shouldNavigate: true,
+        redirectPath: user.role === "admin" ? "/admin" : "/",
+      };
     } catch (err) {
       console.error("🔴 Auth store login failed:", err);
       set({ error: err.message, loading: false, _isLoggingIn: false });

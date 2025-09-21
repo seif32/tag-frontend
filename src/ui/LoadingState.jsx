@@ -1,3 +1,6 @@
+import Lottie from "lottie-react";
+import boxOpen from "../animations/box-open.json";
+
 export default function LoadingState({
   type = "spinner",
   size = "md",
@@ -39,11 +42,13 @@ export default function LoadingState({
       >
         <div className="text-center space-y-6 max-w-md mx-auto">
           {/* Main spinner */}
-          <div className="flex justify-center">
+          {/* <div className="flex justify-center">
             <div
               className={`animate-spin rounded-full border-4 border-t-transparent border-accent ${sizes[size].pageSpinner}`}
             />
-          </div>
+          </div> */}
+
+          <Lottie animationData={boxOpen} loop={true} className="mb-2 " />
 
           {/* Title */}
           <div className="space-y-2">
@@ -83,29 +88,13 @@ export default function LoadingState({
       >
         <div className="text-center space-y-8 max-w-sm mx-auto">
           {/* App logo/brand area */}
-          <div className="space-y-4">
-            <div className="w-20 h-20 mx-auto bg-gradient-to-br from-accent to-accent/70 rounded-2xl flex items-center justify-center animate-pulse">
-              <div className="text-white text-2xl font-bold">TAG</div>
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              {title || "Welcome"}
-            </h1>
-          </div>
 
-          {/* Loading animation */}
-          <div className="relative">
-            <div
-              className={`animate-spin rounded-full border-4 border-t-transparent border-accent ${sizes[size].pageSpinner} mx-auto`}
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-6 h-6 bg-accent rounded-full animate-ping opacity-20" />
-            </div>
-          </div>
+          <Lottie animationData={boxOpen} loop={true} className="mb-0 " />
 
           {/* Status text */}
           <div className="space-y-2">
             <p className="text-gray-700 font-medium">
-              {description || "Initializing application..."}
+              {description || "Initializing ..."}
             </p>
             <div className="flex justify-center space-x-1">
               <div className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse" />

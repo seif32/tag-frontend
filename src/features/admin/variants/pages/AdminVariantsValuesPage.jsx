@@ -95,7 +95,7 @@ function AdminVariantsValuesPage() {
 
   if (isLoadingVariantValues) return <LoadingState type="table" />;
 
-  if (isErrorVariantValues && !errorVariantValues.message === "Not found")
+  if (isErrorVariantValues)
     return (
       <ErrorMessage
         message={errorVariantValues.message || "Failed to load data"}
@@ -117,20 +117,13 @@ function AdminVariantsValuesPage() {
         setNewValueName={setNewValueName}
         isAddingValue={isAddingValue}
         isUpdatingValue={isUpdatingValue}
+        variantTypeName={variantValues?.variant_type_name}
       />
-      {errorVariantValues?.message === "Not found" ? (
-        <div className="text-center mt-12 ">
-          <p className="text-2xl font-bold">No values for $$type$$</p>
-          <p className="text-muted-foreground ">
-            Add your first value in the type{" "}
-          </p>
-        </div>
-      ) : (
-        <ValuesTable
-          values={variantValues?.data}
-          onEditValue={handleEditValue}
-        />
-      )}{" "}
+      <ValuesTable
+        values={variantValues?.data}
+        onEditValue={handleEditValue}
+        variantTypeName={variantValues?.variant_type_name}
+      />
     </div>
   );
 }
@@ -148,11 +141,12 @@ function Title({
   handleCreateValue,
   isAddingValue,
   isUpdatingValue,
+  variantTypeName,
 }) {
   return (
     <div className="flex justify-between items-center">
       <div>
-        <h1 className="text-3xl">$$Color$$ variant values</h1>
+        <h1 className="text-3xl">{variantTypeName} variant values</h1>
         <p className="text-muted-foreground text-sm">
           Manage by creating a new one or edit an existing one
         </p>
@@ -245,10 +239,14 @@ function AddValueModal({
   );
 }
 
-function ValuesTable({ values = [], onEditValue }) {
+function ValuesTable({ values = [], onEditValue, variantTypeName }) {
   return (
     <Table className={" "}>
-      <TableCaption>Values for</TableCaption>
+      <TableCaption>
+        {values?.length === 0
+          ? `No values for variant ${variantTypeName}, add it's first . . .`
+          : `Values for variant ${variantTypeName}`}
+      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead className="w-[100px]">ID</TableHead>
