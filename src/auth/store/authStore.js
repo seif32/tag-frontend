@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import authApi from "../services/authApi";
 
+// 🏪 Main Auth Store
 export const useAuthStore = create((set, get) => ({
   user: null,
   isAuthenticated: false,
@@ -13,54 +14,16 @@ export const useAuthStore = create((set, get) => ({
 
     try {
       const userCredential = await authApi.login(email, password);
+      const token = await getTokenWithRetry(userCredential.user);
+      const backendProfile = await fetchBackendProfile(
+        userCredential.user.uid,
+        token
+      );
 
-      // ✅ Better token handling with retry
-      let token;
-      try {
-        token = await userCredential.user.getIdToken();
-      } catch (tokenError) {
-        console.error("Failed to get token:", tokenError);
-        // Force token refresh
-        token = await userCredential.user.getIdToken(true);
-      }
-
-      let backendProfile = null;
-      try {
-        backendProfile = await authApi.getUserByUid(
-          userCredential.user.uid,
-          token
-        );
-      } catch (profileError) {
-        console.warn("⚠️ Could not fetch backend profile:", profileError);
-      }
-
-      const user = {
-        // Backend data
-        id: backendProfile?.id || null,
-        first_name: backendProfile?.first_name || null,
-        last_name: backendProfile?.last_name || null,
-        phone_number: backendProfile?.phone_number || null,
-        role: backendProfile?.role || "user",
-
-        // Firebase data
-        name:
-          userCredential.user.displayName ||
-          `${backendProfile?.first_name || ""} ${
-            backendProfile?.last_name || ""
-          }`.trim() ||
-          "User",
-        phoneNumber:
-          userCredential.user.phoneNumber || backendProfile?.phone_number,
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
-        emailVerified: userCredential.user.emailVerified, // ✅ Fixed: Add this
-        token,
-
-        // Include any other backend fields
-        ...backendProfile,
-      };
+      const user = buildUserObject(userCredential.user, backendProfile, token);
 
       set({
+        ...get(),
         user,
         isAuthenticated: true,
         loading: false,
@@ -68,20 +31,22 @@ export const useAuthStore = create((set, get) => ({
         _isLoggingIn: false,
       });
 
-      return {
-        user,
-        shouldNavigate: true,
-        redirectPath: user.role === "admin" ? "/admin" : "/",
-      };
+      return user;
     } catch (err) {
       console.error("🔴 Auth store login failed:", err);
-      set({ error: err.message, loading: false, _isLoggingIn: false });
+      set({
+        ...get(),
+        error: err.message,
+        loading: false,
+        _isLoggingIn: false,
+      });
       throw err;
     }
   },
 
   register: async (userData) => {
     set({ loading: true, error: null });
+
     try {
       // Backend registration
       const backendUser = await authApi.register(userData);
@@ -92,65 +57,27 @@ export const useAuthStore = create((set, get) => ({
         userData.password
       );
 
-      // ✅ Fixed: Uncomment and add proper error handling
+      // Optional: Send verification email
       try {
-        // await sendEmailVerification(userCredential.user);
         console.log(
           "✅ Verification email sent to:",
           userCredential.user.email
         );
       } catch (emailError) {
         console.warn("⚠️ Failed to send verification email:", emailError);
-        // Don't throw - continue with registration
       }
 
-      const token = await userCredential.user.getIdToken();
+      const token = await getTokenWithRetry(userCredential.user);
+      const completeProfile =
+        (await fetchBackendProfile(userCredential.user.uid, token)) ||
+        backendUser;
 
-      let completeProfile = null;
-      try {
-        completeProfile = await authApi.getUserByUid(
-          userCredential.user.uid,
-          token
-        );
-      } catch (profileError) {
-        console.warn(
-          "Could not fetch complete profile, using registration data:",
-          profileError
-        );
-        completeProfile = backendUser;
-      }
+      const user = buildUserObject(userCredential.user, completeProfile, token);
 
-      const user = {
-        // Backend data
-        id: completeProfile?.id || backendUser?.id,
-        first_name: completeProfile?.first_name || userData.first_name,
-        last_name: completeProfile?.last_name || userData.last_name,
-        phone_number: completeProfile?.phone_number || userData.phone_number,
-        role: completeProfile?.role || backendUser?.role || "user",
-
-        // Firebase data
-        name:
-          userCredential.user.displayName ||
-          `${userData.first_name} ${userData.last_name}`,
-        phoneNumber: userCredential.user.phoneNumber || userData.phone_number,
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
-        emailVerified: userCredential.user.emailVerified, // ✅ This was already correct
-        token,
-
-        // Include any other backend fields
-        ...completeProfile,
-      };
-
-      set({
-        user,
-        isAuthenticated: true,
-        loading: false,
-      });
-
+      setAuthenticatedState(set, user);
       return user;
     } catch (err) {
-      set({ error: err.message, loading: false });
+      set({ ...get(), error: err.message, loading: false });
       throw err;
     }
   },
@@ -158,27 +85,19 @@ export const useAuthStore = create((set, get) => ({
   logout: async () => {
     try {
       await authApi.logout();
-      set({
-        user: null,
-        isAuthenticated: false,
-        error: null,
-        loading: false, // ✅ Add this
-      });
     } catch (error) {
       console.error("Logout error:", error);
-      // Clear state even if logout fails
-      set({
-        user: null,
-        isAuthenticated: false,
-        error: null,
-        loading: false, // ✅ Add this
-      });
+    } finally {
+      // Always clear state, even if logout fails
+      setUnauthenticatedState(set);
     }
   },
 
   initAuth: () => {
     const unsubscribe = authApi.onAuthStateChanged(async (firebaseUser) => {
       const currentState = get();
+
+      // Skip if login is in progress
       if (currentState._isLoggingIn) {
         console.log("🔄 Skipping initAuth - login in progress");
         return;
@@ -186,121 +105,64 @@ export const useAuthStore = create((set, get) => ({
 
       if (firebaseUser) {
         try {
-          // ✅ Better token handling
-          let token;
-          try {
-            token = await firebaseUser.getIdToken();
-          } catch (tokenError) {
-            console.warn("Token error, forcing refresh:", tokenError);
-            token = await firebaseUser.getIdToken(true); // Force refresh
-          }
+          const token = await getTokenWithRetry(firebaseUser);
+          const backendProfile = await fetchBackendProfile(
+            firebaseUser.uid,
+            token
+          );
 
-          let backendProfile = null;
-          try {
-            backendProfile = await authApi.getUserByUid(
-              firebaseUser.uid,
-              token
-            );
-          } catch (profileError) {
-            console.warn(
-              "⚠️ Could not fetch backend profile during init:",
-              profileError
-            );
-            // Don't throw - continue with Firebase data only
-          }
-
-          const user = {
-            // Backend data
-            id: backendProfile?.id || null,
-            first_name: backendProfile?.first_name || null,
-            last_name: backendProfile?.last_name || null,
-            phone_number: backendProfile?.phone_number || null,
-            role: backendProfile?.role || "user",
-
-            // Firebase data
-            name:
-              firebaseUser.displayName ||
-              `${backendProfile?.first_name || ""} ${
-                backendProfile?.last_name || ""
-              }`.trim() ||
-              firebaseUser.email?.split("@")[0] || // Use email prefix as fallback
-              "User",
-            phoneNumber:
-              firebaseUser.phoneNumber || backendProfile?.phone_number,
-            uid: firebaseUser.uid,
-            email: firebaseUser.email,
-            emailVerified: firebaseUser.emailVerified, // ✅ Fixed: Add this
-            token,
-
-            // Include any other backend fields
-            ...backendProfile,
-          };
-
-          set({
-            user,
-            isAuthenticated: true,
-            loading: false,
-            error: null, // ✅ Clear any previous errors
-          });
+          const user = buildUserObject(firebaseUser, backendProfile, token);
+          setAuthenticatedState(set, user);
         } catch (tokenError) {
           console.error("🔴 Failed to get user token during init:", tokenError);
 
-          // ✅ Better error handling - don't clear auth if it's just a token refresh issue
+          // Handle network errors gracefully
           if (tokenError.code === "auth/network-request-failed") {
             console.log("Network error - keeping current state");
-            set({ loading: false });
+            set({ ...get(), loading: false });
           } else {
-            set({
-              user: null,
-              isAuthenticated: false,
-              loading: false,
-              error: "Authentication failed - please login again",
-            });
+            setUnauthenticatedState(
+              set,
+              "Authentication failed - please login again"
+            );
           }
         }
       } else {
-        set({
-          user: null,
-          isAuthenticated: false,
-          loading: false,
-          error: null, // ✅ Clear errors on logout
-          _isLoggingIn: false,
-        });
+        setUnauthenticatedState(set);
       }
     });
 
     return unsubscribe;
   },
 
-  // ✅ Add method to manually refresh auth state
   refreshAuthState: async () => {
     const currentUser = authApi.getCurrentUser();
-    if (currentUser) {
-      try {
-        await currentUser.reload(); // Refresh Firebase user
-        const token = await currentUser.getIdToken(true); // Force token refresh
+    if (!currentUser) return;
 
-        // Update user in store
-        const currentState = get();
-        if (currentState.user) {
-          set({
-            user: {
-              ...currentState.user,
-              emailVerified: currentUser.emailVerified,
-              token,
-            },
-          });
-        }
-      } catch (error) {
-        console.error("Failed to refresh auth state:", error);
-        throw error;
+    try {
+      await currentUser.reload(); // Refresh Firebase user
+      const token = await currentUser.getIdToken(true); // Force token refresh
+
+      const currentState = get();
+      if (currentState.user) {
+        set({
+          ...currentState,
+          user: {
+            ...currentState.user,
+            emailVerified: currentUser.emailVerified,
+            token,
+          },
+        });
       }
+    } catch (error) {
+      console.error("Failed to refresh auth state:", error);
+      throw error;
     }
   },
 
   refreshProfile: async () => {
     const currentUser = get().user;
-    if (!currentUser || !currentUser.uid) {
+    if (!currentUser?.uid) {
       throw new Error("No authenticated user to refresh");
     }
 
@@ -314,10 +176,7 @@ export const useAuthStore = create((set, get) => ({
         token,
       };
 
-      set({
-        user: updatedUser,
-      });
-
+      set({ ...get(), user: updatedUser });
       return updatedUser;
     } catch (error) {
       console.error("Failed to refresh profile:", error);
@@ -327,7 +186,7 @@ export const useAuthStore = create((set, get) => ({
 
   updateProfile: async (updateData) => {
     const currentUser = get().user;
-    if (!currentUser || !currentUser.id) {
+    if (!currentUser?.id) {
       throw new Error("No authenticated user to update");
     }
 
@@ -337,9 +196,7 @@ export const useAuthStore = create((set, get) => ({
         currentUser.id,
         updateData,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
@@ -348,10 +205,7 @@ export const useAuthStore = create((set, get) => ({
         ...updatedProfile,
       };
 
-      set({
-        user: updatedUser,
-      });
-
+      set({ ...get(), user: updatedUser });
       return updatedUser;
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -360,6 +214,70 @@ export const useAuthStore = create((set, get) => ({
   },
 
   clearError: () => {
-    set({ error: null });
+    set({ ...get(), error: null });
   },
 }));
+
+/*🔴🔴🔴🔴🔴🔴🔴 Helper Functions*/
+
+const getTokenWithRetry = async (firebaseUser) => {
+  try {
+    return await firebaseUser.getIdToken();
+  } catch (tokenError) {
+    console.warn("Token error, forcing refresh:", tokenError);
+    return await firebaseUser.getIdToken(true); // Force refresh
+  }
+};
+
+const fetchBackendProfile = async (uid, token) => {
+  try {
+    return await authApi.getUserByUid(uid, token);
+  } catch (profileError) {
+    console.warn("⚠️ Could not fetch backend profile:", profileError);
+    return null;
+  }
+};
+
+const buildUserObject = (firebaseUser, backendProfile, token) => ({
+  id: backendProfile?.id || null,
+  first_name: backendProfile?.first_name || null,
+  last_name: backendProfile?.last_name || null,
+  phone_number: backendProfile?.phone_number || null,
+  role: backendProfile?.role || "user",
+
+  // Firebase data
+  name:
+    firebaseUser.displayName ||
+    `${backendProfile?.first_name || ""} ${
+      backendProfile?.last_name || ""
+    }`.trim() ||
+    firebaseUser.email?.split("@")[0] ||
+    "User",
+  phoneNumber: firebaseUser.phoneNumber || backendProfile?.phone_number,
+  uid: firebaseUser.uid,
+  email: firebaseUser.email,
+  emailVerified: firebaseUser.emailVerified,
+  token,
+
+  // Include any other backend fields
+  ...backendProfile,
+});
+
+const setAuthenticatedState = (set, user) => {
+  set({
+    user,
+    isAuthenticated: true,
+    loading: false,
+    error: null,
+  });
+};
+
+const setUnauthenticatedState = (set, error = null) => {
+  set({
+    user: null,
+    isAuthenticated: false,
+    loading: false,
+    error,
+    _isLoggingIn: false,
+  });
+};

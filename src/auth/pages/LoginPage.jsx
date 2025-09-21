@@ -32,32 +32,11 @@ function LoginPage() {
   const login = useAuthStore((state) => state.login);
   const loading = useAuthStore((state) => state.loading);
 
-  // async function onSubmit(data) {
-  //   try {
-  //     const user = await login(data.email, data.password);
-
-  //     const redirectPath = user.role === "admin" ? "/admin" : "/";
-  //     navigate(redirectPath, { replace: true });
-
-  //     // force reload after navigating
-  //     // window.location.reload();
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-  //     alert(`❌ Login failed: ${error.message}`);
-  //   }
-  // }
-
   async function onSubmit(data) {
     try {
-      const result = await login(data.email, data.password);
-
-      // 🎯 Navigate only after successful login response
-      if (result.shouldNavigate) {
-        // Small delay to ensure state is fully updated
-        setTimeout(() => {
-          navigate(result.redirectPath, { replace: true });
-        }, 100);
-      }
+      await login(data.email, data.password);
+      // 🎉 No manual navigation needed!
+      // PublicRoute will automatically redirect based on user role
     } catch (error) {
       console.error("Login error:", error);
       alert(`❌ Login failed: ${error.message}`);

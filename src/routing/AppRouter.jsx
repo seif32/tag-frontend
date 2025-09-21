@@ -6,17 +6,35 @@ import LoginPage from "@/auth/pages/LoginPage";
 import RegistrationPage from "@/auth/pages/RegistrationPage";
 import CheckEmailPage from "@/auth/pages/CheckEmailPage";
 import VerificationPage from "@/auth/pages/VerificationPage";
+import PublicRoute from "./PublicRoute";
 
 function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/register" element={<RegistrationPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        {/* 🔐 Public routes - redirect away if authenticated */}
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <RegistrationPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
 
+        {/* 📧 Email verification routes - accessible to all */}
         <Route path="/check-email" element={<CheckEmailPage />} />
         <Route path="/verify" element={<VerificationPage />} />
 
+        {/* 👨‍💼 Admin routes - protected */}
         <Route
           path="/admin/*"
           element={
@@ -26,6 +44,7 @@ function AppRouter() {
           }
         />
 
+        {/* 🛒 Customer routes - mixed protection */}
         <Route path="/*" element={<CustomerRouter />} />
       </Routes>
     </BrowserRouter>

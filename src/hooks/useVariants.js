@@ -291,6 +291,7 @@ const useVariants = {
         });
         // Also refresh all values list
         queryClient.invalidateQueries({ queryKey: ["variant-values"] });
+        queryClient.invalidateQueries({ queryKey: ["variant-types"] });
 
         toast.success(
           ` Added ${variables.values.length} variant values successfully!`

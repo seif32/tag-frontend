@@ -203,7 +203,7 @@ function CardValues({ values }) {
         </span>
       </div>
       {isNoValues ? (
-        <div>No values in here</div>
+        <div className="text-muted-foreground ">No values in here</div>
       ) : (
         <div className="flex flex-wrap gap-1">
           {values?.map((value) => (
