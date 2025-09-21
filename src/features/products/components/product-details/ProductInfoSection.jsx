@@ -49,21 +49,24 @@ function ProductInfoSection({ product, selectedVariant }) {
       </div>
 
       {isAuthenticated && (
-        <div className="flex items-baseline gap-1">
-          <p className="text-4xl font-medium font-degular">
-            {formatCurrency(currentPrice)}
-          </p>
-          {comparePrice && (
-            <p className="font-medium line-through text-muted-foreground">
-              {formatCurrency(comparePrice)}
+        <>
+          <div className="flex items-baseline gap-1">
+            <p className="text-4xl font-medium font-degular">
+              {formatCurrency(currentPrice)}
             </p>
-          )}
-        </div>
-      )}
+            {comparePrice && (
+              <p className="font-medium line-through text-muted-foreground">
+                {formatCurrency(comparePrice)}
+              </p>
+            )}
+          </div>
 
-      <p className="text-xs font-semibold text-red-600">
-        + <span className="tracking-tighter">VAT</span>: {formatCurrency(vat)}
-      </p>
+          <p className="text-xs font-semibold text-red-600">
+            + <span className="tracking-tighter">VAT</span>:{" "}
+            {formatCurrency(vat)}
+          </p>
+        </>
+      )}
       <p className="text-sm leading-snug text-muted-foreground">
         {shortDescription}
       </p>

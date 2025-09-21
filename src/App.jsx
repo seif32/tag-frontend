@@ -14,7 +14,7 @@ function App() {
   useEffect(() => {
     const unsubscribe = initAuth();
     return () => unsubscribe();
-  }, [initAuth]);
+  }, []);
 
   if (loading) return <LoadingState type="app" />;
 

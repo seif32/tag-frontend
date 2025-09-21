@@ -12,7 +12,6 @@ function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 🔐 Public routes - redirect away if authenticated */}
         <Route
           path="/register"
           element={
@@ -30,11 +29,9 @@ function AppRouter() {
           }
         />
 
-        {/* 📧 Email verification routes - accessible to all */}
         <Route path="/check-email" element={<CheckEmailPage />} />
         <Route path="/verify" element={<VerificationPage />} />
 
-        {/* 👨‍💼 Admin routes - protected */}
         <Route
           path="/admin/*"
           element={
