@@ -7,9 +7,15 @@ const categoriesApi = {
    * Perfect for your categories page, dropdowns, navigation menus
    * Example: const categories = await categoryApi.getAll();
    */
-  getAll: async (options = {}) => {
+  getAll: async (queryParams = {}, options = {}) => {
     try {
-      return await api.get("/categories", {
+      const params = new URLSearchParams();
+      if (queryParams.limit) params.append("limit", queryParams.limit);
+
+      const queryString = params.toString();
+      const url = `/categories/${queryString ? `?${queryString}` : ""}`;
+
+      return await api.get(url, {
         ...options,
       });
     } catch (error) {

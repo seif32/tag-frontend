@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 function VerificationPage() {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
   const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("");
   const [debugInfo, setDebugInfo] = useState({});

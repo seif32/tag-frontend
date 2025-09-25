@@ -10,10 +10,10 @@ const useCategories = {
    * Returns: isLoadingCategories, categories, errorCategories
    * Example: const { isLoadingCategories, categories } = useCategory.useAll();
    */
-  useAll: (options = {}) => {
+  useAll: (queryParams = {}, options = {}) => {
     const query = useQuery({
       queryKey: ["categories"],
-      queryFn: categoriesApi.getAll,
+      queryFn: () => categoriesApi.getAll(queryParams),
       staleTime: 5 * 60 * 1000, // 5 minutes - categories don't change often
       cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
       ...options,

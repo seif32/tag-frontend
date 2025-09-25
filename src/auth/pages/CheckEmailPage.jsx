@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { useAuthStore } from "@/auth/store/authStore";
 import { sendEmailVerification } from "firebase/auth";
 import { toast } from "sonner";
@@ -6,7 +6,6 @@ import { auth } from "../firebase/config";
 
 function CheckEmailPage() {
   const location = useLocation();
-  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
 
   const email = location.state?.email || user?.email;
@@ -42,15 +41,6 @@ function CheckEmailPage() {
             >
               Didn't receive the email? Click to resend
             </button>
-
-            <div className="pt-4 border-t">
-              <button
-                onClick={() => navigate("/login")}
-                className="text-gray-500 hover:text-gray-700 text-sm"
-              >
-                Back to Login
-              </button>
-            </div>
           </div>
         </div>
       </div>

@@ -1,13 +1,12 @@
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { useAuthStore } from "../store/authStore";
-import authApi from "../services/authApi";
 import { toast } from "sonner";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 import {
   Form,
@@ -16,9 +15,13 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import useCategories from "@/hooks/useCategories";
+import LoadingState from "@/ui/LoadingState";
+import ErrorMessage from "@/ui/ErrorMessage";
 
 const registerSchema = z.object({
   first_name: z.string().min(2, "First name is required"),
@@ -29,6 +32,22 @@ const registerSchema = z.object({
     .min(10, "Phone number must be valid")
     .regex(/^[0-9+]+$/, "Only digits or + allowed"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+
+  business_name: z
+    .string()
+    .min(2, "Business name is required")
+    .max(100, "Business name is too long"),
+
+  vat_number: z
+    .string()
+    .min(8, "VAT number is required (minimum 8 characters)")
+    .max(15, "VAT number is too long")
+    .regex(/^[A-Z0-9]+$/, "VAT number format is invalid"),
+
+  categories: z
+    .array(z.number().positive("Invalid category"))
+    .min(1, "Please select at least one business category")
+    .max(5, "Maximum 5 categories allowed"),
 });
 
 function RegistrationPage() {
@@ -40,38 +59,37 @@ function RegistrationPage() {
       email: "",
       phone_number: "",
       password: "",
+      business_name: "",
+      vat_number: "",
+      categories: [],
     },
   });
-  const navigate = useNavigate();
   const register = useAuthStore((state) => state.register);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const {
+    categories,
+    isLoadingCategories,
+    errorCategories,
+    isErrorCategories,
+    refetchCategories,
+  } = useCategories.useAll({ limit: 9999999 });
 
   async function onSubmit(data) {
     setIsSubmitting(true);
     try {
-      // ✅ Normalize phone number format
       const formattedData = {
         ...data,
         phone_number: data.phone_number.startsWith("+")
           ? data.phone_number
           : `+20${data.phone_number.replace(/^0/, "")}`,
       };
-
-      const response = await register(formattedData);
-
+      // console.log("RegistrationPage", data);
+      await register(formattedData);
       toast.success("Registration successful! Please check your email.");
-
-      // 📧 ALWAYS navigate to check email page after registration
-      // Regardless of role - verification comes first!
-      navigate("/check-email", {
-        state: {
-          email: response.email,
-          role: response.role, // Pass role for later use
-        },
-      });
     } catch (error) {
       console.error("Registration error:", error);
-      toast.error(`❌ Registration failed: ${error.message}`);
+      toast.error(`Registration failed: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -84,7 +102,7 @@ function RegistrationPage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Create Account
           </h2>
-          <p className="text-gray-600">Join us today and get started ✨</p>
+          <p className="text-gray-600">Join us today and get started </p>
         </div>
 
         <Form {...form}>
@@ -121,6 +139,20 @@ function RegistrationPage() {
 
             <FormField
               control={form.control}
+              name="business_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Business Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Adidas" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
@@ -150,6 +182,19 @@ function RegistrationPage() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="vat_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>VAT Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder="5984FHEU" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
@@ -169,12 +214,53 @@ function RegistrationPage() {
               )}
             />
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-indigo-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? "Creating Account..." : "Create Account 🚀"}
+            {isLoadingCategories ? (
+              <LoadingState />
+            ) : isErrorCategories ? (
+              <ErrorMessage
+                message={errorCategories?.message || "Failed to load data"}
+                dismissible
+                onDismiss={refetchCategories}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="categories"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Business Categories</FormLabel>
+                    <FormControl>
+                      <ToggleGroup
+                        type="multiple"
+                        value={field.value.map(String)}
+                        onValueChange={(values) => {
+                          const numberValues = values.map(Number);
+                          field.onChange(numberValues);
+                        }}
+                        className="grid grid-cols-2 gap-2"
+                      >
+                        {categories?.data?.map((category) => (
+                          <ToggleGroupItem
+                            key={category.id}
+                            value={String(category.id)}
+                            className="text-left data-[state=on]:bg-accent/15 data-[state=on]:text-accent"
+                          >
+                            {category.name}
+                          </ToggleGroupItem>
+                        ))}
+                      </ToggleGroup>
+                    </FormControl>
+                    <FormDescription>
+                      Select up to 5 categories that describe your business
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? "Creating Account..." : "Create Account "}
             </Button>
           </form>
         </Form>
@@ -182,12 +268,9 @@ function RegistrationPage() {
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             Already have an account?{" "}
-            <a
-              href="/login"
-              className="text-blue-600 hover:text-blue-800 font-medium"
-            >
-              Sign in 👋
-            </a>
+            <Link to={"/login"} className="text-accent hover:text-accent/70">
+              Sign in
+            </Link>
           </p>
         </div>
       </div>

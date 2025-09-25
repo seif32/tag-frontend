@@ -113,33 +113,40 @@ export const AdminSidebarGroups = [
       },
       {
         menuButton: {
-          name: "Users",
-          path: "/admin/users",
-          iconName: "Users",
-          submenuButtons: [
-            {
-              name: "All Users",
-              path: "/admin/users",
-              iconName: "Users",
-            },
-            {
-              name: "Customers",
-              path: "/admin/users/customers",
-              iconName: "UserCheck",
-            },
-            {
-              name: "Admins",
-              path: "/admin/users/admins",
-              iconName: "Shield",
-            },
-            {
-              name: "Add User",
-              path: "/admin/users/new",
-              iconName: "UserPlus",
-            },
-          ],
+          name: "Promo codes",
+          path: "/admin/shipping",
+          iconName: "TicketPercent",
         },
       },
+      // {
+      //   menuButton: {
+      //     name: "Users",
+      //     path: "/admin/users",
+      //     iconName: "Users",
+      //     submenuButtons: [
+      //       {
+      //         name: "All Users",
+      //         path: "/admin/users",
+      //         iconName: "Users",
+      //       },
+      //       {
+      //         name: "Customers",
+      //         path: "/admin/users/customers",
+      //         iconName: "UserCheck",
+      //       },
+      //       {
+      //         name: "Admins",
+      //         path: "/admin/users/admins",
+      //         iconName: "Shield",
+      //       },
+      //       {
+      //         name: "Add User",
+      //         path: "/admin/users/new",
+      //         iconName: "UserPlus",
+      //       },
+      //     ],
+      //   },
+      // },
     ],
   },
   {

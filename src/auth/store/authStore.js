@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import authApi from "../services/authApi";
 
-// 🏪 Main Auth Store
 export const useAuthStore = create((set, get) => ({
   user: null,
   isAuthenticated: false,
@@ -48,16 +47,13 @@ export const useAuthStore = create((set, get) => ({
     set({ loading: true, error: null });
 
     try {
-      // Backend registration
       const backendUser = await authApi.register(userData);
 
-      // Firebase login
       const userCredential = await authApi.login(
         userData.email,
         userData.password
       );
 
-      // Optional: Send verification email
       try {
         console.log(
           "✅ Verification email sent to:",

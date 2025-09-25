@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useAuthStore } from "../store/authStore";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,15 +28,12 @@ function LoginPage() {
     },
   });
 
-  const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
   const loading = useAuthStore((state) => state.loading);
 
   async function onSubmit(data) {
     try {
       await login(data.email, data.password);
-      // 🎉 No manual navigation needed!
-      // PublicRoute will automatically redirect based on user role
     } catch (error) {
       console.error("Login error:", error);
       alert(`❌ Login failed: ${error.message}`);
@@ -50,7 +47,7 @@ function LoginPage() {
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome Back
           </h2>
-          <p className="text-gray-600">Sign in to your account 🔐</p>
+          <p className="text-gray-600">Sign in to your account</p>
         </div>
 
         <Form {...form}>
@@ -91,12 +88,8 @@ function LoginPage() {
               )}
             />
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transform hover:scale-[1.02] transition-all duration-200 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {loading ? "Signing In..." : "Sign In 🚀"}
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? "Signing In..." : "Sign In "}
             </Button>
           </form>
         </Form>
@@ -104,12 +97,9 @@ function LoginPage() {
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             Don&apos;t have an account?{" "}
-            <a
-              href="/register"
-              className="text-purple-600 hover:text-purple-800 font-medium"
-            >
-              Sign up 📝
-            </a>
+            <Link to="/register" className="text-accent hover:text-accent/70">
+              Sign up
+            </Link>
           </p>
         </div>
       </div>
