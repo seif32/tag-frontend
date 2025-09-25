@@ -123,8 +123,10 @@ export default function OrderDataTable({
             onValueChange={handleStatusFilter}
           >
             <SelectTrigger className="w-[220px]">
-              <Filter className="w-4 h-4 mr-2" />
-              <SelectValue placeholder="All Status" />
+              <div className="flex ">
+                <Filter className="w-4 h-4 mr-2" />
+                <SelectValue placeholder="All Status" />
+              </div>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>

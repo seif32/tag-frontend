@@ -20,7 +20,6 @@ function AdminSidebar() {
           <TagSidebarGroup key={index} group={group} />
         ))}
 
-        {/* Optional footer */}
         <SidebarFooter>{/* Add footer content if needed */}</SidebarFooter>
       </SidebarContent>
     </Sidebar>

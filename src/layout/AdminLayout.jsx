@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bell, Settings, LogOut, User } from "lucide-react";
+import { useAuthStore } from "@/auth/store/authStore";
 
 function AdminLayout() {
   return (
@@ -38,16 +39,18 @@ function AdminLayout() {
 export default AdminLayout;
 
 function AdminHeader() {
-  const user = {
-    name: "Ahmed Hassan",
-    email: "ahmed@example.com",
-    avatar: "https://github.com/shadcn.png",
-    role: "Admin",
-  };
+  // const user = {
+  //   name: "Ahmed Hassan",
+  //   email: "ahmed@example.com",
+  //   avatar: "https://github.com/shadcn.png",
+  //   role: "Admin",
+  // };
+
+  const user = useAuthStore((state) => state.user);
 
   const notifications = 3;
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b bg-background px-4">
+    <header className="flex h-16 shrink-0 items-center justify-between border-b bg-background px-4 mb-3">
       <div className="flex items-center gap-2">
         <SidebarTrigger className="-ml-1" />
         <div className="h-6 w-px bg-border mx-2" />

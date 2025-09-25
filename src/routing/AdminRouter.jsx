@@ -7,6 +7,7 @@ import AdminOrderPage from "@/features/admin/orders/pages/AdminOrderPage";
 import AdminOrdersPage from "@/features/admin/orders/pages/AdminOrdersPage";
 import AdminProductPage from "@/features/admin/products/pages/AdminProductPage";
 import AdminProductsPage from "@/features/admin/products/pages/AdminProductsPage";
+import AdminShippingPage from "@/features/admin/shipping/pages/AdminShippingPage";
 import AdminTagsPage from "@/features/admin/tags/pages/AdminTagsPage";
 import AdminVariantsTypesPage from "@/features/admin/variants/pages/AdminVariantsTypesPage";
 import AdminVariantsValuesPage from "@/features/admin/variants/pages/AdminVariantsValuesPage";
@@ -50,6 +51,8 @@ function AdminRouter() {
 
         <Route path={"orders"} element={<AdminOrdersPage />} />
         <Route path={"orders/:orderId"} element={<AdminOrderPage />} />
+
+        <Route path={"shipping"} element={<AdminShippingPage />} />
       </Route>
     </Routes>
   );

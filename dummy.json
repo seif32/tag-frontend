@@ -1,34 +1,110 @@
 {
-  "id": 7,
-  "product_id": 2,
-  "variant_sku": "SKU-33DDE7-1756515068419",
-  "variant_name": null,
-  "is_primary": 0,
-  "price": 500,
-  "compare_at_price": 800,
-  "cost_price": 250,
-  "currency": "USD",
-  "quantity": 62,
-  "created_at": "2025-08-30T00:51:08.000Z",
-  "updated_at": "2025-09-18T15:24:43.000Z",
-  "vat": 0,
-  "types": [
+  "data": [
     {
-      "type_id": 1,
-      "type_name": "Color",
-      "value": {
-        "id": 11,
-        "name": "White"
-      }
+      "id": 1,
+      "name": "Bath",
+      "shipping_fees": "45.00",
+      "has_shipping": 1,
+      "free_shipping_threshold": "2000.00",
+      "always_charge_shipping": 1,
+      "created_at": "2025-09-23T12:14:03.000Z",
+      "updated_at": "2025-09-23T12:14:03.000Z"
     },
     {
-      "type_id": 6,
-      "type_name": "Width",
-      "value": {
-        "id": 28,
-        "name": "Regular"
-      }
+      "id": 2,
+      "name": "Birmingham",
+      "shipping_fees": "45.00",
+      "has_shipping": 1,
+      "free_shipping_threshold": "2000.00",
+      "always_charge_shipping": 1,
+      "created_at": "2025-09-23T12:14:03.000Z",
+      "updated_at": "2025-09-23T12:14:03.000Z"
+    },
+    {
+      "id": 3,
+      "name": "Bradford",
+      "shipping_fees": "45.00",
+      "has_shipping": 1,
+      "free_shipping_threshold": "2000.00",
+      "always_charge_shipping": 1,
+      "created_at": "2025-09-23T12:14:03.000Z",
+      "updated_at": "2025-09-23T12:14:03.000Z"
+    },
+    {
+      "id": 4,
+      "name": "Brighton & Hove",
+      "shipping_fees": "20.00",
+      "has_shipping": 1,
+      "free_shipping_threshold": "2000.00",
+      "always_charge_shipping": 0,
+      "created_at": "2025-09-23T12:14:03.000Z",
+      "updated_at": "2025-09-23T12:14:03.000Z"
+    },
+    {
+      "id": 5,
+      "name": "Bristol",
+      "shipping_fees": "45.00",
+      "has_shipping": 1,
+      "free_shipping_threshold": "2000.00",
+      "always_charge_shipping": 1,
+      "created_at": "2025-09-23T12:14:03.000Z",
+      "updated_at": "2025-09-23T12:14:03.000Z"
+    },
+    {
+      "id": 6,
+      "name": "Cambridge",
+      "shipping_fees": "45.00",
+      "has_shipping": 1,
+      "free_shipping_threshold": "2000.00",
+      "always_charge_shipping": 1,
+      "created_at": "2025-09-23T12:14:03.000Z",
+      "updated_at": "2025-09-23T12:14:03.000Z"
+    },
+    {
+      "id": 7,
+      "name": "Canterbury",
+      "shipping_fees": "45.00",
+      "has_shipping": 1,
+      "free_shipping_threshold": "2000.00",
+      "always_charge_shipping": 1,
+      "created_at": "2025-09-23T12:14:03.000Z",
+      "updated_at": "2025-09-23T12:14:03.000Z"
+    },
+    {
+      "id": 8,
+      "name": "Carlisle",
+      "shipping_fees": "45.00",
+      "has_shipping": 1,
+      "free_shipping_threshold": "2000.00",
+      "always_charge_shipping": 1,
+      "created_at": "2025-09-23T12:14:03.000Z",
+      "updated_at": "2025-09-23T12:14:03.000Z"
+    },
+    {
+      "id": 9,
+      "name": "Chelmsford",
+      "shipping_fees": "45.00",
+      "has_shipping": 1,
+      "free_shipping_threshold": "2000.00",
+      "always_charge_shipping": 1,
+      "created_at": "2025-09-23T12:14:03.000Z",
+      "updated_at": "2025-09-23T12:14:03.000Z"
+    },
+    {
+      "id": 10,
+      "name": "Chester",
+      "shipping_fees": "45.00",
+      "has_shipping": 1,
+      "free_shipping_threshold": "2000.00",
+      "always_charge_shipping": 1,
+      "created_at": "2025-09-23T12:14:03.000Z",
+      "updated_at": "2025-09-23T12:14:03.000Z"
     }
   ],
-  "images": []
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 56,
+    "totalPages": 6
+  }
 }

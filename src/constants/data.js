@@ -103,6 +103,14 @@ export const AdminSidebarGroups = [
           // ],
         },
       },
+
+      {
+        menuButton: {
+          name: "Shipping",
+          path: "/admin/shipping",
+          iconName: "Truck",
+        },
+      },
       {
         menuButton: {
           name: "Users",
