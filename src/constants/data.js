@@ -30,6 +30,11 @@ export const AdminSidebarGroups = [
               path: "/admin/categories",
               iconName: "Tags",
             },
+            {
+              name: "Bundles",
+              path: "/admin/bundles",
+              iconName: "Boxes",
+            },
             // {
             //   name: "Inventory",
             //   path: "/admin/inventory",

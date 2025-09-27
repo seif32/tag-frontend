@@ -1,5 +1,6 @@
 import { ROUTES } from "@/constants";
 import AdminBrandsPage from "@/features/admin/brands/pages/AdminBrandsPage";
+import AdminBundlesPage from "@/features/admin/bundles/pages/AdminBundlesPage";
 import AdminAddCategoryPage from "@/features/admin/categories/pages/AdminAddCategoryPage";
 import AdminCategoriesPage from "@/features/admin/categories/pages/AdminCategoriesPage";
 import AdminDashboardPage from "@/features/admin/dashboard/pages/AdminDashboardPage";
@@ -57,7 +58,7 @@ function AdminRouter() {
         <Route path={"shipping"} element={<AdminShippingPage />} />
 
         <Route path={"promo-codes"} element={<AdminPromoCodesPage />} />
-        {/* <Route path={"promo-codes"} element={<TestPromoPage />} /> */}
+        <Route path={"bundles"} element={<AdminBundlesPage />} />
       </Route>
     </Routes>
   );

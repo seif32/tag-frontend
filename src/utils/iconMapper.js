@@ -22,6 +22,7 @@ import {
   Award,
   SwatchBook,
   TicketPercent,
+  Boxes,
 } from "lucide-react";
 
 export const iconMap = {
@@ -47,6 +48,7 @@ export const iconMap = {
   Award,
   SwatchBook,
   TicketPercent,
+  Boxes,
 };
 
 // Helper function to get icon component

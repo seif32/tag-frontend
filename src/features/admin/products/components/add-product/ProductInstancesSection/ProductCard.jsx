@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import useBundles from "@/hooks/useBundles";
 
 const formSchema = z.object({
   // variant_id: z.string().min(1, "Please select a product variant"),
@@ -133,12 +134,15 @@ function ProductCard({ variantsList, onEditProduct, productName }) {
 export default ProductCard;
 
 function AddBundleModal({ isOpen, onClose, selectedVariant, form }) {
+  const { createBundle, isPendingBundles } = useBundles.useCreate();
   function onSubmit(data) {
     const payload = {
       ...data,
       variant_id: selectedVariant?.id,
     };
-    onClose();
+    createBundle(payload, {
+      onSuccess: () => onClose(),
+    });
   }
 
   return (
@@ -253,7 +257,9 @@ function AddBundleModal({ isOpen, onClose, selectedVariant, form }) {
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">Create Bundle</Button>
+              <Button type="submit" disabled={isPendingBundles}>
+                Create Bundle
+              </Button>
             </div>
           </form>
         </Form>

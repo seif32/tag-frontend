@@ -19,6 +19,7 @@ import TagsSection from "../components/add-product/GeneralInfoSection/TagsSectio
 import EditProductDialog from "../components/add-product/ProductInstancesSection/EditProductDialog";
 import { useVariantsIDs } from "../hooks/useVariantsIDs";
 import { zodResolver } from "@hookform/resolvers/zod";
+import BundlesSection from "../components/add-product/BundlesSection";
 
 export default function AdminProductPage({ mode }) {
   const { id } = useParams();
@@ -252,6 +253,7 @@ export default function AdminProductPage({ mode }) {
                 {!isEditMode && (
                   <TagsSection form={form} productTags={product?.tags} />
                 )}
+                <BundlesSection />
               </div>
             </div>
           </div>
