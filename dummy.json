@@ -1,14 +1,78 @@
 {
-  "code": "FEFEFE",
-  "description": "fekfefiefj",
-  "discount_type": "fixed",
-  "discount_value": 100,
-  "min_order_value": 898,
-  "max_discount": 89,
-  "start_date": "2025-09-28T00:00:00.000Z",
-  "end_date": "2025-10-11T00:00:00.000Z",
-  "usage_limit": 100,
-  "per_user_limit": 1,
-  "is_first_order": true,
-  "is_active": true
+  "data": [
+    {
+      "id": 1,
+      "variant_id": 101,
+      "quantity": 5,
+      "vat": 14,
+      "subtotal": 400,
+      "total": 456,
+      "is_active": true,
+      "created_at": "2025-09-27T16:26:49.116Z",
+      "updated_at": "2025-09-27T16:26:49.116Z",
+      "product": {
+        "id": 1,
+        "name": "iPhone 15",
+        "sku": "SKU-527938-1757370919067",
+        "description": "New iPhone with dynamic variants",
+        "short_description": "Compact and fast",
+        "category_id": 1,
+        "subcategory_id": 2,
+        "brand_id": 1,
+        "featured": 1,
+        "active": 1,
+        "rating": "0.00",
+        "rating_count": 0,
+        "created_at": "2025-09-08T22:35:19.000Z",
+        "updated_at": "2025-09-08T22:35:19.000Z",
+        "category_name": "Electronics",
+        "sub_category_name": "test",
+        "brand_name": "Nike",
+        "tags": [
+          {
+            "id": 1,
+            "name": "Sports"
+          }
+        ],
+        "variants": [
+          {
+            "id": 101,
+            "product_id": 55,
+            "is_primary": true,
+            "vat": 14.5,
+            "price": 1199.99,
+            "compare_at_price": 1299.99,
+            "cost_price": 1000,
+            "currency": "USD",
+            "quantity": 10,
+            "images": [
+              {
+                "image_url": "https://example.com/images/black1.jpg",
+                "is_primary": 1
+              }
+            ],
+            "variant_sku": "SKU-67D2A1-1757370919180",
+            "created_at": "2025-09-27T16:26:49.116Z",
+            "updated_at": "2025-09-27T16:26:49.116Z",
+            "types": [
+              {
+                "type_id": 1,
+                "type_name": "Color",
+                "value": {
+                  "id": 2,
+                  "name": "blackkk"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 125,
+    "totalPages": 13
+  }
 }

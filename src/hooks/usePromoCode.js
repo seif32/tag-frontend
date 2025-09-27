@@ -67,10 +67,10 @@ const usePromoCode = {
    * Returns: isLoadingPromoCode, promoCode, errorPromoCode
    * Example: const { isLoadingPromoCode, promoCode } = usePromoCodes.useByCode("SAVE20");
    */
-  useByCode: (code, options = {}) => {
+  useByCode: (code, queryParams = {}, options = {}) => {
     const query = useQuery({
-      queryKey: ["promoCodes", "code", code],
-      queryFn: () => promoCodeApi.getByCode(code),
+      queryKey: ["promoCodes", "code", code, queryParams],
+      queryFn: () => promoCodeApi.getByCode(code, queryParams),
       enabled: !!code, // Only run if code exists
       staleTime: 2 * 60 * 1000, // 2 minutes - for active validation
       retry: false, // Don't retry failed promo code validations

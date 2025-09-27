@@ -113,7 +113,6 @@ export default function AdminProductPage({ mode }) {
     }
   }, [product, form, mode]);
 
-  // Dialog handlers
   function handleEditProduct(product) {
     setSelectedProduct(product);
     setIsDialogOpen(true);

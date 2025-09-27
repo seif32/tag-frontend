@@ -17,7 +17,6 @@ const promoCodeApi = {
 
       const queryString = params.toString();
       const url = `/promo-codes${queryString ? `?${queryString}` : ""}`;
-      console.log("promoCodeApi", url);
 
       return await api.get(url, options);
     } catch (error) {
@@ -56,16 +55,22 @@ const promoCodeApi = {
    * Perfect for checkout validation, applying discounts
    * Example: const promoCode = await promoCodesApi.getByCode("SAVE20");
    */
-  getByCode: async (code, options = {}) => {
+  getByCode: async (code, queryParams = {}, options = {}) => {
     if (!code) {
       throw new Error("Promo code is required");
     }
 
     try {
-      return await api.get(
-        `/promo-codes/code/${encodeURIComponent(code)}`,
-        options
-      );
+      const params = new URLSearchParams();
+      if (queryParams.user_id) params.append("user_id", queryParams.user_id);
+      if (queryParams.subtotal) params.append("subtotal", queryParams.subtotal);
+
+      const queryString = params.toString();
+      const url = `/promo-codes/code/${encodeURIComponent(code)}${
+        queryString ? `?${queryString}` : ""
+      }`;
+
+      return await api.get(url, options);
     } catch (error) {
       console.error(`Failed to fetch promo code ${code}:`, error.details);
       throw error;

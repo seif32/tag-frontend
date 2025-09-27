@@ -105,7 +105,7 @@ export default function PromoCodesTable({ promoCodes, onView, onEdit }) {
     const isLimitReached = promoCode.usage_count >= promoCode.usage_limit;
 
     return (
-      <div className="space-y-2 min-w-[120px]">
+      <div className="space-y-1 min-w-[120px]">
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium">{promoCode.usage_count}</span>
           <span className="text-gray-500">
@@ -210,7 +210,7 @@ export default function PromoCodesTable({ promoCodes, onView, onEdit }) {
                 <TableCell>{getUsageDisplay(promoCode)}</TableCell>
 
                 <TableCell>
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <div className="flex items-center gap-1 text-sm">
                       <Calendar className="w-3 h-3 text-green-600" />
                       <span className="font-medium">Start:</span>
