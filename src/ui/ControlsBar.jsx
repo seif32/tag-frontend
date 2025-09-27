@@ -10,7 +10,12 @@ import {
 import { Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-export default function ControlsBar({ searchInput, setSearchInput, children }) {
+export default function ControlsBar({
+  searchInput,
+  setSearchInput,
+  children,
+  searchName,
+}) {
   const [searchParams] = useSearchParams();
   const updateUrlParams = useUpdateUrlParams();
 
@@ -22,7 +27,7 @@ export default function ControlsBar({ searchInput, setSearchInput, children }) {
       <div className="relative ">
         <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
         <Input
-          placeholder="Search by city . . ."
+          placeholder={`Search by ${searchName} . . .`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className=" w-70 min-w-full  pl-10"

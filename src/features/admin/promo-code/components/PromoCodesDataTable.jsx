@@ -177,15 +177,15 @@ export default function PromoCodesTable({ promoCodes, onView, onEdit }) {
       <Table>
         <TableHeader>
           <TableRow className="">
-            <TableHead className="font-semibold w-25">ID</TableHead>
-            <TableHead className="font-semibold">Code</TableHead>
-            <TableHead className="font-semibold">Description</TableHead>
-            <TableHead className="font-semibold">Discount</TableHead>
-            <TableHead className="font-semibold">Usage Stats</TableHead>
-            <TableHead className="font-semibold">Valid Period</TableHead>
-            {/* <TableHead className="font-semibold">Conditions</TableHead> */}
-            <TableHead className="font-semibold">Status</TableHead>
-            <TableHead className="font-semibold text-center">Actions</TableHead>
+            <TableHead className="w-25">ID</TableHead>
+            <TableHead>Code</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead>Discount</TableHead>
+            <TableHead>Usage Stats</TableHead>
+            <TableHead>Valid Period</TableHead>
+            {/* <TableHead >Conditions</TableHead> */}
+            <TableHead>Status</TableHead>
+            <TableHead className=" text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -229,7 +229,7 @@ export default function PromoCodesTable({ promoCodes, onView, onEdit }) {
                 <TableCell>{getStatusBadge(promoCode)}</TableCell>
 
                 <TableCell>
-                  <div className="flex gap-1 justify-center">
+                  <div className="flex  justify-center">
                     <Button
                       variant="ghost"
                       size="sm"
