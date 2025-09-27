@@ -13,7 +13,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -22,17 +21,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  Search,
-  Filter,
-} from "lucide-react";
+import { Search, Filter } from "lucide-react";
 import useDebounce from "@/hooks/useDebounce";
 import { useUpdateUrlParams } from "@/hooks/useUpdateUrlParams";
 import { useSearchParams } from "react-router";
+import PaginationControlsBar from "../../ui/PaginationControlsBar";
 
 export default function OrderDataTable({
   // Data props
@@ -61,14 +54,13 @@ export default function OrderDataTable({
   const updateUrlParams = useUpdateUrlParams();
   const [searchParams] = useSearchParams();
 
-  const page = parseInt(searchParams.get("page")) || 1;
   const limit = parseInt(searchParams.get("limit")) || 10;
 
   useEffect(() => {
     if (onFiltersChange && debouncedSearch !== filters.search) {
       onFiltersChange({ ...filters, search: debouncedSearch });
     }
-  }, [debouncedSearch]); // Only depends on debounced value!
+  }, [debouncedSearch]);
 
   const table = useReactTable({
     data,
@@ -96,9 +88,6 @@ export default function OrderDataTable({
       });
     }
   }
-
-  const canPreviousPage = page > 1;
-  const canNextPage = page < pageCount;
 
   return (
     <div className="space-y-4">
@@ -267,62 +256,12 @@ export default function OrderDataTable({
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex flex-col items-center justify-between space-y-2 sm:flex-row sm:space-y-0">
-        {/* Results info */}
-        <div className="text-sm text-gray-700">
-          Showing{" "}
-          <strong>{totalCount === 0 ? 0 : (page - 1) * limit + 1}</strong> -{" "}
-          <strong>{Math.min(page * limit, totalCount)}</strong> of{" "}
-          <strong>{totalCount.toLocaleString()}</strong> orders
-        </div>
-
-        {/* Pagination buttons */}
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => updateUrlParams({ page: 1 })}
-            disabled={!canPreviousPage || isLoading}
-          >
-            <ChevronsLeft className="w-4 h-4" />
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => updateUrlParams({ page: page - 1 })}
-            disabled={!canPreviousPage || isLoading}
-          >
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            Previous
-          </Button>
-
-          <div className="flex items-center px-4 space-x-2">
-            <span className="text-sm">
-              Page {page} of {pageCount}
-            </span>
-          </div>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => updateUrlParams({ page: page + 1 })}
-            disabled={!canNextPage || isLoading}
-          >
-            Next
-            <ChevronRight className="w-4 h-4 ml-1" />
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => updateUrlParams({ page: pageCount })}
-            disabled={!canNextPage || isLoading}
-          >
-            <ChevronsRight className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
+      <PaginationControlsBar
+        isLoading={isLoading}
+        pageCount={pageCount}
+        totalCount={totalCount}
+        dataName={"orders"}
+      />
     </div>
   );
 }

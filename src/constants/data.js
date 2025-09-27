@@ -114,7 +114,7 @@ export const AdminSidebarGroups = [
       {
         menuButton: {
           name: "Promo codes",
-          path: "/admin/shipping",
+          path: "/admin/promo-codes",
           iconName: "TicketPercent",
         },
       },

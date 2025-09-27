@@ -241,7 +241,7 @@ function AddValueModal({
 
 function ValuesTable({ values = [], onEditValue, variantTypeName }) {
   return (
-    <Table className={" "}>
+    <Table>
       <TableCaption>
         {values?.length === 0
           ? `No values for variant ${variantTypeName}, add it's first . . .`

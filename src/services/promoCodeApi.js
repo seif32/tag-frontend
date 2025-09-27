@@ -12,9 +12,12 @@ const promoCodeApi = {
       const params = new URLSearchParams();
       if (queryParams.page) params.append("page", queryParams.page);
       if (queryParams.limit) params.append("limit", queryParams.limit);
+      if (queryParams.search) params.append("search", queryParams.search);
+      if (queryParams.status) params.append("status", queryParams.status);
 
       const queryString = params.toString();
       const url = `/promo-codes${queryString ? `?${queryString}` : ""}`;
+      console.log("promoCodeApi", url);
 
       return await api.get(url, options);
     } catch (error) {

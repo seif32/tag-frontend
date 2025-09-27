@@ -1,5 +1,6 @@
 import promoCodeApi from "@/services/promoCodeApi";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import { toast } from "sonner";
 
 const usePromoCode = {
@@ -11,9 +12,15 @@ const usePromoCode = {
    * Example: const { isLoadingPromoCodes, promoCodes } = usePromoCodes.useAll({page: 1, limit: 10});
    */
   useAll: (queryParams = {}, options = {}) => {
+    const [searchParams] = useSearchParams();
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    const page = parseInt(searchParams.get("page")) || 1;
+    const status = searchParams.get("status") || "";
+    const allQueryParams = { ...queryParams, limit, status, page };
+
     const query = useQuery({
-      queryKey: ["promoCodes", "all", queryParams],
-      queryFn: () => promoCodeApi.getAll(queryParams),
+      queryKey: ["promoCodes", "all", allQueryParams],
+      queryFn: () => promoCodeApi.getAll(allQueryParams),
       staleTime: 5 * 60 * 1000, // 5 minutes - promo codes don't change often
       cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
       ...options,

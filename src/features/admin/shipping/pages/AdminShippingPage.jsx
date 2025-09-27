@@ -84,12 +84,13 @@ const citySchema = z.object({
 
 function AdminShippingPage() {
   const [searchInput, setSearchInput] = useState("");
+  const debouncedSearch = useDebounce(searchInput, 500);
+
   const [cityModal, setCityModal] = useState({
     open: false,
     mode: "add",
     city: null,
   });
-  const debouncedSearch = useDebounce(searchInput, 500);
 
   const form = useForm({
     resolver: zodResolver(citySchema),

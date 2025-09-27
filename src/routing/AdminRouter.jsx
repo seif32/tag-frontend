@@ -7,11 +7,13 @@ import AdminOrderPage from "@/features/admin/orders/pages/AdminOrderPage";
 import AdminOrdersPage from "@/features/admin/orders/pages/AdminOrdersPage";
 import AdminProductPage from "@/features/admin/products/pages/AdminProductPage";
 import AdminProductsPage from "@/features/admin/products/pages/AdminProductsPage";
+import AdminPromoCodesPage from "@/features/admin/promo-code/pages/AdminPromoCodesPage";
 import AdminShippingPage from "@/features/admin/shipping/pages/AdminShippingPage";
 import AdminTagsPage from "@/features/admin/tags/pages/AdminTagsPage";
 import AdminVariantsTypesPage from "@/features/admin/variants/pages/AdminVariantsTypesPage";
 import AdminVariantsValuesPage from "@/features/admin/variants/pages/AdminVariantsValuesPage";
 import AdminLayout from "@/layout/AdminLayout";
+import TestPromoPage from "@/ui/TestPromoPage";
 import { Routes, Route } from "react-router";
 
 function AdminRouter() {
@@ -53,6 +55,9 @@ function AdminRouter() {
         <Route path={"orders/:orderId"} element={<AdminOrderPage />} />
 
         <Route path={"shipping"} element={<AdminShippingPage />} />
+
+        <Route path={"promo-codes"} element={<AdminPromoCodesPage />} />
+        {/* <Route path={"promo-codes"} element={<TestPromoPage />} /> */}
       </Route>
     </Routes>
   );
