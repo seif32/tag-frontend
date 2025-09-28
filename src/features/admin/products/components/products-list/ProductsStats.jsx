@@ -1,12 +1,6 @@
 import StatsCard from "@/features/admin/ui/StatsCard";
 import LoadingState from "@/ui/LoadingState";
-import {
-  AlertTriangle,
-  CheckCircle,
-  Package,
-  Star,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle, Package, Star, XCircle } from "lucide-react";
 import { nanoid } from "nanoid";
 
 function ProductsStats({ data, isLoadingStats }) {

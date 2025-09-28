@@ -9,17 +9,19 @@ const productsApi = {
    * Returns products with full variant and image information
    * Example: const products = await productsApi.getAll({ active: 1, category_id: 2 });
    */
-  getAll: async (filters = {}, options = {}) => {
+  getAll: async (allParams = {}, options = {}) => {
     try {
-      // Build query string from filters
       const queryParams = new URLSearchParams();
 
-      if (filters.active !== undefined)
-        queryParams.append("active", filters.active);
-      if (filters.category_id)
-        queryParams.append("category_id", filters.category_id);
-      if (filters.subcategory_id)
-        queryParams.append("subcategory_id", filters.subcategory_id);
+      if (allParams.active !== null)
+        queryParams.append("active", allParams.active);
+      if (allParams.category_id)
+        queryParams.append("category_id", allParams.category_id);
+      if (allParams.subcategory_id)
+        queryParams.append("subcategory_id", allParams.subcategory_id);
+      if (allParams.page) queryParams.append("page", allParams.page);
+      if (allParams.limit) queryParams.append("limit", allParams.limit);
+      if (allParams.search) queryParams.append("search", allParams.search);
 
       const queryString = queryParams.toString();
       const url = queryString ? `/products?${queryString}` : "/products";
@@ -49,8 +51,7 @@ const productsApi = {
 
       if (filters.page) queryParams.append("page", filters.page);
       if (filters.limit) queryParams.append("limit", filters.limit);
-      if (filters.active !== undefined)
-        queryParams.append("active", filters.active);
+      if (filters.active !== null) queryParams.append("active", filters.active);
       if (filters.category_id)
         queryParams.append("category_id", filters.category_id);
       if (filters.subcategory_id)

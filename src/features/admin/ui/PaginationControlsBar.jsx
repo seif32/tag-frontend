@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useUpdateUrlParams } from "@/hooks/useUpdateUrlParams";
+import LoadingState from "@/ui/LoadingState";
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,8 +10,9 @@ import {
 import { useSearchParams } from "react-router";
 
 function PaginationControlsBar({ pageCount, totalCount, isLoading, dataName }) {
-  const updateUrlParams = useUpdateUrlParams();
   const [searchParams] = useSearchParams();
+  const updateUrlParams = useUpdateUrlParams();
+  if (isLoading) return <LoadingState />;
 
   const page = parseInt(searchParams.get("page")) || 1;
   const limit = parseInt(searchParams.get("limit")) || 10;

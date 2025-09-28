@@ -1,5 +1,3 @@
-import { ArrowUpDown, Eye, Edit, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +7,8 @@ import {
 import { useNavigate } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import { formatDateShort } from "@/utils/dateUtils";
+import { Edit, Eye, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function useProductColumns({ onDelete }) {
   const navigate = useNavigate();
@@ -17,16 +17,7 @@ export function useProductColumns({ onDelete }) {
     // 🏷️ PRODUCT NAME - Main Identifier
     {
       accessorKey: "name",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 font-semibold"
-        >
-          Product
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      ),
+      header: ({ column }) => <div className="p-0 ">Product</div>,
       cell: ({ row }) => {
         const product = row.original;
         return (
@@ -42,16 +33,7 @@ export function useProductColumns({ onDelete }) {
     // 🏪 CATEGORY - Organization
     {
       accessorKey: "category_name",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 font-semibold"
-        >
-          Category
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      ),
+      header: ({ column }) => <div className="p-0 ">Category</div>,
       cell: ({ row }) => {
         const category = row.getValue("category_name");
         const subcategory = row.original.sub_category_name;
@@ -72,16 +54,7 @@ export function useProductColumns({ onDelete }) {
     // 📦 STOCK STATUS - Inventory Overview
     {
       id: "stockStatus",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 font-semibold"
-        >
-          Stock
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      ),
+      header: ({ column }) => <div className="p-0 ">Stock</div>,
       cell: ({ row }) => {
         const stock = row.original.total_quantity || 0;
 
@@ -120,16 +93,7 @@ export function useProductColumns({ onDelete }) {
     // 🔢 VARIANT COUNT - Complexity Indicator
     {
       accessorKey: "variant_count",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 font-semibold "
-        >
-          Variants
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      ),
+      header: ({ column }) => <div className="p-0  ">Variants</div>,
       cell: ({ row }) => {
         const count = row.original.variant_count || 0;
         return (
@@ -144,16 +108,7 @@ export function useProductColumns({ onDelete }) {
     // ✅ CREATED AT - Modern Date Display
     {
       id: "created_at",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 font-semibold"
-        >
-          Created
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
-      ),
+      header: ({ column }) => <div className="p-0 ">Created</div>,
       cell: ({ row }) => {
         const dateString = row.original.created_at;
         const date = new Date(dateString);
@@ -188,14 +143,12 @@ export function useProductColumns({ onDelete }) {
     {
       id: "updated_at",
       header: ({ column }) => (
-        <Button
-          variant="ghost"
+        <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 font-semibold"
+          className="p-0 "
         >
           Updated
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
+        </div>
       ),
       cell: ({ row }) => {
         const dateString = row.original.updated_at;
@@ -228,14 +181,12 @@ export function useProductColumns({ onDelete }) {
     {
       accessorKey: "active",
       header: ({ column }) => (
-        <Button
-          variant="ghost"
+        <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 font-semibold"
+          className="p-0 "
         >
           Status
-          <ArrowUpDown className="w-4 h-4 ml-2" />
-        </Button>
+        </div>
       ),
       cell: ({ row }) => {
         const active = row.original.active;
@@ -280,7 +231,7 @@ export function useProductColumns({ onDelete }) {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="w-8 h-8 p-0">
+              <Button variant={"ghost"} className="w-8 h-8 p-0">
                 <span className="sr-only">Open menu</span>
                 <Eye className="w-4 h-4" />
               </Button>

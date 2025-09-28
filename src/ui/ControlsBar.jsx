@@ -28,7 +28,7 @@ export default function ControlsBar({
       <div className="relative ">
         <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
         <Input
-          placeholder={`Search by ${searchName} . . .`}
+          placeholder={`Search by ${searchName}...`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           className=" w-70 min-w-full  pl-10"

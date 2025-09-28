@@ -42,18 +42,19 @@ const useProducts = {
    * Returns: isLoadingProducts, products, errorProducts
    * Example: const { products } = useProducts.useAllWithoutVariants({ active: 1 });
    */
-  useAllWithoutVariants: (filters = {}, options = {}) => {
+  useAllWithoutVariants: (queryParams = {}, options = {}) => {
     const [searchParams] = useSearchParams();
 
-    // Read page and limit from URL params or fallback to filters or default values
-    const page = parseInt(searchParams.get("page")) || filters.page || 1;
-    const limit = parseInt(searchParams.get("limit")) || filters.limit || 10;
+    const active = searchParams.get("active");
+    const page = parseInt(searchParams.get("page")) || queryParams.page || 1;
+    const limit =
+      parseInt(searchParams.get("limit")) || queryParams.limit || 10;
 
-    // Merge pagination values into filters
     const mergedFilters = {
-      ...filters,
+      ...queryParams,
       page,
       limit,
+      active,
     };
 
     const query = useQuery({
