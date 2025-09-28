@@ -26,9 +26,6 @@ export default function AdminCategoriesPage() {
   const [subcategory, setSubcategory] = useState(null);
   const [openSubcategoryDialog, setOpenSubcategoryDialog] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-
   const {
     allSubCategories,
     errorAllSubCategories,
@@ -119,7 +116,6 @@ export default function AdminCategoriesPage() {
     }
   }
 
-  // ✅ Cancel delete
   function cancelDelete() {
     setDeleteDialog({ open: false, subcategory: null });
   }

@@ -3,21 +3,70 @@
     {
       "id": 1,
       "variant_id": 101,
-      "product_id": 2,
-      "product_name": "Iphone 11",
-      "variants": [
-        {
-          "type": "Color",
-          "value": "Black"
-        }
-      ],
       "quantity": 5,
       "vat": 14,
       "subtotal": 400,
       "total": 456,
       "is_active": true,
-      "created_at": "2025-09-27T18:41:12.028Z",
-      "updated_at": "2025-09-27T18:41:12.028Z"
+      "created_at": "2025-09-27T20:14:15.121Z",
+      "updated_at": "2025-09-27T20:14:15.121Z",
+      "product": {
+        "id": 1,
+        "name": "iPhone 15",
+        "sku": "SKU-527938-1757370919067",
+        "description": "New iPhone with dynamic variants",
+        "short_description": "Compact and fast",
+        "category_id": 1,
+        "subcategory_id": 2,
+        "brand_id": 1,
+        "featured": 1,
+        "active": 1,
+        "rating": "0.00",
+        "rating_count": 0,
+        "created_at": "2025-09-08T22:35:19.000Z",
+        "updated_at": "2025-09-08T22:35:19.000Z",
+        "category_name": "Electronics",
+        "sub_category_name": "test",
+        "brand_name": "Nike",
+        "tags": [
+          {
+            "id": 1,
+            "name": "Sports"
+          }
+        ],
+        "variants": [
+          {
+            "id": 101,
+            "product_id": 55,
+            "is_primary": true,
+            "vat": 14.5,
+            "price": 1199.99,
+            "compare_at_price": 1299.99,
+            "cost_price": 1000,
+            "currency": "USD",
+            "quantity": 10,
+            "images": [
+              {
+                "image_url": "https://example.com/images/black1.jpg",
+                "is_primary": 1
+              }
+            ],
+            "variant_sku": "SKU-67D2A1-1757370919180",
+            "created_at": "2025-09-27T20:14:15.121Z",
+            "updated_at": "2025-09-27T20:14:15.121Z",
+            "types": [
+              {
+                "type_id": 1,
+                "type_name": "Color",
+                "value": {
+                  "id": 2,
+                  "name": "blackkk"
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "pagination": {
