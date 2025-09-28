@@ -141,9 +141,18 @@ const categoriesApi = {
    * Perfect for populating subcategory dropdowns, filters, or your table
    * Example: const allSubs = await categoryApi.getAllSubCategories();
    */
-  getAllSubCategories: async (options = {}) => {
+  getAllSubCategories: async (queryParams = {}, options = {}) => {
     try {
-      return await api.get("/categories/subcategories/all", options);
+      const params = new URLSearchParams();
+      if (queryParams.limit) params.append("limit", queryParams.limit);
+      if (queryParams.page) params.append("page", queryParams.page);
+      if (queryParams.search) params.append("search", queryParams.search);
+
+      const queryString = params.toString();
+      const url = `/categories/subcategories/all${
+        queryString ? `?${queryString}` : ""
+      }`;
+      return await api.get(url, options);
     } catch (error) {
       console.error("Failed to fetch all subcategories:", {
         status: error.status,

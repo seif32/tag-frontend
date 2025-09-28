@@ -1,6 +1,5 @@
-import React from "react";
 import {
-  flexRender, // ← This is the key import you need!
+  flexRender,
   getCoreRowModel,
   useReactTable,
   getSortedRowModel,
@@ -14,13 +13,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
 import { useCategoryColumns } from "./useCategoryColumns";
+import { useState } from "react";
 
 export const CategoriesDataTable = ({ data, onEdit, onDelete, onView }) => {
-  const [sorting, setSorting] = React.useState([]);
-  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [sorting, setSorting] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const columns = useCategoryColumns({ onEdit, onDelete, onView });
 
@@ -40,20 +38,6 @@ export const CategoriesDataTable = ({ data, onEdit, onDelete, onView }) => {
 
   return (
     <div className="space-y-4">
-      {/* Search Bar */}
-      <div className="flex items-center space-x-2">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            placeholder="Search subcategories..."
-            value={globalFilter ?? ""}
-            onChange={(event) => setGlobalFilter(event.target.value)}
-            className="pl-10"
-          />
-        </div>
-      </div>
-
-      {/* Data Table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -69,22 +53,20 @@ export const CategoriesDataTable = ({ data, onEdit, onDelete, onView }) => {
                     }
                     onClick={header.column.getToggleSortingHandler()}
                   >
-                    {/* ✅ CORRECT: Use flexRender for headers */}
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                    {/* Sort indicators */}
-                    {header.column.getCanSort() && (
+                    {/* {header.column.getCanSort() && (
                       <span className="ml-2">
                         {{
                           asc: "↑",
                           desc: "↓",
                         }[header.column.getIsSorted()] ?? "↕"}
                       </span>
-                    )}
+                    )} */}
                   </TableHead>
                 ))}
               </TableRow>
@@ -100,7 +82,6 @@ export const CategoriesDataTable = ({ data, onEdit, onDelete, onView }) => {
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {/* ✅ CORRECT: Use flexRender for cells */}
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

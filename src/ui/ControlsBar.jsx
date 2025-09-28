@@ -15,6 +15,7 @@ export default function ControlsBar({
   setSearchInput,
   children,
   searchName,
+  isShowFilter = true,
 }) {
   const [searchParams] = useSearchParams();
   const updateUrlParams = useUpdateUrlParams();
@@ -33,24 +34,26 @@ export default function ControlsBar({
           className=" w-70 min-w-full  pl-10"
         />
       </div>
-      <Select
-        value={status}
-        onValueChange={(value) => {
-          if (value === "all" || value === "") {
-            updateUrlParams({ status: undefined });
-          } else {
-            updateUrlParams({ status: value });
-          }
-        }}
-      >
-        <SelectTrigger className="w-auto min-w-32">
-          <div className="flex items-center gap-2">
-            <Filter />
-            <SelectValue placeholder="All Status" />
-          </div>
-        </SelectTrigger>
-        {children}
-      </Select>
+      {isShowFilter && (
+        <Select
+          value={status}
+          onValueChange={(value) => {
+            if (value === "all" || value === "") {
+              updateUrlParams({ status: undefined });
+            } else {
+              updateUrlParams({ status: value });
+            }
+          }}
+        >
+          <SelectTrigger className="w-auto min-w-32">
+            <div className="flex items-center gap-2">
+              <Filter />
+              <SelectValue placeholder="All Status" />
+            </div>
+          </SelectTrigger>
+          {children}
+        </Select>
+      )}
       <Select
         value={String(limit)}
         onValueChange={(value) => updateUrlParams({ limit: Number(value) })}

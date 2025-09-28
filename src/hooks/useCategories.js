@@ -1,5 +1,6 @@
 import categoriesApi from "@/services/categoriesApi";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import { toast } from "sonner";
 
 const useCategories = {
@@ -230,10 +231,16 @@ const useCategories = {
    * Returns: isLoadingAllSubCategories, allSubCategories, errorAllSubCategories
    * Example: const { isLoadingAllSubCategories, allSubCategories } = useCategory.useAllSubCategories();
    */
-  useAllSubCategories: (options = {}) => {
+  useAllSubCategories: (queryParams = {}, options = {}) => {
+    const [searchParams] = useSearchParams();
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    const page = parseInt(searchParams.get("page")) || 1;
+
+    const allParams = { ...queryParams, limit, page };
+
     const query = useQuery({
-      queryKey: ["subcategories", "all"],
-      queryFn: categoriesApi.getAllSubCategories,
+      queryKey: ["subcategories", "all", allParams],
+      queryFn: () => categoriesApi.getAllSubCategories(allParams),
       staleTime: 5 * 60 * 1000, // 5 minutes - subcategories don't change often
       cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
       ...options,

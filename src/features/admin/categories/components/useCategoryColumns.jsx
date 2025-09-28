@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { MoreHorizontal, Edit2, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,13 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatDateShort } from "@/utils/dateUtils";
 
-/**
- * 🏷️ CATEGORY COLUMNS HOOK
- * Defines column structure for your subcategory-focused table
- * Following shadcn/ui data table patterns with actions dropdown
- * Perfect for your preference of subcategories as main data[3]
- */
 export const useCategoryColumns = ({ onEdit, onDelete, onView }) => {
   const columns = [
     {
@@ -72,46 +66,47 @@ export const useCategoryColumns = ({ onEdit, onDelete, onView }) => {
       },
     },
 
-    {
-      accessorKey: "active",
-      header: "Status",
-      cell: ({ getValue }) => {
-        const isActive = getValue() === 1;
-        return (
-          <Badge
-            className={
-              isActive
-                ? "border-green-300 bg-green-50 text-green-800 text-[10px]"
-                : "border-red-300 bg-red-50 text-red-800 text-[10px]"
-            }
-            variant={isActive ? "default" : "secondary"}
-          >
-            {isActive ? (
-              <div className="flex items-center gap-1">
-                <div className="w-1 h-1 rounded-[2px] bg-green-400"></div>
-                <span>Active</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-1">
-                <div className="w-1 h-1 rounded-[2px] bg-red-500"></div>
-                <span>Inactive</span>
-              </div>
-            )}
-          </Badge>
-        );
-      },
-    },
+    // {
+    //   accessorKey: "active",
+    //   header: "Status",
+    //   cell: ({ getValue }) => {
+    //     const isActive = getValue() === 1;
+    //     return (
+    //       <Badge
+    //         className={
+    //           isActive
+    //             ? "border-green-300 bg-green-50 text-green-800 text-[10px]"
+    //             : "border-red-300 bg-red-50 text-red-800 text-[10px]"
+    //         }
+    //         variant={isActive ? "default" : "secondary"}
+    //       >
+    //         {isActive ? (
+    //           <div className="flex items-center gap-1">
+    //             <div className="w-1 h-1 rounded-[2px] bg-green-400"></div>
+    //             <span>Active</span>
+    //           </div>
+    //         ) : (
+    //           <div className="flex items-center gap-1">
+    //             <div className="w-1 h-1 rounded-[2px] bg-red-500"></div>
+    //             <span>Inactive</span>
+    //           </div>
+    //         )}
+    //       </Badge>
+    //     );
+    //   },
+    // },
     {
       accessorKey: "created_at",
       header: "Created",
       cell: ({ getValue }) => (
-        <div className="text-sm">
-          {new Date(getValue()).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </div>
+        <div className="text-sm">{formatDateShort(getValue())}</div>
+      ),
+    },
+    {
+      accessorKey: "updated_at",
+      header: "Updated",
+      cell: ({ getValue }) => (
+        <div className="text-sm">{formatDateShort(getValue())}</div>
       ),
     },
     {
