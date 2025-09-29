@@ -103,6 +103,27 @@ const promoCodeApi = {
   },
 
   /**
+   * 📊 GET PROMO CODES STATISTICS
+   * Fetches aggregated statistics about promo codes
+   * Perfect for admin dashboards, overview widgets
+   * Returns: total_codes, active_codes, total_usage, etc.
+   * Example: const stats = await promoCodeApi.getStatistics();
+   */
+  getStatistics: async (options = {}) => {
+    try {
+      return await api.get("/promo-codes/statistics", options);
+    } catch (error) {
+      console.error("Failed to fetch promo codes statistics:", {
+        status: error.status,
+        method: error.method,
+        url: error.url,
+        responseTime: error.responseTime,
+      });
+      throw error;
+    }
+  },
+
+  /**
    * ➕ CREATE NEW PROMO CODE
    * Creates a new promo code with discount rules
    * Required: code, discount_type, discount_value

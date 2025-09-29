@@ -25,18 +25,25 @@ export default function AdminPromoCodesPage() {
     promoCodes,
     isLoadingPromoCodes,
     isErrorPromoCodes,
-    errorPromoCodes,
     refetchPromoCodes,
   } = usePromoCode.useAll({ search: debouncedSearch });
 
-  if (isLoadingPromoCodes) return <LoadingState type="dashboard" />;
+  const {
+    statistics,
+    isErrorStatistics,
+    isLoadingStatistics,
+    refetchStatistics,
+  } = usePromoCode.useStatistics();
 
-  if (isErrorPromoCodes) {
+  if (isLoadingPromoCodes || isLoadingStatistics)
+    return <LoadingState type="dashboard" />;
+
+  if (isErrorPromoCodes || isErrorStatistics) {
     return (
       <ErrorMessage
-        message={errorPromoCodes.message || "Failed to load data"}
+        message={"Failed to load data"}
         dismissible={true}
-        onDismiss={refetchPromoCodes}
+        onDismiss={refetchPromoCodes && refetchStatistics}
       />
     );
   }
@@ -71,7 +78,7 @@ export default function AdminPromoCodesPage() {
         <Button onClick={handleCreate}>+ Add New Code</Button>
       </div>
 
-      <PromoCodeStatsContainer />
+      <PromoCodeStatsContainer promoStats={statistics} />
 
       <PromoCodeControlsBar
         searchInput={searchInput}
@@ -104,15 +111,7 @@ export default function AdminPromoCodesPage() {
   );
 }
 
-const dummyStats = {
-  total_codes: 25,
-  active_codes: 12,
-  total_usage: 348,
-  total_capacity: 2500,
-  expiring_soon: 3,
-};
-
-function PromoCodeStatsContainer() {
+function PromoCodeStatsContainer({ promoStats }) {
   function promoCodeStats(stats) {
     return [
       {
@@ -140,13 +139,13 @@ function PromoCodeStatsContainer() {
         title: "Expiring Soon",
         icon: Clock,
         value: stats.expiring_soon,
-        subtitle: "Within 7 days",
+        subtitle: "Within 3 days",
       },
     ];
   }
   return (
     <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-      {promoCodeStats(dummyStats).map((stat, index) => (
+      {promoCodeStats(promoStats).map((stat, index) => (
         <StatsCard
           key={index}
           title={stat.title}

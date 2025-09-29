@@ -111,6 +111,32 @@ const usePromoCode = {
   },
 
   /**
+   * 📊 GET PROMO CODES STATISTICS HOOK
+   * Fetches aggregated promo code statistics for dashboards
+   * Perfect for admin overview, analytics widgets, reporting
+   * Returns: isLoadingStatistics, statistics, errorStatistics
+   * Example: const { isLoadingStatistics, statistics } = usePromoCode.useStatistics();
+   */
+  useStatistics: (options = {}) => {
+    const query = useQuery({
+      queryKey: ["promoCodes", "statistics"],
+      queryFn: () => promoCodeApi.getStatistics(),
+      staleTime: 2 * 60 * 1000, // 2 minutes - stats don't change frequently
+      cacheTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+      refetchOnWindowFocus: false, // Don't refetch when window gains focus
+      ...options,
+    });
+
+    return {
+      isLoadingStatistics: query.isLoading,
+      statistics: query.data,
+      errorStatistics: query.error,
+      isErrorStatistics: query.isError,
+      refetchStatistics: query.refetch,
+    };
+  },
+
+  /**
    * ➕ CREATE NEW PROMO CODE HOOK
    * Handles creating a new promo code
    * Automatically refreshes the promo codes list after successful creation
