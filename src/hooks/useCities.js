@@ -59,6 +59,25 @@ const useCities = {
     };
   },
 
+  useStatistics: (options = {}) => {
+    const query = useQuery({
+      queryKey: ["cities", "statistics"],
+      queryFn: () => citiesApi.getStatistics(),
+      staleTime: 5 * 60 * 1000, // 5 minutes - city stats change rarely
+      cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+      refetchOnWindowFocus: false, // Don't refetch when window gains focus
+      ...options,
+    });
+
+    return {
+      isLoadingStatistics: query.isLoading,
+      statistics: query.data,
+      errorStatistics: query.error,
+      isErrorStatistics: query.isError,
+      refetchStatistics: query.refetch,
+    };
+  },
+
   /**
    * ➕ CREATE NEW CITY HOOK
    * Handles adding a new city to the database

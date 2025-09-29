@@ -108,6 +108,13 @@ function AdminShippingPage() {
       search: debouncedSearch,
     });
 
+  const {
+    statistics,
+    isLoadingStatistics,
+    refetchStatistics,
+    isErrorStatistics,
+  } = useCities.useStatistics();
+
   function handleAddCity() {
     form.reset({
       name: "",
@@ -138,14 +145,15 @@ function AdminShippingPage() {
     });
   }
 
-  if (isLoadingCities) return <LoadingState type="dashboard" />;
+  if (isLoadingCities || isLoadingStatistics)
+    return <LoadingState type="dashboard" />;
 
-  if (isErrorCities)
+  if (isErrorCities || isErrorStatistics)
     return (
       <ErrorMessage
-        message={errorCities.message || "Failed to load data"}
+        message={"Failed to load data"}
         dismissible={true}
-        onDismiss={() => refetchCities()}
+        onDismiss={refetchCities && refetchStatistics}
       />
     );
 
@@ -157,7 +165,7 @@ function AdminShippingPage() {
         setCityModal={setCityModal}
         onAddCity={handleAddCity}
       />
-      <ShippingStatsContainer />
+      <ShippingStatsContainer stats={statistics} />
       <ControlsBar searchInput={searchInput} setSearchInput={setSearchInput} />
       <ShippingDataTable cities={cities?.data} onEditCity={handleEditCity} />
     </div>
@@ -188,28 +196,28 @@ function ShippingStatsContainer({ stats }) {
         id: 1,
         title: "Total Cities",
         icon: MapPin,
-        value: 24,
+        value: stats?.total_cities || 0,
         subtitle: "Cities configured for shipping",
       },
       {
         id: 2,
         title: "Average Shipping Fee",
         icon: DollarSign,
-        value: "$6.20",
+        value: formatCurrency(stats?.avg_shipping_fee),
         subtitle: "Across all cities with shipping",
       },
       {
         id: 3,
         title: "Free Shipping Cities",
         icon: Gift,
-        value: 8,
+        value: stats?.free_shipping_cities || 0,
         subtitle: "Cities offering free shipping threshold",
       },
       {
         id: 4,
         title: "Always Charged Cities",
         icon: Truck,
-        value: 3,
+        value: stats?.always_charged_cities || 0,
         subtitle: "Cities where free shipping is disabled",
       },
     ];

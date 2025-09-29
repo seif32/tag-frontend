@@ -57,6 +57,27 @@ const citiesApi = {
   },
 
   /**
+   * 📊 GET CITIES STATISTICS
+   * Fetches aggregated statistics about cities and shipping
+   * Perfect for admin dashboards, shipping analytics, overview widgets
+   * Returns: total_cities, avg_shipping_fee, free_shipping_cities, always_charged_cities
+   * Example: const stats = await citiesApi.getStatistics();
+   */
+  getStatistics: async (options = {}) => {
+    try {
+      return await api.get("/cities/statistics", options);
+    } catch (error) {
+      console.error("Failed to fetch cities statistics:", {
+        status: error.status,
+        method: error.method,
+        url: error.url,
+        responseTime: error.responseTime,
+      });
+      throw error;
+    }
+  },
+
+  /**
    * ➕ CREATE NEW CITY
    * Adds a brand new city to the database
    * Required: name (city name is mandatory)
