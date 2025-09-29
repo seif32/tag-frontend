@@ -14,8 +14,9 @@ const useCities = {
   useAll: (queryParams = {}, options = {}) => {
     const [searchParams] = useSearchParams();
     const limit = parseInt(searchParams.get("limit")) || 10;
+    const page = parseInt(searchParams.get("page")) || 1;
     const status = searchParams.get("status") || "";
-    const allQueryParams = { ...queryParams, limit, status };
+    const allQueryParams = { ...queryParams, limit, status, page };
 
     const query = useQuery({
       queryKey: ["cities", allQueryParams, options],

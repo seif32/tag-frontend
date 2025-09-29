@@ -63,6 +63,7 @@ import { Switch } from "@/components/ui/switch";
 import { Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import useDebounce from "@/hooks/useDebounce";
+import PaginationControlsBar from "../../ui/PaginationControlsBar";
 
 const citySchema = z.object({
   name: z
@@ -168,6 +169,12 @@ function AdminShippingPage() {
       <ShippingStatsContainer stats={statistics} />
       <ControlsBar searchInput={searchInput} setSearchInput={setSearchInput} />
       <ShippingDataTable cities={cities?.data} onEditCity={handleEditCity} />
+      <PaginationControlsBar
+        dataName={"cities"}
+        isLoading={isLoadingCities}
+        pageCount={cities?.pagination?.totalPages}
+        totalCount={cities?.pagination?.total}
+      />
     </div>
   );
 }
@@ -251,18 +258,20 @@ function ControlsBar({ searchInput, setSearchInput }) {
         <Input
           placeholder="Search by city . . ."
           value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+            updateUrlParams({ page: 1, status: "all" });
+          }}
           className=" w-70 min-w-full  pl-10"
         />
       </div>
       <Select
         value={status}
         onValueChange={(value) => {
-          if (value === "all" || value === "") {
-            updateUrlParams({ status: undefined });
-          } else {
-            updateUrlParams({ status: value });
-          }
+          updateUrlParams({
+            status: value === "all" || value === "" ? undefined : value,
+            page: 1,
+          });
         }}
       >
         <SelectTrigger className="w-auto min-w-32">

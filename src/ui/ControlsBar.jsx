@@ -30,7 +30,10 @@ export default function ControlsBar({
         <Input
           placeholder={`Search by ${searchName}...`}
           value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+            updateUrlParams({ page: 1, status: "all" });
+          }}
           className=" w-70 min-w-full  pl-10"
         />
       </div>
@@ -38,11 +41,10 @@ export default function ControlsBar({
         <Select
           value={status}
           onValueChange={(value) => {
-            if (value === "all" || value === "") {
-              updateUrlParams({ status: undefined });
-            } else {
-              updateUrlParams({ status: value });
-            }
+            updateUrlParams({
+              status: value === "all" || value === "" ? undefined : value,
+              page: 1,
+            });
           }}
         >
           <SelectTrigger className="w-auto min-w-32">

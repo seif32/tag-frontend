@@ -19,6 +19,7 @@ const citiesApi = {
 
       if (queryParams.limit) params.append("limit", queryParams.limit);
       if (queryParams.page) params.append("page", queryParams.page);
+      if (queryParams.status) params.append("status", queryParams.status);
       if (queryParams.search) params.append("search", queryParams.search);
 
       const queryString = params.toString();
