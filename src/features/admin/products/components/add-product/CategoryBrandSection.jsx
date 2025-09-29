@@ -63,7 +63,7 @@ function CategoryBrandSection() {
                       variant="outline"
                       role="combobox"
                       className={cn(
-                        "justify-between border-gray-200",
+                        "justify-between border-gray-200 text-black hover:bg-white hover:text-black",
                         !field.value && "text-muted-foreground"
                       )}
                       disabled={isViewMode}
@@ -126,7 +126,7 @@ function CategoryBrandSection() {
                       variant="outline"
                       role="combobox"
                       className={cn(
-                        "justify-between border-gray-200",
+                        "justify-between border-gray-200 text-black hover:bg-white hover:text-black",
                         !field.value && "text-muted-foreground"
                       )}
                       disabled={
@@ -201,7 +201,7 @@ function CategoryBrandSection() {
                       variant="outline"
                       role="combobox"
                       className={cn(
-                        "justify-between border-gray-200",
+                        "justify-between border-gray-200 text-black hover:bg-white hover:text-black",
                         !field.value && "text-muted-foreground"
                       )}
                       disabled={isViewMode}

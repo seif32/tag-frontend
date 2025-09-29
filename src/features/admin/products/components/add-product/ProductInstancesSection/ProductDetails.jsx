@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 function ProductDetails({ product }) {
   return (
@@ -26,8 +27,7 @@ function ProductDetails({ product }) {
           <TableRow>
             <TableCell className="font-medium">{product.quantity}</TableCell>
             <TableCell className="font-medium">
-              {product.currency === "USD" ? "$" : product.currency}{" "}
-              {product.cost_price}
+              {formatCurrency(product.cost_price)}
             </TableCell>
             <TableCell>
               <Badge
@@ -38,8 +38,7 @@ function ProductDetails({ product }) {
               </Badge>
             </TableCell>
             <TableCell className="font-medium">
-              {product.currency === "USD" ? "$" : product.currency}{" "}
-              {product.price}
+              {formatCurrency(product.price)}
             </TableCell>
             <TableCell className="font-medium">{product.vat}%</TableCell>
             <TableCell>
@@ -48,8 +47,7 @@ function ProductDetails({ product }) {
                   parseFloat(product.compare_at_price) > 0 ? "line-through" : ""
                 }`}
               >
-                {product.currency === "USD" ? "$" : product.currency}{" "}
-                {product.compare_at_price}
+                {formatCurrency(product.compare_at_price)}
               </span>
             </TableCell>
           </TableRow>

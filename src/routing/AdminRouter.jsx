@@ -13,7 +13,6 @@ import AdminTagsPage from "@/features/admin/tags/pages/AdminTagsPage";
 import AdminVariantsTypesPage from "@/features/admin/variants/pages/AdminVariantsTypesPage";
 import AdminVariantsValuesPage from "@/features/admin/variants/pages/AdminVariantsValuesPage";
 import AdminLayout from "@/layout/AdminLayout";
-import TestPromoPage from "@/ui/TestPromoPage";
 import { Routes, Route } from "react-router";
 
 function AdminRouter() {
@@ -24,7 +23,7 @@ function AdminRouter() {
         <Route path={"categories"} element={<AdminCategoriesPage />} />
         <Route path={"products"} element={<AdminProductsPage />} />
         <Route
-          path={ROUTES.ADMIN.ADD_PRODUCT}
+          path={"products/add"}
           element={<AdminProductPage mode="add" />}
         />
         <Route

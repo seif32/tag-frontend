@@ -3,6 +3,21 @@ import StepHeader from "@/features/admin/ui/StepHeader";
 import TagFormField from "@/features/admin/ui/TagFormField";
 import { useFormContext } from "react-hook-form";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
 function ProductDetailsStep({ currentSelections }) {
   const baseName = useProductStore((state) => state.baseName);
   const { control } = useFormContext();
@@ -37,7 +52,7 @@ function ProductDetailsStep({ currentSelections }) {
         <TagFormField
           control={control}
           name="variants.0.vat"
-          label="VAT"
+          label="VAT %"
           placeholder="e.g., 79"
         />
       </div>
@@ -52,11 +67,29 @@ function ProductDetailsStep({ currentSelections }) {
           />
         </div>
         <div className="flex-1">
-          <TagFormField
+          <FormField
             control={control}
             name="variants.0.currency"
-            label="Currency"
-            placeholder="e.g., USD"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Currency</FormLabel>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select currency" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="EUR">EUR - Euro 🇪🇺</SelectItem>
+                    <SelectItem value="EGP">EGP - Egyptian Pound 🇪🇬</SelectItem>
+                    <SelectItem value="USD">USD - US Dollar 🇺🇸</SelectItem>
+                    <SelectItem value="GBP">GBP - British Pound 🇬🇧</SelectItem>
+                    <SelectItem value="SAR">SAR - Saudi Riyal 🇸🇦</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
       </div>

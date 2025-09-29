@@ -38,8 +38,6 @@ function VariantsSection({ variantValues, variantTypes }) {
     });
   }, [variantValues]);
 
-  console.log("variantTypes", variantTypes);
-
   const getColorStyle = (color) => {
     const colorMap = {
       Black: "border-gray-800 text-gray-800",
