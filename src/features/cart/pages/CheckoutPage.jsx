@@ -53,7 +53,6 @@ function CheckoutPage() {
   const order = useOrderStore((state) => state.order);
   const user = useAuthStore((state) => state.user);
   const cartItems = useCartStore((state) => state.cartItems);
-  const setShippingAddress = useCartStore((state) => state.setShippingAddress);
 
   const { createAddressAsync, isPendingAddresses: isCreatingAddress } =
     useAddress.useCreate();
@@ -77,35 +76,31 @@ function CheckoutPage() {
   async function onSubmit(address) {
     try {
       let addressId;
-      setShippingAddress(address);
-      console.log("CheckoutPage", address);
-      // if (!selectAddress) {
-      //   const newAddressData = await createAddressAsync(address);
-      //   addressId = newAddressData.id;
-      // } else if (!isEditMode) {
-      //   addressId = selectAddress.id;
-      // } else {
-      //   await updateAddressAsync({ id: selectAddress.id, data: address });
-      //   addressId = selectAddress.id;
-      // }
 
-      // const order = {
-      //   user_id: user?.id,
-      //   address_id: addressId,
-      //   shipping_amount: shippingAmount,
-      //   promo_code_id: appliedCoupon?.id || null,
-      //   items: cartItems.map((item) => ({
-      //     variant_id: item.id,
-      //     quantity: item.quantity,
-      //   })),
-      // };
+      if (!selectAddress) {
+        const newAddressData = await createAddressAsync(address);
+        addressId = newAddressData.id;
+      } else if (!isEditMode) {
+        addressId = selectAddress.id;
+      } else {
+        await updateAddressAsync({ id: selectAddress.id, data: address });
+        addressId = selectAddress.id;
+      }
 
-      // const newOrderData = await createOrderAsync(order);
+      const orderPayload = {
+        user_id: user?.id,
+        address_id: addressId,
+        promo_code_id: appliedCoupon?.id || null,
+        items: cartItems.map((item) => ({
+          variant_id: item.id,
+          quantity: item.quantity,
+        })),
+      };
 
-      // setOrderSuccess(newOrderData);
-
-      // navigate(`/order/success/${newOrderData.id}`);
-      // clearCart();
+      const newOrderData = await createOrderAsync(orderPayload);
+      setOrderSuccess(newOrderData);
+      navigate(`/order/success/${newOrderData.id}`);
+      clearCart(); // This will also clear selectedCity
     } catch (error) {
       console.error("Checkout failed:", error);
     }

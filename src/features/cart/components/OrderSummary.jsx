@@ -5,8 +5,9 @@ function OrderSummary() {
   const subtotal = useCartStore((state) => state.subtotal);
   const discountAmount = useCartStore((state) => state.discountAmount);
   const shippingAmount = useCartStore((state) => state.shippingAmount);
-  const taxAmount = useCartStore((state) => state.taxAmount);
   const finalTotal = useCartStore((state) => state.finalTotal);
+  const totalVat = useCartStore((state) => state.totalVat);
+
   return (
     <div className="flex flex-col gap-4 p-3 py-6 bg-white border rounded-xl w-full">
       <h2 className="font-semibold">Order Summary</h2>
@@ -22,7 +23,7 @@ function OrderSummary() {
         </div>
         <div className="flex items-baseline justify-between text-sm">
           <p className="text-muted-foreground">Tax: </p>
-          <span>{formatCurrency(taxAmount)}</span>
+          <span>{formatCurrency(totalVat)}</span>
         </div>
         <div className="flex items-baseline justify-between text-sm">
           <p className="text-muted-foreground">Discount: </p>

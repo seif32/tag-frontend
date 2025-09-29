@@ -9,14 +9,15 @@ export const useCartStore = create((set, get) => ({
   uniqueItems: 0,
 
   subtotal: 0,
-  taxAmount: 0,
-  taxPercent: 0,
+  totalVat: 0,
   shippingAmount: 0,
   discountAmount: 0,
   finalTotal: 0,
 
   shippingAddress: null,
   shippingMethod: "standard",
+
+  selectedCity: null,
 
   addItem: (product, quantity = 1) => {
     set((state) => {
@@ -117,28 +118,6 @@ export const useCartStore = create((set, get) => ({
       );
     }),
 
-  setShippingAddress: (address) => {
-    set((state) => {
-      return recalc(
-        state.cartItems,
-        address,
-        state.appliedCoupon,
-        state.shippingMethod
-      );
-    });
-  },
-
-  setShippingMethod: (method) => {
-    set((state) => {
-      return recalc(
-        state.cartItems,
-        state.shippingAddress,
-        state.appliedCoupon,
-        method
-      );
-    });
-  },
-
   applyCoupon: (validatedCoupon) => {
     set((state) => {
       const newState = recalc(
@@ -192,6 +171,7 @@ export const useCartStore = create((set, get) => ({
       finalTotal: 0,
       shippingAddress: null,
       shippingMethod: "standard",
+      selectedCity: null,
     }),
 
   getDiscountDetails: () => {
@@ -207,6 +187,21 @@ export const useCartStore = create((set, get) => ({
       maxDiscount: state.appliedCoupon.max_discount,
     };
   },
+
+  setSelectedCity: (cityObject) => {
+    set((state) => {
+      const newState = recalc(
+        state.cartItems,
+        cityObject,
+        state.appliedCoupon,
+        state.shippingMethod
+      );
+      return {
+        ...newState,
+        selectedCity: cityObject,
+      };
+    });
+  },
 }));
 
 function recalc(
@@ -218,25 +213,27 @@ function recalc(
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const uniqueItems = cartItems.length;
   const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + item.price_before_vat * item.quantity,
     0
   );
 
-  const taxPercent = calculateTaxRate(shippingAddress);
-  const taxAmount = (subtotal * taxPercent) / 100;
+  const totalVat = cartItems.reduce(
+    (sum, item) =>
+      sum + item.price_before_vat * (item.vat / 100) * item.quantity,
+    0
+  );
 
   const shippingAmount = calculateShipping(
     shippingAddress,
-    cartItems,
     subtotal,
-    shippingMethod
+    shippingAddress
   );
 
   const discountAmount = calculateDiscount(appliedCoupon, subtotal);
 
   const finalTotal = Math.max(
     0,
-    subtotal + taxAmount + shippingAmount - discountAmount
+    subtotal + totalVat + shippingAmount - discountAmount
   );
 
   return {
@@ -245,8 +242,7 @@ function recalc(
     totalItems,
     uniqueItems,
     subtotal,
-    taxPercent,
-    taxAmount,
+    totalVat,
     shippingAmount,
     discountAmount,
     finalTotal,
@@ -255,55 +251,34 @@ function recalc(
   };
 }
 
-function calculateTaxRate(address) {
-  const taxRates = {
-    eg: 14, // Egypt
-    uk: 20, // UK
-    us: 8.5, // US average
-  };
-
-  return taxRates[address?.country] || 10;
-}
-
-function calculateShipping(address, items, subtotal, method) {
-  // 🔥 Enhanced shipping calculation
+function calculateShipping(address, subtotal, selectedCity) {
   if (!address) return 0;
 
-  // Free shipping threshold check
-  const freeShippingThreshold =
-    parseFloat(address.free_shipping_threshold) || 0;
-  if (
-    freeShippingThreshold > 0 &&
-    subtotal >= freeShippingThreshold &&
-    !address.always_charge_shipping
-  ) {
-    return 0;
-  }
+  if (selectedCity) {
+    const freeShippingThreshold =
+      parseFloat(selectedCity.free_shipping_threshold) || 0;
+    if (
+      freeShippingThreshold > 0 &&
+      subtotal >= freeShippingThreshold &&
+      !selectedCity.always_charge_shipping
+    ) {
+      return 0;
+    }
 
-  // Use city-specific shipping fees if available
-  if (address.shipping_fees) {
-    const baseRate = parseFloat(address.shipping_fees);
-    const shippingMultiplier = {
-      standard: 1,
-      express: 2,
-    };
-    return baseRate * (shippingMultiplier[method] || 1);
+    if (selectedCity.shipping_fees) {
+      const baseRate = parseFloat(selectedCity.shipping_fees);
+      return baseRate;
+    }
   }
 
   // Fallback to default rates
-  const shippingRates = {
-    standard: 50,
-    express: 100,
-  };
-
-  return shippingRates[method] || shippingRates["standard"];
+  // const shippingRates = { standard: 45, express: 100 };
+  // return shippingRates[method] || shippingRates["standard"];
 }
 
-// 🔥 Enhanced discount calculation with max discount limit
 function calculateDiscount(appliedCoupon, subtotal) {
   if (!appliedCoupon) return 0;
 
-  // Check minimum order value
   const minOrderValue = parseFloat(appliedCoupon.min_order_value) || 0;
   if (subtotal < minOrderValue) return 0;
 
@@ -312,7 +287,6 @@ function calculateDiscount(appliedCoupon, subtotal) {
   if (appliedCoupon.discount_type === "percentage") {
     discount = (subtotal * parseFloat(appliedCoupon.discount_value)) / 100;
 
-    // Apply max discount limit if specified
     const maxDiscount = parseFloat(appliedCoupon.max_discount) || Infinity;
     discount = Math.min(discount, maxDiscount);
   } else if (appliedCoupon.discount_type === "fixed") {

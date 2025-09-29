@@ -13,8 +13,6 @@ const useVariantSelector = (variants = []) => {
 
   const [selectedVariant, setSelectedVariant] = useState(null);
 
-  console.log("useVariantSelector", selectedVariant);
-
   useEffect(() => {
     if (primaryVariant) {
       setSelectedVariant(primaryVariant);

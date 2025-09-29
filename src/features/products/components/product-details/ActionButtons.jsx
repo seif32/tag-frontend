@@ -56,10 +56,14 @@ function ActionButtons({ selectedVariant, product }) {
     const item = {
       id: selectedVariant.id,
       product_id: selectedVariant.product_id,
-      price: selectedVariant.price,
+      price_before_vat: selectedVariant.price,
       currency: selectedVariant.currency,
       types: selectedVariant.types,
       stock: selectedVariant.quantity,
+      vat: selectedVariant.vat,
+      price_after_vat:
+        selectedVariant.price +
+        selectedVariant.price * (selectedVariant.vat / 100),
 
       name: product.name,
       description: product.description,

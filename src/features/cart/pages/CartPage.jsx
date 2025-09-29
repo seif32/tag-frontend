@@ -12,6 +12,8 @@ function CartPage() {
   const cartItems = useCartStore((state) => state.cartItems);
   const isCartEmpty = cartItems.length === 0;
 
+  console.log("cartItems", cartItems);
+
   return (
     <div className="flex flex-col gap-2 rounded-md md:flex-row">
       <div
@@ -45,7 +47,7 @@ function CartPage() {
                 key={item.id}
                 id={item.id}
                 name={item.name}
-                price={Number(item.price)}
+                price={Number(item.price_before_vat)}
                 quantity={item.quantity}
                 variants={item.types.map((t) => t.value.name)}
                 stock={item.stock}
@@ -65,7 +67,7 @@ function CartPage() {
 
 export default CartPage;
 
-function CartItem({ id, name, variants = [], quantity, price, stock }) {
+function CartItem({ id, name, variants = [], quantity, price }) {
   const increment = useCartStore((state) => state.increment);
   const decrement = useCartStore((state) => state.decrement);
   const removeItem = useCartStore((state) => state.removeItem);

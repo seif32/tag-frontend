@@ -29,6 +29,7 @@ import { Switch } from "@/components/ui/switch";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import useCities from "@/hooks/useCities";
+import { useCartStore } from "@/store/cartStore";
 
 function CheckoutForm({
   form,
@@ -155,15 +156,30 @@ function AddressDropdown({
   form,
   selectAddress,
 }) {
+  const setSelectedCity = useCartStore((state) => state.setSelectedCity);
+  const { cities, errorCities, isErrorCities, isLoadingCities, refetchCities } =
+    useCities.useAll();
+
+  if (isLoadingCities) return <LoadingState />;
+
+  if (isErrorCities) {
+    return (
+      <ErrorMessage
+        message={errorCities?.message || "Failed to load cities"}
+        dismissible={true}
+        onDismiss={() => refetchCities()} // 🔥 Retry functionality
+      />
+    );
+  }
   const handleSelect = (addrId) => {
     if (addrId === null) {
       setIsEditMode(true);
       setSelectAddress(null);
+      setSelectedCity(null); // 🔥 Clear selected city
       form.reset({
         description: "",
-        city: "",
+        city_id: "", // 🔥 Changed from "city" to "city_id"
         postal_code: "",
-        country: "",
         location_url: "",
         is_default: true,
         apartment_number: "",
@@ -174,8 +190,17 @@ function AddressDropdown({
       setIsEditMode(false);
       const selected = addresses.find((a) => a.id === addrId);
       setSelectAddress(selected);
+
+      const cityObject = cities?.data?.find(
+        (city) => city.id === selected.city_id
+      );
+      if (cityObject) {
+        setSelectedCity(cityObject);
+      }
+
       form.reset({
         ...selected,
+        city_id: selected.city_id?.toString(), // 🔥 Convert to string for form
         is_default: Boolean(selected.is_default),
       });
     }
@@ -239,6 +264,8 @@ function CityDropdown({ form, isEditMode }) {
   const { cities, errorCities, isErrorCities, isLoadingCities, refetchCities } =
     useCities.useAll();
 
+  const setSelectedCity = useCartStore((state) => state.setSelectedCity);
+
   if (isLoadingCities) return <LoadingState />;
 
   if (isErrorCities) {
@@ -294,14 +321,16 @@ function CityDropdown({ form, isEditMode }) {
                             key={city.id}
                             value={city.name.toLowerCase()}
                             onSelect={() => {
-                              field.onChange(city.id.toString());
+                              // 🔥 Store both: form gets ID, cart gets whole object
+                              field.onChange(city.id.toString()); // Form field
+                              setSelectedCity(city); // Cart store
                               setOpenCity(false);
                             }}
                           >
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                field.value === city.id.toString() // 🔥 Compare as strings
+                                field.value === city.id.toString()
                                   ? "opacity-100"
                                   : "opacity-0"
                               )}
@@ -322,7 +351,6 @@ function CityDropdown({ form, isEditMode }) {
     />
   );
 }
-
 function ApartmentNumber({ form, isEditMode }) {
   return (
     <FormField
