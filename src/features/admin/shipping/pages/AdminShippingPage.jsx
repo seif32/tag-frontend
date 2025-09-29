@@ -103,7 +103,7 @@ function AdminShippingPage() {
     },
   });
 
-  const { cities, errorCities, isErrorCities, isLoadingCities, refetchCities } =
+  const { cities, isErrorCities, isLoadingCities, refetchCities } =
     useCities.useAll({
       search: debouncedSearch,
     });

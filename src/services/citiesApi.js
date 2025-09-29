@@ -15,10 +15,11 @@ const citiesApi = {
    */
   getAll: async (queryParams = {}, options = {}) => {
     try {
-      console.log("citiesApi", queryParams);
       const params = new URLSearchParams();
 
       if (queryParams.limit) params.append("limit", queryParams.limit);
+      if (queryParams.page) params.append("page", queryParams.page);
+      if (queryParams.search) params.append("search", queryParams.search);
 
       const queryString = params.toString();
       const url = `/cities${queryString ? `?${queryString}` : ""}`;
