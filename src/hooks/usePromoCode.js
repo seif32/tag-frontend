@@ -153,7 +153,7 @@ const usePromoCode = {
       onSuccess: (data) => {
         // Built-in functionality - always runs first
         queryClient.invalidateQueries({ queryKey: ["promoCodes"] });
-        toast.success("🎫 Promo code created successfully!");
+        toast.success("Promo code created successfully!");
 
         // Your custom logic runs after
         if (options.onSuccess) {
@@ -200,7 +200,7 @@ const usePromoCode = {
         // Built-in functionality
         queryClient.setQueryData(["promoCodes", "id", variables.id], data);
         queryClient.invalidateQueries({ queryKey: ["promoCodes"] });
-        toast.success("🎫 Promo code updated successfully!");
+        toast.success("Promo code updated successfully!");
 
         // Your custom logic
         if (options.onSuccess) {
@@ -250,7 +250,7 @@ const usePromoCode = {
           queryKey: ["promoCodes", "id", deletedId],
         });
         queryClient.invalidateQueries({ queryKey: ["promoCodes"] });
-        toast.success("🎫 Promo code deleted successfully!");
+        toast.success("Promo code deleted successfully!");
 
         // Your custom logic
         if (options.onSuccess) {

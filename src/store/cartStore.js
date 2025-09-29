@@ -3,7 +3,8 @@ import { create } from "zustand";
 
 export const useCartStore = create((set, get) => ({
   cartItems: [],
-  promoCode: null,
+  appliedCoupon: null,
+  validationState: null,
   totalItems: 0,
   uniqueItems: 0,
 
@@ -37,7 +38,7 @@ export const useCartStore = create((set, get) => ({
       return recalc(
         updatedItems,
         state.shippingAddress,
-        state.promoCode,
+        state.appliedCoupon,
         state.shippingMethod
       );
     });
@@ -51,7 +52,7 @@ export const useCartStore = create((set, get) => ({
       return recalc(
         updatedItems,
         state.shippingAddress,
-        state.promoCode,
+        state.appliedCoupon,
         state.shippingMethod
       );
     });
@@ -74,7 +75,7 @@ export const useCartStore = create((set, get) => ({
       return recalc(
         items,
         state.shippingAddress,
-        state.promoCode,
+        state.appliedCoupon,
         state.shippingMethod
       );
     }),
@@ -91,7 +92,7 @@ export const useCartStore = create((set, get) => ({
       return recalc(
         items,
         state.shippingAddress,
-        state.promoCode,
+        state.appliedCoupon,
         state.shippingMethod
       );
     }),
@@ -111,7 +112,7 @@ export const useCartStore = create((set, get) => ({
       return recalc(
         items,
         state.shippingAddress,
-        state.promoCode,
+        state.appliedCoupon,
         state.shippingMethod
       );
     }),
@@ -121,7 +122,7 @@ export const useCartStore = create((set, get) => ({
       return recalc(
         state.cartItems,
         address,
-        state.promoCode,
+        state.appliedCoupon,
         state.shippingMethod
       );
     });
@@ -132,38 +133,55 @@ export const useCartStore = create((set, get) => ({
       return recalc(
         state.cartItems,
         state.shippingAddress,
-        state.promoCode,
+        state.appliedCoupon,
         method
       );
     });
   },
 
-  applyPromoCode: (code) => {
+  applyCoupon: (validatedCoupon) => {
     set((state) => {
-      return recalc(
+      const newState = recalc(
         state.cartItems,
         state.shippingAddress,
-        code,
+        validatedCoupon,
         state.shippingMethod
       );
+
+      toast.success(`Coupon "${validatedCoupon.code}" applied successfully!`);
+
+      return {
+        ...newState,
+        validationState: "success",
+      };
     });
   },
 
-  removePromoCode: () => {
+  removeCoupon: () => {
     set((state) => {
-      return recalc(
+      const newState = recalc(
         state.cartItems,
         state.shippingAddress,
         null,
         state.shippingMethod
       );
+
+      toast.info("Coupon removed from cart");
+
+      return {
+        ...newState,
+        validationState: null,
+      };
     });
   },
+
+  setCouponValidationState: (state) => set({ validationState: state }),
 
   clearCart: () =>
     set({
       cartItems: [],
-      promoCode: null,
+      appliedCoupon: null,
+      validationState: null,
       totalItems: 0,
       uniqueItems: 0,
       subtotal: 0,
@@ -175,12 +193,26 @@ export const useCartStore = create((set, get) => ({
       shippingAddress: null,
       shippingMethod: "standard",
     }),
+
+  getDiscountDetails: () => {
+    const state = get();
+    if (!state.appliedCoupon) return null;
+
+    return {
+      code: state.appliedCoupon.code,
+      description: state.appliedCoupon.description,
+      type: state.appliedCoupon.discount_type,
+      value: state.appliedCoupon.discount_value,
+      amount: state.discountAmount,
+      maxDiscount: state.appliedCoupon.max_discount,
+    };
+  },
 }));
 
 function recalc(
   cartItems,
   shippingAddress = null,
-  promoCode = null,
+  appliedCoupon = null,
   shippingMethod = "standard"
 ) {
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -200,12 +232,16 @@ function recalc(
     shippingMethod
   );
 
-  const discountAmount = calculateDiscount(promoCode, subtotal);
+  const discountAmount = calculateDiscount(appliedCoupon, subtotal);
 
-  const finalTotal = subtotal + taxAmount + shippingAmount - discountAmount;
+  const finalTotal = Math.max(
+    0,
+    subtotal + taxAmount + shippingAmount - discountAmount
+  );
 
   return {
     cartItems,
+    appliedCoupon,
     totalItems,
     uniqueItems,
     subtotal,
@@ -215,28 +251,46 @@ function recalc(
     discountAmount,
     finalTotal,
     shippingAddress,
-    promoCode,
     shippingMethod,
   };
 }
 
 function calculateTaxRate(address) {
-  // if (!address) return 0;
-
   const taxRates = {
     eg: 14, // Egypt
     uk: 20, // UK
     us: 8.5, // US average
   };
 
-  // return taxRates[address?.country] || 0;
   return taxRates[address?.country] || 10;
 }
 
 function calculateShipping(address, items, subtotal, method) {
-  // if (!address) return 0;
-  // if (subtotal >= 50) return 0; // Free shipping over £50
+  // 🔥 Enhanced shipping calculation
+  if (!address) return 0;
 
+  // Free shipping threshold check
+  const freeShippingThreshold =
+    parseFloat(address.free_shipping_threshold) || 0;
+  if (
+    freeShippingThreshold > 0 &&
+    subtotal >= freeShippingThreshold &&
+    !address.always_charge_shipping
+  ) {
+    return 0;
+  }
+
+  // Use city-specific shipping fees if available
+  if (address.shipping_fees) {
+    const baseRate = parseFloat(address.shipping_fees);
+    const shippingMultiplier = {
+      standard: 1,
+      express: 2,
+    };
+    return baseRate * (shippingMultiplier[method] || 1);
+  }
+
+  // Fallback to default rates
   const shippingRates = {
     standard: 50,
     express: 100,
@@ -245,14 +299,25 @@ function calculateShipping(address, items, subtotal, method) {
   return shippingRates[method] || shippingRates["standard"];
 }
 
-function calculateDiscount(promoCode, subtotal) {
-  if (!promoCode) return 0;
+// 🔥 Enhanced discount calculation with max discount limit
+function calculateDiscount(appliedCoupon, subtotal) {
+  if (!appliedCoupon) return 0;
 
-  if (promoCode.discount_type === "percentage") {
-    return (subtotal * promoCode.discount_value) / 100;
-  } else if (promoCode.discount_type === "fixed") {
-    return Math.min(promoCode.discount_value, subtotal);
+  // Check minimum order value
+  const minOrderValue = parseFloat(appliedCoupon.min_order_value) || 0;
+  if (subtotal < minOrderValue) return 0;
+
+  let discount = 0;
+
+  if (appliedCoupon.discount_type === "percentage") {
+    discount = (subtotal * parseFloat(appliedCoupon.discount_value)) / 100;
+
+    // Apply max discount limit if specified
+    const maxDiscount = parseFloat(appliedCoupon.max_discount) || Infinity;
+    discount = Math.min(discount, maxDiscount);
+  } else if (appliedCoupon.discount_type === "fixed") {
+    discount = Math.min(parseFloat(appliedCoupon.discount_value), subtotal);
   }
 
-  return 0;
+  return Math.max(0, discount);
 }

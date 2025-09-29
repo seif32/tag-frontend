@@ -17,7 +17,7 @@ import { useOrderStore } from "@/store/orderStore";
 
 const formSchema = z.object({
   description: z.string().optional(),
-  city_id: z.coerce.string().min(1, "City is required"), // 🔥 Auto converts any type to string
+  city_id: z.coerce.string().min(1, "City is required"),
   postal_code: z.string().min(1, "Postal code is required"),
   location_url: z.string().optional(),
   is_default: z.boolean(),
@@ -46,14 +46,14 @@ function CheckoutPage() {
   const [isEditMode, setIsEditMode] = useState(true);
 
   const navigate = useNavigate();
-  const promoCode = useCartStore((state) => state.promoCode);
+  const appliedCoupon = useCartStore((state) => state.appliedCoupon);
   const clearCart = useCartStore((state) => state.clearCart);
-  const taxPercent = useCartStore((state) => state.taxPercent);
   const shippingAmount = useCartStore((state) => state.shippingAmount);
   const setOrderSuccess = useOrderStore((state) => state.setOrderSuccess);
   const order = useOrderStore((state) => state.order);
   const user = useAuthStore((state) => state.user);
   const cartItems = useCartStore((state) => state.cartItems);
+  const setShippingAddress = useCartStore((state) => state.setShippingAddress);
 
   const { createAddressAsync, isPendingAddresses: isCreatingAddress } =
     useAddress.useCreate();
@@ -77,39 +77,35 @@ function CheckoutPage() {
   async function onSubmit(address) {
     try {
       let addressId;
+      setShippingAddress(address);
+      console.log("CheckoutPage", address);
+      // if (!selectAddress) {
+      //   const newAddressData = await createAddressAsync(address);
+      //   addressId = newAddressData.id;
+      // } else if (!isEditMode) {
+      //   addressId = selectAddress.id;
+      // } else {
+      //   await updateAddressAsync({ id: selectAddress.id, data: address });
+      //   addressId = selectAddress.id;
+      // }
 
-      if (!selectAddress) {
-        // const payload = {
-        //   ...address,
-        //   city_id: Number(address.city_id), // Convert to number for API
-        // };
-        const newAddressData = await createAddressAsync(address);
-        addressId = newAddressData.id;
-      } else if (!isEditMode) {
-        addressId = selectAddress.id;
-      } else {
-        await updateAddressAsync({ id: selectAddress.id, data: address });
-        addressId = selectAddress.id;
-      }
+      // const order = {
+      //   user_id: user?.id,
+      //   address_id: addressId,
+      //   shipping_amount: shippingAmount,
+      //   promo_code_id: appliedCoupon?.id || null,
+      //   items: cartItems.map((item) => ({
+      //     variant_id: item.id,
+      //     quantity: item.quantity,
+      //   })),
+      // };
 
-      const order = {
-        user_id: user?.id,
-        address_id: addressId,
-        // tax_percent: taxPercent,
-        shipping_amount: shippingAmount,
-        promo_code_id: promoCode || null,
-        items: cartItems.map((item) => ({
-          variant_id: item.id,
-          quantity: item.quantity,
-        })),
-      };
+      // const newOrderData = await createOrderAsync(order);
 
-      const newOrderData = await createOrderAsync(order);
+      // setOrderSuccess(newOrderData);
 
-      setOrderSuccess(newOrderData);
-
-      navigate(`/order/success/${newOrderData.id}`);
-      clearCart();
+      // navigate(`/order/success/${newOrderData.id}`);
+      // clearCart();
     } catch (error) {
       console.error("Checkout failed:", error);
     }

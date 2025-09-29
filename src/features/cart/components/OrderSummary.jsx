@@ -13,7 +13,7 @@ function OrderSummary() {
       <div className="border border-gray-100"></div>
       <div className="flex flex-col">
         <div className="flex items-baseline justify-between text-sm">
-          <p className="text-muted-foreground">subtotal: </p>
+          <p className="text-muted-foreground">Subtotal: </p>
           <span>{formatCurrency(subtotal)}</span>
         </div>
         <div className="flex items-baseline justify-between text-sm">
