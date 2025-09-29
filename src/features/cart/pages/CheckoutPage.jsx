@@ -17,9 +17,8 @@ import { useOrderStore } from "@/store/orderStore";
 
 const formSchema = z.object({
   description: z.string().optional(),
-  city: z.string().min(1, "City is required"),
+  city_id: z.coerce.string().min(1, "City is required"), // 🔥 Auto converts any type to string
   postal_code: z.string().min(1, "Postal code is required"),
-  country: z.string().min(1, "Country is required"),
   location_url: z.string().optional(),
   is_default: z.boolean(),
   apartment_number: z.string().min(1, "Apartment is required"),
@@ -32,9 +31,9 @@ function CheckoutPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       description: "",
-      city: "",
+      city_id: "", // Keep as empty string
       postal_code: "",
-      country: "",
+      country: "uk",
       location_url: "",
       is_default: true,
       apartment_number: "",
@@ -67,7 +66,7 @@ function CheckoutPage() {
     isErrorAddresses,
     errorAddresses,
     refetchAddresses,
-  } = useAddress.useByUserId(user?.id);
+  } = useAddress.useByUserId(user?.id, { limit: 9999999 });
 
   const isBusy =
     isCreatingAddress ||
@@ -80,6 +79,10 @@ function CheckoutPage() {
       let addressId;
 
       if (!selectAddress) {
+        // const payload = {
+        //   ...address,
+        //   city_id: Number(address.city_id), // Convert to number for API
+        // };
         const newAddressData = await createAddressAsync(address);
         addressId = newAddressData.id;
       } else if (!isEditMode) {

@@ -28,19 +28,7 @@ import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
-
-const countries = [
-  { value: "us", label: "United States" },
-  { value: "uk", label: "United Kingdom" },
-  { value: "ca", label: "Canada" },
-  { value: "eg", label: "Egypt" },
-];
-
-const cities = [
-  { value: "cairo", label: "Cairo" },
-  { value: "new-york", label: "New York" },
-  { value: "london", label: "London" },
-];
+import useCities from "@/hooks/useCities";
 
 function CheckoutForm({
   form,
@@ -77,10 +65,7 @@ function CheckoutForm({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          <CountryDropdown form={form} isEditMode={isEditMode} />
-          <CityDropdown form={form} isEditMode={isEditMode} />
-        </div>
+        <CityDropdown form={form} isEditMode={isEditMode} />
 
         <div className="grid grid-cols-2 gap-2">
           <ApartmentNumber form={form} isEditMode={isEditMode} />
@@ -142,11 +127,11 @@ function AddressContainer({
 
   return (
     <div>
-      {!newAddress && (
+      {/* {!newAddress && (
         <Button variant="ghost" onClick={handleEditMode} type="button">
           {isEditMode ? "Cancel" : "Edit"}
         </Button>
-      )}
+      )} */}
 
       <AddressDropdown
         addresses={addresses}
@@ -196,6 +181,7 @@ function AddressDropdown({
     }
     setOpenAddress(false);
   };
+
   return (
     <Popover open={openAddress} onOpenChange={setOpenAddress}>
       <PopoverTrigger asChild>
@@ -205,7 +191,7 @@ function AddressDropdown({
           className="justify-between  text-xs"
         >
           {selectAddress
-            ? `${selectAddress.street_name} – ${selectAddress.city}`
+            ? `${selectAddress.street_name} – ${selectAddress.city_name}`
             : "New Address"}
           <ChevronDown className="w-4 h-4 ml-2" />
         </Button>
@@ -233,7 +219,7 @@ function AddressDropdown({
                   onSelect={() => handleSelect(addr.id)}
                   className={"text-xs "}
                 >
-                  {addr.description} – {addr.city}
+                  {addr.description} – {addr.city_name}
                 </CommandItem>
               ))
             ) : (
@@ -248,95 +234,26 @@ function AddressDropdown({
   );
 }
 
-function CountryDropdown({ form, isEditMode }) {
-  const [openCountry, setOpenCountry] = useState(false);
-
-  return (
-    <FormField
-      control={form.control}
-      name="country"
-      render={({ field }) => (
-        <FormItem className={"flex-1"}>
-          <FormLabel>Country</FormLabel>
-          <FormControl>
-            <Popover
-              open={openCountry && isEditMode}
-              onOpenChange={setOpenCountry}
-            >
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={openCountry}
-                  disabled={!isEditMode}
-                  className={cn(
-                    "justify-between w-full border-gray-200",
-                    !isEditMode
-                      ? "text-gray-700 bg-gray-50 cursor-not-allowed"
-                      : "text-gray-500 bg-[#F9FAFB] hover:bg-primary"
-                  )}
-                >
-                  {field.value
-                    ? countries.find((country) => country.value === field.value)
-                        ?.label
-                    : "Select country..."}
-                  {isEditMode && (
-                    <ChevronDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
-                  )}{" "}
-                </Button>
-              </PopoverTrigger>
-              {isEditMode && (
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput placeholder="Search country..." />
-                    <CommandList>
-                      <CommandEmpty>No country found.</CommandEmpty>
-                      <CommandGroup>
-                        {countries.map((country) => (
-                          <CommandItem
-                            key={country.value}
-                            value={country.value}
-                            onSelect={(currentValue) => {
-                              const newValue =
-                                currentValue === field.value
-                                  ? ""
-                                  : currentValue;
-                              field.onChange(newValue); // Use field.onChange
-                              setOpenCountry(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                field.value === country.value // Use field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {country.label}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              )}
-            </Popover>
-          </FormControl>
-          <FormMessage /> {/* Don't forget this for validation errors */}
-        </FormItem>
-      )}
-    />
-  );
-}
-
 function CityDropdown({ form, isEditMode }) {
   const [openCity, setOpenCity] = useState(false);
+  const { cities, errorCities, isErrorCities, isLoadingCities, refetchCities } =
+    useCities.useAll();
 
+  if (isLoadingCities) return <LoadingState />;
+
+  if (isErrorCities) {
+    return (
+      <ErrorMessage
+        message={errorCities?.message || "Failed to load cities"}
+        dismissible={true}
+        onDismiss={() => refetchCities()} // 🔥 Retry functionality
+      />
+    );
+  }
   return (
     <FormField
       control={form.control}
-      name="city"
+      name="city_id"
       render={({ field }) => (
         <FormItem className={"flex-1"}>
           <FormLabel>City</FormLabel>
@@ -356,7 +273,9 @@ function CityDropdown({ form, isEditMode }) {
                   )}
                 >
                   {field.value
-                    ? cities.find((city) => city.value === field.value)?.label
+                    ? cities?.data?.find(
+                        (city) => city.id === parseInt(field.value)
+                      )?.name
                     : "Select city..."}
                   {isEditMode && (
                     <ChevronDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
@@ -370,28 +289,24 @@ function CityDropdown({ form, isEditMode }) {
                     <CommandList>
                       <CommandEmpty>No city found.</CommandEmpty>
                       <CommandGroup>
-                        {cities.map((city) => (
+                        {cities?.data?.map((city) => (
                           <CommandItem
-                            key={city.value}
-                            value={city.value}
-                            onSelect={(currentValue) => {
-                              const newValue =
-                                currentValue === field.value
-                                  ? ""
-                                  : currentValue;
-                              field.onChange(newValue);
+                            key={city.id}
+                            value={city.name.toLowerCase()}
+                            onSelect={() => {
+                              field.onChange(city.id.toString());
                               setOpenCity(false);
                             }}
                           >
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                field.value === city.value
+                                field.value === city.id.toString() // 🔥 Compare as strings
                                   ? "opacity-100"
                                   : "opacity-0"
                               )}
                             />
-                            {city.label}
+                            {city.name}
                           </CommandItem>
                         ))}
                       </CommandGroup>

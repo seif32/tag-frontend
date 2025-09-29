@@ -13,7 +13,7 @@ const useCities = {
    */
   useAll: (queryParams = {}, options = {}) => {
     const [searchParams] = useSearchParams();
-    const limit = parseInt(searchParams.get("limit")) || 10;
+    const limit = parseInt(searchParams.get("limit")) || 99999999;
     const status = searchParams.get("status") || "";
     const allQueryParams = { ...queryParams, limit, status };
 

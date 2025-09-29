@@ -71,7 +71,7 @@ const useAddress = {
       onSuccess: (data) => {
         // Built-in functionality - always runs first
         queryClient.invalidateQueries({ queryKey: ["addresses"] });
-        toast.success("Address created successfully!");
+        // toast.success("Address created successfully!");
 
         // Your custom logic runs after
         if (options.onSuccess) {

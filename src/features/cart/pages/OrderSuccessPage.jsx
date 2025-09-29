@@ -14,6 +14,8 @@ function OrderSuccessPage() {
   const order = useOrderStore((state) => state.order);
   const orderItems = useOrderStore((state) => state.orderItems);
 
+  console.log("OrderSuccessPage", orderItems);
+
   if (!order)
     return (
       <div className="grid place-items-center  min-h-screen ">
