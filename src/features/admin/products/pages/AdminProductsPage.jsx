@@ -88,7 +88,10 @@ function ProductsControlsBar({ searchInput, setSearchInput }) {
         <Input
           placeholder={`Search by product name...`}
           value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+            updateUrlParams({ page: 1, active: undefined });
+          }}
           className=" w-70 min-w-full  pl-10 "
         />
       </div>

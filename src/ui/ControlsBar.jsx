@@ -32,7 +32,7 @@ export default function ControlsBar({
           value={searchInput}
           onChange={(e) => {
             setSearchInput(e.target.value);
-            updateUrlParams({ page: 1, status: "all" });
+            updateUrlParams({ page: 1, status: undefined });
           }}
           className=" w-70 min-w-full  pl-10"
         />
