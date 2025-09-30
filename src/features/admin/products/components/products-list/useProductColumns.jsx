@@ -247,7 +247,7 @@ export function useProductColumns({ onDelete }) {
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-600 "
-                onClick={() => onDelete(product.id)}
+                onClick={() => onDelete(product)}
               >
                 <Trash2 className="w-4 h-4 mr-2" />
                 Delete

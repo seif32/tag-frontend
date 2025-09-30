@@ -18,6 +18,8 @@ import { useSearchParams } from "react-router";
 import { useUpdateUrlParams } from "@/hooks/useUpdateUrlParams";
 import { Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { DeleteConfirmationDialog } from "../../ui/DeleteConfirmationDialog";
+import { useDeleteProductManager } from "../hooks/useDeleteProductManager";
 
 export default function AdminProductsPage() {
   const [searchInput, setSearchInput] = useState("");
@@ -34,11 +36,14 @@ export default function AdminProductsPage() {
     search: debouncedSearch,
   });
   const { stats, isLoadingStats, refetchStats } = useProducts.useStats();
-  const { deleteProduct } = useProducts.useDelete();
 
-  function handleDelete(productId) {
-    deleteProduct(productId);
-  }
+  const {
+    handleDelete,
+    deleteDialog,
+    closeDeleteDialog,
+    confirmDelete,
+    isPendingProducts,
+  } = useDeleteProductManager();
 
   return (
     <div className="space-y-6 ">
@@ -70,6 +75,17 @@ export default function AdminProductsPage() {
         isLoading={isLoadingProducts}
         pageCount={products?.pagination?.totalPages}
         totalCount={products?.pagination?.total}
+      />
+
+      <DeleteConfirmationDialog
+        open={deleteDialog.open}
+        onOpenChange={closeDeleteDialog}
+        onCancel={closeDeleteDialog}
+        onConfirm={confirmDelete}
+        isPending={isPendingProducts}
+        entityName="product"
+        entityLabel={deleteDialog.product?.name || ""}
+        title="Delete Product"
       />
     </div>
   );

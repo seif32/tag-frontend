@@ -18,10 +18,10 @@ export const useProductOperations = (navigate) => {
     isPendingProducts: isCreating,
   } = useProducts.useCreate({
     onSuccess: () => {
+      navigate("/admin/products");
       clearSelectedTypes();
       clearSelectedValues();
       clearSelectedCombination();
-      navigate("/admin/products");
     },
     onError: (error) => {
       if (

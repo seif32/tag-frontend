@@ -57,7 +57,7 @@ export default function AdminCategoriesPage() {
   };
 
   if (isLoadingAllSubCategories) {
-    return <LoadingState />;
+    return <LoadingState type="dashboard" />;
   }
 
   if (errorAllSubCategories)

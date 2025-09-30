@@ -28,14 +28,14 @@ function AdminRouter() {
         />
         {/*Begin from here ✅✅✅✅ */}
         <Route
-          path={ROUTES.ADMIN.EDIT_PRODUCT}
+          path={"products/:id/edit"}
           element={<AdminProductPage mode="edit" />}
         />
         <Route
-          path={ROUTES.ADMIN.VIEW_PRODUCT}
+          path={"products/:id"}
           element={<AdminProductPage mode="view" />}
         />
-        <Route path={ROUTES.ADMIN.BRANDS} element={<AdminBrandsPage />} />
+        <Route path={"brands"} element={<AdminBrandsPage />} />
         <Route path={ROUTES.ADMIN.TAGS} element={<AdminTagsPage />} />
 
         <Route path={"variants"} element={<AdminVariantsTypesPage />} />
