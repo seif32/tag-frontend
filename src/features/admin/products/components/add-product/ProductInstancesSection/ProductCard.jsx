@@ -33,7 +33,6 @@ import { Switch } from "@/components/ui/switch";
 import useBundles from "@/hooks/useBundles";
 
 const formSchema = z.object({
-  // variant_id: z.string().min(1, "Please select a product variant"),
   quantity: z.number().min(1, "Quantity must be at least 1"),
   vat: z.number().min(0).max(100, "VAT must be between 0 and 100"),
   subtotal: z.number().min(0, "Subtotal must be a positive number"),
@@ -149,7 +148,13 @@ function AddBundleModal({ isOpen, onClose, selectedVariant, form }) {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={(e) => {
+              e.stopPropagation(); // Stop event bubbling to parent forms
+              form.handleSubmit(onSubmit)(e); // Call react-hook-form submit
+            }}
+            className="space-y-6"
+          >
             {/* Variant Selection */}
 
             {/* Quantity and VAT Row */}

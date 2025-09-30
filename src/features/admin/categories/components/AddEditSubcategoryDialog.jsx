@@ -30,7 +30,6 @@ function AddEditSubcategoryDialog({
     defaultValues: {
       name: subcategory?.name || "",
       parent_id: subcategory?.parent_id || "",
-      active: subcategory?.active ?? true,
       image_url:
         subcategory?.image_url ||
         "https://images.unsplash.com/photo-1723223440648-dc41fb3d9a7f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -139,13 +138,13 @@ function AddEditSubcategoryDialog({
                 )}
               </div>
             </div>
-            <Separator />
+            {/* <Separator /> */}
             {/* Media Section */}
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <Upload className="w-4 h-4 text-muted-foreground" />
                 <h3 className="text-sm font-medium">Image Upload</h3>
-              </div>
+              </div> */}
 
               {/* <TagFormField
                 control={form.control}
@@ -157,34 +156,7 @@ function AddEditSubcategoryDialog({
                 className="w-full"
               /> */}
             </div>
-            <Separator />
-            {/* Settings Section */}
-            {/* <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-medium">Visibility Settings</h3>
-              </div>
-
-              <div className="flex items-start justify-between p-4 border rounded-lg bg-muted/30">
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">Active Status</p>
-                    <TagFormField
-                      control={form.control}
-                      name="active"
-                      type="switch"
-                    />
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <Info className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-                    <p className="text-xs leading-relaxed text-muted-foreground">
-                      Controls whether this subcategory is visible to customers
-                      on your site. You can always change this later.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <Separator /> */}
+            {/* <Separator /> */}
             {/* Action Buttons */}
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">
               <Button

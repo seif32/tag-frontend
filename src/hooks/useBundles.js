@@ -69,6 +69,50 @@ const useBundles = {
   },
 
   /**
+   * 🔎 GET BUNDLES BY PRODUCT ID HOOK
+   * Use: const { bundlesByProduct } = useBundles.useByProductId(34);
+   */
+  useByProductId: (productId, queryParams = {}, options = {}) => {
+    const query = useQuery({
+      queryKey: ["bundles", "product_id", productId, queryParams],
+      queryFn: () => bundlesApi.getByProductId(productId, queryParams),
+      enabled: !!productId,
+      staleTime: 3 * 60 * 1000,
+      ...options,
+    });
+    return {
+      isLoadingBundlesByProduct: query.isLoading,
+      bundlesByProduct: query.data,
+      errorBundlesByProduct: query.error,
+      isErrorBundlesByProduct: query.isError,
+      refetchBundlesByProduct: query.refetch,
+    };
+  },
+
+  /**
+   * 📊 GET BUNDLE STATISTICS HOOK
+   * Fetches aggregate statistics for bundle dashboard cards
+   * Returns: isLoadingBundleStats, bundleStats, errorBundleStats
+   * Example: const { isLoadingBundleStats, bundleStats } = useBundles.useStatistics();
+   */
+  useStatistics: (options = {}) => {
+    const query = useQuery({
+      queryKey: ["bundles", "statistics"],
+      queryFn: bundlesApi.getStatistics,
+      staleTime: 10 * 60 * 1000, // 10 min
+      ...options,
+    });
+
+    return {
+      isLoadingBundleStats: query.isLoading,
+      bundleStats: query.data,
+      errorBundleStats: query.error,
+      isErrorBundleStats: query.isError,
+      refetchBundleStats: query.refetch,
+    };
+  },
+
+  /**
    * ➕ CREATE NEW BUNDLE HOOK
    * Handles creating a new bundle with variant and pricing details
    * Automatically refreshes relevant bundle lists after successful creation

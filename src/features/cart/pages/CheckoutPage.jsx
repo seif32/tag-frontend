@@ -31,9 +31,8 @@ function CheckoutPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       description: "",
-      city_id: "", // Keep as empty string
+      city_id: "",
       postal_code: "",
-      country: "uk",
       location_url: "",
       is_default: true,
       apartment_number: "",
@@ -48,7 +47,6 @@ function CheckoutPage() {
   const navigate = useNavigate();
   const appliedCoupon = useCartStore((state) => state.appliedCoupon);
   const clearCart = useCartStore((state) => state.clearCart);
-  const shippingAmount = useCartStore((state) => state.shippingAmount);
   const setOrderSuccess = useOrderStore((state) => state.setOrderSuccess);
   const order = useOrderStore((state) => state.order);
   const user = useAuthStore((state) => state.user);
@@ -98,6 +96,7 @@ function CheckoutPage() {
       };
 
       const newOrderData = await createOrderAsync(orderPayload);
+      console.log("newOrderData", newOrderData);
       setOrderSuccess(newOrderData);
       navigate(`/order/success/${newOrderData.id}`);
       clearCart(); // This will also clear selectedCity

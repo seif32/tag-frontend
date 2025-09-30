@@ -20,31 +20,70 @@ import {
   Eye,
 } from "lucide-react";
 import { formatCurrency } from "@/utils/formatCurrency";
+import useBundles from "@/hooks/useBundles";
+import ErrorMessage from "@/ui/ErrorMessage";
+import LoadingState from "@/ui/LoadingState";
+import { Button } from "@/components/ui/button";
 
 function AdminBundlesPage() {
   const [searchInput, setSearchInput] = useState("");
 
+  const { bundles, isLoadingBundles, refetchBundles, isErrorBundles } =
+    useBundles.useAll();
+
   return (
     <div className="space-y-4 ">
+      <Title />
       <BundlesStatsContainer />
       <BundlesControlsBar
         searchInput={searchInput}
         setSearchInput={setSearchInput}
       />
-      <BundlesDataTable />
+      <BundlesDataTable
+        bundles={bundles}
+        isLoadingBundles={isLoadingBundles}
+        isErrorBundles={isErrorBundles}
+        refetchBundles={refetchBundles}
+      />
     </div>
   );
 }
 
 export default AdminBundlesPage;
 
+function Title() {
+  return (
+    <div className="flex items-center justify-between">
+      <div>
+        <h1 className="text-4xl font-bold">Bundles management</h1>
+        <p className="text-muted-foreground">
+          Manage all your bundles from here!
+        </p>
+      </div>
+      <Button>+ Add Bundle</Button>
+    </div>
+  );
+}
+
 function BundlesStatsContainer() {
-  const dummyBundleStats = {
-    total_bundles: 125,
-    active_bundles: 98,
-    highest_value_bundle: 1299.99,
-    lowest_value_bundle: 99.99,
-  };
+  const {
+    bundleStats,
+    isLoadingBundleStats,
+    refetchBundleStats,
+    isErrorBundleStats,
+  } = useBundles.useStatistics();
+
+  if (isLoadingBundleStats) return <LoadingState type="stats" />;
+
+  if (isErrorBundleStats) {
+    return (
+      <ErrorMessage
+        message={"Failed to load data"}
+        dismissible={true}
+        onDismiss={refetchBundleStats}
+      />
+    );
+  }
 
   function bundlesStats(stats) {
     return [
@@ -80,7 +119,7 @@ function BundlesStatsContainer() {
 
   return (
     <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-      {bundlesStats(dummyBundleStats).map((stat, index) => (
+      {bundlesStats(bundleStats).map((stat, index) => (
         <StatsCard
           key={index}
           title={stat.title}
@@ -93,7 +132,24 @@ function BundlesStatsContainer() {
   );
 }
 
-function BundlesDataTable() {
+function BundlesDataTable({
+  isLoadingBundles,
+  isErrorBundles,
+  refetchBundles,
+  bundles,
+}) {
+  if (isLoadingBundles) return <LoadingState type="table" rows={9} />;
+
+  if (isErrorBundles) {
+    return (
+      <ErrorMessage
+        message={"Failed to load data"}
+        dismissible={true}
+        onDismiss={refetchBundles}
+      />
+    );
+  }
+
   return (
     <div>
       <Table>
@@ -102,41 +158,53 @@ function BundlesDataTable() {
           <TableRow>
             <TableHead className="w-[150px]">Product</TableHead>
             <TableHead>Quantity</TableHead>
-            <TableHead>VAT</TableHead>
             <TableHead>Subtotal</TableHead>
-            <TableHead>Total</TableHead>
+            <TableHead>VAT</TableHead>
+            <TableHead className={"font-semibold"}>Total</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium w-[150px]">
-              <div className="flex flex-col gap-1">
-                <p>Iphone 11</p>
-                <div className="flex gap-1 w-full flex-wrap">
-                  <span className="px-2  bg-black text-white rounded-sm text-xs">
-                    Black
-                  </span>
-                  <span className="px-2  bg-black text-white rounded-sm text-xs">
-                    128GB
-                  </span>
+          {bundles?.data?.map((bundle) => (
+            <TableRow key={bundle?.id}>
+              <TableCell className="font-medium w-[150px]">
+                <div className="flex flex-col gap-1">
+                  <p>{bundle?.product?.name}</p>
+                  <div className="flex gap-1 w-full flex-wrap">
+                    {bundle?.product?.variants[0]?.types?.map((variant) => (
+                      <span
+                        key={variant?.type_id}
+                        className="px-2  bg-black text-white rounded-sm text-xs"
+                      >
+                        {variant?.value?.name}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </TableCell>
-            <TableCell>5</TableCell>
-            <TableCell>14%</TableCell>
-            <TableCell>{formatCurrency(56)}</TableCell>
-            <TableCell>{formatCurrency(45)}</TableCell>
-            <TableCell>
-              <span className="px-2.5 bg-green-100 text-green-500 rounded-sm py-1">
-                active
-              </span>
-            </TableCell>
-            <TableCell className="flex justify-end">
-              <Eye className="size-5 text-accent" />
-            </TableCell>
-          </TableRow>
+              </TableCell>
+              <TableCell>{bundle?.quantity}</TableCell>
+              <TableCell>{formatCurrency(bundle?.subtotal)}</TableCell>
+              <TableCell>{bundle?.vat}%</TableCell>
+              <TableCell className={"font-semibold"}>
+                {formatCurrency(bundle?.total)}
+              </TableCell>
+              <TableCell>
+                <span
+                  className={`px-2.5  rounded-sm py-1 ${
+                    bundle?.is_active === 1
+                      ? "bg-green-100 text-green-600"
+                      : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {bundle?.is_active === 1 ? "active" : "inactive"}
+                </span>
+              </TableCell>
+              <TableCell className="flex justify-end ">
+                <Eye className="size-5 text-accent cursor-pointer" />
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>

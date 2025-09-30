@@ -53,6 +53,46 @@ const bundlesApi = {
   },
 
   /**
+   * 🔎 GET BUNDLES BY PRODUCT ID
+   * Fetch bundles linked to a product
+   * Example: const bundles = await bundlesApi.getByProductId(34);
+   */
+  getByProductId: async (productId, queryParams = {}, options = {}) => {
+    if (!productId) throw new Error("Product ID is required");
+    try {
+      const params = new URLSearchParams();
+
+      if (queryParams.limit) params.append("limit", queryParams.limit);
+
+      const queryString = params.toString();
+      const url = `/bundles/product_id/${productId}/${
+        queryString ? `?${queryString}` : ""
+      }`;
+      return await api.get(url, options);
+    } catch (error) {
+      console.error(
+        `Failed to fetch bundles for product ${productId}:`,
+        error.details
+      );
+      throw error;
+    }
+  },
+
+  /**
+   * 📊 GET BUNDLE STATISTICS
+   * Fetches statistics about bundles (active, inactive, value range, etc.)
+   * Example: const stats = await bundlesApi.getStatistics();
+   */
+  getStatistics: async (options = {}) => {
+    try {
+      return await api.get("/bundles/statistics", options);
+    } catch (error) {
+      console.error("Failed to fetch bundle statistics:", error.details);
+      throw error;
+    }
+  },
+
+  /**
    * ➕ CREATE NEW BUNDLE
    * Creates a new bundle with variant, pricing and quantity details
    * Handles validation and bundle creation
