@@ -28,7 +28,8 @@ export default function AdminCategoriesPage() {
     search: debouncedSearch,
   });
 
-  const { isLoadingStats, stats } = useCategories.useStats();
+  const { subCategoryStats, isLoadingSubCategoryStats } =
+    useCategories.useSubCategoryStatistics();
 
   const {
     subcategory,
@@ -79,13 +80,17 @@ export default function AdminCategoriesPage() {
         mode={subcategory ? "edit" : "create"}
         refetchAllSubCategories={refetchAllSubCategories}
       />
-      <CategoryStatsCards stats={stats} isLoadingStats={isLoadingStats} />
+      <CategoryStatsCards
+        stats={subCategoryStats}
+        isLoadingStats={isLoadingSubCategoryStats}
+      />
 
       <ControlsBar
         searchInput={searchInput}
         setSearchInput={setSearchInput}
-        searchName={"subcategory"}
+        searchName={"subcategory or parent category"}
         isShowFilter={false}
+        searchWidth="w-100"
       />
 
       <CategoriesDataTable

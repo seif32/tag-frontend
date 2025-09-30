@@ -25,7 +25,7 @@ function AdminBundlesPage() {
   const [searchInput, setSearchInput] = useState("");
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 ">
       <BundlesStatsContainer />
       <BundlesControlsBar
         searchInput={searchInput}

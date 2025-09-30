@@ -281,6 +281,51 @@ const useCategories = {
   },
 
   /**
+   * 📊 GET SUBCATEGORY STATISTICS HOOK
+   * Fetches statistics about subcategories
+   * Usage: const { isLoadingSubCategoryStats, subCategoryStats } = useCategory.useSubCategoryStatistics();
+   */
+  useSubCategoryStatistics: (options = {}) => {
+    const query = useQuery({
+      queryKey: ["subcategories", "statistics"],
+      queryFn: categoriesApi.getSubCategoryStatistics,
+      staleTime: 10 * 60 * 1000,
+      ...options,
+    });
+
+    return {
+      isLoadingSubCategoryStats: query.isLoading,
+      subCategoryStats: query.data,
+      errorSubCategoryStats: query.error,
+      isErrorSubCategoryStats: query.isError,
+      refetchSubCategoryStats: query.refetch,
+    };
+  },
+
+  /**
+   * 🎯 GET SINGLE SUBCATEGORY BY ID HOOK
+   * Fetches a single subcategory by its ID
+   * Usage: const { isLoadingSubCategory, subCategory } = useCategory.useSubCategoryById(7);
+   */
+  useSubCategoryById: (id, options = {}) => {
+    const query = useQuery({
+      queryKey: ["subcategories", "sub", id],
+      queryFn: () => categoriesApi.getSubCategoryById(id),
+      enabled: !!id,
+      staleTime: 5 * 60 * 1000,
+      ...options,
+    });
+
+    return {
+      isLoadingSubCategory: query.isLoading,
+      subCategory: query.data,
+      errorSubCategory: query.error,
+      isErrorSubCategory: query.isError,
+      refetchSubCategory: query.refetch,
+    };
+  },
+
+  /**
    * ➕ CREATE NEW SUBCATEGORY HOOK
    * Handles adding a new subcategory under a parent category
    * Automatically refreshes the categories list after successful creation

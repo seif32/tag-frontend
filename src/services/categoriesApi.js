@@ -165,6 +165,35 @@ const categoriesApi = {
   },
 
   /**
+   * 📊 GET SUBCATEGORY STATISTICS
+   * Fetches stats for subcategories: total, with products, without products.
+   * Example: const stats = await categoryApi.getSubCategoryStatistics();
+   */
+  getSubCategoryStatistics: async (options = {}) => {
+    try {
+      return await api.get("/categories/subcategories/statistics", options);
+    } catch (error) {
+      console.error("Failed to fetch subcategory statistics:", error.details);
+      throw error;
+    }
+  },
+
+  /**
+   * 🎯 GET SUBCATEGORY BY ID
+   * Fetches details of a single subcategory by its ID.
+   * Example: const subCategory = await categoryApi.getSubCategoryById(3);
+   */
+  getSubCategoryById: async (id, options = {}) => {
+    if (!id) throw new Error("Subcategory ID is required");
+    try {
+      return await api.get(`/categories/subcategories/sub/${id}`, options);
+    } catch (error) {
+      console.error(`Failed to fetch subcategory ${id}:`, error.details);
+      throw error;
+    }
+  },
+
+  /**
    * 🎯 GET SUBCATEGORIES BY CATEGORY ID
    * Fetches all subcategories belonging to a specific parent category
    * Perfect for populating subcategory dropdowns or filtering

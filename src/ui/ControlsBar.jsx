@@ -16,6 +16,7 @@ export default function ControlsBar({
   children,
   searchName,
   isShowFilter = true,
+  searchWidth = "w-70",
 }) {
   const [searchParams] = useSearchParams();
   const updateUrlParams = useUpdateUrlParams();
@@ -34,7 +35,7 @@ export default function ControlsBar({
             setSearchInput(e.target.value);
             updateUrlParams({ page: 1, status: undefined });
           }}
-          className=" w-70 min-w-full  pl-10"
+          className={`${searchWidth} min-w-full  pl-10`}
         />
       </div>
       {isShowFilter && (

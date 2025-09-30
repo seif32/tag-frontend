@@ -139,9 +139,7 @@ function AddEditSubcategoryDialog({
                 )}
               </div>
             </div>
-
             <Separator />
-
             {/* Media Section */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
@@ -159,11 +157,9 @@ function AddEditSubcategoryDialog({
                 className="w-full"
               /> */}
             </div>
-
             <Separator />
-
             {/* Settings Section */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-medium">Visibility Settings</h3>
               </div>
@@ -188,9 +184,7 @@ function AddEditSubcategoryDialog({
                 </div>
               </div>
             </div>
-
-            <Separator />
-
+            <Separator /> */}
             {/* Action Buttons */}
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">
               <Button
