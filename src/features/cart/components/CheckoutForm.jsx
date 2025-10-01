@@ -236,7 +236,7 @@ function AddressDropdown({
 
             <div className="border my-2 "></div>
 
-            {addresses.length !== 0 ? (
+            {addresses?.length !== 0 ? (
               addresses.map((addr) => (
                 <CommandItem
                   key={addr.id}

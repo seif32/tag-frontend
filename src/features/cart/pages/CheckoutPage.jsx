@@ -71,6 +71,39 @@ function CheckoutPage() {
     isPendingOrders ||
     isLoadingAddresses;
 
+  function transformCartForCheckout(cartItems) {
+    const regularItems = [];
+    const bundles = [];
+
+    cartItems.forEach((item) => {
+      if (item.is_bundle && item.bundle_id) {
+        // Handle bundle items - ONLY add to bundles array
+        const existingBundle = bundles.find(
+          (b) => b.bundle_id === item.bundle_id
+        );
+
+        if (existingBundle) {
+          existingBundle.times_applied += item.quantity;
+        } else {
+          bundles.push({
+            bundle_id: item.bundle_id,
+            times_applied: item.quantity,
+          });
+        }
+
+        // ❌ DON'T add to regularItems - let backend handle the bundle logic
+      } else {
+        // Regular items - only non-bundle items
+        regularItems.push({
+          variant_id: item.variant_id || item.id,
+          quantity: item.quantity,
+        });
+      }
+    });
+
+    return { items: regularItems, bundles };
+  }
+
   async function onSubmit(address) {
     try {
       let addressId;
@@ -85,21 +118,26 @@ function CheckoutPage() {
         addressId = selectAddress.id;
       }
 
+      // 🚀 Use the transformation function here
+      const { items, bundles } = transformCartForCheckout(cartItems);
+
       const orderPayload = {
         user_id: user?.id,
         address_id: addressId,
+        currency: "USD", // or get from your app config
         promo_code_id: appliedCoupon?.id || null,
-        items: cartItems.map((item) => ({
-          variant_id: item.id,
-          quantity: item.quantity,
-        })),
+        items: items,
+        // Only include bundles if there are any
+        ...(bundles.length > 0 && { bundles: bundles }),
       };
+
+      console.log("🚀 Sending order payload:", orderPayload); // Debug log
 
       const newOrderData = await createOrderAsync(orderPayload);
       console.log("newOrderData", newOrderData);
       setOrderSuccess(newOrderData);
       navigate(`/order/success/${newOrderData.id}`);
-      clearCart(); // This will also clear selectedCity
+      clearCart();
     } catch (error) {
       console.error("Checkout failed:", error);
     }

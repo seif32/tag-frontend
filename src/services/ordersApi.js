@@ -156,19 +156,21 @@ const ordersApi = {
    * });
    */
   create: async (orderData, options = {}) => {
-    // Input validation based on your backend requirements
+    // Basic required fields validation
     if (!orderData.user_id) {
       throw new Error("User ID is required");
     }
-    if (
-      !orderData.items ||
-      !Array.isArray(orderData.items) ||
-      orderData.items.length === 0
-    ) {
-      throw new Error("Order items are required");
-    }
+
     if (!orderData.address_id) {
       throw new Error("Shipping address is required");
+    }
+
+    // ✅ Simple check: must have either items or bundles
+    const hasItems = orderData.items?.length > 0;
+    const hasBundles = orderData.bundles?.length > 0;
+
+    if (!hasItems && !hasBundles) {
+      throw new Error("Order must contain items or bundles");
     }
 
     try {

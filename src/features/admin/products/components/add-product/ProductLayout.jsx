@@ -5,7 +5,6 @@ import ProductInstancesSection from "./ProductInstancesSection/ProductInstancesS
 import SettingsSection from "./SettingsSection";
 import CategoryBrandSection from "./CategoryBrandSection";
 import TagsSection from "./GeneralInfoSection/TagsSection";
-import BundlesSection from "./BundlesSection";
 import { useFormContext } from "react-hook-form";
 
 const ProductLayout = ({

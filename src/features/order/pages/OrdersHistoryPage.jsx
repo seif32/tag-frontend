@@ -9,6 +9,7 @@ import Pagination from "@/ui/Pagination";
 import { formatDateFull } from "@/utils/dateUtils";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { PiPackageThin } from "react-icons/pi";
+import { Package } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
 
 function OrdersHistoryPage() {
@@ -92,7 +93,8 @@ function OrderHistoryCardContainer({ orders }) {
             orderId={order?.id}
             orderDate={order?.created_at}
             orderStatus={order?.order_status}
-            products={order?.items}
+            products={order?.items || []}
+            bundles={order?.bundles || []} // 🚀 NEW: Pass bundles
             totalPrice={order?.total_amount}
           />
         );
@@ -106,9 +108,20 @@ function OrderHistoryCard({
   orderDate,
   orderStatus,
   products = [],
+  bundles = [], // 🚀 NEW: Accept bundles
   totalPrice,
 }) {
   const navigate = useNavigate();
+
+  // Calculate total items including bundles
+  const regularItemsCount = products.length;
+  const bundleItemsCount = bundles.reduce(
+    (total, bundle) => total + bundle.quantity * bundle.times_applied,
+    0
+  );
+  const totalItemsCount = regularItemsCount + bundleItemsCount;
+  const totalProductCount = products.length + bundles.length;
+
   return (
     <div className="p-4 bg-white border rounded-md">
       <div className="">
@@ -118,7 +131,6 @@ function OrderHistoryCard({
         </h3>
         <div className="flex items-end justify-between ">
           <p className="text-sm text-muted-foreground">
-            {/* {formatDateFull(orderDate)} */}
             {formatDateFull(orderDate)}
           </p>
           <div
@@ -134,42 +146,29 @@ function OrderHistoryCard({
       <div className="my-3 border border-gray-50"></div>
       <div className="flex flex-col justify-between gap-8 sm:flex-row sm:gap-2 ">
         <div className="flex flex-wrap gap-x-2">
+          {/* 🚀 Regular Products */}
           {products?.map((product) => {
             return (
-              <div key={product?.id} className="flex flex-col gap-0.5">
-                <div className="w-20 h-20 bg-gray-200 rounded-md">
-                  <img />
-                </div>
-                <h4 className="truncate max-w-[10ch] text-xs">
-                  {product?.product?.name}
-                </h4>
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <PiPackageThin />
-                  <p className="text-xs">x{product?.quantity}</p>
-                </div>
-              </div>
+              <ProductItem key={`product-${product?.id}`} product={product} />
             );
           })}
+
+          {/* 🚀 Bundle Products */}
+          {bundles?.map((bundle) => {
+            return <BundleItem key={`bundle-${bundle?.id}`} bundle={bundle} />;
+          })}
         </div>
-        {/* <div className="mx-5 border"></div> */}
+
         <div className="flex flex-col justify-between gap-8">
-          {/* <ShippingAddress
-            city={address.city}
-            country={address.city}
-            postalCode={address.postal_code}
-            streetAddress={address.street_address}
-            phoneNumber={phoneNumber}
-          /> */}
           <div className="flex flex-col items-end self-end justify-between h-full gap-1 ">
             <div>
               <p className="text-xs text-muted-foreground">Total Price</p>
               <p className="font-medium ">{formatCurrency(totalPrice)}</p>
-              {/* <p className="text-xs text-muted-foreground">
-                {totalItems} items{" "}
-              </p> */}
+              <p className="text-xs text-muted-foreground">
+                {totalItemsCount} items • {totalProductCount} products
+              </p>
             </div>
             <Button
-              // variant={"outline"}
               size={"sm"}
               className={"text-xs w-full"}
               onClick={() => navigate(`/orders/${orderId}`)}
@@ -178,6 +177,53 @@ function OrderHistoryCard({
             </Button>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// 🚀 NEW: Separate component for regular products
+function ProductItem({ product }) {
+  return (
+    <div className="flex flex-col gap-0.5">
+      <div className="w-20 h-20 bg-gray-200 rounded-md">
+        <img alt={product?.product?.name} />
+      </div>
+      <h4 className="truncate max-w-[10ch] text-xs">
+        {product?.product?.name}
+      </h4>
+      <div className="flex items-center gap-1 text-muted-foreground">
+        <PiPackageThin />
+        <p className="text-xs">×{product?.quantity}</p>
+      </div>
+    </div>
+  );
+}
+
+// 🚀 NEW: Component for bundle display
+function BundleItem({ bundle }) {
+  const totalItems = bundle.quantity * bundle.times_applied;
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      <div className="w-20 h-20 bg-blue-100 rounded-md flex items-center justify-center relative">
+        <Package className="w-8 h-8 text-blue-600" />
+        {/* Bundle indicator */}
+        <div className="absolute top-1 right-1 bg-green-500 text-white text-xs px-1 rounded-full">
+          B
+        </div>
+      </div>
+      <h4 className="truncate max-w-[10ch] text-xs">
+        {bundle?.variant?.product?.name || "Bundle"}
+      </h4>
+      <div className="flex flex-col text-muted-foreground">
+        <div className="flex items-center gap-1">
+          <Package className="w-3 h-3" />
+          <p className="text-xs">
+            ×{bundle.times_applied} bundle{bundle.times_applied > 1 ? "s" : ""}
+          </p>
+        </div>
+        <p className="text-xs text-green-600">{totalItems} items total</p>
       </div>
     </div>
   );

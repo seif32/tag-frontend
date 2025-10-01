@@ -10,15 +10,16 @@ import { generateOrderInvoicePDF } from "@/utils/generateInvoicePDF";
 import { useState } from "react";
 import { toast } from "sonner";
 
-function OrderSuccessPage() {
+export default function OrderSuccessPage() {
   const order = useOrderStore((state) => state.order);
   const orderItems = useOrderStore((state) => state.orderItems);
+  const orderBundles = useOrderStore((state) => state.orderBundles); // New state
 
-  console.log("OrderSuccessPage", orderItems);
+  console.log("OrderSuccessPage", { orderItems, orderBundles });
 
   if (!order)
     return (
-      <div className="grid place-items-center  min-h-screen ">
+      <div className="grid place-items-center min-h-screen">
         <EmptyState
           title={"Ready to place your first order?"}
           subtitle={"Discover amazing products and start shopping today!"}
@@ -29,16 +30,18 @@ function OrderSuccessPage() {
     );
 
   return (
-    <div className="flex flex-col gap-12 mx-auto max-w-200 ">
+    <div className="flex flex-col gap-12 mx-auto max-w-200">
       <Title />
       <OrderReceipt order={order} />
-      <OrderContainer items={orderItems} />
-      <SuccessAction order={order} orderItems={orderItems} />
+      <OrderContainer items={orderItems} bundles={orderBundles} />
+      <SuccessAction
+        order={order}
+        orderItems={orderItems}
+        orderBundles={orderBundles}
+      />
     </div>
   );
 }
-
-export default OrderSuccessPage;
 
 function Title() {
   return (
@@ -60,14 +63,18 @@ function Title() {
   );
 }
 
-function SuccessAction({ order, orderItems }) {
+function SuccessAction({ order, orderItems, orderBundles }) {
   const navigate = useNavigate();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   async function handleDownloadInvoice() {
     setIsGeneratingPDF(true);
     try {
-      await generateOrderInvoicePDF({ ...order, items: orderItems });
+      await generateOrderInvoicePDF({
+        ...order,
+        items: orderItems,
+        bundles: orderBundles || [], // Include bundles
+      });
       toast.success("Invoice downloaded successfully!");
     } catch (error) {
       console.error("Invoice generation failed:", error);
@@ -82,7 +89,6 @@ function SuccessAction({ order, orderItems }) {
       <Button variant={"outline"} onClick={() => navigate("/orders")}>
         Go to Orders History
       </Button>
-      {/* <Button onClick={() => navigate("/products")}>Return Shopping</Button> */}
       <Button onClick={handleDownloadInvoice} disabled={isGeneratingPDF}>
         {isGeneratingPDF ? "📄 Generating..." : "Download Invoice"}
       </Button>

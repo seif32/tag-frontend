@@ -27,10 +27,25 @@ export const useCartStore = create((set, get) => ({
 
       let updatedItems;
       if (existingItem) {
+        // Bundle-aware stock checking
+        const maxAllowed = product.is_bundle
+          ? Math.floor(product.stock) // For bundles, stock is already max bundles
+          : product.stock;
+
+        const newQuantity = Math.min(
+          existingItem.quantity + quantity,
+          maxAllowed
+        );
+
+        if (existingItem.quantity + quantity > maxAllowed) {
+          const itemType = product.is_bundle ? "bundle" : "item";
+          toast.error(
+            `You can only add up to ${maxAllowed} of this ${itemType}.`
+          );
+        }
+
         updatedItems = state.cartItems.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
+          item.id === product.id ? { ...item, quantity: newQuantity } : item
         );
       } else {
         updatedItems = [...state.cartItems, { ...product, quantity }];
@@ -65,7 +80,10 @@ export const useCartStore = create((set, get) => ({
       if (!item) return state;
 
       if (item.quantity >= item.stock) {
-        toast.error(`You can only add up to ${item.stock} of this item.`);
+        const itemType = item.is_bundle ? "bundle" : "item";
+        toast.error(
+          `You can only add up to ${item.stock} of this ${itemType}.`
+        );
         return state;
       }
 
@@ -210,7 +228,15 @@ function recalc(
   appliedCoupon = null,
   shippingMethod = "standard"
 ) {
-  const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  // Bundle-aware total items calculation
+  const totalItems = cartItems.reduce((sum, item) => {
+    if (item.is_bundle) {
+      // For bundles: quantity * bundle_quantity = actual items
+      return sum + item.quantity * item.bundle_quantity;
+    }
+    return sum + item.quantity;
+  }, 0);
+
   const uniqueItems = cartItems.length;
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price_before_vat * item.quantity,

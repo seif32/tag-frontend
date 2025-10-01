@@ -13,12 +13,36 @@ import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import { BsBackspaceReverse } from "react-icons/bs";
 import { FaArrowLeft } from "react-icons/fa6";
+import { generateOrderInvoicePDF } from "@/utils/generateInvoicePDF";
+import { toast } from "sonner";
+import { useState } from "react";
 
 function OrderDetailsPage() {
   const { orderId } = useParams();
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   const { order, isLoadingOrder, isErrorOrder, errorOrder, refetchOrder } =
     useOrders.useById(orderId);
+
+  // 🚀 Handle invoice generation
+  async function handleDownloadInvoice() {
+    if (!order) return;
+
+    setIsGeneratingPDF(true);
+    try {
+      await generateOrderInvoicePDF({
+        ...order,
+        items: order.items || [],
+        bundles: order.bundles || [], // Include bundles
+      });
+      toast.success("Invoice downloaded successfully!");
+    } catch (error) {
+      console.error("Invoice generation failed:", error);
+      toast.error("Failed to generate invoice");
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  }
 
   if (isLoadingOrder) return <LoadingState type="page" />;
 
@@ -32,9 +56,12 @@ function OrderDetailsPage() {
     );
 
   return (
-    <div className="flex flex-col ">
-      <Title />
-      <div className="flex flex-col gap-3 p-3 border rounded-3xl ">
+    <div className="flex flex-col">
+      <Title
+        onDownloadInvoice={handleDownloadInvoice}
+        isGeneratingPDF={isGeneratingPDF}
+      />
+      <div className="flex flex-col gap-3 p-3 border rounded-3xl">
         <div className="flex flex-col gap-3 md:flex-row">
           <IconCard
             icon={TfiPackage}
@@ -57,7 +84,8 @@ function OrderDetailsPage() {
         <div className="flex flex-col gap-3 md:flex-row">
           <div className="flex-2">
             <OrderContainer
-              items={order.items}
+              items={order.items || []}
+              bundles={order.bundles || []} // 🚀 Pass bundles
               style={"bg-white p-8 rounded-2xl border"}
             />
           </div>
@@ -82,11 +110,11 @@ function OrderDetailsPage() {
 
 export default OrderDetailsPage;
 
-function Title() {
+function Title({ onDownloadInvoice, isGeneratingPDF }) {
   return (
     <section className="flex justify-between">
       <div>
-        <div className="flex  items-center gap-1.5 group">
+        <div className="flex items-center gap-1.5 group">
           <FaArrowLeft className="text-accent size-3 group-hover:text-accent/70 cursor-pointer" />
           <Link
             to={"/orders"}
@@ -97,7 +125,13 @@ function Title() {
         </div>
         <h1 className="mb-5 text-3xl">Order Details</h1>
       </div>
-      <Button variant={"outline"}>Invoice</Button>
+      <Button
+        variant={"outline"}
+        onClick={onDownloadInvoice}
+        disabled={isGeneratingPDF}
+      >
+        {isGeneratingPDF ? "📄 Generating..." : "Download Invoice"}
+      </Button>
     </section>
   );
 }

@@ -1,16 +1,28 @@
 import { Button } from "@/components/ui/button";
 import FlyingToCart from "@/features/cart/components/FlyingToCart";
 import { useCartStore } from "@/store/cartStore";
-import { Minus, Plus, AlertCircle } from "lucide-react";
+import { Minus, Plus, AlertCircle, Package } from "lucide-react";
 import { useState, useEffect } from "react";
 
-function ActionButtons({ selectedVariant, product }) {
+function ActionButtons({ selectedVariant, selectedBundle, product }) {
   const [quantity, setQuantity] = useState(1);
   const [showMaxWarning, setShowMaxWarning] = useState(false);
-
   const [flyItem, setFlyItem] = useState(null);
 
+  // Bundle-aware logic
+  const isBundleMode = selectedBundle && selectedBundle.quantity > 1;
+  const bundleQuantity = selectedBundle?.quantity || 1;
+  const bundlePrice = selectedBundle
+    ? parseFloat(selectedBundle.subtotal)
+    : selectedVariant?.price;
+  const bundleVat = selectedBundle
+    ? parseFloat(selectedBundle.vat)
+    : selectedVariant?.vat;
+
   const maxQuantity = selectedVariant?.quantity || 0;
+  const maxBundles = isBundleMode
+    ? Math.floor(maxQuantity / bundleQuantity)
+    : maxQuantity;
   const inStock = selectedVariant?.quantity > 0;
 
   const addItem = useCartStore((state) => state.addItem);
@@ -21,20 +33,24 @@ function ActionButtons({ selectedVariant, product }) {
   };
 
   const handleIncrease = () => {
-    if (quantity >= maxQuantity) {
+    if (quantity >= maxBundles) {
       setShowMaxWarning(true);
       return;
     }
     if (showMaxWarning) setShowMaxWarning(false);
-    setQuantity((prev) => Math.min(maxQuantity, prev + 1));
+    setQuantity((prev) => Math.min(maxBundles, prev + 1));
   };
 
   function handleAddToCart() {
+    const cartItemId = isBundleMode
+      ? `bundle_${selectedBundle.id}`
+      : selectedVariant.id;
+
     const currentQuantity =
-      useCartStore.getState().cartItems.find((i) => i.id === selectedVariant.id)
+      useCartStore.getState().cartItems.find((i) => i.id === cartItemId)
         ?.quantity || 0;
 
-    if (currentQuantity + quantity > maxQuantity) {
+    if (currentQuantity + quantity > maxBundles) {
       setShowMaxWarning(true);
       return;
     }
@@ -46,25 +62,40 @@ function ActionButtons({ selectedVariant, product }) {
     const endRect = endEl.getBoundingClientRect();
 
     setFlyItem({
-      text: product.name,
+      text: isBundleMode
+        ? `${product.name} (Bundle of ${bundleQuantity})`
+        : product.name,
       start: { x: startRect.left, y: startRect.top },
       end: { x: endRect.left, y: endRect.top },
     });
 
     if (!selectedVariant || !inStock) return;
-
+    // In ActionButtons component
     const item = {
-      id: selectedVariant.id,
+      // For cart identification (frontend only)
+      id: isBundleMode
+        ? `bundle_${selectedBundle.id}_${selectedVariant.id}`
+        : selectedVariant.id,
+
+      // Always store actual variant info
+      variant_id: selectedVariant.id,
       product_id: selectedVariant.product_id,
-      price_before_vat: selectedVariant.price,
+      bundle_id: selectedBundle?.id || null,
+
+      // Pricing (keep existing bundle logic)
+      price_before_vat: bundlePrice,
       currency: selectedVariant.currency,
       types: selectedVariant.types,
-      stock: selectedVariant.quantity,
-      vat: selectedVariant.vat,
-      price_after_vat:
-        selectedVariant.price +
-        selectedVariant.price * (selectedVariant.vat / 100),
+      stock: isBundleMode ? maxBundles : maxQuantity,
+      vat: bundleVat,
+      price_after_vat: bundlePrice + bundlePrice * (bundleVat / 100),
 
+      // Bundle metadata
+      is_bundle: isBundleMode,
+      bundle_quantity: bundleQuantity,
+      unit_price: isBundleMode ? bundlePrice / bundleQuantity : bundlePrice,
+
+      // Product info
       name: product.name,
       description: product.description,
       short_description: product.short_description,
@@ -72,38 +103,31 @@ function ActionButtons({ selectedVariant, product }) {
       subcategory: product.sub_category_name,
       brand: product.brand,
     };
+
     addItem(item, quantity);
   }
 
   const handleQuantityChange = (e) => {
     const value = e.target.value;
-
-    // Allow empty input while typing
     if (value === "") return;
 
     const numValue = parseInt(value);
-
-    // Validate and set quantity
     if (!isNaN(numValue) && numValue >= 1) {
-      setQuantity(Math.min(numValue, maxQuantity));
+      setQuantity(Math.min(numValue, maxBundles));
     }
   };
 
   const handleQuantityBlur = (e) => {
     const value = e.target.value;
-
-    // If empty or invalid, reset to 1
     if (!value || isNaN(parseInt(value)) || parseInt(value) < 1) {
       setQuantity(1);
     }
-
-    // Clear warning on valid input
     if (showMaxWarning) setShowMaxWarning(false);
   };
 
   useEffect(() => {
     setQuantity(1);
-  }, [selectedVariant]);
+  }, [selectedVariant, selectedBundle]);
 
   useEffect(() => {
     if (showMaxWarning) {
@@ -112,11 +136,10 @@ function ActionButtons({ selectedVariant, product }) {
     }
   }, [showMaxWarning]);
 
-  // 🚨 Out of Stock State
+  // Out of Stock State
   if (!inStock) {
     return (
       <div className="flex flex-col gap-4">
-        {/* 🔴 Out of Stock Banner */}
         <div className="flex items-center justify-between p-4 border border-red-200 rounded-lg bg-red-50">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
@@ -131,41 +154,6 @@ function ActionButtons({ selectedVariant, product }) {
           </div>
           <AlertCircle className="w-5 h-5 text-red-500" />
         </div>
-
-        {/* 🎯 Alternative Actions */}
-        {/* <div className="flex flex-col gap-3 sm:flex-row">
-          <Button
-            onClick={handleNotifyMe}
-            variant="outline"
-            className={`flex-1 ${
-              notifyWhenAvailable
-                ? "border-green-500 bg-green-50 text-green-700"
-                : "border-blue-500 text-blue-600 hover:bg-blue-50"
-            }`}
-          >
-            <Bell className="w-4 h-4 mr-2" />
-            {notifyWhenAvailable
-              ? "Notification Set!"
-              : "Notify When Available"}
-          </Button>
-
-          <Button
-            variant="outline"
-            className="flex-1 text-gray-600 hover:bg-gray-50"
-          >
-            <Heart className="w-4 h-4 mr-2" />
-            Add to Wishlist
-          </Button>
-
-          <Button
-            variant="outline"
-            onClick={() => window.location.reload()}
-            className="flex-1 text-gray-600 hover:bg-gray-50"
-          >
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Check Again
-          </Button>
-        </div> */}
 
         <div className="p-3 border border-blue-200 rounded-lg bg-blue-50">
           <h4 className="mb-2 text-sm font-medium text-blue-800">
@@ -182,6 +170,16 @@ function ActionButtons({ selectedVariant, product }) {
 
   return (
     <div className="flex flex-col gap-3">
+      {/* Bundle Info Banner */}
+      {isBundleMode && (
+        <div className="flex items-center gap-2 p-3 border border-blue-200 rounded-lg bg-blue-50">
+          <Package className="w-4 h-4 text-blue-600" />
+          <span className="text-sm font-medium text-blue-800">
+            Bundle Mode: Each quantity = {bundleQuantity} items
+          </span>
+        </div>
+      )}
+
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-4">
           <Button
@@ -197,60 +195,69 @@ function ActionButtons({ selectedVariant, product }) {
             onChange={handleQuantityChange}
             onBlur={handleQuantityBlur}
             min={1}
-            max={maxQuantity}
+            max={maxBundles}
             className="w-16 px-2 py-1 text-center border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
-
           <Button
             onClick={handleIncrease}
             disabled={!inStock}
             className={`
               p-2 bg-transparent border border-black group hover:bg-primary disabled:opacity-50
-              ${quantity >= maxQuantity ? "border-orange-400 bg-orange-50" : ""}
+              ${quantity >= maxBundles ? "border-orange-400 bg-orange-50" : ""}
             `}
           >
             <Plus className="text-black group-hover:text-white" />
           </Button>
         </div>
-        <>
-          <Button
-            onClick={handleAddToCart}
-            disabled={!inStock || !selectedVariant}
-            className="w-40 text-accent"
-            variant="outline"
-            id="add-to-cart-btn" // Add this!
-          >
-            Add to Cart
-          </Button>
-          {flyItem && (
-            <FlyingToCart
-              text={flyItem.text}
-              start={flyItem.start}
-              end={flyItem.end}
-              onComplete={() => setFlyItem(null)}
-            />
-          )}
-        </>
-        {/* <Button
-          onClick={handleBuyNow}
-          disabled={!inStock || !selectedVariant}
-          className="w-40"
-        >
-          Buy Now
-        </Button> */}
 
-        {maxQuantity > 0 && maxQuantity <= 5 && inStock && (
+        <Button
+          onClick={handleAddToCart}
+          disabled={!inStock || !selectedVariant}
+          className="w-40 text-accent"
+          variant="outline"
+          id="add-to-cart-btn"
+        >
+          {isBundleMode
+            ? `Add ${quantity} Bundle${quantity > 1 ? "s" : ""}`
+            : "Add to Cart"}
+        </Button>
+
+        {flyItem && (
+          <FlyingToCart
+            text={flyItem.text}
+            start={flyItem.start}
+            end={flyItem.end}
+            onComplete={() => setFlyItem(null)}
+          />
+        )}
+
+        {/* Stock Warning */}
+        {maxBundles > 0 && maxBundles <= 5 && inStock && (
           <span className="ml-2 text-xs font-medium text-orange-600">
-            Only {maxQuantity} left!
+            {isBundleMode
+              ? `Only ${maxBundles} bundle${
+                  maxBundles > 1 ? "s" : ""
+                } available!`
+              : `Only ${maxBundles} left!`}
           </span>
         )}
       </div>
+
+      {/* Bundle Details */}
+      {isBundleMode && (
+        <div className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+          Adding {quantity} × {bundleQuantity} = {quantity * bundleQuantity}{" "}
+          total items
+        </div>
+      )}
 
       {showMaxWarning && (
         <div className="flex items-center gap-2 p-3 border rounded-lg bg-amber-50 border-amber-200 text-amber-800">
           <AlertCircle className="flex-shrink-0 w-4 h-4" />
           <span className="text-sm font-medium">
-            Maximum available quantity reached ({maxQuantity} items)
+            {isBundleMode
+              ? `Maximum available bundles reached (${maxBundles} bundles)`
+              : `Maximum available quantity reached (${maxBundles} items)`}
           </span>
         </div>
       )}

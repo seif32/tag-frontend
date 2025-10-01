@@ -11,6 +11,17 @@ import useVariantSelector from "../components/useVariantSelector";
 import ProductCard from "../components/ProductCard";
 import { useAuthStore } from "@/auth/store/authStore";
 
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { formatCurrency } from "@/utils/formatCurrency";
+
 function ProductDetailPage() {
   const { id } = useParams();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -25,9 +36,12 @@ function ProductDetailPage() {
 
   const {
     selectedVariant,
+    selectedBundle,
     variantBlocks,
     currentImages,
+    effectivePrice,
     handleVariantSelection,
+    handleBundleSelection,
     isLoading: isVariantLoading,
   } = useVariantSelector(product?.variants);
 
@@ -59,6 +73,13 @@ function ProductDetailPage() {
           <ProductInfoSection
             product={product}
             selectedVariant={selectedVariant}
+            effectivePrice={effectivePrice} // Pass pricing info
+          />
+
+          <BundlesSection
+            bundles={selectedVariant?.bundles}
+            selectedBundle={selectedBundle}
+            onBundleSelect={handleBundleSelection}
           />
 
           <VariantsSection
@@ -69,6 +90,7 @@ function ProductDetailPage() {
           {isAuthenticated && (
             <ActionButtons
               selectedVariant={selectedVariant}
+              selectedBundle={selectedBundle}
               product={product}
             />
           )}
@@ -88,6 +110,58 @@ function ProductDetailPage() {
 }
 
 export default ProductDetailPage;
+
+function BundlesSection({ bundles, selectedBundle, onBundleSelect }) {
+  if (!bundles?.length) return null;
+
+  return (
+    <div className="space-y-3">
+      <p className="font-medium text-sm">Volume Discounts</p>
+      <div className="grid gap-2">
+        {bundles.map((bundle) => {
+          const isSelected = selectedBundle?.id === bundle.id;
+          const unitPrice = parseFloat(bundle.subtotal) / bundle.quantity;
+          // const savings = bundle.quantity * (/* original price needed */) - parseFloat(bundle.subtotal);
+
+          return (
+            <div
+              key={bundle.id}
+              onClick={() => onBundleSelect(bundle)}
+              className={`
+                border-2 p-3 rounded-lg transition-all duration-300 cursor-pointer
+                ${
+                  isSelected
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }
+              `}
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="font-medium">
+                    Buy {bundle.quantity} for {formatCurrency(bundle.subtotal)}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {formatCurrency(unitPrice)} each • Total:{" "}
+                    {formatCurrency(bundle.total)}
+                  </p>
+                </div>
+                <div className="text-right">
+                  {/* {savings > 0 && (
+                    <p className="text-green-600 text-sm font-medium">
+                      Save {formatCurrency(savings)}
+                    </p>
+                  )} */}
+                  <p className="text-xs text-gray-500">+{bundle.vat}% VAT</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function FullDescription({ description }) {
   return <div className="text-muted-foreground">{description}</div>;

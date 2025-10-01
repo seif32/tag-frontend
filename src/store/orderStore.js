@@ -3,19 +3,19 @@ import { create } from "zustand";
 export const useOrderStore = create((set, get) => ({
   order: null,
   orderItems: [],
+  orderBundles: [], // New state for bundles
 
-  setOrderSuccess: (orderData) => {
-    const { items, ...PlainOrderInfo } = orderData;
+  setOrderSuccess: (orderData) =>
     set({
-      order: PlainOrderInfo,
-      orderItems: items,
-    });
-  },
+      order: orderData,
+      orderItems: orderData.items || [],
+      orderBundles: orderData.bundles || [], // Store bundles
+    }),
 
-  clearOrderSuccess: () => {
+  clearOrder: () =>
     set({
       order: null,
       orderItems: [],
-    });
-  },
+      orderBundles: [], // Clear bundles
+    }),
 }));

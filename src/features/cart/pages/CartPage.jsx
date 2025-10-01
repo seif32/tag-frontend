@@ -12,8 +12,6 @@ function CartPage() {
   const cartItems = useCartStore((state) => state.cartItems);
   const isCartEmpty = cartItems.length === 0;
 
-  console.log("cartItems", cartItems);
-
   return (
     <div className="flex flex-col gap-2 rounded-md md:flex-row">
       <div
@@ -23,11 +21,11 @@ function CartPage() {
       >
         {!isCartEmpty && (
           <div>
-            <h2 className="text-lg font-semibold "> Cart</h2>
+            <h2 className="text-lg font-semibold">Cart</h2>
             <div className="flex items-center gap-1">
-              <Package className=" text-muted-foreground" size={16} />
+              <Package className="text-muted-foreground" size={16} />
               <p className="text-sm text-muted-foreground">
-                {cartItems.length} items
+                {cartItems.length} unique items
               </p>
             </div>
           </div>
@@ -51,13 +49,14 @@ function CartPage() {
                 quantity={item.quantity}
                 variants={item.types.map((t) => t.value.name)}
                 stock={item.stock}
+                item={item} // Pass full item for bundle detection
               />
             ))
           )}
         </div>
       </div>
       {!isCartEmpty && (
-        <div className="flex-1 ">
+        <div className="flex-1">
           <OrderControls />
         </div>
       )}
@@ -67,33 +66,55 @@ function CartPage() {
 
 export default CartPage;
 
-function CartItem({ id, name, variants = [], quantity, price }) {
+function CartItem({ id, name, variants = [], quantity, price, item }) {
   const increment = useCartStore((state) => state.increment);
   const decrement = useCartStore((state) => state.decrement);
   const removeItem = useCartStore((state) => state.removeItem);
 
+  const isBundle = item?.is_bundle;
+  const bundleQuantity = item?.bundle_quantity || 1;
+  const unitPrice = item?.unit_price || price;
+
   return (
     <div className="flex flex-col justify-between gap-5 p-3 border rounded-md md:flex-row">
-      <div className="flex gap-2 ">
-        <div className="w-16 h-16 bg-gray-100 rounded-md ">
+      <div className="flex gap-2">
+        <div className="w-16 h-16 bg-gray-100 rounded-md">
           <img />
         </div>
         <div>
-          <h3 className="font-semibold max-w-[24ch]">{name} </h3>
-          <div className="flex items-center gap-1 gap-y-0 max-w-[24ch] flex-wrap ">
+          <div className="flex items-center gap-2">
+            <h3 className="font-semibold max-w-[24ch]">{name}</h3>
+            {isBundle && (
+              <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                Bundle
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1 gap-y-0 max-w-[24ch] flex-wrap">
             {variants.map((variant, index) => (
               <span key={index} className="text-xs text-gray-400">
                 {variant} {index < variants.length - 1 && <span>•</span>}
               </span>
             ))}
           </div>
-          <span className="text-xs ">
-            unit price: <span>{formatCurrency(price)}</span>
-          </span>
+
+          {isBundle ? (
+            <div className="text-xs space-y-1">
+              <div>
+                Bundle: {bundleQuantity} items for {formatCurrency(price)}
+              </div>
+              <div>Unit price: {formatCurrency(unitPrice)}</div>
+            </div>
+          ) : (
+            <span className="text-xs">
+              unit price: <span>{formatCurrency(price)}</span>
+            </span>
+          )}
         </div>
       </div>
 
-      <div className="flex flex-1 justify-evenly ">
+      <div className="flex flex-1 justify-evenly">
         <div className="flex items-center gap-2">
           <Button
             size="sm"
@@ -103,12 +124,19 @@ function CartItem({ id, name, variants = [], quantity, price }) {
             -
           </Button>
 
-          <span className="text-sm font-base">{quantity}</span>
+          <div className="text-center">
+            <span className="text-sm font-base">{quantity}</span>
+            {isBundle && (
+              <div className="text-xs text-gray-500">
+                ({quantity * bundleQuantity} items)
+              </div>
+            )}
+          </div>
+
           <Button
             size="sm"
             className="bg-primary"
             onClick={() => increment(id)}
-            // disabled={quantity >= stock}
           >
             +
           </Button>

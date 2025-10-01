@@ -311,7 +311,6 @@
 // export const generateInvoiceFromOrder = async (orderData) => {
 //   return await generateOrderInvoicePDF(orderData);
 // };
-
 import jsPDF from "jspdf";
 import { formatCurrency } from "./formatCurrency";
 
@@ -342,6 +341,26 @@ export const generateOrderInvoicePDF = async (orderData) => {
         description += ` (${variantInfo})`;
       }
 
+      return description;
+    };
+
+    const getBundleDescription = (bundle) => {
+      const variant = bundle.variant;
+      const product = variant?.product;
+      let description = `Bundle: ${bundle.quantity}× ${
+        product?.name || "Product"
+      }`;
+
+      if (variant?.types && variant.types.length > 0) {
+        const variantInfo = variant.types
+          .map((type) => `${type.type_name}: ${type.value.name}`)
+          .join(", ");
+        description += ` (${variantInfo})`;
+      }
+
+      description += ` - ${bundle.times_applied} bundle${
+        bundle.times_applied > 1 ? "s" : ""
+      }`;
       return description;
     };
 
@@ -464,55 +483,75 @@ export const generateOrderInvoicePDF = async (orderData) => {
     yPosition += 60;
 
     // === ITEMS TABLE ===
-    // Table header
-    doc.setFillColor(74, 74, 74);
-    doc.rect(leftMargin, yPosition, pageWidth - 80, 25, "F");
+    // Function to draw table header
+    const drawTableHeader = () => {
+      doc.setFillColor(74, 74, 74);
+      doc.rect(leftMargin, yPosition, pageWidth - 80, 25, "F");
 
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.text("#", leftMargin + 10, yPosition + 16);
-    doc.text("Item & Description", leftMargin + 60, yPosition + 16);
-    doc.text("Qty", leftMargin + 320, yPosition + 16);
-    doc.text("Rate", leftMargin + 380, yPosition + 16);
-    doc.text("Amount", rightMargin - 80, yPosition + 16);
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text("#", leftMargin + 10, yPosition + 16);
+      doc.text("Item & Description", leftMargin + 60, yPosition + 16);
+      doc.text("Qty", leftMargin + 320, yPosition + 16);
+      doc.text("Rate", leftMargin + 380, yPosition + 16);
+      doc.text("Amount", rightMargin - 80, yPosition + 16);
 
-    yPosition += 25;
-    doc.setTextColor(0, 0, 0);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
+      yPosition += 25;
+      doc.setTextColor(0, 0, 0);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+    };
 
-    // Table rows with text wrapping 🎯
-    orderData.items.forEach((item, index) => {
+    // Draw initial table header
+    drawTableHeader();
+
+    // 🚀 NEW: Combine regular items and bundles
+    const allLineItems = [];
+
+    // Add regular items
+    if (orderData.items && orderData.items.length > 0) {
+      orderData.items.forEach((item) => {
+        allLineItems.push({
+          type: "item",
+          data: item,
+          description: getProductDescription(item),
+          quantity: parseFloat(item.quantity),
+          unit: "pcs",
+          rate: parseFloat(item.unit_price),
+          amount: parseFloat(item.total_price),
+        });
+      });
+    }
+
+    // Add bundles
+    if (orderData.bundles && orderData.bundles.length > 0) {
+      orderData.bundles.forEach((bundle) => {
+        allLineItems.push({
+          type: "bundle",
+          data: bundle,
+          description: getBundleDescription(bundle),
+          quantity: bundle.times_applied,
+          unit: bundle.times_applied > 1 ? "bundles" : "bundle",
+          rate: parseFloat(bundle.subtotal),
+          amount: parseFloat(bundle.total) * bundle.times_applied,
+        });
+      });
+    }
+
+    // Table rows with text wrapping for both items and bundles
+    allLineItems.forEach((lineItem, index) => {
       // Check if we need a new page before drawing the row
       if (yPosition > pageHeight - 200) {
-        // Increased margin for multi-line text
         doc.addPage();
         yPosition = 60;
-
-        // Redraw table header on new page
-        doc.setFillColor(74, 74, 74);
-        doc.rect(leftMargin, yPosition, pageWidth - 80, 25, "F");
-
-        doc.setTextColor(255, 255, 255);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(11);
-        doc.text("#", leftMargin + 10, yPosition + 16);
-        doc.text("Item & Description", leftMargin + 60, yPosition + 16);
-        doc.text("Qty", leftMargin + 320, yPosition + 16);
-        doc.text("Rate", leftMargin + 380, yPosition + 16);
-        doc.text("Amount", rightMargin - 80, yPosition + 16);
-
-        yPosition += 25;
-        doc.setTextColor(0, 0, 0);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
+        drawTableHeader(); // Redraw header on new page
       }
 
-      const description = getProductDescription(item);
+      const { description, quantity, unit, rate, amount, type } = lineItem;
       const rowStartY = yPosition;
 
-      // Calculate available width for description column (from position 60 to 320)
+      // Calculate available width for description column
       const descriptionMaxWidth = 320 - 60 - 20; // 20px padding
 
       // Split the description text to fit the column width
@@ -526,36 +565,50 @@ export const generateOrderInvoicePDF = async (orderData) => {
       const rowHeight = Math.max(
         30,
         wrappedDescription.length * lineHeight + 10
-      ); // Min 30pt height
+      );
 
       // Draw row number
       doc.text((index + 1).toString(), leftMargin + 10, yPosition + 15);
 
+      // 🎯 Add type indicator for bundles
+      if (type === "bundle") {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(8);
+        doc.setTextColor(34, 139, 34); // Green color for bundle
+        doc.text("BUNDLE", leftMargin + 60, yPosition + 8);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+      }
+
       // Draw wrapped description text
       wrappedDescription.forEach((line, lineIndex) => {
-        doc.text(
-          line,
-          leftMargin + 60,
-          yPosition + 15 + lineIndex * lineHeight
-        );
+        const textY =
+          type === "bundle"
+            ? yPosition + 20 + lineIndex * lineHeight
+            : yPosition + 15 + lineIndex * lineHeight;
+        doc.text(line, leftMargin + 60, textY);
       });
 
       // Draw other columns (aligned to center of row)
       const centerY = yPosition + Math.max(15, rowHeight / 2);
 
-      doc.text(
-        `${parseFloat(item.quantity).toFixed(2)} pcs`,
-        leftMargin + 320,
-        centerY
-      );
-      doc.text(formatCurrency(item?.unit_price), leftMargin + 380, centerY);
-      doc.text(formatCurrency(item.total_price), rightMargin - 80, centerY);
+      // Quantity with unit
+      doc.text(`${quantity.toFixed(0)} ${unit}`, leftMargin + 320, centerY);
+
+      // Rate
+      doc.text(formatCurrency(rate), leftMargin + 380, centerY);
+
+      // Amount
+      doc.setFont("helvetica", "bold");
+      doc.text(formatCurrency(amount), rightMargin - 80, centerY);
+      doc.setFont("helvetica", "normal");
 
       // Update yPosition for next row
       yPosition += rowHeight;
 
       // Add line separator (except for last item)
-      if (index < orderData.items.length - 1) {
+      if (index < allLineItems.length - 1) {
         doc.setDrawColor(224, 224, 224);
         doc.line(leftMargin, yPosition, rightMargin, yPosition);
         yPosition += 5; // Small gap after separator
@@ -571,8 +624,8 @@ export const generateOrderInvoicePDF = async (orderData) => {
     doc.text(formatCurrency(orderData.subtotal), rightMargin - 80, yPosition);
     yPosition += 20;
 
-    if (parseFloat(orderData.tax_amount) > 0) {
-      doc.text(`Tax (${orderData.tax_percent}%)`, totalsX, yPosition);
+    if (parseFloat(orderData.tax_amount || 0) > 0) {
+      doc.text(`Tax (${orderData.tax_percent || 0}%)`, totalsX, yPosition);
       doc.text(
         formatCurrency(orderData.tax_amount),
         rightMargin - 80,
@@ -581,9 +634,13 @@ export const generateOrderInvoicePDF = async (orderData) => {
       yPosition += 20;
     }
 
-    if (parseFloat(orderData.discount_amount) > 0) {
+    if (parseFloat(orderData.discount_amount || 0) > 0) {
       doc.setTextColor(211, 47, 47);
-      doc.text(`Discount (${orderData.discount_percent}%)`, totalsX, yPosition);
+      doc.text(
+        `Discount (${orderData.discount_percent || 0}%)`,
+        totalsX,
+        yPosition
+      );
       doc.text(
         `-${formatCurrency(orderData.discount_amount)}`,
         rightMargin - 80,
@@ -595,7 +652,7 @@ export const generateOrderInvoicePDF = async (orderData) => {
 
     doc.text("Shipping charge", totalsX, yPosition);
     doc.text(
-      formatCurrency(orderData.shipping_amount),
+      formatCurrency(orderData.shipping_amount || 0),
       rightMargin - 80,
       yPosition
     );
@@ -620,7 +677,7 @@ export const generateOrderInvoicePDF = async (orderData) => {
     doc.setFontSize(10);
     doc.setTextColor(211, 47, 47);
     doc.text("Payment Made", totalsX, yPosition);
-    doc.text(`(-) ${paymentMade.toFixed(2)}`, rightMargin - 80, yPosition);
+    doc.text(`(-) ${formatCurrency(paymentMade)}`, rightMargin - 80, yPosition);
     yPosition += 20;
 
     // Final balance due
@@ -634,6 +691,25 @@ export const generateOrderInvoicePDF = async (orderData) => {
     doc.text("Balance Due", totalsX, yPosition);
     doc.text(`£${formatCurrency(balanceDue)}`, rightMargin - 80, yPosition);
 
+    // === FOOTER SECTION ===
+    yPosition += 40;
+
+    // Check if we have space for footer, if not add new page
+    if (yPosition > pageHeight - 100) {
+      doc.addPage();
+      yPosition = 60;
+    }
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Thank you for your business!", leftMargin, yPosition);
+    doc.text(
+      `Generated on ${new Date().toLocaleDateString("en-GB")}`,
+      rightMargin - 150,
+      yPosition
+    );
+
     // Save the PDF
     const filename = `invoice-INV-${String(orderData.id).padStart(
       6,
@@ -641,9 +717,7 @@ export const generateOrderInvoicePDF = async (orderData) => {
     )}-${new Date().toISOString().slice(0, 10)}.pdf`;
     doc.save(filename);
 
-    console.log(
-      "✅ Text-based Invoice PDF with proper text wrapping generated successfully!"
-    );
+    console.log("✅ Bundle-aware Invoice PDF generated successfully!");
     return true;
   } catch (error) {
     console.error("❌ Error generating invoice PDF:", error);
