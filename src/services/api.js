@@ -108,18 +108,17 @@ async function apiRequest(endpoint, options = {}) {
 
     // Handle empty responses (like DELETE requests)
     const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-      const data = await response.json();
 
-      // 🔍 Log successful response data in development
+    if (contentType && contentType.includes("application/json")) {
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : null; // avoid crash on empty response
+
       if (process.env.NODE_ENV === "development") {
         console.log(`✅ API Success: ${config.method || "GET"} ${url}`, data);
       }
 
       return data;
     }
-
-    return response;
   } catch (error) {
     // 🔍 Enhanced network error logging
     if (error.name === "TypeError" && error.message.includes("fetch")) {

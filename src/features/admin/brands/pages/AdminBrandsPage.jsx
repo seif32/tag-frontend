@@ -114,7 +114,6 @@ function AdminBrandsPage() {
 
       <Separator />
 
-      {/* ✅ Brand Statistics using StatsCard */}
       <div className="grid gap-4 md:grid-cols-3">
         <StatsCard
           title="Total Brands"

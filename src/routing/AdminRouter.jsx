@@ -26,7 +26,6 @@ function AdminRouter() {
           path={"products/add"}
           element={<AdminProductPage mode="add" />}
         />
-        {/*Begin from here ✅✅✅✅ */}
         <Route
           path={"products/:id/edit"}
           element={<AdminProductPage mode="edit" />}
@@ -35,6 +34,7 @@ function AdminRouter() {
           path={"products/:id"}
           element={<AdminProductPage mode="view" />}
         />
+        {/*Begin from here ✅✅✅✅ */}
         <Route path={"brands"} element={<AdminBrandsPage />} />
         <Route path={ROUTES.ADMIN.TAGS} element={<AdminTagsPage />} />
 

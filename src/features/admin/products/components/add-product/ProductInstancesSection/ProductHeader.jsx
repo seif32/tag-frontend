@@ -1,4 +1,5 @@
 import useProductStore from "@/features/admin/store/productStore";
+import { CircleCheck, CirclePercent } from "lucide-react";
 
 function ProductHeader({ product, productName }) {
   const mode = useProductStore((state) => state.mode);
@@ -8,11 +9,7 @@ function ProductHeader({ product, productName }) {
   return (
     <div className="flex items-start justify-between mb-4">
       <div>
-        {notAddMode && (
-          <h3 className="text-muted-foreground font-semibold text-sm">
-            {productName}
-          </h3>
-        )}
+        {notAddMode && <h3 className="medium text-sm">{productName}</h3>}
         <h3 className="text-xs text-muted-foreground mb-2">
           {product.variant_sku}
         </h3>

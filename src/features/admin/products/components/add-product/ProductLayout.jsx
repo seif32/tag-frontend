@@ -11,7 +11,6 @@ import { useFormContext } from "react-hook-form";
 const ProductLayout = ({
   product,
   displayVariants,
-  variantsList,
   append,
   onEditProduct,
   isPending,
@@ -55,7 +54,7 @@ const ProductLayout = ({
           {!isEditMode && (
             <TagsSection form={form} productTags={product?.tags} />
           )}
-          <BundlesSection />
+          {/* <BundlesSection /> */}
         </div>
       </div>
     </div>

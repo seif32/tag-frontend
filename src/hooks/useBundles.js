@@ -121,7 +121,7 @@ const useBundles = {
    *            onSuccess: (bundle) => { navigate(`/bundles/${bundle.id}`); }
    *          });
    */
-  useCreate: (options = {}) => {
+  useCreate: (productId, options = {}) => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
@@ -129,6 +129,9 @@ const useBundles = {
       onSuccess: (data, variables) => {
         // Built-in functionality - always runs first
         queryClient.invalidateQueries({ queryKey: ["bundles"], type: "all" });
+        queryClient.invalidateQueries({ queryKey: ["products", productId] });
+
+        // queryKey: ["products", productId],
 
         toast.success("Bundle created successfully!");
 
@@ -169,7 +172,7 @@ const useBundles = {
    * Example: const { isPendingBundles, updateBundle } = useBundles.useUpdate();
    *          updateBundle({id: 123, data: {quantity: 10, is_active: false}});
    */
-  useUpdate: (options = {}) => {
+  useUpdate: (productId, options = {}) => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
@@ -178,6 +181,9 @@ const useBundles = {
         // Built-in functionality
         queryClient.setQueryData(["bundles", variables.id], data);
         queryClient.invalidateQueries({ queryKey: ["bundles"] });
+        queryClient.invalidateQueries({
+          queryKey: ["products", productId],
+        });
         toast.success("Bundle updated successfully!");
 
         // Your custom logic
@@ -216,7 +222,7 @@ const useBundles = {
    * Example: const { isPendingDelete, deleteBundle } = useBundles.useDelete();
    *          deleteBundle(123);
    */
-  useDelete: (options = {}) => {
+  useDelete: (productId, options = {}) => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
@@ -224,6 +230,9 @@ const useBundles = {
       onSuccess: (data, variables) => {
         // Built-in functionality
         queryClient.invalidateQueries({ queryKey: ["bundles"] });
+        queryClient.invalidateQueries({
+          queryKey: ["products", productId],
+        });
         toast.success("Bundle deleted successfully!");
 
         // Your custom logic

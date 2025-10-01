@@ -1,218 +1,53 @@
 {
-  "data": [
+  "id": 9,
+  "product_id": 2,
+  "variant_sku": "SKU-C24265-1756515501805",
+  "variant_name": null,
+  "is_primary": 0,
+  "price": 3,
+  "compare_at_price": 9,
+  "cost_price": 1,
+  "currency": "USD",
+  "quantity": 500,
+  "created_at": "2025-08-30T00:58:21.000Z",
+  "updated_at": "2025-09-30T13:48:35.000Z",
+  "vat": 0,
+  "types": [
     {
-      "id": 1,
-      "variant_id": 4,
-      "quantity": 10,
-      "vat": "14.00",
-      "subtotal": "10000.00",
-      "total": "11400.00",
-      "is_active": 1,
-      "created_at": "2025-09-27T17:17:32.000Z",
-      "updated_at": "2025-09-27T17:17:32.000Z",
-      "product": {
-        "id": 2,
-        "name": "Iphone 11",
-        "sku": "SKU-BC6B20-1756504028086",
-        "description": "very cool mobile with lots of features",
-        "short_description": "a modern tech mobile",
-        "category_id": 1,
-        "subcategory_id": 1,
-        "brand_id": 1,
-        "featured": 0,
-        "active": 1,
-        "rating": "0.00",
-        "rating_count": 0,
-        "created_at": "2025-08-29T21:47:08.000Z",
-        "updated_at": "2025-08-30T01:32:58.000Z",
-        "category_name": "Electronics",
-        "sub_category_name": "Mobiles",
-        "brand_name": "Apple",
-        "tags": [
-          {
-            "id": 1,
-            "name": "modern"
-          }
-        ],
-        "variants": [
-          {
-            "id": 4,
-            "product_id": 2,
-            "variant_sku": "SKU-17EF50-1756504028096",
-            "is_primary": 0,
-            "price": "500.00",
-            "compare_at_price": "2000.00",
-            "cost_price": "200.00",
-            "currency": "USD",
-            "quantity": 56,
-            "created_at": "2025-08-29T21:47:08.000Z",
-            "updated_at": "2025-09-18T15:24:43.000Z",
-            "vat": "0.00",
-            "images": [],
-            "types": [
-              {
-                "type_id": 1,
-                "type_name": "Color",
-                "value": {
-                  "id": 11,
-                  "name": "White"
-                }
-              },
-              {
-                "type_id": 6,
-                "type_name": "Width",
-                "value": {
-                  "id": 27,
-                  "name": "Narrow"
-                }
-              }
-            ]
-          }
-        ]
+      "type_id": 1,
+      "type_name": "Color",
+      "value": {
+        "id": 10,
+        "name": "Black"
       }
     },
     {
-      "id": 2,
-      "variant_id": 3,
-      "quantity": 5,
-      "vat": "14.00",
-      "subtotal": "800.00",
-      "total": "912.00",
-      "is_active": 1,
-      "created_at": "2025-09-30T13:48:10.000Z",
-      "updated_at": "2025-09-30T13:48:10.000Z",
-      "product": {
-        "id": 2,
-        "name": "Iphone 11",
-        "sku": "SKU-BC6B20-1756504028086",
-        "description": "very cool mobile with lots of features",
-        "short_description": "a modern tech mobile",
-        "category_id": 1,
-        "subcategory_id": 1,
-        "brand_id": 1,
-        "featured": 0,
-        "active": 1,
-        "rating": "0.00",
-        "rating_count": 0,
-        "created_at": "2025-08-29T21:47:08.000Z",
-        "updated_at": "2025-08-30T01:32:58.000Z",
-        "category_name": "Electronics",
-        "sub_category_name": "Mobiles",
-        "brand_name": "Apple",
-        "tags": [
-          {
-            "id": 1,
-            "name": "modern"
-          }
-        ],
-        "variants": [
-          {
-            "id": 3,
-            "product_id": 2,
-            "variant_sku": "SKU-DD823D-1756504028093",
-            "is_primary": 0,
-            "price": "300.00",
-            "compare_at_price": "600.00",
-            "cost_price": "200.00",
-            "currency": "USD",
-            "quantity": 10,
-            "created_at": "2025-08-29T21:47:08.000Z",
-            "updated_at": "2025-09-18T15:24:43.000Z",
-            "vat": "0.00",
-            "images": [],
-            "types": [
-              {
-                "type_id": 1,
-                "type_name": "Color",
-                "value": {
-                  "id": 7,
-                  "name": "Red"
-                }
-              },
-              {
-                "type_id": 6,
-                "type_name": "Width",
-                "value": {
-                  "id": 28,
-                  "name": "Regular"
-                }
-              }
-            ]
-          }
-        ]
+      "type_id": 2,
+      "type_name": "Size",
+      "value": {
+        "id": 14,
+        "name": "Large"
       }
     },
     {
-      "id": 3,
-      "variant_id": 2,
-      "quantity": 3,
-      "vat": "14.00",
-      "subtotal": "700.00",
-      "total": "798.00",
-      "is_active": 1,
-      "created_at": "2025-09-30T13:48:24.000Z",
-      "updated_at": "2025-09-30T13:48:24.000Z",
-      "product": {
-        "id": 2,
-        "name": "Iphone 11",
-        "sku": "SKU-BC6B20-1756504028086",
-        "description": "very cool mobile with lots of features",
-        "short_description": "a modern tech mobile",
-        "category_id": 1,
-        "subcategory_id": 1,
-        "brand_id": 1,
-        "featured": 0,
-        "active": 1,
-        "rating": "0.00",
-        "rating_count": 0,
-        "created_at": "2025-08-29T21:47:08.000Z",
-        "updated_at": "2025-08-30T01:32:58.000Z",
-        "category_name": "Electronics",
-        "sub_category_name": "Mobiles",
-        "brand_name": "Apple",
-        "tags": [
-          {
-            "id": 1,
-            "name": "modern"
-          }
-        ],
-        "variants": [
-          {
-            "id": 2,
-            "product_id": 2,
-            "variant_sku": "SKU-ED94DC-1756504028089",
-            "is_primary": 0,
-            "price": "750.00",
-            "compare_at_price": "8111.00",
-            "cost_price": "300.00",
-            "currency": "USD",
-            "quantity": 1500,
-            "created_at": "2025-08-29T21:47:08.000Z",
-            "updated_at": "2025-09-19T07:12:34.000Z",
-            "vat": "0.00",
-            "images": [],
-            "types": [
-              {
-                "type_id": 1,
-                "type_name": "Color",
-                "value": {
-                  "id": 10,
-                  "name": "Black"
-                }
-              },
-              {
-                "type_id": 6,
-                "type_name": "Width",
-                "value": {
-                  "id": 29,
-                  "name": "Wide"
-                }
-              }
-            ]
-          }
-        ]
+      "type_id": 5,
+      "type_name": "Length",
+      "value": {
+        "id": 24,
+        "name": "Short"
       }
     },
+    {
+      "type_id": 6,
+      "type_name": "Width",
+      "value": {
+        "id": 27,
+        "name": "Narrow"
+      }
+    }
+  ],
+  "images": [],
+  "bundles": [
     {
       "id": 4,
       "variant_id": 9,
@@ -222,87 +57,29 @@
       "total": "9.12",
       "is_active": 1,
       "created_at": "2025-09-30T13:48:49.000Z",
-      "updated_at": "2025-09-30T13:48:49.000Z",
-      "product": {
-        "id": 2,
-        "name": "Iphone 11",
-        "sku": "SKU-BC6B20-1756504028086",
-        "description": "very cool mobile with lots of features",
-        "short_description": "a modern tech mobile",
-        "category_id": 1,
-        "subcategory_id": 1,
-        "brand_id": 1,
-        "featured": 0,
-        "active": 1,
-        "rating": "0.00",
-        "rating_count": 0,
-        "created_at": "2025-08-29T21:47:08.000Z",
-        "updated_at": "2025-08-30T01:32:58.000Z",
-        "category_name": "Electronics",
-        "sub_category_name": "Mobiles",
-        "brand_name": "Apple",
-        "tags": [
-          {
-            "id": 1,
-            "name": "modern"
-          }
-        ],
-        "variants": [
-          {
-            "id": 9,
-            "product_id": 2,
-            "variant_sku": "SKU-C24265-1756515501805",
-            "is_primary": 0,
-            "price": "3.00",
-            "compare_at_price": "9.00",
-            "cost_price": "1.00",
-            "currency": "USD",
-            "quantity": 500,
-            "created_at": "2025-08-30T00:58:21.000Z",
-            "updated_at": "2025-09-30T13:48:35.000Z",
-            "vat": "0.00",
-            "images": [],
-            "types": [
-              {
-                "type_id": 1,
-                "type_name": "Color",
-                "value": {
-                  "id": 10,
-                  "name": "Black"
-                }
-              },
-              {
-                "type_id": 2,
-                "type_name": "Size",
-                "value": {
-                  "id": 14,
-                  "name": "Large"
-                }
-              },
-              {
-                "type_id": 5,
-                "type_name": "Length",
-                "value": {
-                  "id": 24,
-                  "name": "Short"
-                }
-              },
-              {
-                "type_id": 6,
-                "type_name": "Width",
-                "value": {
-                  "id": 27,
-                  "name": "Narrow"
-                }
-              }
-            ]
-          }
-        ]
-      }
+      "updated_at": "2025-09-30T13:48:49.000Z"
+    },
+    {
+      "id": 7,
+      "variant_id": 9,
+      "quantity": 89,
+      "vat": "14.00",
+      "subtotal": "25.00",
+      "total": "28.50",
+      "is_active": 1,
+      "created_at": "2025-10-01T13:16:33.000Z",
+      "updated_at": "2025-10-01T13:16:33.000Z"
+    },
+    {
+      "id": 6,
+      "variant_id": 9,
+      "quantity": 300,
+      "vat": "14.00",
+      "subtotal": "25.00",
+      "total": "28.50",
+      "is_active": 1,
+      "created_at": "2025-10-01T13:14:25.000Z",
+      "updated_at": "2025-10-01T13:14:25.000Z"
     }
-  ],
-  "total": 4,
-  "page": 1,
-  "limit": 10,
-  "totalPages": 1
+  ]
 }
