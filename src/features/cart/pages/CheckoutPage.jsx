@@ -90,8 +90,6 @@ function CheckoutPage() {
             times_applied: item.quantity,
           });
         }
-
-        // ❌ DON'T add to regularItems - let backend handle the bundle logic
       } else {
         // Regular items - only non-bundle items
         regularItems.push({
@@ -127,7 +125,6 @@ function CheckoutPage() {
         currency: "USD", // or get from your app config
         promo_code_id: appliedCoupon?.id || null,
         items: items,
-        // Only include bundles if there are any
         ...(bundles.length > 0 && { bundles: bundles }),
       };
 

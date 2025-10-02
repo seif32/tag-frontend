@@ -13,9 +13,7 @@ import { toast } from "sonner";
 export default function OrderSuccessPage() {
   const order = useOrderStore((state) => state.order);
   const orderItems = useOrderStore((state) => state.orderItems);
-  const orderBundles = useOrderStore((state) => state.orderBundles); // New state
-
-  console.log("OrderSuccessPage", { orderItems, orderBundles });
+  const orderBundles = useOrderStore((state) => state.orderBundles);
 
   if (!order)
     return (

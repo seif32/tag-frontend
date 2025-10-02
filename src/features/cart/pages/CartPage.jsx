@@ -49,7 +49,7 @@ function CartPage() {
                 quantity={item.quantity}
                 variants={item.types.map((t) => t.value.name)}
                 stock={item.stock}
-                item={item} // Pass full item for bundle detection
+                item={item}
               />
             ))
           )}

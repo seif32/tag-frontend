@@ -1,142 +1,72 @@
 {
-  "id": 76,
-  "order_status": "pending",
-  "payment_status": "pending",
-  "subtotal": "25.00",
-  "tax_amount": "3.50",
-  "shipping_amount": "45.00",
-  "discount_percent": "0.00",
-  "discount_type": null,
-  "discount_amount": "0.00",
-  "total_amount": "73.50",
+  "id": 198,
+  "order_id": 78,
+  "variant_id": 2,
+  "quantity": 1,
+  "unit_price": "750.00",
+  "total_price": "750.00",
   "currency": "USD",
-  "created_at": "2025-10-01T21:01:50.000Z",
-  "updated_at": "2025-10-01T21:01:50.000Z",
-  "promo_code": null,
-  "user": {
-    "id": 1,
-    "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
-    "first_name": "Seif",
-    "last_name": "Mohamed",
-    "email": "seif@gmail.com",
-    "phone_number": "+201077481236",
-    "role": "user",
-    "created_at": "2025-09-12T01:33:31.000Z",
-    "updated_at": "2025-09-20T13:47:00.000Z",
-    "is_verified": 0,
-    "business_name": null,
-    "vat_number": null
-  },
-  "address": {
-    "id": 10,
-    "user_id": 1,
-    "description": "hwa msh be3eed awe 3n el nady",
-    "apartment_number": "77",
-    "building_number": "4",
-    "street_name": "Zap Tharwat",
-    "postal_code": "5625",
-    "country": "uk",
-    "location_url": "",
-    "is_default": 0,
-    "created_at": "2025-09-14T11:03:27.000Z",
-    "updated_at": "2025-09-14T11:08:49.000Z",
-    "city_id": 1,
-    "city_name": "Bath"
-  },
-  "items": [],
-  "bundles": [
-    {
-      "id": 5,
-      "order_id": 76,
-      "bundle_id": 6,
-      "times_applied": 1,
-      "subtotal": "25.00",
-      "total_vat": "3.50",
-      "total_price": "28.50",
-      "currency": "USD",
-      "created_at": "2025-10-01T21:01:50.000Z",
-      "updated_at": "2025-10-01T21:01:50.000Z",
-      "bundle_quantity": 300,
-      "variant_id": 9,
-      "required_quantity": 300,
-      "bundle_subtotal": "25.00",
-      "bundle_total": "28.50",
-      "product": {
+  "created_at": "2025-10-01T21:20:06.000Z",
+  "updated_at": "2025-10-01T21:20:06.000Z",
+  "total_vat": "0.00",
+  "product": {
+    "id": 2,
+    "name": "Iphone 11",
+    "sku": "SKU-BC6B20-1756504028086",
+    "description": "very cool mobile with lots of features",
+    "short_description": "a modern tech mobile",
+    "category_id": 1,
+    "subcategory_id": 1,
+    "brand_id": 1,
+    "featured": 0,
+    "active": 1,
+    "rating": "0.00",
+    "rating_count": 0,
+    "created_at": "2025-08-29T21:47:08.000Z",
+    "updated_at": "2025-08-30T01:32:58.000Z",
+    "category_name": "Electronics",
+    "sub_category_name": "Mobiles",
+    "brand_name": "Apple",
+    "tags": [
+      {
+        "id": 1,
+        "name": "modern"
+      }
+    ],
+    "variants": [
+      {
         "id": 2,
-        "name": "Iphone 11",
-        "sku": "SKU-BC6B20-1756504028086",
-        "description": "very cool mobile with lots of features",
-        "short_description": "a modern tech mobile",
-        "category_id": 1,
-        "subcategory_id": 1,
-        "brand_id": 1,
-        "featured": 0,
-        "active": 1,
-        "rating": "0.00",
-        "rating_count": 0,
+        "product_id": 2,
+        "variant_sku": "SKU-ED94DC-1756504028089",
+        "is_primary": 0,
+        "price": "750.00",
+        "compare_at_price": "8111.00",
+        "cost_price": "300.00",
+        "currency": "USD",
+        "quantity": 1429,
         "created_at": "2025-08-29T21:47:08.000Z",
-        "updated_at": "2025-08-30T01:32:58.000Z",
-        "category_name": "Electronics",
-        "sub_category_name": "Mobiles",
-        "brand_name": "Apple",
-        "tags": [
+        "updated_at": "2025-10-02T14:11:16.000Z",
+        "vat": "0.00",
+        "images": [],
+        "types": [
           {
-            "id": 1,
-            "name": "modern"
-          }
-        ],
-        "variants": [
+            "type_id": 1,
+            "type_name": "Color",
+            "value": {
+              "id": 10,
+              "name": "Black"
+            }
+          },
           {
-            "id": 9,
-            "product_id": 2,
-            "variant_sku": "SKU-C24265-1756515501805",
-            "is_primary": 0,
-            "price": "3.00",
-            "compare_at_price": "9.00",
-            "cost_price": "1.00",
-            "currency": "USD",
-            "quantity": 180,
-            "created_at": "2025-08-30T00:58:21.000Z",
-            "updated_at": "2025-10-01T21:01:50.000Z",
-            "vat": "0.00",
-            "images": [],
-            "types": [
-              {
-                "type_id": 1,
-                "type_name": "Color",
-                "value": {
-                  "id": 10,
-                  "name": "Black"
-                }
-              },
-              {
-                "type_id": 2,
-                "type_name": "Size",
-                "value": {
-                  "id": 14,
-                  "name": "Large"
-                }
-              },
-              {
-                "type_id": 5,
-                "type_name": "Length",
-                "value": {
-                  "id": 24,
-                  "name": "Short"
-                }
-              },
-              {
-                "type_id": 6,
-                "type_name": "Width",
-                "value": {
-                  "id": 27,
-                  "name": "Narrow"
-                }
-              }
-            ]
+            "type_id": 6,
+            "type_name": "Width",
+            "value": {
+              "id": 29,
+              "name": "Wide"
+            }
           }
         ]
       }
-    }
-  ]
+    ]
+  }
 }

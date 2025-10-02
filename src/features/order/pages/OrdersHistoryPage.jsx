@@ -94,7 +94,7 @@ function OrderHistoryCardContainer({ orders }) {
             orderDate={order?.created_at}
             orderStatus={order?.order_status}
             products={order?.items || []}
-            bundles={order?.bundles || []} // 🚀 NEW: Pass bundles
+            bundles={order?.bundles || []}
             totalPrice={order?.total_amount}
           />
         );
@@ -113,10 +113,15 @@ function OrderHistoryCard({
 }) {
   const navigate = useNavigate();
 
+  console.log("products", products);
+
   // Calculate total items including bundles
-  const regularItemsCount = products.length;
+  const regularItemsCount = products.reduce(
+    (total, product) => total + product?.quantity,
+    0
+  );
   const bundleItemsCount = bundles.reduce(
-    (total, bundle) => total + bundle.quantity * bundle.times_applied,
+    (total, bundle) => total + bundle.required_quantity * bundle.times_applied,
     0
   );
   const totalItemsCount = regularItemsCount + bundleItemsCount;
@@ -146,7 +151,6 @@ function OrderHistoryCard({
       <div className="my-3 border border-gray-50"></div>
       <div className="flex flex-col justify-between gap-8 sm:flex-row sm:gap-2 ">
         <div className="flex flex-wrap gap-x-2">
-          {/* 🚀 Regular Products */}
           {products?.map((product) => {
             return (
               <ProductItem key={`product-${product?.id}`} product={product} />
@@ -182,7 +186,6 @@ function OrderHistoryCard({
   );
 }
 
-// 🚀 NEW: Separate component for regular products
 function ProductItem({ product }) {
   return (
     <div className="flex flex-col gap-0.5">
@@ -200,21 +203,19 @@ function ProductItem({ product }) {
   );
 }
 
-// 🚀 NEW: Component for bundle display
 function BundleItem({ bundle }) {
-  const totalItems = bundle.quantity * bundle.times_applied;
+  const totalItems = bundle.required_quantity * bundle.times_applied;
 
   return (
     <div className="flex flex-col gap-0.5">
       <div className="w-20 h-20 bg-blue-100 rounded-md flex items-center justify-center relative">
         <Package className="w-8 h-8 text-blue-600" />
-        {/* Bundle indicator */}
         <div className="absolute top-1 right-1 bg-green-500 text-white text-xs px-1 rounded-full">
           B
         </div>
       </div>
       <h4 className="truncate max-w-[10ch] text-xs">
-        {bundle?.variant?.product?.name || "Bundle"}
+        {bundle?.product?.name || "Bundle"}
       </h4>
       <div className="flex flex-col text-muted-foreground">
         <div className="flex items-center gap-1">

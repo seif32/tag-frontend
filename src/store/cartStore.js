@@ -29,7 +29,7 @@ export const useCartStore = create((set, get) => ({
       if (existingItem) {
         // Bundle-aware stock checking
         const maxAllowed = product.is_bundle
-          ? Math.floor(product.stock) // For bundles, stock is already max bundles
+          ? Math.floor(product.stock)
           : product.stock;
 
         const newQuantity = Math.min(

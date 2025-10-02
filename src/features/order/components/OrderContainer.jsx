@@ -15,13 +15,13 @@ export default function OrderContainer({ items = [], bundles = [], style }) {
         </div>
       </div>
 
-      {/* Regular Items */}
       {items?.map((item, index) => (
         <div key={`item-${item?.id}`}>
           <OrderItem
             name={item?.product?.name}
             quantity={item?.quantity}
-            totalPrice={item?.total_price}
+            subtotal={item?.total_price - item?.total_vat}
+            totalVat={item?.total_vat}
             unitPrice={item?.unit_price}
             variants={
               item?.product?.variants.find((v) => v.id === item.variant_id)
@@ -38,7 +38,7 @@ export default function OrderContainer({ items = [], bundles = [], style }) {
       {/* Bundle Items */}
       {bundles?.map((bundle, index) => (
         <div key={`bundle-${bundle?.id}`}>
-          <BundleItem bundle={bundle} timesApplied={bundle.times_applied} />
+          <BundleItem bundle={bundle} />
           {index < bundles.length - 1 && (
             <div className="my-4 border border-gray-200 border-dashed"></div>
           )}
@@ -51,17 +51,20 @@ export default function OrderContainer({ items = [], bundles = [], style }) {
 function OrderItem({
   name,
   quantity,
-  totalPrice,
+  subtotal,
   unitPrice,
   variants = [],
   isBundle = false,
+  totalVat,
 }) {
   return (
-    <div className="flex items-center gap-2">
-      <div className="bg-gray-100 rounded-md w-15 h-15">
+    <div className="flex items-center gap-4">
+      <div className="bg-gray-100 rounded-md w-15 h-15 flex-shrink-0">
         <img src="" alt="" />
       </div>
-      <div className="flex flex-col flex-1">
+
+      <div className="flex flex-col flex-1 gap-1">
+        {/* Top row: Name + Unit price */}
         <div className="flex items-baseline justify-between">
           <div className="flex items-center gap-2">
             <p className="font-bold">{name || "Product X"}</p>
@@ -72,55 +75,92 @@ function OrderItem({
             )}
           </div>
           <p className="text-sm text-muted-foreground">
-            <span className="text-xs">{quantity}x </span>
+            <span className="text-xs">{quantity}× </span>
             {formatCurrency(unitPrice)}
           </p>
         </div>
+
+        {/* Bottom row: Variants + Subtotal + VAT stacked */}
         <div className="flex items-baseline justify-between">
-          <div className="flex gap-1">
+          <div className="flex gap-1 flex-wrap">
             {variants.map((variant, index) => (
-              <div key={variant.type_id} className="flex gap-1 text-xs">
-                <span>{variant.type_name}: </span>
-                <span>{variant.value.name}</span>
-                {variants.length - 1 > index && <span>-</span>}
+              <div
+                key={variant.type_id}
+                className="flex gap-1 text-xs text-muted-foreground"
+              >
+                <span>{variant.type_name}:</span>
+                <span className="font-bold">{variant.value.name}</span>
+                {variants.length - 1 > index && <span>•</span>}
               </div>
             ))}
           </div>
-          <p>{formatCurrency(totalPrice)}</p>
+
+          <div className="text-right">
+            <p className="font-semibold">{formatCurrency(subtotal)}</p>
+            <p className="text-xs text-muted-foreground">
+              +{formatCurrency(totalVat)} VAT
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// New component for bundle display
-function BundleItem({ bundle, timesApplied }) {
+function BundleItem({ bundle }) {
   return (
-    <div className="flex items-center gap-2">
-      <div className="bg-blue-100 rounded-md w-15 h-15 flex items-center justify-center">
+    <div className="flex items-start gap-4">
+      <div className="bg-blue-100 rounded-md w-15 h-15 flex items-center justify-center flex-shrink-0">
         <Package className="w-6 h-6 text-blue-600" />
       </div>
-      <div className="flex flex-col flex-1">
+
+      <div className="flex flex-col flex-1 gap-1.5">
+        {/* Top row: Name + Badge + Unit price */}
         <div className="flex items-baseline justify-between">
           <div className="flex items-center gap-2">
-            <p className="font-bold">
-              Bundle: {bundle.quantity} × {bundle.variant?.product?.name}
-            </p>
+            <p className="font-bold">{bundle.product?.name}</p>
             <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
               Volume Discount
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
-            <span className="text-xs">{timesApplied}x </span>
-            {formatCurrency(bundle.subtotal)}
+            <span className="text-xs">{bundle.times_applied}× </span>
+            {formatCurrency(bundle.bundle_subtotal)}
           </p>
         </div>
+
+        {/* Variant details */}
+        <div className="flex gap-1 flex-wrap">
+          {bundle?.product?.variants[0]?.types?.map((variant, index) => (
+            <div
+              key={variant.type_id}
+              className="flex gap-1 text-xs text-muted-foreground"
+            >
+              <span>{variant.type_name}:</span>
+              <span className="font-bold">{variant.value.name}</span>
+              {bundle?.product?.variants[0]?.types?.length - 1 > index && (
+                <span>•</span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom row: Bundle calculation + Total with VAT */}
         <div className="flex items-baseline justify-between">
           <div className="text-xs text-gray-600">
-            {bundle.quantity} items per bundle × {timesApplied} bundles ={" "}
-            {bundle.quantity * timesApplied} total items
+            {bundle.required_quantity} items × {bundle.times_applied} bundle
+            {bundle.times_applied > 1 ? "s" : ""} ={" "}
+            {bundle.required_quantity * bundle.times_applied} total items
           </div>
-          <p>{formatCurrency(bundle.total * timesApplied)}</p>
+
+          <div className="text-right">
+            <p className="font-semibold">
+              {formatCurrency(bundle.bundle_subtotal * bundle.times_applied)}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              +{formatCurrency(bundle.total_vat)} VAT
+            </p>
+          </div>
         </div>
       </div>
     </div>
