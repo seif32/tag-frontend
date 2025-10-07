@@ -67,8 +67,8 @@ function AdminAddTagDialog({
     resetCreateTag,
   } = useTags.useCreate({
     onSuccess: () => {
-      form.reset();
       onOpenChange(false);
+      form.reset();
     },
   });
 
@@ -80,8 +80,8 @@ function AdminAddTagDialog({
     resetUpdateTag,
   } = useTags.useUpdate({
     onSuccess: () => {
-      form.reset();
       onOpenChange(false);
+      form.reset();
     },
   });
 
@@ -93,9 +93,6 @@ function AdminAddTagDialog({
     },
     mode: "onChange",
   });
-
-  // 🔄 Update form when tagToEdit changes
-  const watchedValues = form.watch();
 
   useEffect(() => {
     if (tagToEdit) {
@@ -181,42 +178,44 @@ function AdminAddTagDialog({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="category_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
-                    Category
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isAddingTag || isUpdatingTag}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories?.data?.map((category) => (
-                        <SelectItem
-                          key={category.id}
-                          value={category.id.toString()}
-                        >
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Choose the category this tag belongs to
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {!isLoadingCategories && (
+              <FormField
+                control={form.control}
+                name="category_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2">
+                      Category
+                    </FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={isAddingTag || isUpdatingTag}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories?.data?.map((category) => (
+                          <SelectItem
+                            key={category.id}
+                            value={category.id.toString()}
+                          >
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Choose the category this tag belongs to
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             {(isErrorCreateTag || isErrorUpdateTag) &&
               (errorCreateTag || errorUpdateTag) && (

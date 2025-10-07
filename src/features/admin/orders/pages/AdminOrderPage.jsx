@@ -2,6 +2,7 @@ import IconCard from "@/ui/IconCard";
 import { formatDateFull } from "@/utils/dateUtils";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import {
+  ArrowLeft,
   CreditCard,
   DollarSign,
   LucidePackage2,
@@ -9,7 +10,7 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import { BsTelephone } from "react-icons/bs";
-import { Link, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { GoPerson } from "react-icons/go";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { CiCreditCard1 } from "react-icons/ci";
@@ -49,7 +50,7 @@ function AdminOrderPage() {
     );
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 p-6">
       <Title orderId={orderId} orderDate={order?.created_at} />
       <StatsContainer
         orderStatus={order?.order_status}
@@ -68,10 +69,17 @@ function AdminOrderPage() {
 export default AdminOrderPage;
 
 function Title({ orderId, orderDate }) {
+  const navigate = useNavigate();
   return (
     <section className="flex justify-between items-center">
       <div>
-        <h1 className="text-3xl">Order #{orderId} </h1>
+        <div className="flex gap-1 items-center">
+          <ArrowLeft
+            className="hover:text-accent cursor-pointer"
+            onClick={() => navigate(-1)}
+          />
+          <h1 className="text-3xl font-bold">Order #{orderId} </h1>
+        </div>
         <p className="text-muted-foreground">
           Placed on {formatDateFull(orderDate)}
         </p>

@@ -71,7 +71,7 @@ function AdminVariantsTypesPage() {
     );
   }
   return (
-    <div className="space-y-9">
+    <div className="p-6 space-y-9">
       <Title
         handleCreateType={handleCreateType}
         handleUpdateType={handleUpdateType}
@@ -106,7 +106,7 @@ function Title({
   return (
     <div className="flex justify-between items-center">
       <div>
-        <h1 className="text-3xl font-semibold">Variant Management</h1>
+        <h1 className="text-3xl font-bold">Variants Management</h1>
         <p className="text-muted-foreground">
           Manage product variant types and their values
         </p>

@@ -1,4 +1,3 @@
-// hooks/useOrdersColumns.js
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -66,7 +65,8 @@ export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
       cell: ({ row }) => {
         const order = row.original;
         const totalAmount = order.total_amount || 0;
-        const itemCount = order?.total_quantity || 0;
+        const itemCount =
+          order?.total_quantity + order?.total_bundle_items || 0;
 
         return (
           <div className="flex flex-col space-y-1">
@@ -92,8 +92,8 @@ export function useOrderColumns({ onView, onEdit, onDelete, onUpdateStatus }) {
           <div className="flex flex-col space-y-1">
             <span className="text-sm font-medium">{formatDateShort(date)}</span>
             <span className="text-xs text-muted-foreground">
-              {order.address.city && order.address.street_name
-                ? `${order.address.street_name}, ${order.address.city}`
+              {order?.address?.city_name && order?.address?.street_name
+                ? `${order?.address?.street_name}, ${order?.address?.city_name}`
                 : "Address not available"}
             </span>
           </div>

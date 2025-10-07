@@ -90,7 +90,7 @@ function AdminBrandsPage() {
         onCancel={closeDeleteDialog}
         onConfirm={confirmDelete}
         isPending={isPending}
-        entityName="product"
+        entityName="brand"
         entityLabel={deleteDialog.product?.name || ""}
         title="Delete Brand"
       />

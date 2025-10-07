@@ -1,18 +1,29 @@
 import { useState } from "react";
 import StatsCard from "../../ui/StatsCard";
 
-import { ShoppingBag, Clock, CheckCircle, PlusCircle } from "lucide-react";
+import {
+  ShoppingBag,
+  Clock,
+  CheckCircle,
+  PlusCircle,
+  RefreshCcw,
+} from "lucide-react";
 import { useOrderColumns } from "../components/useOrderColumns";
 import { useNavigate } from "react-router";
 import useOrders from "@/hooks/useOrders";
 import LoadingState from "@/ui/LoadingState";
 import OrderDataTable from "../components/OrderDataTable";
 import ErrorMessage from "@/ui/ErrorMessage";
+import { Button } from "@/components/ui/button";
+import ControlsBar from "@/ui/ControlsBar";
+import useDebounce from "@/hooks/useDebounce";
+import { SelectContent, SelectItem } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 
 function AdminOrdersPage() {
   const navigate = useNavigate();
-  const [sorting, setSorting] = useState([]);
-  const [filters, setFilters] = useState({ search: "", status: "" });
+  const [searchInput, setSearchInput] = useState("");
+  const debouncedSearch = useDebounce(searchInput, 500);
 
   const {
     ordersLight,
@@ -21,14 +32,10 @@ function AdminOrdersPage() {
     isErrorOrdersLight,
     refetchOrdersLight,
   } = useOrders.useAllWithoutItems({
-    sortBy: sorting[0]?.id,
-    sortOrder: sorting[0]?.desc ? "desc" : "asc",
-    search: filters.search,
-    ...(filters.search &&
-      !isNaN(Number(filters.search)) && { id: Number(filters.search) }),
-    ...(filters.search &&
-      isNaN(Number(filters.search)) && { name: filters.search }),
-    ...(filters.status && { status: filters.status }),
+    ...(debouncedSearch &&
+      !isNaN(Number(debouncedSearch)) && { id: Number(debouncedSearch) }),
+    ...(debouncedSearch &&
+      isNaN(Number(debouncedSearch)) && { name: debouncedSearch }),
   });
 
   function handleEditOrder(order) {
@@ -42,7 +49,7 @@ function AdminOrdersPage() {
     onDelete: handleDeleteOrder,
   });
 
-  if (isLoadingOrdersLight) return <LoadingState type="table" />;
+  if (isLoadingOrdersLight) return <LoadingState type="dashboard" />;
 
   if (isErrorOrdersLight) {
     return (
@@ -56,23 +63,17 @@ function AdminOrdersPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-4xl">Orders</h1>
-        <p className="text-muted-foreground">
-          Manage all your orders from here
-        </p>
-      </div>
+      <Title refetchOrdersLight={refetchOrdersLight} />
       <StatsContainer />
-
+      <OrderControlsBar
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+      />
       <OrderDataTable
         columns={columns}
         data={ordersLight?.data || []}
         pageCount={ordersLight?.totalPages}
         totalCount={ordersLight?.total || 0}
-        sorting={sorting}
-        filters={filters}
-        onSortingChange={setSorting}
-        onFiltersChange={setFilters}
         isLoading={isLoadingOrdersLight}
       />
     </div>
@@ -80,6 +81,28 @@ function AdminOrdersPage() {
 }
 
 export default AdminOrdersPage;
+
+function Title({ refetchOrdersLight }) {
+  return (
+    <div className="flex justify-between">
+      <div>
+        <h1 className="text-4xl font-bold">Orders</h1>
+        <p className="text-muted-foreground">
+          View, track, and manage all customer orders in one place.
+        </p>
+      </div>
+      <Button
+        className={"min-w-30 flex justify-between"}
+        onClick={refetchOrdersLight}
+      >
+        <span>
+          <RefreshCcw />
+        </span>
+        Refresh
+      </Button>
+    </div>
+  );
+}
 
 function StatsContainer() {
   const {
@@ -147,5 +170,28 @@ function StatsContainer() {
         />
       ))}{" "}
     </div>
+  );
+}
+
+function OrderControlsBar({ searchInput, setSearchInput }) {
+  return (
+    <ControlsBar
+      searchInput={searchInput}
+      searchName={"order or client name"}
+      setSearchInput={setSearchInput}
+      searchWidth="w-80"
+    >
+      <SelectContent>
+        <SelectItem value="all">All Orders</SelectItem>
+        <Separator />
+        <SelectItem value="pending_orders">Pending Orders</SelectItem>
+        <SelectItem value="shipped_orders">Shipped Orders</SelectItem>
+        <SelectItem value="delivered_orders">Delivered Orders</SelectItem>
+        <Separator />
+        <SelectItem value="failed_payments">Failed Payments</SelectItem>
+        <SelectItem value="pending_payments">Pending Payments</SelectItem>
+        <SelectItem value="paid_payments">Paid Payments</SelectItem>
+      </SelectContent>
+    </ControlsBar>
   );
 }

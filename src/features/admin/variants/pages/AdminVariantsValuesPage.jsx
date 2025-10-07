@@ -12,8 +12,8 @@ import useVariants from "@/hooks/useVariants";
 import ErrorMessage from "@/ui/ErrorMessage";
 import LoadingState from "@/ui/LoadingState";
 import { formatDateShort } from "@/utils/dateUtils";
-import { Plus, SquarePen } from "lucide-react";
-import { useParams } from "react-router";
+import { ArrowLeft, Plus, SquarePen } from "lucide-react";
+import { useNavigate, useParams } from "react-router";
 
 import {
   Dialog,
@@ -105,7 +105,7 @@ function AdminVariantsValuesPage() {
     );
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 p-6">
       <Title
         editingValue={editingValue}
         handleCreateValue={handleCreateValue}
@@ -143,10 +143,17 @@ function Title({
   isUpdatingValue,
   variantTypeName,
 }) {
+  const navigate = useNavigate();
   return (
     <div className="flex justify-between items-center">
       <div>
-        <h1 className="text-3xl">{variantTypeName} variant values</h1>
+        <div className="flex items-center gap-1.5">
+          <ArrowLeft
+            className="cursor-pointer hover:text-accent"
+            onClick={() => navigate("/admin/variants")}
+          />
+          <h1 className="text-3xl">{variantTypeName} variant values</h1>
+        </div>
         <p className="text-muted-foreground text-sm">
           Manage by creating a new one or edit an existing one
         </p>
@@ -259,9 +266,7 @@ function ValuesTable({ values = [], onEditValue, variantTypeName }) {
       <TableBody>
         {values?.map((value) => (
           <TableRow key={value?.id}>
-            <TableCell className="font-medium font-mono">
-              #{value?.id}
-            </TableCell>
+            <TableCell className="text-xs">#{value?.id}</TableCell>
             <TableCell className={"font-medium"}>{value?.value}</TableCell>
             <TableCell className={"text-muted-foreground "}>
               {formatDateShort(value?.created_at)}

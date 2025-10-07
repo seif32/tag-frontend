@@ -36,7 +36,7 @@ function AdminRouter() {
         />
         {/*Begin from here ✅✅✅✅ */}
         <Route path={"brands"} element={<AdminBrandsPage />} />
-        <Route path={ROUTES.ADMIN.TAGS} element={<AdminTagsPage />} />
+        <Route path={"tags"} element={<AdminTagsPage />} />
 
         <Route path={"variants"} element={<AdminVariantsTypesPage />} />
         <Route
