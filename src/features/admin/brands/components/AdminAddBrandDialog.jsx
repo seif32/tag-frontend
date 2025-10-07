@@ -59,8 +59,8 @@ function AdminAddBrandDialog({
     resetCreateBrand,
   } = useBrands.useCreate({
     onSuccess: () => {
-      form.reset();
       setOpen(false);
+      form.reset();
     },
   });
 

@@ -110,7 +110,6 @@ function ProductsPage() {
     );
   }
 
-  // ✅ Safe access to products count
   const totalProductsCount = products?.data?.length || 0;
 
   // ✅ Now safe to call getPageInfo
