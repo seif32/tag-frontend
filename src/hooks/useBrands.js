@@ -10,10 +10,10 @@ const useBrands = {
    * Returns: isLoadingBrands, brands, errorBrands
    * Example: const { isLoadingBrands, brands } = useBrandsQueries.useAll();
    */
-  useAll: (options = {}) => {
+  useAll: (queryParams = {}, options = {}) => {
     const query = useQuery({
-      queryKey: ["brands"],
-      queryFn: brandsApi.getAll,
+      queryKey: ["brands", queryParams],
+      queryFn: () => brandsApi.getAll(queryParams),
       staleTime: 5 * 60 * 1000, // 5 minutes - brands don't change often
       cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
       ...options,

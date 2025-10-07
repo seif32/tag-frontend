@@ -9,10 +9,17 @@ import AdminAddBrandDialog from "../components/AdminAddBrandDialog";
 import { DeleteConfirmationDialog } from "../../ui/DeleteConfirmationDialog";
 import { useDeleteManager } from "@/hooks/useDeleteManager";
 import PaginationControlsBar from "../../ui/PaginationControlsBar";
+import ControlsBar from "@/ui/ControlsBar";
+import useDebounce from "@/hooks/useDebounce";
 
 function AdminBrandsPage() {
+  const [searchInput, setSearchInput] = useState("");
+  const debouncedSearch = useDebounce(searchInput, 500);
+
   const { brands, errorBrands, isErrorBrands, isLoadingBrands, refetchBrands } =
-    useBrands.useAll();
+    useBrands.useAll({
+      search: debouncedSearch,
+    });
 
   const { deleteBrand, isPendingBrands } = useBrands.useDelete();
   const {
@@ -45,8 +52,6 @@ function AdminBrandsPage() {
       />
     );
 
-  console.log("AdminBrandsPage", brands);
-
   return (
     <div className="p-6 space-y-6">
       <PageTitle
@@ -56,6 +61,14 @@ function AdminBrandsPage() {
         selectedBrand={selectedBrand}
         setDialogOpen={setDialogOpen}
         setSelectedBrand={setSelectedBrand}
+      />
+
+      <ControlsBar
+        isShowFilter={false}
+        isShowLimit={false}
+        searchName={"brand"}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
       />
 
       <BrandsDataTable

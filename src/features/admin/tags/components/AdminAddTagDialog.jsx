@@ -94,9 +94,9 @@ function AdminAddTagDialog({
     mode: "onChange",
   });
 
+  // 🔄 Update form when tagToEdit changes
   const watchedValues = form.watch();
 
-  // 🔄 Update form when tagToEdit changes
   useEffect(() => {
     if (tagToEdit) {
       form.reset({

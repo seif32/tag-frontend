@@ -16,6 +16,7 @@ export default function ControlsBar({
   children,
   searchName,
   isShowFilter = true,
+  isShowLimit = true,
   searchWidth = "w-70",
 }) {
   const [searchParams] = useSearchParams();
@@ -57,21 +58,23 @@ export default function ControlsBar({
           {children}
         </Select>
       )}
-      <Select
-        value={String(limit)}
-        onValueChange={(value) => updateUrlParams({ limit: Number(value) })}
-      >
-        <SelectTrigger className="w-auto ">
-          <SelectValue placeholder="10" />
-        </SelectTrigger>
-        <SelectContent>
-          {[10, 20, 50, 100].map((size) => (
-            <SelectItem key={size} value={String(size)}>
-              {size}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      {isShowLimit && (
+        <Select
+          value={String(limit)}
+          onValueChange={(value) => updateUrlParams({ limit: Number(value) })}
+        >
+          <SelectTrigger className="w-auto ">
+            <SelectValue placeholder="10" />
+          </SelectTrigger>
+          <SelectContent>
+            {[10, 20, 50, 100].map((size) => (
+              <SelectItem key={size} value={String(size)}>
+                {size}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
     </div>
   );
 }

@@ -13,9 +13,13 @@ const brandsApi = {
    * Perfect for brand selection dropdowns, admin brand lists, product creation forms
    * Example: const brands = await brandsApi.getAll();
    */
-  getAll: async (options = {}) => {
+  getAll: async (queryParams = {}, options = {}) => {
     try {
-      return await api.get("/brands", {
+      const params = new URLSearchParams();
+      if (queryParams.search) params.append("search", queryParams.search);
+      const queryString = params.toString();
+      const url = `/brands${queryString ? `?${queryString}` : ""}`;
+      return await api.get(url, {
         ...options,
       });
     } catch (error) {
