@@ -16,7 +16,9 @@ const brandsApi = {
   getAll: async (queryParams = {}, options = {}) => {
     try {
       const params = new URLSearchParams();
+
       if (queryParams.search) params.append("search", queryParams.search);
+
       const queryString = params.toString();
       const url = `/brands${queryString ? `?${queryString}` : ""}`;
       return await api.get(url, {

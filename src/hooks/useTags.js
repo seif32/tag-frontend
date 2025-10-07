@@ -10,10 +10,10 @@ const useTags = {
    * Returns: isLoadingTags, tags, errorTags
    * Example: const { isLoadingTags, tags } = useTags.useAll();
    */
-  useAll: (options = {}) => {
+  useAll: (queryParams = {}, options = {}) => {
     const query = useQuery({
-      queryKey: ["tags"],
-      queryFn: tagsApi.getAll,
+      queryKey: ["tags", queryParams],
+      queryFn: () => tagsApi.getAll(queryParams),
       staleTime: 10 * 60 * 1000, // 10 minutes - tags change less frequently than products
       cacheTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
       ...options,

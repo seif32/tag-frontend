@@ -111,16 +111,6 @@ function AdminAddTagDialog({
     }
   }, [tagToEdit, form]);
 
-  const selectedCategory = useMemo(() => {
-    if (isLoadingCategories || !categories?.length) return null;
-
-    return (
-      categories.find(
-        (cat) => cat.id.toString() === watchedValues.category_id
-      ) || null
-    );
-  }, [categories, isLoadingCategories, watchedValues.category_id]);
-
   function onSubmit(data) {
     if (isEditMode) {
       updateTag({
@@ -160,7 +150,6 @@ function AdminAddTagDialog({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Tag className="h-5 w-5" />
             {isEditMode ? `Edit "${tagToEdit.name}"` : "Add New Tag"}
           </DialogTitle>
           <DialogDescription>
@@ -187,9 +176,6 @@ function AdminAddTagDialog({
                       disabled={isAddingTag || isUpdatingTag}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Enter a descriptive name for your tag (2-30 characters)
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -214,7 +200,7 @@ function AdminAddTagDialog({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories.map((category) => (
+                      {categories?.data?.map((category) => (
                         <SelectItem
                           key={category.id}
                           value={category.id.toString()}
@@ -231,25 +217,6 @@ function AdminAddTagDialog({
                 </FormItem>
               )}
             />
-
-            {(watchedValues.name || selectedCategory) && (
-              <div className="p-4 bg-muted rounded-lg space-y-2">
-                <h4 className="font-medium text-sm text-muted-foreground">
-                  Live Preview:
-                </h4>
-                <div className="flex items-center gap-2">
-                  <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 border border-purple-200">
-                    <Tag className="h-3 w-3" />
-                    {watchedValues.name || "Tag Name"}
-                  </div>
-                  {selectedCategory && (
-                    <span className="text-xs text-muted-foreground">
-                      in {selectedCategory.name}
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
 
             {(isErrorCreateTag || isErrorUpdateTag) &&
               (errorCreateTag || errorUpdateTag) && (

@@ -14,9 +14,15 @@ const tagsApi = {
    * Returns all tags regardless of category for maximum flexibility
    * Example: const tags = await tagsApi.getAll();
    */
-  getAll: async (options = {}) => {
+  getAll: async (queryParams = {}, options = {}) => {
     try {
-      return await api.get("/tags", {
+      const params = new URLSearchParams();
+
+      if (queryParams.search) params.append("search", queryParams.search);
+
+      const queryString = params.toString();
+      const url = `/tags${queryString ? `?${queryString}` : ""}`;
+      return await api.get(url, {
         ...options,
       });
     } catch (error) {

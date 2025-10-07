@@ -92,7 +92,7 @@ function AdminBrandsPage() {
         isPending={isPending}
         entityName="product"
         entityLabel={deleteDialog.product?.name || ""}
-        title="Delete Product"
+        title="Delete Brand"
       />
     </div>
   );

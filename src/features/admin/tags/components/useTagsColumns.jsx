@@ -1,21 +1,10 @@
-"use client";
-
 import { useMemo } from "react";
-import {
-  ArrowUpDown,
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Eye,
-  Tag,
-} from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
@@ -27,16 +16,14 @@ export function useTagsColumns({ onEdit, onDelete }) {
         accessorKey: "id",
         header: ({ column }) => {
           return (
-            <Button
-              variant="ghost"
+            <span
               onClick={() =>
                 column.toggleSorting(column.getIsSorted() === "asc")
               }
               className="h-8 px-2"
             >
               ID
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
+            </span>
           );
         },
         cell: ({ row }) => (
@@ -49,16 +36,14 @@ export function useTagsColumns({ onEdit, onDelete }) {
         accessorKey: "name",
         header: ({ column }) => {
           return (
-            <Button
-              variant="ghost"
+            <span
               onClick={() =>
                 column.toggleSorting(column.getIsSorted() === "asc")
               }
               className="h-8 px-2"
             >
               Tag Name
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
+            </span>
           );
         },
         cell: ({ row }) => {
@@ -91,16 +76,14 @@ export function useTagsColumns({ onEdit, onDelete }) {
         accessorKey: "created_at",
         header: ({ column }) => {
           return (
-            <Button
-              variant="ghost"
+            <span
               onClick={() =>
                 column.toggleSorting(column.getIsSorted() === "asc")
               }
               className="h-8 px-2"
             >
               Created
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
+            </span>
           );
         },
         cell: ({ row }) => {
