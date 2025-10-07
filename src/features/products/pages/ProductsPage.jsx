@@ -31,7 +31,8 @@ function ProductsPage() {
     refetchProducts,
   } = useProducts.useAllWithoutVariants({
     category_id: categoryId,
-    id: subcategoryId,
+    subcategory_id: subcategoryId,
+    active: 1,
   });
 
   const navigate = useNavigate();
@@ -40,12 +41,17 @@ function ProductsPage() {
     navigate(`/products/${productId}`);
   }
 
+  // ✅ Safe function with proper null checks
   const getPageInfo = () => {
-    if (!products || products.length === 0) {
+    // 🔒 Guard: Return defaults if data not loaded
+    if (!products?.data || products.data.length === 0) {
       return {
         title: "Products",
         subtitle: null,
-        breadcrumb: [],
+        breadcrumb: [
+          { name: "Home", path: "/" },
+          { name: "All Products", path: null },
+        ],
       };
     }
 
@@ -88,10 +94,13 @@ function ProductsPage() {
     };
   };
 
-  if (isLoadingProducts)
+  // ✅ Handle loading state
+  if (isLoadingProducts) {
     return <LoadingState type="card" rows={20} columns={3} />;
+  }
 
-  if (isErrorProducts)
+  // ✅ Handle error state
+  if (isErrorProducts) {
     return (
       <ErrorMessage
         message={errorProducts.message || "Failed to load data"}
@@ -99,9 +108,12 @@ function ProductsPage() {
         onDismiss={() => refetchProducts()}
       />
     );
+  }
 
+  // ✅ Safe access to products count
   const totalProductsCount = products?.data?.length || 0;
 
+  // ✅ Now safe to call getPageInfo
   const pageInfo = getPageInfo();
 
   return (
@@ -182,8 +194,6 @@ function ProductsPage() {
           </div>
         </div>
 
-        {/* <ProductsHeader productCount={totalProductsCount} /> */}
-
         {/* 🎨 Empty State */}
         {totalProductsCount === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -191,7 +201,6 @@ function ProductsPage() {
               <Package className="w-12 h-12 text-gray-400" />
             </div>
             <h2 className="mb-2 text-2xl font-semibold text-gray-900">
-              {/* No products in {pageInfo.title} */}
               No products
             </h2>
             <p className="max-w-md mb-6 text-gray-600">
@@ -201,9 +210,8 @@ function ProductsPage() {
           </div>
         ) : (
           /* 📦 Products Grid */
-          // <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products?.data?.map((product) => {
+            {products.data.map((product) => {
               return (
                 <ProductCard
                   key={product.id}
@@ -219,33 +227,37 @@ function ProductsPage() {
             })}
           </div>
         )}
-        <div className="mt-8 justify-self-end flex-col flex items-start space-y-2">
-          <p className="text-sm text-gray-700">
-            Page {products?.pagination?.page || 1} of{" "}
-            {products?.pagination?.totalPages || 1}
-          </p>
 
-          <div className="flex items-center space-x-1">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => updateUrlParams({ page: page - 1 })}
-              disabled={page <= 1}
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => updateUrlParams({ page: page + 1 })}
-              disabled={page >= (products?.pagination?.totalPages || 1)}
-            >
-              Next
-              <ChevronRight className="w-4 h-4" />
-            </Button>
+        {/* 📄 Pagination */}
+        {totalProductsCount > 0 && (
+          <div className="mt-8 justify-self-end flex-col flex items-start space-y-2">
+            <p className="text-sm text-gray-700">
+              Page {products?.pagination?.page || 1} of{" "}
+              {products?.pagination?.totalPages || 1}
+            </p>
+
+            <div className="flex items-center space-x-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => updateUrlParams({ page: page - 1 })}
+                disabled={page <= 1}
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => updateUrlParams({ page: page + 1 })}
+                disabled={page >= (products?.pagination?.totalPages || 1)}
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </SidebarProvider>
   );

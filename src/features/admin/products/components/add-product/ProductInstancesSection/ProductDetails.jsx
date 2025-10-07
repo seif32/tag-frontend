@@ -17,8 +17,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Edit, Eye, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import useProductStore from "@/features/admin/store/productStore";
 
 function ProductDetails({ product, onEditBundle, onDeleteBundle }) {
+  const mode = useProductStore((state) => state.mode);
+  const isAddMode = mode === "add";
   return (
     <div className="space-y-6">
       <Table>
@@ -63,7 +66,7 @@ function ProductDetails({ product, onEditBundle, onDeleteBundle }) {
           </TableRow>
         </TableBody>
       </Table>
-      {product?.bundles?.length !== 0 && (
+      {product?.bundles?.length !== 0 && !isAddMode && (
         <Table>
           <TableHeader>
             <p className="font-medium text-muted-foreground">Bundles</p>

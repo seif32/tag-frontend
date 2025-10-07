@@ -45,7 +45,16 @@ const useProducts = {
   useAllWithoutVariants: (queryParams = {}, options = {}) => {
     const [searchParams] = useSearchParams();
 
-    const active = searchParams.get("active");
+    // 🎯 Smart default: if `active` is explicitly passed in queryParams, use it
+    // Otherwise, check URL params, then default to null (fetch all for admin)
+    const activeFromUrl = searchParams.get("active");
+    const active =
+      queryParams.active !== undefined
+        ? queryParams.active
+        : activeFromUrl !== null
+        ? activeFromUrl
+        : null;
+
     const page = parseInt(searchParams.get("page")) || queryParams.page || 1;
     const limit =
       parseInt(searchParams.get("limit")) || queryParams.limit || 10;
@@ -57,11 +66,18 @@ const useProducts = {
       active,
     };
 
+    // 🔥 Remove null/undefined values to avoid sending unnecessary params
+    Object.keys(mergedFilters).forEach((key) => {
+      if (mergedFilters[key] === null || mergedFilters[key] === undefined) {
+        delete mergedFilters[key];
+      }
+    });
+
     const query = useQuery({
-      queryKey: ["products", "without-variants", mergedFilters], // Include all filters for proper caching
+      queryKey: ["products", "without-variants", mergedFilters],
       queryFn: () => productsApi.getAllWithoutVariants(mergedFilters),
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 10 * 60 * 1000, // 10 minutes
+      staleTime: 5 * 60 * 1000,
+      cacheTime: 10 * 60 * 1000,
       ...options,
     });
 

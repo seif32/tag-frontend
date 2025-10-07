@@ -1,72 +1,121 @@
 {
-  "id": 198,
-  "order_id": 78,
-  "variant_id": 2,
-  "quantity": 1,
-  "unit_price": "750.00",
-  "total_price": "750.00",
-  "currency": "USD",
-  "created_at": "2025-10-01T21:20:06.000Z",
-  "updated_at": "2025-10-01T21:20:06.000Z",
-  "total_vat": "0.00",
-  "product": {
-    "id": 2,
-    "name": "Iphone 11",
-    "sku": "SKU-BC6B20-1756504028086",
-    "description": "very cool mobile with lots of features",
-    "short_description": "a modern tech mobile",
-    "category_id": 1,
-    "subcategory_id": 1,
-    "brand_id": 1,
-    "featured": 0,
-    "active": 1,
-    "rating": "0.00",
-    "rating_count": 0,
-    "created_at": "2025-08-29T21:47:08.000Z",
-    "updated_at": "2025-08-30T01:32:58.000Z",
-    "category_name": "Electronics",
-    "sub_category_name": "Mobiles",
-    "brand_name": "Apple",
-    "tags": [
-      {
-        "id": 1,
-        "name": "modern"
-      }
-    ],
-    "variants": [
-      {
-        "id": 2,
-        "product_id": 2,
-        "variant_sku": "SKU-ED94DC-1756504028089",
-        "is_primary": 0,
-        "price": "750.00",
-        "compare_at_price": "8111.00",
-        "cost_price": "300.00",
-        "currency": "USD",
-        "quantity": 1429,
-        "created_at": "2025-08-29T21:47:08.000Z",
-        "updated_at": "2025-10-02T14:11:16.000Z",
-        "vat": "0.00",
-        "images": [],
-        "types": [
+  "id": 129,
+  "order_status": "pending",
+  "payment_status": "paid",
+  "subtotal": "500.00",
+  "tax_amount": "70.00",
+  "shipping_amount": "45.00",
+  "discount_percent": "0.00",
+  "discount_type": null,
+  "discount_amount": "0.00",
+  "total_amount": "615.00",
+  "currency": "GBP",
+  "created_at": "2025-10-07T17:00:12.000Z",
+  "updated_at": "2025-10-07T17:00:34.000Z",
+  "promo_code": null,
+  "user": {
+    "id": 1,
+    "uid": "Yl3a2XETvSVW1JI6XEW7ZZrxJwA2",
+    "first_name": "Seif",
+    "last_name": "Mohamed",
+    "email": "seif@gmail.com",
+    "phone_number": "+201077481236",
+    "role": "user",
+    "created_at": "2025-09-12T01:33:31.000Z",
+    "updated_at": "2025-09-20T13:47:00.000Z",
+    "is_verified": 0,
+    "business_name": null,
+    "vat_number": null
+  },
+  "address": {
+    "id": 7,
+    "user_id": 1,
+    "description": "asr keda 3al ray'",
+    "apartment_number": "108",
+    "building_number": "51",
+    "street_name": "Tamer Hosny",
+    "postal_code": "89",
+    "country": "uk",
+    "location_url": "",
+    "is_default": 0,
+    "created_at": "2025-09-13T00:00:10.000Z",
+    "updated_at": "2025-09-13T00:02:25.000Z",
+    "city_id": 1,
+    "city_name": "Bath"
+  },
+  "items": [
+    {
+      "id": 236,
+      "order_id": 129,
+      "variant_id": 33,
+      "quantity": 1,
+      "unit_price": "500.00",
+      "total_price": "570.00",
+      "currency": "GBP",
+      "created_at": "2025-10-07T17:00:12.000Z",
+      "updated_at": "2025-10-07T17:00:12.000Z",
+      "total_vat": "70.00",
+      "product": {
+        "id": 22,
+        "name": "Sony X",
+        "sku": "SKU-3088B6-1759523137753",
+        "description": "ay haga",
+        "short_description": "ay haga tany",
+        "category_id": 2,
+        "subcategory_id": 2,
+        "brand_id": 1,
+        "featured": 0,
+        "active": 1,
+        "rating": "0.00",
+        "rating_count": 0,
+        "created_at": "2025-10-03T20:25:37.000Z",
+        "updated_at": "2025-10-03T20:38:33.000Z",
+        "category_name": "Clothing",
+        "sub_category_name": "Shoes",
+        "brand_name": "Apple",
+        "tags": [
           {
-            "type_id": 1,
-            "type_name": "Color",
-            "value": {
-              "id": 10,
-              "name": "Black"
-            }
-          },
+            "id": 2,
+            "name": "casual"
+          }
+        ],
+        "variants": [
           {
-            "type_id": 6,
-            "type_name": "Width",
-            "value": {
-              "id": 29,
-              "name": "Wide"
-            }
+            "id": 33,
+            "product_id": 22,
+            "variant_sku": "SKU-887395-1759523137755",
+            "is_primary": 1,
+            "price": "500.00",
+            "compare_at_price": "1000.00",
+            "cost_price": "200.00",
+            "currency": "USD",
+            "quantity": 76,
+            "created_at": "2025-10-03T20:25:37.000Z",
+            "updated_at": "2025-10-07T17:05:25.000Z",
+            "vat": "14.00",
+            "images": [],
+            "types": [
+              {
+                "type_id": 1,
+                "type_name": "Color",
+                "value": {
+                  "id": 10,
+                  "name": "Black"
+                }
+              },
+              {
+                "type_id": 11,
+                "type_name": "Storage",
+                "value": {
+                  "id": 43,
+                  "name": "128GB"
+                }
+              }
+            ]
           }
         ]
       }
-    ]
-  }
+    }
+  ],
+  "bundles": []
 }

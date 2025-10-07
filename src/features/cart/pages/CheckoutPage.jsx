@@ -77,7 +77,6 @@ function CheckoutPage() {
 
     cartItems.forEach((item) => {
       if (item.is_bundle && item.bundle_id) {
-        // Handle bundle items - ONLY add to bundles array
         const existingBundle = bundles.find(
           (b) => b.bundle_id === item.bundle_id
         );
@@ -116,27 +115,23 @@ function CheckoutPage() {
         addressId = selectAddress.id;
       }
 
-      // 🚀 Use the transformation function here
       const { items, bundles } = transformCartForCheckout(cartItems);
 
       const orderPayload = {
         user_id: user?.id,
         address_id: addressId,
-        currency: "USD", // or get from your app config
         promo_code_id: appliedCoupon?.id || null,
         items: items,
         ...(bundles.length > 0 && { bundles: bundles }),
       };
 
-      console.log("🚀 Sending order payload:", orderPayload); // Debug log
+      const response = await createOrderAsync(orderPayload);
+      const checkoutUrl = response.sessionUrl;
+      window.location.href = checkoutUrl;
 
-      const newOrderData = await createOrderAsync(orderPayload);
-      console.log("newOrderData", newOrderData);
-      setOrderSuccess(newOrderData);
-      navigate(`/order/success/${newOrderData.id}`);
-      clearCart();
+      // clearCart();
     } catch (error) {
-      console.error("Checkout failed:", error);
+      console.error("❌ Checkout failed:", error);
     }
   }
 

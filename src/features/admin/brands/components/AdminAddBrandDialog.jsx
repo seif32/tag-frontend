@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Building, FileText, Save, Loader2 } from "lucide-react";
+import { Plus, Save, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -50,7 +49,6 @@ function AdminAddBrandDialog({
   setSelectedBrand,
   mode = "add",
 }) {
-  const isEditMode = mode === "edit";
   const isAddMode = mode === "add";
 
   const {
@@ -99,8 +97,6 @@ function AdminAddBrandDialog({
     }
   }, [selectedBrand, form]);
 
-  const watchedValues = form.watch();
-
   function onSubmit(data) {
     if (selectedBrand) {
       updateBrand({
@@ -138,7 +134,7 @@ function AdminAddBrandDialog({
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Building className="h-5 w-5" />
+            {/* <Building className="h-5 w-5" /> */}
             Add New Brand
           </DialogTitle>
           <DialogDescription>
@@ -154,7 +150,6 @@ function AdminAddBrandDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
-                    <Building className="h-4 w-4" />
                     Brand Name
                   </FormLabel>
                   <FormControl>
@@ -164,9 +159,6 @@ function AdminAddBrandDialog({
                       disabled={isAddingBrand || isUpdatingBrand}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Enter a unique name for your brand (2-50 characters)
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -178,7 +170,6 @@ function AdminAddBrandDialog({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
                     Description
                   </FormLabel>
                   <FormControl>
@@ -189,31 +180,10 @@ function AdminAddBrandDialog({
                       disabled={isAddingBrand || isUpdatingBrand}
                     />
                   </FormControl>
-                  <FormDescription>
-                    {field.value?.length || 0}/500 characters - Describe your
-                    brand's unique value
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            {(watchedValues.name || watchedValues.description) && (
-              <div className="p-4 bg-muted rounded-lg space-y-2">
-                <h4 className="font-medium text-sm text-muted-foreground">
-                  Live Preview:
-                </h4>
-                <div className="space-y-1">
-                  <h3 className="font-semibold">
-                    {watchedValues.name || "Brand Name"}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {watchedValues.description ||
-                      "Brand description will appear here..."}
-                  </p>
-                </div>
-              </div>
-            )}
 
             {isErrorCreateBrand && errorCreateBrand && (
               <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
@@ -247,7 +217,7 @@ function AdminAddBrandDialog({
                 disabled={
                   isAddingBrand || isUpdatingBrand || !form.formState.isValid
                 }
-                className="gap-2"
+                className="gap-2 "
               >
                 {isAddingBrand || isUpdatingBrand ? (
                   <>
@@ -255,10 +225,7 @@ function AdminAddBrandDialog({
                     Creating...
                   </>
                 ) : (
-                  <>
-                    <Save className="h-4 w-4" />
-                    {isAddMode ? "Create Brand" : "Edit Brand"}
-                  </>
+                  <>{isAddMode ? "Create Brand" : "Edit Brand"}</>
                 )}
               </Button>
             </DialogFooter>

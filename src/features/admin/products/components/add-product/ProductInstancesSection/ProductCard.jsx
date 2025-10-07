@@ -47,8 +47,8 @@ function ProductCard({ variantsList, onEditProduct, productName }) {
   const { filteredVariants, isEmpty } = useFilteredVariants(variantsList);
 
   const mode = useProductStore((state) => state.mode);
-  const productId = useProductStore((state) => state.productId);
   const isAddMode = mode === "add";
+  const productId = useProductStore((state) => state.productId);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -121,6 +121,7 @@ function ProductCard({ variantsList, onEditProduct, productName }) {
           key={product.id || index}
           className={
             product?.bundles?.length !== 0 &&
+            !isAddMode &&
             "border-green-500 shadow-lg shadow-green-500/20"
           }
         >

@@ -4,6 +4,32 @@ import { formatDateShort } from "@/utils/dateUtils";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function OrderReceipt({ order, isOrderDetails = true, style }) {
+  // payment_status ENUM('pending', 'failed', 'paid', 'refunded') DEFAULT 'pending',
+
+  function getPaymentStatus(status) {
+    switch (status) {
+      case "paid":
+        return {
+          text: "Payment Success",
+          style: "border-green-500  text-green-600 bg-green-100",
+        };
+      case "paid":
+        return {
+          text: "Payment Fail",
+          style: "border-red-500  text-red-600 bg-red-100",
+        };
+      case "paid":
+        return {
+          text: "Payment Pending",
+          style: "border-amber-500  text-amber-600 bg-amber-100",
+        };
+      default:
+        return {
+          text: "Payment Unknown",
+          style: "border-gray-500  text-gray-600 bg-gray-100",
+        };
+    }
+  }
   return (
     <div
       className={`flex flex-col w-full px-4 py-3 bg-white border border-gray-100 ${style}`}
@@ -21,6 +47,16 @@ export default function OrderReceipt({ order, isOrderDetails = true, style }) {
         <div className="flex justify-between w-full">
           <p className=" text-primary/70">Payment Method:</p>
           <p className="">Credit Card</p>
+        </div>
+        <div className="flex justify-between w-full">
+          <p className=" text-primary/70"></p>
+          <span
+            className={`px-2 py-1 border text-xs rounded-sm ${
+              getPaymentStatus(order?.payment_status).style
+            }`}
+          >
+            {getPaymentStatus(order?.payment_status).text}
+          </span>
         </div>
       </div>
       <div className="my-4 border border-dashed"></div>

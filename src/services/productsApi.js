@@ -51,7 +51,12 @@ const productsApi = {
 
       if (filters.page) queryParams.append("page", filters.page);
       if (filters.limit) queryParams.append("limit", filters.limit);
-      if (filters.active !== null) queryParams.append("active", filters.active);
+
+      // 🎯 Only append `active` if it's explicitly provided (0, 1, or "0", "1")
+      if (filters.active !== null && filters.active !== undefined) {
+        queryParams.append("active", filters.active);
+      }
+
       if (filters.category_id)
         queryParams.append("category_id", filters.category_id);
       if (filters.subcategory_id)
@@ -62,6 +67,8 @@ const productsApi = {
       const url = queryString
         ? `/products/without-variants?${queryString}`
         : "/products/without-variants";
+
+      console.log("productsApi", url);
 
       return await api.get(url, options);
     } catch (error) {

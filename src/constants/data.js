@@ -30,11 +30,11 @@ export const AdminSidebarGroups = [
               path: "/admin/categories",
               iconName: "Tags",
             },
-            {
-              name: "Bundles",
-              path: "/admin/bundles",
-              iconName: "Boxes",
-            },
+            // {
+            //   name: "Bundles",
+            //   path: "/admin/bundles",
+            //   iconName: "Boxes",
+            // },
             // {
             //   name: "Inventory",
             //   path: "/admin/inventory",
@@ -76,10 +76,10 @@ export const AdminSidebarGroups = [
           name: "Orders",
           path: "/admin/orders",
           iconName: "ShoppingCart",
-          badge: {
-            content: "5",
-            variant: "destructive",
-          },
+          // badge: {
+          //   content: "5",
+          //   variant: "destructive",
+          // },
           // submenuButtons: [
           //   {
           //     name: "All Orders",

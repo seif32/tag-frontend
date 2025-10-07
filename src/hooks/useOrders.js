@@ -161,14 +161,12 @@ const useOrders = {
     const mutation = useMutation({
       mutationFn: ordersApi.create,
       onSuccess: (data, variables) => {
-        // Built-in functionality - always runs first
-        queryClient.invalidateQueries({ queryKey: ["orders"], type: "all" });
-
-        toast.success("Order created successfully!");
-        queryClient.invalidateQueries({
-          queryKey: ["products"],
-          type: "all",
-        });
+        // toast.success("Order created successfully!");
+        // queryClient.invalidateQueries({ queryKey: ["orders"], type: "all" });
+        // queryClient.invalidateQueries({
+        //   queryKey: ["products"],
+        //   type: "all",
+        // });
 
         // Your custom logic runs after
         if (options.onSuccess) {

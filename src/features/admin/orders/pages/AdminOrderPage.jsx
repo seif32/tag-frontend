@@ -234,6 +234,7 @@ function OrderItems({ order }) {
       </div>
       <ItemsTable
         orderItems={order?.items || []}
+        orderBundles={order?.bundles || []} // Pass bundles
         orderNumber={order?.id}
         orderShipping={order?.shipping_amount}
         orderSubtotal={order?.subtotal}
@@ -248,17 +249,20 @@ function OrderItems({ order }) {
 function ItemsTable({
   orderNumber,
   orderItems,
+  orderBundles = [], // Add bundles prop
   orderSubtotal,
   orderTax,
   orderShipping,
   orderTotal,
   orderDiscount,
 }) {
+  const totalItemCount = orderItems.length + orderBundles.length;
+
   return (
     <Table>
       <TableCaption>
-        Items in order #{orderNumber} - {orderItems.length} item
-        {orderItems.length !== 1 ? "s" : ""}
+        Items in order #{orderNumber} - {totalItemCount} item
+        {totalItemCount !== 1 ? "s" : ""}
       </TableCaption>
 
       <TableHeader>
@@ -273,73 +277,162 @@ function ItemsTable({
       </TableHeader>
 
       <TableBody>
-        {orderItems.length > 0 ? (
-          orderItems.map((item) => (
-            <TableRow key={item.id} className="hover:bg-gray-50">
-              <TableCell>
-                <div className="flex items-center space-x-3">
-                  <img
-                    src={
-                      item?.product?.variants[0].images[0] || "/placeholder.jpg"
-                    }
-                    alt={item?.product?.name}
-                    className="w-12 h-12 object-cover rounded border"
-                  />
-                  <div className="flex flex-col">
+        {/* Regular Items */}
+        {orderItems.map((item) => (
+          <TableRow key={`item-${item.id}`} className="hover:bg-gray-50">
+            <TableCell>
+              <div className="flex items-center space-x-3">
+                <img
+                  src={
+                    item?.product?.variants[0].images[0] || "/placeholder.jpg"
+                  }
+                  alt={item?.product?.name}
+                  className="w-12 h-12 object-cover rounded border"
+                />
+                <div className="flex flex-col">
+                  <span className="font-medium text-sm">
+                    {item?.product?.name}
+                  </span>
+                  {item?.product?.variants[0]?.types?.map((type) => (
+                    <div
+                      key={type?.type_id}
+                      className="text-xs text-muted-foreground"
+                    >
+                      <span>{type?.type_name}: </span>
+                      <span>{type?.value?.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className="flex flex-wrap gap-1">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700">
+                  {item?.product?.category_name || "N/A"}
+                </span>
+                {item?.product?.sub_category_name && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-700">
+                    {item?.product?.sub_category_name}
+                  </span>
+                )}
+              </div>
+            </TableCell>
+
+            <TableCell>
+              <span className="font-mono text-xs text-gray-600">
+                {item?.product?.variants[0]?.variant_sku || "N/A"}
+              </span>
+            </TableCell>
+
+            <TableCell className="text-center">
+              <span className="font-semibold">{item?.quantity}</span>
+            </TableCell>
+
+            <TableCell className="text-right">
+              <span className="font-medium text-xs">
+                {formatCurrency(item?.unit_price)}
+              </span>
+            </TableCell>
+
+            <TableCell className="text-right">
+              <span className="font-semibold text-xs">
+                {formatCurrency(item?.total_price)}
+              </span>
+            </TableCell>
+          </TableRow>
+        ))}
+
+        {/* Bundle Items */}
+        {orderBundles.map((bundle) => (
+          <TableRow
+            key={`bundle-${bundle.id}`}
+            className="hover:bg-blue-50 bg-blue-50/30"
+          >
+            <TableCell>
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-blue-100 rounded border border-blue-200 flex items-center justify-center">
+                  <Package className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
                     <span className="font-medium text-sm">
-                      {item?.product?.name}
+                      {bundle?.product?.name}
                     </span>
-                    {item?.product?.variants[0]?.types?.map((type) => {
-                      return (
-                        <div
-                          key={type?.type_id}
-                          className="text-xs text-muted-foreground"
-                        >
-                          <span>{type?.type_name}: </span>
-                          <span>{type?.value?.name}</span>
-                        </div>
-                      );
-                    })}
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      Bundle
+                    </span>
+                  </div>
+                  {bundle?.product?.variants[0]?.types?.map((type) => (
+                    <div
+                      key={type?.type_id}
+                      className="text-xs text-muted-foreground"
+                    >
+                      <span>{type?.type_name}: </span>
+                      <span>{type?.value?.name}</span>
+                    </div>
+                  ))}
+                  <div className="text-xs text-blue-600 mt-0.5">
+                    {bundle.required_quantity} items × {bundle.times_applied}{" "}
+                    bundle{bundle.times_applied > 1 ? "s" : ""} ={" "}
+                    {bundle.bundle_quantity} total
                   </div>
                 </div>
-              </TableCell>
-              <TableCell>
-                <div className="flex flex-wrap gap-1">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700">
-                    {item?.product?.category_name || "N/A"}
+              </div>
+            </TableCell>
+
+            <TableCell>
+              <div className="flex flex-wrap gap-1">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700">
+                  {bundle?.product?.category_name || "N/A"}
+                </span>
+                {bundle?.product?.sub_category_name && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-700">
+                    {bundle?.product?.sub_category_name}
                   </span>
-                  {item?.product?.sub_category_name && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-700">
-                      {item?.product?.sub_category_name}
-                    </span>
-                  )}
-                </div>
-              </TableCell>
+                )}
+              </div>
+            </TableCell>
 
-              <TableCell>
-                <span className="font-mono text-xs text-gray-600">
-                  {item?.product?.variants[0]?.variant_sku || "N/A"}
-                </span>
-              </TableCell>
+            <TableCell>
+              <span className="font-mono text-xs text-gray-600">
+                {bundle?.product?.variants[0]?.variant_sku || "N/A"}
+              </span>
+            </TableCell>
 
-              <TableCell className="text-center">
-                <span className="font-semibold">{item?.quantity}</span>
-              </TableCell>
+            <TableCell className="text-center">
+              <span className="font-semibold">{bundle.bundle_quantity}</span>
+            </TableCell>
 
-              <TableCell className="text-right">
+            <TableCell className="text-right">
+              <div className="flex flex-col items-end">
                 <span className="font-medium text-xs">
-                  {formatCurrency(item?.unit_price)}
+                  {formatCurrency(
+                    bundle.bundle_subtotal / bundle.required_quantity
+                  )}
                 </span>
-              </TableCell>
+                <span className="text-xs text-muted-foreground">per item</span>
+              </div>
+            </TableCell>
 
-              <TableCell className="text-right">
+            <TableCell className="text-right">
+              <div className="flex flex-col items-end">
                 <span className="font-semibold text-xs">
-                  {formatCurrency(item?.total_price)}
+                  {formatCurrency(bundle.total_price)}
                 </span>
-              </TableCell>
-            </TableRow>
-          ))
-        ) : (
+                <span className="text-xs text-green-600">
+                  Save{" "}
+                  {formatCurrency(
+                    bundle.product.variants[0].price * bundle.bundle_quantity -
+                      bundle.subtotal * bundle.times_applied
+                  )}
+                </span>
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+
+        {/* Empty State */}
+        {orderItems.length === 0 && orderBundles.length === 0 && (
           <TableRow>
             <TableCell
               colSpan={6}
@@ -350,31 +443,36 @@ function ItemsTable({
           </TableRow>
         )}
 
-        {orderItems.length > 0 && (
+        {/* Totals Section */}
+        {(orderItems.length > 0 || orderBundles.length > 0) && (
           <>
             <TableRow className="bg-gray-50 border-t-2">
               <TableCell colSpan={5} className="text-right">
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-1 text-sm">
                   <span>Subtotal:</span>
                   <span>Shipping:</span>
                   <span>Tax:</span>
-                  <span className="text-red-600">Discount:</span>
+                  {parseFloat(orderDiscount) > 0 && (
+                    <span className="text-red-600">Discount:</span>
+                  )}
                 </div>
               </TableCell>
-              <TableCell className="text-right flex flex-col">
-                <div className="flex flex-col">
-                  <span className="">{formatCurrency(orderSubtotal)}</span>
-                  <span className="">{formatCurrency(orderShipping)}</span>
-                  <span className="">{formatCurrency(orderTax)}</span>
-                  <span className="text-red-600">
-                    -{formatCurrency(orderDiscount)}
-                  </span>
+              <TableCell className="text-right">
+                <div className="flex flex-col gap-1 text-sm">
+                  <span>{formatCurrency(orderSubtotal)}</span>
+                  <span>{formatCurrency(orderShipping)}</span>
+                  <span>{formatCurrency(orderTax)}</span>
+                  {parseFloat(orderDiscount) > 0 && (
+                    <span className="text-red-600">
+                      -{formatCurrency(orderDiscount)}
+                    </span>
+                  )}
                 </div>
               </TableCell>
             </TableRow>
 
             <TableRow className="bg-gray-50 border-t-2">
-              <TableCell colSpan={5} className="text-right font-semibold ">
+              <TableCell colSpan={5} className="text-right font-semibold">
                 Total:
               </TableCell>
               <TableCell className="text-right">
