@@ -43,10 +43,17 @@ function AdminOrderPage() {
   if (isErrorOrder)
     return (
       <ErrorMessage
-        message={errorOrder.message || "Failed to load data"}
+        message={errorOrder?.message || "Failed to load data"}
         dismissible={true}
         onDismiss={() => refetchOrder()}
       />
+    );
+
+  const totalUnits =
+    order?.items?.reduce((acc, item) => acc + item?.quantity, 0) +
+    order?.bundles?.reduce(
+      (acc, bundle) => acc + bundle?.bundle_quantity * bundle?.times_applied,
+      0
     );
 
   return (
@@ -56,10 +63,10 @@ function AdminOrderPage() {
         orderStatus={order?.order_status}
         paymentStatus={order?.payment_status}
         totalAmount={order?.total_amount}
-        totalItems={order?.items?.length}
+        totalUnits={totalUnits}
       />
       <div className="flex gap-5">
-        <OrderContents order={order} />
+        <OrderContents order={order} totalUnits={totalUnits} />
         <OrderInformation user={order?.user} address={order?.address} />
       </div>
     </div>
@@ -85,9 +92,6 @@ function Title({ orderId, orderDate }) {
         </p>
       </div>
       <div className="flex gap-2 ">
-        <Button size={"sm"} variant={"outline"} className={"text-xs"}>
-          Add Tracking Number
-        </Button>
         <Button size={"sm"} className={"text-xs"}>
           Change Order Status
         </Button>
@@ -100,9 +104,9 @@ function StatsContainer({
   orderStatus,
   paymentStatus,
   totalAmount,
-  totalItems,
+  totalUnits,
 }) {
-  function orderStats(orderStatus, paymentStatus, totalAmount, totalItems) {
+  function orderStats(orderStatus, paymentStatus, totalAmount, totalUnits) {
     return [
       {
         icon: Package,
@@ -116,22 +120,22 @@ function StatsContainer({
       },
       {
         icon: DollarSign,
-        title: totalAmount,
+        title: formatCurrency(totalAmount),
         subtitle: "Total Amount",
         badge: null,
       },
       {
         icon: ShoppingBag,
-        title: `${totalItems} items`,
-        subtitle: "Items",
+        title: `${totalUnits} units`,
+        subtitle: "Units",
         badge: null,
       },
     ];
   }
 
   return (
-    <div className="grid grid-cols-4 w-full">
-      {orderStats(orderStatus, paymentStatus, totalAmount, totalItems).map(
+    <div className="grid grid-cols-4 gap-2 w-full">
+      {orderStats(orderStatus, paymentStatus, totalAmount, totalUnits).map(
         (stat, index) => (
           <IconCard key={index} {...stat} />
         )
@@ -147,14 +151,14 @@ function OrderInformation({ user, address }) {
       <ShippingAddress
         apartmentNumber={address?.apartment_number}
         buildingNumber={address?.building_number}
-        city={address?.city}
+        city={address?.city_name}
         country={address?.country}
         description={address?.description}
         phoneNumber={user?.phone_number}
         postalCode={address?.postal_code}
         streetAddress={address?.street_name}
       />
-      <PaymentShipping />
+      {/* <PaymentShipping /> */}
     </div>
   );
 }
@@ -225,15 +229,15 @@ function PaymentShipping() {
   );
 }
 
-function OrderContents({ order }) {
+function OrderContents({ order, totalUnits }) {
   return (
     <div className="flex-2">
-      <OrderItems order={order} />
+      <OrderItems order={order} totalUnits={totalUnits} />
     </div>
   );
 }
 
-function OrderItems({ order }) {
+function OrderItems({ order, totalUnits }) {
   return (
     <section className="border p-4 rounded-2xl">
       <div className="flex gap-1 items-center">
@@ -242,13 +246,14 @@ function OrderItems({ order }) {
       </div>
       <ItemsTable
         orderItems={order?.items || []}
-        orderBundles={order?.bundles || []} // Pass bundles
+        orderBundles={order?.bundles || []}
         orderNumber={order?.id}
         orderShipping={order?.shipping_amount}
         orderSubtotal={order?.subtotal}
         orderTax={order?.tax_amount}
         orderTotal={order?.total_amount}
         orderDiscount={order?.discount_amount}
+        totalUnits={totalUnits}
       />
     </section>
   );
@@ -256,21 +261,20 @@ function OrderItems({ order }) {
 
 function ItemsTable({
   orderNumber,
-  orderItems,
-  orderBundles = [], // Add bundles prop
+  orderItems = [],
+  orderBundles = [],
   orderSubtotal,
   orderTax,
   orderShipping,
   orderTotal,
   orderDiscount,
+  totalUnits,
 }) {
-  const totalItemCount = orderItems.length + orderBundles.length;
-
   return (
     <Table>
       <TableCaption>
-        Items in order #{orderNumber} - {totalItemCount} item
-        {totalItemCount !== 1 ? "s" : ""}
+        Items in order #{orderNumber} - {totalUnits} unit
+        {totalUnits !== 1 ? "s" : ""}
       </TableCaption>
 
       <TableHeader>
@@ -280,12 +284,11 @@ function ItemsTable({
           <TableHead className="w-[120px]">SKU</TableHead>
           <TableHead className="w-[80px] text-center">Qty</TableHead>
           <TableHead className="w-[100px] text-right">Unit Price</TableHead>
-          <TableHead className="w-[100px] text-right">Total</TableHead>
+          <TableHead className="w-[100px] text-right">Subtotal</TableHead>
         </TableRow>
       </TableHeader>
 
       <TableBody>
-        {/* Regular Items */}
         {orderItems.map((item) => (
           <TableRow key={`item-${item.id}`} className="hover:bg-gray-50">
             <TableCell>
@@ -344,100 +347,95 @@ function ItemsTable({
 
             <TableCell className="text-right">
               <span className="font-semibold text-xs">
-                {formatCurrency(item?.total_price)}
+                {formatCurrency(Number(item?.unit_price) * item?.quantity)}
               </span>
             </TableCell>
           </TableRow>
         ))}
 
-        {/* Bundle Items */}
-        {orderBundles.map((bundle) => (
-          <TableRow
-            key={`bundle-${bundle.id}`}
-            className="hover:bg-blue-50 bg-blue-50/30"
-          >
-            <TableCell>
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-blue-100 rounded border border-blue-200 flex items-center justify-center">
-                  <Package className="w-6 h-6 text-blue-600" />
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-sm">
-                      {bundle?.product?.name}
-                    </span>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      Bundle
-                    </span>
+        {orderBundles.map((bundle) => {
+          return (
+            <TableRow
+              key={`bundle-${bundle.id}`}
+              className="hover:bg-blue-50 bg-blue-50/30"
+            >
+              <TableCell>
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-blue-100 rounded border border-blue-200 flex items-center justify-center">
+                    <Package className="w-6 h-6 text-blue-600" />
                   </div>
-                  {bundle?.product?.variants[0]?.types?.map((type) => (
-                    <div
-                      key={type?.type_id}
-                      className="text-xs text-muted-foreground"
-                    >
-                      <span>{type?.type_name}: </span>
-                      <span>{type?.value?.name}</span>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-sm">
+                        {bundle?.product?.name}
+                      </span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Bundle
+                      </span>
                     </div>
-                  ))}
-                  <div className="text-xs text-blue-600 mt-0.5">
-                    {bundle.required_quantity} items × {bundle.times_applied}{" "}
-                    bundle{bundle.times_applied > 1 ? "s" : ""} ={" "}
-                    {bundle.bundle_quantity} total
+                    {bundle?.product?.variants[0]?.types?.map((type) => (
+                      <div
+                        key={type?.type_id}
+                        className="text-xs text-muted-foreground"
+                      >
+                        <span>{type?.type_name}: </span>
+                        <span>{type?.value?.name}</span>
+                      </div>
+                    ))}
+                    <div className="text-xs text-blue-600 mt-0.5">
+                      {bundle.required_quantity} items × {bundle.times_applied}{" "}
+                      bundle{bundle.times_applied > 1 ? "s" : ""} ={" "}
+                      {bundle.bundle_quantity * bundle.times_applied} total
+                    </div>
                   </div>
                 </div>
-              </div>
-            </TableCell>
+              </TableCell>
 
-            <TableCell>
-              <div className="flex flex-wrap gap-1">
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700">
-                  {bundle?.product?.category_name || "N/A"}
-                </span>
-                {bundle?.product?.sub_category_name && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-700">
-                    {bundle?.product?.sub_category_name}
+              <TableCell>
+                <div className="flex flex-wrap gap-1">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700">
+                    {bundle?.product?.category_name || "N/A"}
                   </span>
-                )}
-              </div>
-            </TableCell>
-
-            <TableCell>
-              <span className="font-mono text-xs text-gray-600">
-                {bundle?.product?.variants[0]?.variant_sku || "N/A"}
-              </span>
-            </TableCell>
-
-            <TableCell className="text-center">
-              <span className="font-semibold">{bundle.bundle_quantity}</span>
-            </TableCell>
-
-            <TableCell className="text-right">
-              <div className="flex flex-col items-end">
-                <span className="font-medium text-xs">
-                  {formatCurrency(
-                    bundle.bundle_subtotal / bundle.required_quantity
+                  {bundle?.product?.sub_category_name && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-700">
+                      {bundle?.product?.sub_category_name}
+                    </span>
                   )}
-                </span>
-                <span className="text-xs text-muted-foreground">per item</span>
-              </div>
-            </TableCell>
+                </div>
+              </TableCell>
 
-            <TableCell className="text-right">
-              <div className="flex flex-col items-end">
-                <span className="font-semibold text-xs">
-                  {formatCurrency(bundle.total_price)}
+              <TableCell>
+                <span className="font-mono text-xs text-gray-600">
+                  {bundle?.product?.variants[0]?.variant_sku || "N/A"}
                 </span>
-                <span className="text-xs text-green-600">
-                  Save{" "}
-                  {formatCurrency(
-                    bundle.product.variants[0].price * bundle.bundle_quantity -
-                      bundle.subtotal * bundle.times_applied
-                  )}
+              </TableCell>
+
+              <TableCell className="text-center">
+                <span className="font-semibold">
+                  {bundle.bundle_quantity * bundle.times_applied}
                 </span>
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
+              </TableCell>
+
+              <TableCell className="text-right">
+                <div className="flex flex-col items-end">
+                  <span className="font-medium text-xs">
+                    {formatCurrency(
+                      bundle.bundle_subtotal / bundle.required_quantity
+                    )}
+                  </span>
+                </div>
+              </TableCell>
+
+              <TableCell className="text-right">
+                <div className="flex flex-col items-end">
+                  <span className="font-semibold text-xs">
+                    {formatCurrency(bundle?.subtotal)}
+                  </span>
+                </div>
+              </TableCell>
+            </TableRow>
+          );
+        })}
 
         {/* Empty State */}
         {orderItems.length === 0 && orderBundles.length === 0 && (
