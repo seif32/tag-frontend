@@ -154,41 +154,41 @@ export const AdminSidebarGroups = [
       // },
     ],
   },
+  // {
+  //   groupLabel: "Analytics",
+  //   menuItems: [
+  //     {
+  //       menuButton: {
+  //         name: "Analytics",
+  //         path: "/admin/analytics",
+  //         iconName: "BarChart3",
+  //         badge: {
+  //           content: "Pro",
+  //           variant: "secondary",
+  //         },
+  //         submenuButtons: [
+  //           {
+  //             name: "Sales",
+  //             path: "/admin/analytics/sales",
+  //             iconName: "TrendingUp",
+  //           },
+  //           {
+  //             name: "Revenue",
+  //             path: "/admin/analytics/revenue",
+  //             iconName: "DollarSign",
+  //           },
+  //           {
+  //             name: "Reports",
+  //             path: "/admin/analytics/reports",
+  //             iconName: "PieChart",
+  //           },
+  //         ],
+  //       },
+  //     },
+  //   ],
+  // },
   {
-    groupLabel: "Analytics",
-    menuItems: [
-      {
-        menuButton: {
-          name: "Analytics",
-          path: "/admin/analytics",
-          iconName: "BarChart3",
-          badge: {
-            content: "Pro",
-            variant: "secondary",
-          },
-          submenuButtons: [
-            {
-              name: "Sales",
-              path: "/admin/analytics/sales",
-              iconName: "TrendingUp",
-            },
-            {
-              name: "Revenue",
-              path: "/admin/analytics/revenue",
-              iconName: "DollarSign",
-            },
-            {
-              name: "Reports",
-              path: "/admin/analytics/reports",
-              iconName: "PieChart",
-            },
-          ],
-        },
-      },
-    ],
-  },
-  {
-    groupLabel: "",
+    groupLabel: "Preferences",
     menuItems: [
       {
         menuButton: {

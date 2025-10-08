@@ -65,14 +65,16 @@ export default function OrderReceipt({ order, isOrderDetails = true, style }) {
           <h4>Subtotal</h4>
           <h4>Delivery</h4>
           <h4>Taxes VAT</h4>
-          <h4>Discount</h4>
+          <h4 className="text-amber-700">Discount</h4>
           <h4 className="font-semibold text-md">Total</h4>
         </div>
         <div className="flex flex-col gap-1 text-sm text-right">
           <p>{formatCurrency(order.subtotal)}</p>
           <p>{formatCurrency(order.shipping_amount)}</p>
           <p>{formatCurrency(order.tax_amount)}</p>
-          <p>-{formatCurrency(order.discount_amount)}</p>
+          <p className="text-amber-700">
+            -{formatCurrency(order.discount_amount)}
+          </p>
           <p className="font-semibold text-md">
             {formatCurrency(order.total_amount)}
           </p>

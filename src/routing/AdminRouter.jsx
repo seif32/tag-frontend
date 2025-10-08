@@ -34,7 +34,6 @@ function AdminRouter() {
           path={"products/:id"}
           element={<AdminProductPage mode="view" />}
         />
-        {/*Begin from here ✅✅✅✅ */}
         <Route path={"brands"} element={<AdminBrandsPage />} />
         <Route path={"tags"} element={<AdminTagsPage />} />
 
@@ -47,6 +46,7 @@ function AdminRouter() {
         <Route path={"orders"} element={<AdminOrdersPage />} />
         <Route path={"orders/:orderId"} element={<AdminOrderPage />} />
 
+        {/*Begin from here ✅✅✅✅ */}
         <Route path={"shipping"} element={<AdminShippingPage />} />
 
         <Route path={"promo-codes"} element={<AdminPromoCodesPage />} />

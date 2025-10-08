@@ -48,6 +48,7 @@ function ProductCard({ variantsList, onEditProduct, productName }) {
 
   const mode = useProductStore((state) => state.mode);
   const isAddMode = mode === "add";
+  const isViewMode = mode === "view";
   const productId = useProductStore((state) => state.productId);
 
   const form = useForm({
@@ -142,13 +143,15 @@ function ProductCard({ variantsList, onEditProduct, productName }) {
                     >
                       Edit
                     </Button>
-                    <Button
-                      type="button"
-                      size={"sm"}
-                      onClick={() => handleCreateBundle(product)}
-                    >
-                      + Add Bundle
-                    </Button>
+                    {isViewMode && (
+                      <Button
+                        type="button"
+                        size={"sm"}
+                        onClick={() => handleCreateBundle(product)}
+                      >
+                        + Add Bundle
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
