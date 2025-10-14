@@ -10,6 +10,7 @@ import OrderSuccessPage from "@/features/cart/pages/OrderSuccessPage";
 import OrdersHistoryPage from "@/features/order/pages/OrdersHistoryPage";
 import OrderDetailsPage from "@/features/order/pages/OrderDetailsPage";
 import ProtectedRoute from "./ProtectedRoute";
+import ChatPage from "@/features/chat/pages/ChatPage";
 
 function CustomerRouter() {
   return (
@@ -60,6 +61,14 @@ function CustomerRouter() {
           element={
             <ProtectedRoute>
               <OrderDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="chat"
+          element={
+            <ProtectedRoute>
+              <ChatPage />
             </ProtectedRoute>
           }
         />

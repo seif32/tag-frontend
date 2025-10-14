@@ -11,15 +11,19 @@ import {
   Shield,
   Truck,
   RotateCcw,
+  MessageCircleMore,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router";
 
 export default function Footer() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const navigate = useNavigate();
 
   return (
     <footer className="bg-slate-900 text-slate-100">
@@ -261,14 +265,18 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Back to Top Button */}
-      <Button
-        onClick={scrollToTop}
-        className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110"
-        size="icon"
-      >
-        <ArrowUp className="h-4 w-4" />
-      </Button>
+      <div className="fixed bottom-6 right-6 flex flex-col gap-1">
+        {/* <Button
+          onClick={scrollToTop}
+          className=" bg-blue-600 hover:bg-blue-700 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110"
+          size="icon"
+        >
+          <ArrowUp className="h-4 w-4" />
+        </Button> */}
+        <Button className={"rounded-full"} onClick={() => navigate("chat")}>
+          <MessageCircleMore />
+        </Button>
+      </div>
     </footer>
   );
 }

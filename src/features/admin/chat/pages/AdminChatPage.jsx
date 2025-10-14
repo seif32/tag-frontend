@@ -8,12 +8,16 @@ import { useParams } from "react-router";
 
 function AdminChatPage() {
   const { chatId } = useParams();
-  const { isLoadingChat, chat } = useChat.useById(chatId);
+  const { isLoadingChat, chat } = useChat.useById(chatId, {
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
+    enabled: !!chatId,
+  });
   const { isLoadingMessages, messages, refetchMessages } = useChat.useMessages(
     chatId,
     { page: 1, limit: 50, isAdmin: true },
     {
-      // refetchInterval: 5000,
+      refetchInterval: 5000,
       refetchIntervalInBackground: false,
       enabled: !!chatId,
     }
@@ -28,25 +32,27 @@ function AdminChatPage() {
   return (
     <div className="flex relative flex-col h-full ">
       <ChatHeader chat={chat} refetchMessages={refetchMessages} />
-      <ChatContainer messages={messages?.data} />
+      <ChatContainer messages={messages?.data} activeSender={"admin"} />
       {isSeenByUser && <SeenIndicator firstName={chat?.first_name} />}
-      <SendMessageActions chatId={chatId} />
+      <SendMessageActions chatId={chatId} SenderType={"admin"} />
     </div>
   );
 }
 
 export default AdminChatPage;
 
-function SeenIndicator({ firstName }) {
+export function SeenIndicator({ firstName }) {
   return (
-    <div className="text-xs italic flex self-end mr-5 mb-1 text-muted-foreground">
-      <CheckCheck className="size-4" />
-      <p>Seen by {firstName}</p>
+    <div className=" bg-stone-100 w-full flex justify-end ">
+      <div className="text-xs italic flex  mr-5 mb-1 text-muted-foreground ">
+        <CheckCheck className="size-4" />
+        <p>Seen by {firstName}</p>
+      </div>
     </div>
   );
 }
 
-function ChatHeader({ chat, refetchMessages }) {
+export function ChatHeader({ chat, refetchMessages }) {
   return (
     <div className="sticky top-0 bg-white z-10 border-b px-4 py-2 shadow-md">
       <div className="flex justify-between items-center">
@@ -63,7 +69,7 @@ function ChatHeader({ chat, refetchMessages }) {
   );
 }
 
-function ChatContainer({ messages }) {
+export function ChatContainer({ messages, activeSender }) {
   const messagesEndRef = useRef(null);
 
   function scrollToBottom() {
@@ -75,20 +81,24 @@ function ChatContainer({ messages }) {
   }, [messages]);
 
   return (
-    <div className="flex flex-col-reverse gap-2 p-5 overflow-y-auto">
+    <div className="flex flex-col-reverse gap-2 p-5 overflow-y-auto bg-stone-100">
       <div ref={messagesEndRef}></div>
       {messages?.map((message) => (
-        <BubbleChatCard key={message?.id} {...message} />
+        <BubbleChatCard
+          key={message?.id}
+          {...message}
+          activeSender={activeSender}
+        />
       ))}
     </div>
   );
 }
 
-function BubbleChatCard({ message, sender_type }) {
+export function BubbleChatCard({ message, sender_type, activeSender }) {
   return (
     <p
       className={`${
-        sender_type === "admin" ? "bg-accent/50 self-end " : "bg-gray-200"
+        sender_type === activeSender ? "bg-accent/50 self-end " : "bg-gray-200"
       } w-fit p-3 rounded-md text-sm max-w-[70%]`}
     >
       {message}
@@ -96,7 +106,7 @@ function BubbleChatCard({ message, sender_type }) {
   );
 }
 
-function SendMessageActions({ chatId }) {
+export function SendMessageActions({ chatId, SenderType }) {
   const [messageText, setMessageText] = useState("");
   const user = useAuthStore((state) => state.user);
 
@@ -111,7 +121,7 @@ function SendMessageActions({ chatId }) {
 
     sendMessage({
       sender_id: user?.id,
-      sender_type: "admin",
+      sender_type: SenderType,
       message: messageText,
     });
     setMessageText("");

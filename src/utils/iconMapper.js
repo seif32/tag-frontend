@@ -24,11 +24,15 @@ import {
   TicketPercent,
   Boxes,
   MessageCircleMore,
+  Store,
+  ShoppingBasket,
 } from "lucide-react";
 
 export const iconMap = {
+  ShoppingBasket,
   Home,
   ShoppingBag,
+  Store,
   Package,
   Tags,
   Warehouse,

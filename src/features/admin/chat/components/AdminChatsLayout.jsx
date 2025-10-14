@@ -9,7 +9,13 @@ function AdminChatsLayout() {
   const navigate = useNavigate();
 
   const { chats, isLoadingChats, isErrorChats, errorChats, refetchChats } =
-    useChat.useAll();
+    useChat.useAll(
+      {},
+      {
+        refetchInterval: 5000,
+        refetchIntervalInBackground: false,
+      }
+    );
 
   if (isLoadingChats) return <LoadingState />;
 

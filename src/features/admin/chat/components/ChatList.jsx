@@ -1,7 +1,6 @@
 import { formatDateMDY } from "@/utils/dateUtils";
 
 function ChatList({ chats, selectedChatId, onChatClick }) {
-  console.log("ChatList", chats);
   return (
     <div className="flex h-full">
       <div className=" flex-1 border-r-0.2  border-gray">

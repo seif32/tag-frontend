@@ -21,7 +21,7 @@ export const AdminSidebarGroups = [
           iconName: "ShoppingBag",
           submenuButtons: [
             {
-              name: "Products",
+              name: "All Products",
               path: "/admin/products",
               iconName: "Package",
             },
@@ -30,20 +30,6 @@ export const AdminSidebarGroups = [
               path: "/admin/categories",
               iconName: "Tags",
             },
-            // {
-            //   name: "Bundles",
-            //   path: "/admin/bundles",
-            //   iconName: "Boxes",
-            // },
-            // {
-            //   name: "Inventory",
-            //   path: "/admin/inventory",
-            //   iconName: "Warehouse",
-            //   badge: {
-            //     content: "12 Low",
-            //     variant: "outline",
-            //   },
-            // },
           ],
         },
       },
@@ -51,22 +37,22 @@ export const AdminSidebarGroups = [
         menuButton: {
           name: "Catalog",
           path: "/admin/catalog",
-          iconName: "Package", // Better than ShoppingCart for catalog
+          iconName: "Package",
           submenuButtons: [
             {
               name: "Brands",
               path: "/admin/brands",
-              iconName: "Award", // Perfect for brands/premium feel
+              iconName: "Award",
             },
             {
               name: "Tags",
               path: "/admin/tags",
-              iconName: "Tag", // Classic tag icon
+              iconName: "Tag",
             },
             {
               name: "Variants",
               path: "/admin/variants",
-              iconName: "SwatchBook", // Classic tag icon
+              iconName: "SwatchBook",
             },
           ],
         },
@@ -76,124 +62,27 @@ export const AdminSidebarGroups = [
           name: "Orders",
           path: "/admin/orders",
           iconName: "ShoppingCart",
-          // badge: {
-          //   content: "5",
-          //   variant: "destructive",
-          // },
-          // submenuButtons: [
-          //   {
-          //     name: "All Orders",
-          //     path: "/admin/orders",
-          //     iconName: "ShoppingCart",
-          //   },
-          //   {
-          //     name: "Pending",
-          //     path: "/admin/orders/pending",
-          //     iconName: "RefreshCw",
-          //     badge: {
-          //       content: "5",
-          //       variant: "secondary",
-          //     },
-          //   },
-          //   {
-          //     name: "Shipping",
-          //     path: "/admin/orders/shipping",
-          //     iconName: "Truck",
-          //   },
-          //   {
-          //     name: "Payments",
-          //     path: "/admin/orders/payments",
-          //     iconName: "CreditCard",
-          //   },
-          // ],
+          submenuButtons: [
+            {
+              name: "All Orders",
+              path: "/admin/orders",
+              iconName: "ShoppingBasket",
+            },
+            {
+              name: "Shipping",
+              path: "/admin/shipping",
+              iconName: "Truck",
+            },
+            {
+              name: "Promo codes",
+              path: "/admin/promo-codes",
+              iconName: "TicketPercent",
+            },
+          ],
         },
       },
-
-      {
-        menuButton: {
-          name: "Shipping",
-          path: "/admin/shipping",
-          iconName: "Truck",
-        },
-      },
-      {
-        menuButton: {
-          name: "Promo codes",
-          path: "/admin/promo-codes",
-          iconName: "TicketPercent",
-        },
-      },
-      {
-        menuButton: {
-          name: "Chats",
-          path: "/admin/chat",
-          iconName: "MessageCircleMore",
-        },
-      },
-      // {
-      //   menuButton: {
-      //     name: "Users",
-      //     path: "/admin/users",
-      //     iconName: "Users",
-      //     submenuButtons: [
-      //       {
-      //         name: "All Users",
-      //         path: "/admin/users",
-      //         iconName: "Users",
-      //       },
-      //       {
-      //         name: "Customers",
-      //         path: "/admin/users/customers",
-      //         iconName: "UserCheck",
-      //       },
-      //       {
-      //         name: "Admins",
-      //         path: "/admin/users/admins",
-      //         iconName: "Shield",
-      //       },
-      //       {
-      //         name: "Add User",
-      //         path: "/admin/users/new",
-      //         iconName: "UserPlus",
-      //       },
-      //     ],
-      //   },
-      // },
     ],
   },
-  // {
-  //   groupLabel: "Analytics",
-  //   menuItems: [
-  //     {
-  //       menuButton: {
-  //         name: "Analytics",
-  //         path: "/admin/analytics",
-  //         iconName: "BarChart3",
-  //         badge: {
-  //           content: "Pro",
-  //           variant: "secondary",
-  //         },
-  //         submenuButtons: [
-  //           {
-  //             name: "Sales",
-  //             path: "/admin/analytics/sales",
-  //             iconName: "TrendingUp",
-  //           },
-  //           {
-  //             name: "Revenue",
-  //             path: "/admin/analytics/revenue",
-  //             iconName: "DollarSign",
-  //           },
-  //           {
-  //             name: "Reports",
-  //             path: "/admin/analytics/reports",
-  //             iconName: "PieChart",
-  //           },
-  //         ],
-  //       },
-  //     },
-  //   ],
-  // },
   {
     groupLabel: "Preferences",
     menuItems: [
@@ -202,6 +91,13 @@ export const AdminSidebarGroups = [
           name: "Settings",
           path: "/admin/settings",
           iconName: "Settings",
+        },
+      },
+      {
+        menuButton: {
+          name: "Chats",
+          path: "/admin/chat",
+          iconName: "MessageCircleMore",
         },
       },
     ],
