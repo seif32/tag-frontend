@@ -123,6 +123,13 @@ export const AdminSidebarGroups = [
           iconName: "TicketPercent",
         },
       },
+      {
+        menuButton: {
+          name: "Chats",
+          path: "/admin/chat",
+          iconName: "MessageCircleMore",
+        },
+      },
       // {
       //   menuButton: {
       //     name: "Users",

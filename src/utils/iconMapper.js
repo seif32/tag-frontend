@@ -23,6 +23,7 @@ import {
   SwatchBook,
   TicketPercent,
   Boxes,
+  MessageCircleMore,
 } from "lucide-react";
 
 export const iconMap = {
@@ -49,6 +50,7 @@ export const iconMap = {
   SwatchBook,
   TicketPercent,
   Boxes,
+  MessageCircleMore,
 };
 
 // Helper function to get icon component

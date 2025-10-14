@@ -64,6 +64,7 @@ import { Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import useDebounce from "@/hooks/useDebounce";
 import PaginationControlsBar from "../../ui/PaginationControlsBar";
+import { Textarea } from "@/components/ui/textarea";
 
 const citySchema = z.object({
   name: z
@@ -255,7 +256,7 @@ function ControlsBar({ searchInput, setSearchInput }) {
     <div className="flex gap-2">
       <div className="relative ">
         <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
-        <Input
+        <Textarea
           placeholder="Search by city . . ."
           value={searchInput}
           onChange={(e) => {

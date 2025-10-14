@@ -2,6 +2,8 @@ import { ROUTES } from "@/constants";
 import AdminBrandsPage from "@/features/admin/brands/pages/AdminBrandsPage";
 import AdminBundlesPage from "@/features/admin/bundles/pages/AdminBundlesPage";
 import AdminCategoriesPage from "@/features/admin/categories/pages/AdminCategoriesPage";
+import AdminChatsLayout from "@/features/admin/chat/components/AdminChatsLayout";
+import AdminChatPage from "@/features/admin/chat/pages/AdminChatPage";
 import AdminDashboardPage from "@/features/admin/dashboard/pages/AdminDashboardPage";
 import AdminOrderPage from "@/features/admin/orders/pages/AdminOrderPage";
 import AdminOrdersPage from "@/features/admin/orders/pages/AdminOrdersPage";
@@ -13,6 +15,7 @@ import AdminTagsPage from "@/features/admin/tags/pages/AdminTagsPage";
 import AdminVariantsTypesPage from "@/features/admin/variants/pages/AdminVariantsTypesPage";
 import AdminVariantsValuesPage from "@/features/admin/variants/pages/AdminVariantsValuesPage";
 import AdminLayout from "@/layout/AdminLayout";
+import EmptyState from "@/ui/EmptyState";
 import { Routes, Route } from "react-router";
 
 function AdminRouter() {
@@ -51,6 +54,19 @@ function AdminRouter() {
 
         <Route path={"promo-codes"} element={<AdminPromoCodesPage />} />
         <Route path={"bundles"} element={<AdminBundlesPage />} />
+
+        <Route path={"chat"} element={<AdminChatsLayout />}>
+          <Route
+            index
+            element={
+              <EmptyState
+                title={"Please select a chat"}
+                subtitle={"any of them"}
+              />
+            }
+          />
+          <Route path=":chatId" element={<AdminChatPage />} />
+        </Route>
       </Route>
     </Routes>
   );

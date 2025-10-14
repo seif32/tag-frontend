@@ -27,7 +27,7 @@ function AdminLayout() {
         <SidebarInset className="flex flex-1 flex-col overflow-hidden">
           <AdminHeader />
 
-          <main className="flex flex-1 flex-col gap-4 p-4 pt-0 overflow-auto">
+          <main className="flex flex-1 flex-col gap-4  pt-0 overflow-auto">
             <Outlet />
           </main>
         </SidebarInset>

@@ -22,7 +22,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AppRouter />
       <Toaster />
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }
