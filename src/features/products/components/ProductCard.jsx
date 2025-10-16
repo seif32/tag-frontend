@@ -1,7 +1,5 @@
-import { Card } from "@/components/ui/card";
 import ProductCardImage from "./ProductCardImage";
 import ProductCardInfo from "./ProductCardInfo";
-import ProductCardActions from "./ProductCardActions";
 
 function ProductCard({
   image,
@@ -11,22 +9,27 @@ function ProductCard({
   brand,
   onViewProductDetails,
   productId,
+  variants,
 }) {
   return (
-    <Card className="flex justify-between pt-0 transition-all cursor-pointer">
+    <div
+      className="flex flex-col border  rounded-md shadow-sm overflow-hidden cursor-pointer"
+      onClick={() => onViewProductDetails(productId)}
+    >
       <ProductCardImage image={image} variantCount={variantCount} />
       <ProductCardInfo
         category={category}
         name={name}
         variantCount={variantCount}
         brand={brand}
+        variants={variants}
       />
 
-      <ProductCardActions
+      {/* <ProductCardActions
         onViewProductDetails={onViewProductDetails}
         productId={productId}
-      />
-    </Card>
+      /> */}
+    </div>
   );
 }
 

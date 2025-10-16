@@ -13,7 +13,7 @@ function ProductCardActions({ onViewProductDetails, productId }) {
       >
         View Options
       </Button>
-      <HeartButton />
+      {/* <HeartButton /> */}
     </CardFooter>
   );
 }

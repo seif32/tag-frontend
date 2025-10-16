@@ -7,10 +7,12 @@ import RegistrationPage from "@/auth/pages/RegistrationPage";
 import CheckEmailPage from "@/auth/pages/CheckEmailPage";
 import VerificationPage from "@/auth/pages/VerificationPage";
 import PublicRoute from "./PublicRoute";
+import ScrollToTop from "@/ui/ScrollToTop";
 
 function AppRouter() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route
           path="/register"

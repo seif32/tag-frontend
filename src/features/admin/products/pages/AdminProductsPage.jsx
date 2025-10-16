@@ -115,9 +115,9 @@ function ProductsControlsBar({ searchInput, setSearchInput }) {
         value={active}
         onValueChange={(value) => {
           if (value === "all" || value === "") {
-            updateUrlParams({ active: undefined });
+            updateUrlParams({ page: 1, active: undefined });
           } else {
-            updateUrlParams({ active: value });
+            updateUrlParams({ page: 1, active: value });
           }
         }}
       >

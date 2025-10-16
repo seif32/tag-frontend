@@ -37,7 +37,6 @@ function CustomerLayout() {
 
   return (
     <div className="flex flex-col min-h-screen bg-stone-50">
-      {/* {!isCartFlow && <Header />} */}
       <Header />
 
       {isCartFlow && <ProgressSteps currentStep={getCurrentStep()} />}

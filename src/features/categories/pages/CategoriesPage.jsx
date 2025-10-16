@@ -1,10 +1,9 @@
-// src/features/categories/pages/CategoriesPage.jsx
 import CategoryCard from "../components/CategoryCard";
 import { CategoriesHeader } from "../components/CategoryHeader";
 
-// 🎯 Import images properly
 import useCategories from "@/hooks/useCategories";
 import ErrorMessage from "@/ui/ErrorMessage";
+import { IconEmptyState } from "@/ui/IconEmptyState";
 import LoadingState from "@/ui/LoadingState";
 import { useNavigate } from "react-router";
 
@@ -18,70 +17,71 @@ function CategoriesPage() {
     refetchCategories,
   } = useCategories.useAll();
 
-  if (isLoadingCategories)
-    return <LoadingState type="card" rows={20} columns={3} />;
+  if (isLoadingCategories) return <LoadingState type="page" />;
 
   if (isErrorCategories)
     return (
       <ErrorMessage
-        message={errorCategories.message || "Failed to load data"}
+        message={errorCategories?.message || "Failed to load data"}
         dismissible={true}
         onDismiss={() => refetchCategories()}
       />
     );
 
-  function handleViewSubcategoryProducts(categoryId, subcategoryId) {
-    navigate(
-      `/categories/${categoryId}/subcategories/${subcategoryId}/products`
-    );
-  }
-  function handleViewCategoryProducts(categoryId) {
-    navigate(`/categories/${categoryId}/products`);
-  }
-
   return (
     <>
       <CategoriesHeader />
-      <div className="mb-40 space-y-40">
-        {categories.data.map((category) => {
-          return (
-            category.subcategories.length !== 0 && (
-              <div key={category.id} className="">
+      <div className="space-y-15">
+        {categories?.data === 0 ? (
+          <IconEmptyState
+            title="No Categories Found"
+            subtitle="It looks like there are no categories available yet."
+          />
+        ) : (
+          categories.data.map((category) => {
+            return (
+              <div key={category.id}>
                 <h2
-                  className="inline text-2xl font-bold cursor-pointer text-foreground hover:text-accent"
-                  onClick={() => handleViewCategoryProducts(category.id)}
+                  className="inline  text-xl sm:text-2xl font-bold cursor-pointer text-foreground hover:text-accent"
+                  onClick={() =>
+                    navigate(`/categories/${category?.id}/products`)
+                  }
                 >
-                  {category.name}
+                  {category?.name}
                 </h2>
                 <p className="mb-6 text-muted-foreground">
-                  Explore our {category.active_product_count} products available
-                  in here
+                  {category?.active_product_count === 0
+                    ? "No products yet"
+                    : `Explore our ${category?.active_product_count} products
+                  available in here`}
                 </p>
-                {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-y-20 gap-x-6"> */}
-                <div className="grid grid-cols-5 gap-y-20 gap-x-6">
-                  {category.subcategories
-                    // .filter((sub) => sub.active === 1)
-                    .map((subcategory) => {
+                <div className="grid md:grid-cols-auto grid-cols-2 sm:grid-cols-3 gap-5 sm:gap-y-12 ">
+                  {category.subcategories.length === 0 ? (
+                    <div className="font-bold">No subcategories</div>
+                  ) : (
+                    category.subcategories.map((subcategory) => {
                       return (
                         <CategoryCard
                           key={subcategory.id}
                           name={subcategory.name}
                           storage={subcategory.active_product_count}
                           image={subcategory.image_url}
-                          isActive={subcategory.active}
-                          onViewSubcategoryProducts={
-                            handleViewSubcategoryProducts
+                          onViewSubcategoryProducts={() =>
+                            navigate(
+                              `/categories/${category?.id}/subcategories/${subcategory?.id}/products`
+                            )
                           }
                           subcategoryId={subcategory.id}
                           categoryId={category.id}
                         />
                       );
-                    })}
+                    })
+                  )}
                 </div>
               </div>
-            )
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </>
   );

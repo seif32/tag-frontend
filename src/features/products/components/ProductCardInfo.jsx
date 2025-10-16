@@ -1,26 +1,32 @@
-import { CardContent } from "@/components/ui/card";
-import { StrikePrice } from "@/ui/StrikePrice";
+import { Badge } from "@/components/ui/badge";
 import { Box, Tag } from "lucide-react";
 
-function ProductCardInfo({ category, name, variantCount, brand }) {
+function ProductCardInfo({ category, name, brand, variants }) {
   return (
-    <CardContent className={"px-4"}>
-      <div className="grid grid-cols-[1fr_auto] grid-rows-[1fr_1fr]">
-        <span className="flex items-center self-end gap-1 text-xs tracking-wide text-gray-500 uppercase">
-          <Box size={14} />
-
-          {category}
-        </span>
-
-        <h3 className="row-start-2 font-semibold leading-tight ">{name}</h3>
-
-        <p className="flex items-center col-start-2 row-start-2 gap-0.5 text-sm text-muted-foreground">
-          <Tag size={12} />
-
-          {brand}
-        </p>
+    <div className="flex flex-col p-5 shadow-2xl gap-3 ">
+      <div className="flex items-center gap-1 text-[10px] sm:text-xs md:text-sm text-gray-500 uppercase">
+        <Box size={12} className="text-gray-400" />
+        <span className="truncate">{category} </span>
       </div>
-    </CardContent>
+
+      <div className="flex flex-col gap-1">
+        <h3 className="font-semibold leading-tight text-sm sm:text-base md:text-lg line-clamp-3">
+          {name}
+        </h3>
+        <div className="line-clamp-1 gap-1 flex">
+          {variants?.map((variant, index) => (
+            <Badge variant={"outline"} key={index}>
+              {variant}
+            </Badge>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground self-end sm:mt-8">
+        <Tag size={12} className="text-gray-400" />
+        <span className="truncate">{brand}</span>
+      </div>
+    </div>
   );
 }
 

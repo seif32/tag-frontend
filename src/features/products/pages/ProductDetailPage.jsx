@@ -46,7 +46,7 @@ function ProductDetailPage() {
   } = useVariantSelector(product?.variants);
 
   if (isLoadingProduct || isVariantLoading) {
-    return <LoadingState type="card" rows={20} columns={3} />;
+    return <LoadingState type="dashboard" />;
   }
 
   if (isErrorProduct)

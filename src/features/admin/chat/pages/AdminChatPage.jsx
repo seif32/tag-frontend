@@ -73,7 +73,10 @@ export function ChatContainer({ messages, activeSender }) {
   const messagesEndRef = useRef(null);
 
   function scrollToBottom() {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
   }
 
   useEffect(() => {
@@ -82,7 +85,8 @@ export function ChatContainer({ messages, activeSender }) {
 
   return (
     <div className="flex flex-col-reverse gap-2 p-5 overflow-y-auto bg-stone-100">
-      <div ref={messagesEndRef}></div>
+      <div ref={messagesEndRef} className="scroll-mb-200"></div>{" "}
+      {/* 80px offset */}
       {messages?.map((message) => (
         <BubbleChatCard
           key={message?.id}
@@ -128,12 +132,12 @@ export function SendMessageActions({ chatId, SenderType }) {
   }
   return (
     <div className="sticky bottom-0 right-0 w-full  ">
-      <div className="flex ">
+      <div className="flex  bg-stone-100">
         <Textarea
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
           placeholder="Type a message..."
-          className="flex-1 resize-none"
+          className="flex-1 resize-none "
           rows={1}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -143,8 +147,8 @@ export function SendMessageActions({ chatId, SenderType }) {
           }}
         />
         <button
-          className={`p-2 px-6 grid place-items-center cursor-pointer hover:bg-accent hover:text-black transition-all bg-black text-white ${
-            isPendingMessage && "bg-gray-500"
+          className={`p-2 px-6 grid place-items-center cursor-pointer hover:bg-accent hover:text-black transition-all bg-black text-white rounded-2xl ${
+            isPendingMessage && "bg-gray-500 "
           }`}
           onClick={handleSend}
           disabled={isPendingMessage}

@@ -1,26 +1,39 @@
+import { Input } from "@/components/ui/input";
 import { formatDateMDY } from "@/utils/dateUtils";
 
 function ChatList({ chats, selectedChatId, onChatClick }) {
   return (
-    <div className="flex h-full">
-      <div className=" flex-1 border-r-0.2  border-gray">
-        <h1 className="px-2">Chats</h1>
-        <div className="flex-1 overflow-y-auto">
-          {chats?.map((chat) => (
-            <ChatCard
-              key={chat?.id}
-              {...chat}
-              onChatClick={onChatClick}
-              selectedChatId={selectedChatId}
-            />
-          ))}
-        </div>
+    <div className="flex flex-col gap-4  h-screen border-r-0.2 ">
+      <ListHeader />
+      <div className="flex-1 overflow-y-auto">
+        {chats?.map((chat) => (
+          <ChatCard
+            key={chat?.id}
+            {...chat}
+            onChatClick={onChatClick}
+            selectedChatId={selectedChatId}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
 export default ChatList;
+
+function ListHeader() {
+  return (
+    <div className="px-3 flex gap-2 flex-col">
+      <div className="flex justify-between">
+        <h1 className="px-2 font-bold text-lg">Chats</h1>
+        <span className="w-6 h-6 rounded-full bg-red-500 grid place-items-center text-xs text-white ">
+          5
+        </span>
+      </div>
+      <Input className={"h-8 rounded-2xl"} placeholder="Search by name ..." />
+    </div>
+  );
+}
 
 function ChatCard({
   id,

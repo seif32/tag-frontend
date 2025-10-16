@@ -7,11 +7,10 @@ function CategoryCard({
   onViewSubcategoryProducts,
   subcategoryId,
   categoryId,
-  isActive,
 }) {
   return (
     <div
-      className="flex flex-col h-64 gap-6 pt-0 cursor-pointer group"
+      className="flex flex-col  gap-2 sm:gap-6  cursor-pointer group "
       onClick={() => onViewSubcategoryProducts(categoryId, subcategoryId)}
     >
       <div className="relative w-full h-full transition-transform duration-400 rounded-xl aspect-square group-hover:scale-110">
@@ -19,13 +18,14 @@ function CategoryCard({
           className="object-cover w-full h-full shadow-sm rounded-xl aspect-square"
           src={image}
         />
-        <Badge variant={"destructive"} className={"absolute top-2 right-2"}>
-          {isActive ? storage : 0}
+        <Badge variant={"destructive"} className={`absolute top-2 right-2`}>
+          {storage === 0 ? "No products" : storage}
         </Badge>
       </div>
       <div className="flex justify-center ">
-        <span className="text-lg font-bold tracking-tight">{name}</span>
-        {/* <span className="text-lg">{storage} Products</span> */}
+        <span className="text-lg font-bold tracking-tight line-clamp-2">
+          {name}
+        </span>
       </div>
     </div>
   );

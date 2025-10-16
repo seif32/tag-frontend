@@ -26,7 +26,7 @@ export default function Footer() {
   const navigate = useNavigate();
 
   return (
-    <footer className="bg-slate-900 text-slate-100">
+    <footer className="bg-stone-950 text-slate-100">
       {/* Newsletter Section */}
       {/* <div className="bg-slate-800 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

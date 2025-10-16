@@ -26,7 +26,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="flex items-center justify-between h-16 px-8">
+    <header className="flex items-center justify-between h-16 px-8 sticky top-0 border-b border-border z-50 backdrop-blur ">
       {/* Logo */}
       <Link to={ROUTES.HOME} className="text-xl font-bold text-gray-800">
         TAG
@@ -73,10 +73,14 @@ const Header = () => {
               <CartBadge />
             </Link>
             <div>
-              <IoIosLogOut
-                className="text-accent size-7 ml-8 cursor-pointer hover:text-accent/80"
+              {/* <IoIosLogOut className="text-accent size-7 ml-8 cursor-pointer hover:text-accent/80" /> */}
+              <Button
                 onClick={handleLogout}
-              />
+                size={"sm"}
+                className={"bg-red-500"}
+              >
+                Log out
+              </Button>
             </div>
           </div>
         ) : (
