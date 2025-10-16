@@ -51,7 +51,6 @@ function ProductInfoSection({
             )}
           </div>
 
-          {/* Bundle Pricing Info */}
           {quantity > 1 && (
             <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
               <div className="flex justify-between items-center">

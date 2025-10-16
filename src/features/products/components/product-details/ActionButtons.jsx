@@ -213,7 +213,7 @@ function ActionButtons({ selectedVariant, selectedBundle, product }) {
         <Button
           onClick={handleAddToCart}
           disabled={!inStock || !selectedVariant}
-          className="w-40 text-accent h-15"
+          className="w-40 text-accent sm:h-full h-15"
           variant="outline"
           id="add-to-cart-btn"
         >

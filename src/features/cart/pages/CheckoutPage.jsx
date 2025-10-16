@@ -14,6 +14,7 @@ import { CiCircleInfo } from "react-icons/ci";
 import { useCartStore } from "@/store/cartStore";
 import useOrders from "@/hooks/useOrders";
 import { useOrderStore } from "@/store/orderStore";
+import { Spinner } from "@/components/ui/spinner";
 
 const formSchema = z.object({
   description: z.string().optional(),
@@ -43,11 +44,10 @@ function CheckoutPage() {
 
   const [selectAddress, setSelectAddress] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
+  const [showWaitModal, setShowWaitModal] = useState(false);
 
   const navigate = useNavigate();
   const appliedCoupon = useCartStore((state) => state.appliedCoupon);
-  const clearCart = useCartStore((state) => state.clearCart);
-  const setOrderSuccess = useOrderStore((state) => state.setOrderSuccess);
   const order = useOrderStore((state) => state.order);
   const user = useAuthStore((state) => state.user);
   const cartItems = useCartStore((state) => state.cartItems);
@@ -126,10 +126,9 @@ function CheckoutPage() {
       };
 
       const response = await createOrderAsync(orderPayload);
+      setShowWaitModal(true);
       const checkoutUrl = response.sessionUrl;
       window.location.href = checkoutUrl;
-
-      // clearCart();
     } catch (error) {
       console.error("❌ Checkout failed:", error);
     }
@@ -138,7 +137,8 @@ function CheckoutPage() {
   if (cartItems.length === 0 && !order) return <Navigate to="/cart" replace />;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 relative">
+      {showWaitModal && <WaitModal />}
       <Button
         className="flex items-center gap-1 w-fit hover:text-accent"
         variant={"ghost"}
@@ -165,7 +165,6 @@ function CheckoutPage() {
           />
 
           <AddressGuide />
-          {/* <ShippingMethod /> */}
         </div>
         <div className="flex flex-col flex-1 gap-3">
           <OrderSummary />
@@ -242,33 +241,6 @@ function AddressGuide() {
             </p>
           </div>
         </div>
-
-        {/* Edit Mode */}
-        <div className="flex items-start gap-2">
-          <div>
-            <CiCircleInfo className="text-accent w-5 h-5" />
-          </div>{" "}
-          <div>
-            <p className="text-sm text-gray-700">
-              <span className="font-medium">Need to edit?</span> Select a saved
-              address and click "Edit" to make changes, then proceed to complete
-              your order.
-            </p>
-          </div>
-        </div>
-
-        {/* Cancel Edit */}
-        <div className="flex items-center gap-2">
-          <div>
-            <CiCircleInfo className="text-accent w-5 h-5" />
-          </div>{" "}
-          <div>
-            <p className="text-sm text-gray-700">
-              <span className="font-medium">Changed your mind?</span> Click
-              "Cancel" while editing to restore the original values.
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -294,6 +266,20 @@ function ActionButton({ form, onSubmit, isBusy }) {
           "Complete Order"
         )}
       </Button>
+    </div>
+  );
+}
+
+function WaitModal() {
+  return (
+    <div className="w-full h-full backdrop-blur-sm absolute z-50 top-0 left-0 grid place-items-center">
+      <div className=" border bg-white rounded-md flex gap-2 px-16 py-8">
+        <Spinner className={"size-6"} />
+        <p className="font-bold">
+          Please wait and you will be directed to{" "}
+          <span className="text-blue-600">Stripe</span> gateway to pay
+        </p>
+      </div>
     </div>
   );
 }
