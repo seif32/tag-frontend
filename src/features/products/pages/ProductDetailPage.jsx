@@ -11,15 +11,6 @@ import useVariantSelector from "../components/useVariantSelector";
 import ProductCard from "../components/ProductCard";
 import { useAuthStore } from "@/auth/store/authStore";
 
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { formatCurrency } from "@/utils/formatCurrency";
 
 function ProductDetailPage() {
@@ -52,15 +43,15 @@ function ProductDetailPage() {
   if (isErrorProduct)
     return (
       <ErrorMessage
-        message={errorProduct.message || "Failed to load data"}
+        message={errorProduct?.message || "Failed to load data"}
         dismissible={true}
         onDismiss={() => refetchProduct()}
       />
     );
 
   return (
-    <div className="flex flex-col space-y-8">
-      <div className="flex flex-col md:flex-row md:gap-8">
+    <div className="flex flex-col space-y-8 ">
+      <div className="flex flex-col md:flex-row md:gap-8 ">
         <div className="w-[600px] h-[400px]">
           <ReactImageGallery
             items={currentImages}
@@ -71,6 +62,7 @@ function ProductDetailPage() {
         </div>
         <div className="flex-1 space-y-8">
           <ProductInfoSection
+            selectedBundle={selectedBundle}
             product={product}
             selectedVariant={selectedVariant}
             effectivePrice={effectivePrice} // Pass pricing info
@@ -185,7 +177,7 @@ function RelatedProducts({ subcategoryId }) {
   if (isLoadingProducts)
     return <LoadingState type="card" rows={4} columns={2} />;
   return (
-    <div className="grid grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
       {products?.data?.map((product) => {
         return (
           <ProductCard

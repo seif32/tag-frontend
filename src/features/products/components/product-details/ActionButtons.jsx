@@ -180,7 +180,7 @@ function ActionButtons({ selectedVariant, selectedBundle, product }) {
         </div>
       )}
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-center gap-4">
         <div className="flex items-center gap-4">
           <Button
             onClick={handleDecrease}
@@ -213,7 +213,7 @@ function ActionButtons({ selectedVariant, selectedBundle, product }) {
         <Button
           onClick={handleAddToCart}
           disabled={!inStock || !selectedVariant}
-          className="w-40 text-accent"
+          className="w-40 text-accent h-15"
           variant="outline"
           id="add-to-cart-btn"
         >
