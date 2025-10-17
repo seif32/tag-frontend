@@ -112,7 +112,7 @@ export default OrderDetailsPage;
 
 function Title({ onDownloadInvoice, isGeneratingPDF }) {
   return (
-    <section className="flex justify-between">
+    <section className="flex justify-between items-center">
       <div>
         <div className="flex items-center gap-1.5 group">
           <FaArrowLeft className="text-accent size-3 group-hover:text-accent/70 cursor-pointer" />
@@ -129,6 +129,7 @@ function Title({ onDownloadInvoice, isGeneratingPDF }) {
         variant={"outline"}
         onClick={onDownloadInvoice}
         disabled={isGeneratingPDF}
+        className={"text-xs "}
       >
         {isGeneratingPDF ? "📄 Generating..." : "Download Invoice"}
       </Button>

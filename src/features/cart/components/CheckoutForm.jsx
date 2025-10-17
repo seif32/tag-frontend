@@ -51,7 +51,7 @@ function CheckoutForm({
         className="p-6 space-y-4 bg-white border rounded-xl"
       >
         <div className="flex justify-between mb-2">
-          <h2 className=" text-xl font-semibold">Address Information</h2>
+          <h2 className=" sm:text-xl font-semibold">Address Information</h2>
           <AddressContainer
             addresses={addresses}
             errorAddresses={errorAddresses}
@@ -68,12 +68,12 @@ function CheckoutForm({
 
         <CityDropdown form={form} isEditMode={isEditMode} />
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid sm:grid-cols-2 gap-2">
           <ApartmentNumber form={form} isEditMode={isEditMode} />
           <BuildingNumber form={form} isEditMode={isEditMode} />
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid sm:grid-cols-2 gap-2">
           <StreetName form={form} isEditMode={isEditMode} />
           <PostalCode form={form} isEditMode={isEditMode} />
         </div>

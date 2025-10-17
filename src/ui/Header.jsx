@@ -4,19 +4,21 @@ import { Link, useLocation } from "react-router";
 import SearchInput from "./SearchInput";
 import CartBadge from "@/features/cart/components/CartBadge";
 import { useAuthStore } from "@/auth/store/authStore";
-import { FiPackage, FiShoppingCart } from "react-icons/fi";
-import authApi from "@/auth/services/authApi";
+import { FiPackage, FiShoppingCart, FiMenu, FiX } from "react-icons/fi";
 import { IoIosLogOut } from "react-icons/io";
+import { useState } from "react";
 
 const Header = () => {
   const location = useLocation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function handleLogout() {
     logout();
     localStorage.setItem("isAgeVerified", "false");
+    setIsMenuOpen(false);
   }
 
   const navItems = [
@@ -26,91 +28,143 @@ const Header = () => {
   ];
 
   return (
-    <header className="flex items-center justify-between h-16 px-8 sticky top-0 border-b border-border z-50 backdrop-blur ">
-      {/* Logo */}
-      <Link to={ROUTES.HOME} className="text-xl font-bold text-gray-800">
-        TAG
-      </Link>
+    <header className="sticky top-0 z-50 border-b border-border backdrop-blur">
+      <div className="flex items-center justify-between h-16 px-4 md:px-8">
+        {/* Logo */}
+        <Link to={ROUTES.HOME} className="text-xl font-bold text-gray-800">
+          TAG
+        </Link>
 
-      {/* Navigation */}
-      <nav className="hidden space-x-8 md:flex">
-        {navItems.map((item) => (
-          <Link
-            key={item.name}
-            to={item.path}
-            className={`text-gray-600 hover:text-gray-800 transition-colors ${
-              location.pathname === item.path ? "text-blue-600 font-medium" : ""
-            }`}
-          >
-            {item.name}
-          </Link>
-        ))}
-        <p>{user?.name}</p>
-      </nav>
-
-      {/* Right side actions */}
-      <div className="flex items-center space-x-4">
-        {/* ✅ Replace the basic input with SearchInput component */}
-        <div className="hidden md:block">
-          <SearchInput />
-        </div>
-
-        {isAuthenticated ? (
-          <div className="flex items-center">
+        {/* Desktop Navigation */}
+        <nav className="hidden space-x-8 md:flex">
+          {navItems.map((item) => (
             <Link
-              to={ROUTES.CUSTOMER.ORDER_HISTORY}
-              id="cart-icon"
-              className="relative p-1.5 text-gray-600 hover:text-gray-800"
+              key={item.name}
+              to={item.path}
+              className={`text-gray-600 hover:text-gray-800 transition-colors ${
+                location.pathname === item.path
+                  ? "text-blue-600 font-medium"
+                  : ""
+              }`}
             >
-              <FiPackage size={20} />
+              {item.name}
             </Link>
-            <Link
-              to={ROUTES.CUSTOMER.CART}
-              id="cart-icon"
-              className="relative p-1.5 text-gray-600 hover:text-gray-800"
-            >
-              <FiShoppingCart size={20} />
-              <CartBadge />
-            </Link>
-            <div>
-              {/* <IoIosLogOut className="text-accent size-7 ml-8 cursor-pointer hover:text-accent/80" /> */}
+          ))}
+          {user?.name && <p className="text-gray-600">{user.name}</p>}
+        </nav>
+
+        {/* Right side actions */}
+        <div className="flex items-center gap-2 md:gap-4">
+          {/* Desktop Search */}
+          <div className="hidden md:block">
+            <SearchInput />
+          </div>
+
+          {isAuthenticated ? (
+            <>
+              <Link
+                to={ROUTES.CUSTOMER.ORDER_HISTORY}
+                className="relative p-1.5 text-gray-600 hover:text-gray-800"
+              >
+                <FiPackage size={20} />
+              </Link>
+              <Link
+                to={ROUTES.CUSTOMER.CART}
+                className="relative p-1.5 text-gray-600 hover:text-gray-800"
+              >
+                <FiShoppingCart size={20} />
+                <CartBadge />
+              </Link>
               <Button
                 onClick={handleLogout}
-                size={"sm"}
-                className={"bg-red-500"}
+                size="sm"
+                className="hidden md:block bg-red-500 hover:bg-red-600"
               >
                 Log out
               </Button>
+            </>
+          ) : (
+            <div className="hidden md:flex items-center gap-2">
+              <Link to="/login" className="text-gray-600 hover:text-gray-800">
+                Login
+              </Link>
+              <Button className="px-4 py-2 text-white bg-primary hover:bg-primary/90">
+                Sign Up
+              </Button>
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center space-x-2">
-            <Link to={"/login"} className="text-gray-600 hover:text-gray-800">
-              Login
-            </Link>
-            <Button className="px-4 py-2 text-white transition-colors rounded-lg hover:bg-primary/90 bg-primary">
-              Sign Up
-            </Button>
-          </div>
-        )}
+          )}
+
+          {/* Mobile menu toggle */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2 md:hidden text-gray-600 hover:text-gray-800"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile menu toggle */}
-      <button className="p-2 md:hidden">
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
-      </button>
+      {/* Mobile Navigation Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden border-t border-border bg-white">
+          <nav className="flex flex-col p-4 space-y-3">
+            {/* Mobile Search */}
+            <div className="pb-3 border-b border-border">
+              <SearchInput />
+            </div>
+
+            {/* Nav Links */}
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                onClick={() => setIsMenuOpen(false)}
+                className={`text-gray-600 hover:text-gray-800 py-2 transition-colors ${
+                  location.pathname === item.path
+                    ? "text-blue-600 font-medium"
+                    : ""
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+
+            {/* User Info */}
+            {user?.name && (
+              <p className="text-gray-600 py-2 border-t border-border">
+                {user.name}
+              </p>
+            )}
+
+            {/* Auth Buttons */}
+            {isAuthenticated ? (
+              <Button
+                onClick={handleLogout}
+                className="w-full bg-red-500 hover:bg-red-600 mt-2"
+              >
+                Log out
+              </Button>
+            ) : (
+              <div className="flex flex-col gap-2 pt-3 border-t border-border">
+                <Link
+                  to="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-center py-2 text-gray-600 hover:text-gray-800"
+                >
+                  Login
+                </Link>
+                <Button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full bg-primary hover:bg-primary/90"
+                >
+                  Sign Up
+                </Button>
+              </div>
+            )}
+          </nav>
+        </div>
+      )}
     </header>
   );
 };

@@ -5,22 +5,21 @@ import useOrders from "@/hooks/useOrders";
 import EmptyState from "@/ui/EmptyState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import LoadingState from "@/ui/LoadingState";
-import Pagination from "@/ui/Pagination";
 import { formatDateFull } from "@/utils/dateUtils";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { PiPackageThin } from "react-icons/pi";
 import { Package } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router";
+import PaginationControlsBar from "@/features/admin/ui/PaginationControlsBar";
 
 function OrdersHistoryPage() {
   const user = useAuthStore((state) => state.user);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") || "1");
   const limit = 10;
   const {
     userOrders,
     isLoadingUserOrders,
-    isFetchingUserOrders,
     errorUserOrders,
     isErrorUserOrders,
     refetchUserOrders,
@@ -34,14 +33,14 @@ function OrdersHistoryPage() {
   if (isErrorUserOrders)
     return (
       <ErrorMessage
-        message={errorUserOrders.message || "Failed to load data"}
+        message={errorUserOrders?.message || "Failed to load data"}
         dismissible={true}
         onDismiss={() => refetchUserOrders()}
       />
     );
 
   return (
-    <div className="w-full mx-auto max-w-250 flex flex-col">
+    <div className="w-full mx-auto max-w-250 flex flex-col space-y-7">
       <Title limit={userOrders.limit} total={userOrders.total} />
       {userOrders.total > 0 ? (
         <OrderHistoryCardContainer orders={userOrders?.data} />
@@ -54,12 +53,11 @@ function OrdersHistoryPage() {
         />
       )}
       {userOrders?.totalPages && (
-        <Pagination
-          setSearchParams={setSearchParams}
-          currentPage={currentPage}
-          data={userOrders}
-          isFetching={isFetchingUserOrders}
-          totalPages={userOrders?.totalPages}
+        <PaginationControlsBar
+          dataName={"orders"}
+          isLoading={isLoadingUserOrders}
+          pageCount={userOrders?.totalPages}
+          totalCount={userOrders?.total}
         />
       )}
     </div>
@@ -70,10 +68,10 @@ export default OrdersHistoryPage;
 
 function Title({ limit, total }) {
   return (
-    <div className="mb-8 space-y-2">
-      <h1 className="text-4xl font-bold">Orders History</h1>
+    <div className="mb-8 ">
+      <h1 className="text-2xl sm:text-4xl font-bold">Orders History</h1>
       {total !== 0 && (
-        <p className="text-muted-foreground">
+        <p className="text-muted-foreground text-xs sm:text-lg">
           {total > limit
             ? ` Showing  ${limit} orders out of ${total} total`
             : `Showing ${total} orders`}{" "}

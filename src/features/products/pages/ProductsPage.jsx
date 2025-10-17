@@ -95,7 +95,7 @@ function PageHeader({ products, categoryId, subcategoryId }) {
   const updateUrlParams = useUpdateUrlParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const limit = parseInt(searchParams.get("limit")) || 10;
+  const limit = parseInt(searchParams.get("limit")) || 12;
 
   const pageInfo = getPageInfo(products, categoryId, subcategoryId);
 
@@ -158,7 +158,7 @@ function PageHeader({ products, categoryId, subcategoryId }) {
               <SelectValue placeholder={limit} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
+              {[12, 24, 36, 56, 90].map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>

@@ -18,12 +18,12 @@ export default function OrderSuccessPage() {
   const { order, errorOrder, isErrorOrder, isLoadingOrder, refetchOrder } =
     useOrders.useById(orderId);
 
-  if (isLoadingOrder) return <LoadingState type="card" />;
+  if (isLoadingOrder) return <LoadingState type="page" />;
 
   if (isErrorOrder)
     return (
       <ErrorMessage
-        message={errorOrder.message || "Failed to load data"}
+        message={errorOrder?.message || "Failed to load data"}
         dismissible={true}
         onDismiss={() => refetchOrder()}
       />

@@ -68,11 +68,13 @@ function ProductDetailPage() {
             effectivePrice={effectivePrice} // Pass pricing info
           />
 
-          <BundlesSection
-            bundles={selectedVariant?.bundles}
-            selectedBundle={selectedBundle}
-            onBundleSelect={handleBundleSelection}
-          />
+          {isAuthenticated && (
+            <BundlesSection
+              bundles={selectedVariant?.bundles}
+              selectedBundle={selectedBundle}
+              onBundleSelect={handleBundleSelection}
+            />
+          )}
 
           <VariantsSection
             variantBlocks={variantBlocks}

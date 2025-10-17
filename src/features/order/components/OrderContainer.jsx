@@ -67,7 +67,7 @@ function OrderItem({
         {/* Top row: Name + Unit price */}
         <div className="flex items-baseline justify-between">
           <div className="flex items-center gap-2">
-            <p className="font-bold">{name || "Product X"}</p>
+            <p className="font-bold line-clamp-4">{name || "Product X"}</p>
             {isBundle && (
               <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
                 Bundle

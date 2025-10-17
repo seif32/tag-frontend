@@ -131,7 +131,7 @@ export function SendMessageActions({ chatId, SenderType }) {
     setMessageText("");
   }
   return (
-    <div className="sticky bottom-0 right-0 w-full  ">
+    <div className="sticky bottom-2 right-0 w-full  ">
       <div className="flex  bg-stone-100">
         <Textarea
           value={messageText}

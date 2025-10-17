@@ -10,7 +10,8 @@ const categoriesApi = {
   getAll: async (queryParams = {}, options = {}) => {
     try {
       const params = new URLSearchParams();
-      if (queryParams.limit) params.append("limit", queryParams.limit);
+      if (queryParams.limit)
+        params.append("limit", queryParams.limit) || queryParams?.limit;
 
       const queryString = params.toString();
       const url = `/categories/${queryString ? `?${queryString}` : ""}`;

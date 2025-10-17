@@ -6,7 +6,6 @@ import {
   Twitter,
   Instagram,
   Linkedin,
-  ArrowUp,
   CreditCard,
   Shield,
   Truck,
@@ -14,42 +13,14 @@ import {
   MessageCircleMore,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   const navigate = useNavigate();
-
+  const location = useLocation();
   return (
     <footer className="bg-stone-950 text-slate-100">
-      {/* Newsletter Section */}
-      {/* <div className="bg-slate-800 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold mb-2">Stay Updated</h3>
-            <p className="text-slate-300 mb-6">
-              Get the latest products and exclusive offers delivered to your
-              inbox
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-white text-slate-900 border-0 flex-1"
-              />
-              <Button className="bg-blue-600 hover:bg-blue-700 px-8">
-                Subscribe
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -265,18 +236,13 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="fixed bottom-6 right-6 flex flex-col gap-1">
-        {/* <Button
-          onClick={scrollToTop}
-          className=" bg-blue-600 hover:bg-blue-700 rounded-full p-3 shadow-lg transition-all duration-300 hover:scale-110"
-          size="icon"
-        >
-          <ArrowUp className="h-4 w-4" />
-        </Button> */}
-        <Button className={"rounded-full"} onClick={() => navigate("chat")}>
-          <MessageCircleMore />
-        </Button>
-      </div>
+      {!location?.pathname.includes("chat") && (
+        <div className="fixed bottom-6 right-6 flex flex-col gap-1">
+          <Button className={"rounded-full"} onClick={() => navigate("chat")}>
+            <MessageCircleMore />
+          </Button>
+        </div>
+      )}
     </footer>
   );
 }

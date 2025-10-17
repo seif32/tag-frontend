@@ -29,7 +29,7 @@ function ProductInfoSection({
       <p className="text-sm text-muted-foreground">
         {categoryName} {subCategoryName && `• ${subCategoryName}`}
       </p>
-      <h2 className="text-6xl font-bold font-degular">
+      <h2 className="text-3xl sm:text-6xl font-bold font-degular">
         {displayName}{" "}
         {selectedVariant?.types?.map((type) => (
           <span key={type.type_id}>{type.value.name} </span>
