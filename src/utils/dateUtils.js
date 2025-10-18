@@ -12,7 +12,7 @@ export function parseMySQLDate(mysqlDate) {
 
 export function formatDate(date) {
   const d = typeof date === "string" ? parseMySQLDate(date) : date;
-  return d.toISOString().split("T")[0]; // "2025-09-09"
+  return d?.toISOString().split("T")[0]; // "2025-09-09"
 }
 
 export function formatDateDMY(date) {
@@ -22,12 +22,12 @@ export function formatDateDMY(date) {
 
 export function formatDateMDY(date) {
   const d = typeof date === "string" ? parseMySQLDate(date) : date;
-  return d.toLocaleDateString("en-US"); // "09/09/2025"
+  return d?.toLocaleDateString("en-US"); // "09/09/2025"
 }
 
 export function formatDateFull(date) {
   const d = typeof date === "string" ? parseMySQLDate(date) : date;
-  return d.toLocaleString("en-US", {
+  return d?.toLocaleString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -39,7 +39,7 @@ export function formatDateFull(date) {
 
 export function formatDateShort(date) {
   const d = typeof date === "string" ? parseMySQLDate(date) : date;
-  return d.toLocaleDateString("en-US", {
+  return d?.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -48,7 +48,7 @@ export function formatDateShort(date) {
 
 export function formatTime(date) {
   const d = typeof date === "string" ? parseMySQLDate(date) : date;
-  return d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  return d?.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 }
 
 export function addDays(startDate, days = 5) {

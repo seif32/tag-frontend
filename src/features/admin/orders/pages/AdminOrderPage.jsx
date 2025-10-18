@@ -26,12 +26,21 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
 import { IoChatbubblesOutline } from "react-icons/io5";
 import useOrders from "@/hooks/useOrders";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import { formatCurrency } from "@/utils/formatCurrency";
 import ShippingAddress from "@/features/order/components/ShippingAddress";
+import { useEffect, useState } from "react";
 
 function AdminOrderPage() {
   const { orderId } = useParams();
@@ -58,7 +67,11 @@ function AdminOrderPage() {
 
   return (
     <div className="flex flex-col gap-5 p-6">
-      <Title orderId={orderId} orderDate={order?.created_at} />
+      <Title
+        orderId={orderId}
+        orderDate={order?.created_at}
+        currentOrderStatus={order?.order_status}
+      />{" "}
       <StatsContainer
         orderStatus={order?.order_status}
         paymentStatus={order?.payment_status}
@@ -74,9 +87,34 @@ function AdminOrderPage() {
 }
 
 export default AdminOrderPage;
+function Title({ orderId, orderDate, currentOrderStatus }) {
+  const [orderStatus, setOrderStatus] = useState(currentOrderStatus);
+  const [isPopoverOpen, setPopoverOpen] = useState(false);
 
-function Title({ orderId, orderDate }) {
   const navigate = useNavigate();
+  const { updateOrder, isPendingOrders } = useOrders.useUpdate();
+
+  useEffect(() => {
+    setOrderStatus(currentOrderStatus);
+  }, [currentOrderStatus]);
+
+  const handleStatusChange = (newStatus) => {
+    setOrderStatus(newStatus);
+    setPopoverOpen(false);
+
+    updateOrder(
+      { id: orderId, data: { order_status: newStatus } },
+      {
+        onError: () => {
+          setOrderStatus(currentOrderStatus);
+        },
+        onSuccess: (data) => {
+          setOrderStatus(data?.order_status || newStatus);
+        },
+      }
+    );
+  };
+
   return (
     <section className="flex justify-between items-center">
       <div>
@@ -85,17 +123,40 @@ function Title({ orderId, orderDate }) {
             className="hover:text-accent cursor-pointer"
             onClick={() => navigate(-1)}
           />
-          <h1 className="text-3xl font-bold">Order #{orderId} </h1>
+          <h1 className="text-3xl font-bold">Order #{orderId}</h1>
         </div>
         <p className="text-muted-foreground">
           Placed on {formatDateFull(orderDate)}
         </p>
       </div>
-      <div className="flex gap-2 ">
-        <Button size={"sm"} className={"text-xs"}>
-          Change Order Status
-        </Button>
-      </div>
+
+      <Popover open={isPopoverOpen} onOpenChange={setPopoverOpen}>
+        <PopoverTrigger asChild>
+          <Button size="sm" className="text-xs">
+            Change Order Status
+          </Button>
+        </PopoverTrigger>
+
+        <PopoverContent
+          align="start"
+          side="left"
+          className="w-fit flex flex-col gap-3 p-3"
+        >
+          <p className="text-sm font-medium mb-2">Select a new status:</p>
+          {["pending", "shipped", "delivered", "cancelled"].map((status) => (
+            <Button
+              key={status}
+              variant={orderStatus === status ? "default" : "outline"}
+              className="capitalize"
+              size="sm"
+              onClick={() => handleStatusChange(status)}
+              disabled={isPendingOrders} // ✅ Disable during update
+            >
+              {status}
+            </Button>
+          ))}
+        </PopoverContent>
+      </Popover>
     </section>
   );
 }

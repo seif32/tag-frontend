@@ -197,8 +197,10 @@ const ordersApi = {
     if (!id) {
       throw new Error("Order ID is required for updates");
     }
+    console.log("ordersApi", updateData);
 
     try {
+      console.log("ordersApi", updateData);
       return await api.put(`/orders/${id}`, updateData, options);
     } catch (error) {
       console.error(`Failed to update order ${id}:`, {

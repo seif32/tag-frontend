@@ -95,7 +95,7 @@ function PageHeader({ products, categoryId, subcategoryId }) {
   const updateUrlParams = useUpdateUrlParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const limit = parseInt(searchParams.get("limit")) || 12;
+  const limit = parseInt(searchParams.get("limit")) || 10;
 
   const pageInfo = getPageInfo(products, categoryId, subcategoryId);
 

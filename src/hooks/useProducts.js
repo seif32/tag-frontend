@@ -57,7 +57,7 @@ const useProducts = {
 
     const page = parseInt(searchParams.get("page")) || queryParams.page || 1;
     const limit =
-      parseInt(searchParams.get("limit")) || queryParams.limit || 12;
+      parseInt(searchParams.get("limit")) || queryParams.limit || 10;
 
     const mergedFilters = {
       ...queryParams,
