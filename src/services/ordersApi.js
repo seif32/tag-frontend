@@ -50,6 +50,10 @@ const ordersApi = {
       if (queryParams.limit) params.append("limit", queryParams.limit);
       if (queryParams.name) params.append("name", queryParams.name);
       if (queryParams.id) params.append("id", queryParams.id);
+      if (queryParams.order_status)
+        params.append("order_status", queryParams.order_status);
+      if (queryParams.payment_status)
+        params.append("payment_status", queryParams.payment_status);
 
       const queryString = params.toString();
       const url = `/orders/without-items${

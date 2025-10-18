@@ -7,9 +7,11 @@ import {
   CheckCircle,
   PlusCircle,
   RefreshCcw,
+  Filter,
+  Search,
 } from "lucide-react";
 import { useOrderColumns } from "../components/useOrderColumns";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import useOrders from "@/hooks/useOrders";
 import LoadingState from "@/ui/LoadingState";
 import OrderDataTable from "../components/OrderDataTable";
@@ -17,8 +19,16 @@ import ErrorMessage from "@/ui/ErrorMessage";
 import { Button } from "@/components/ui/button";
 import ControlsBar from "@/ui/ControlsBar";
 import useDebounce from "@/hooks/useDebounce";
-import { SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useUpdateUrlParams } from "@/hooks/useUpdateUrlParams";
+import { Input } from "@/components/ui/input";
 
 function AdminOrdersPage() {
   const navigate = useNavigate();
@@ -174,24 +184,79 @@ function StatsContainer() {
 }
 
 function OrderControlsBar({ searchInput, setSearchInput }) {
+  const [searchParams] = useSearchParams();
+  const updateUrlParams = useUpdateUrlParams();
+
+  const orderStatus = searchParams.get("order_status") || "";
+  const paymentStatus = searchParams.get("payment_status") || "";
+  let currentValue = "all";
+  if (orderStatus) {
+    currentValue = orderStatus + "_orders";
+  } else if (paymentStatus) {
+    currentValue = paymentStatus + "_payments";
+  }
+
+  function handleStatusChange(status) {
+    if (status === "all") {
+      updateUrlParams({
+        order_status: undefined,
+        payment_status: undefined,
+        page: 1,
+      });
+    } else if (status.includes("orders")) {
+      updateUrlParams({
+        order_status: status.replace("_orders", ""),
+        payment_status: undefined,
+        page: 1,
+      });
+    } else {
+      updateUrlParams({
+        payment_status: status.replace("_payments", ""),
+        order_status: undefined,
+        page: 1,
+      });
+    }
+  }
+
   return (
-    <ControlsBar
-      searchInput={searchInput}
-      searchName={"order or client name"}
-      setSearchInput={setSearchInput}
-      searchWidth="w-80"
-    >
-      <SelectContent>
-        <SelectItem value="all">All Orders</SelectItem>
-        <Separator />
-        <SelectItem value="pending_orders">Pending Orders</SelectItem>
-        <SelectItem value="shipped_orders">Shipped Orders</SelectItem>
-        <SelectItem value="delivered_orders">Delivered Orders</SelectItem>
-        <Separator />
-        <SelectItem value="failed_payments">Failed Payments</SelectItem>
-        <SelectItem value="pending_payments">Pending Payments</SelectItem>
-        <SelectItem value="paid_payments">Paid Payments</SelectItem>
-      </SelectContent>
-    </ControlsBar>
+    <div className="flex gap-2">
+      <div className="relative">
+        <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+        <Input
+          placeholder="Search by order or client name..."
+          value={searchInput}
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+            updateUrlParams({
+              page: 1,
+              order_status: undefined,
+              payment_status: undefined,
+            });
+          }}
+          className="w-80 min-w-full pl-10"
+        />
+      </div>
+
+      {/* Status Filter Select */}
+      <Select value={currentValue} onValueChange={handleStatusChange}>
+        <SelectTrigger className="w-auto min-w-32">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4" />
+            <SelectValue placeholder="All Status" />
+          </div>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Orders</SelectItem>
+          <Separator />
+          <SelectItem value="pending_orders">Pending Orders</SelectItem>
+          <SelectItem value="shipped_orders">Shipped Orders</SelectItem>
+          <SelectItem value="delivered_orders">Delivered Orders</SelectItem>
+          <Separator />
+          <SelectItem value="failed_payments">Failed Payments</SelectItem>
+          <SelectItem value="pending_payments">Pending Payments</SelectItem>
+          <SelectItem value="paid_payments">Paid Payments</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
   );
 }

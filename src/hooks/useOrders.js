@@ -41,11 +41,15 @@ const useOrders = {
 
     const page = parseInt(searchParams.get("page"));
     const limit = parseInt(searchParams.get("limit"));
+    const payment_status = searchParams.get("payment_status");
+    const order_status = searchParams.get("order_status");
 
     const mergedFilters = {
       ...queryParams,
       page,
       limit,
+      payment_status,
+      order_status,
     };
 
     const query = useQuery({

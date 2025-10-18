@@ -18,12 +18,21 @@ export default function ControlsBar({
   isShowFilter = true,
   isShowLimit = true,
   searchWidth = "w-70",
+  onStatusChange,
+  urlParams,
 }) {
   const [searchParams] = useSearchParams();
   const updateUrlParams = useUpdateUrlParams();
 
   const limit = parseInt(searchParams.get("limit")) || 10;
   const status = searchParams.get("status") || "";
+
+  function handleStatusChange(value) {
+    updateUrlParams({
+      status: value === "all" || value === "" ? undefined : value,
+      page: 1,
+    });
+  }
 
   return (
     <div className="flex gap-2">
@@ -41,13 +50,8 @@ export default function ControlsBar({
       </div>
       {isShowFilter && (
         <Select
-          value={status}
-          onValueChange={(value) => {
-            updateUrlParams({
-              status: value === "all" || value === "" ? undefined : value,
-              page: 1,
-            });
-          }}
+          value={urlParams || status}
+          onValueChange={onStatusChange || handleStatusChange}
         >
           <SelectTrigger className="w-auto min-w-32">
             <div className="flex items-center gap-2">
