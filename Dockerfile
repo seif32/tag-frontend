@@ -3,9 +3,14 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
+# Install build dependencies for native modules
+RUN apk add --no-cache python3 make g++
+
 # Copy package files
 COPY package*.json ./
-RUN npm ci
+
+# Install dependencies (not using --ci to avoid npm bug with optional deps)
+RUN npm install
 
 # Copy source
 COPY . .
