@@ -219,7 +219,7 @@ function OrderControlsBar({ searchInput, setSearchInput }) {
   }
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col md:flex-row gap-2">
       <div className="relative">
         <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
         <Input

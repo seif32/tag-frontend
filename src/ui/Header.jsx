@@ -71,6 +71,7 @@ const Header = () => {
               <Link
                 to={ROUTES.CUSTOMER.CART}
                 className="relative p-1.5 text-gray-600 hover:text-gray-800"
+                id="cart-icon"
               >
                 <FiShoppingCart size={20} />
                 <CartBadge />

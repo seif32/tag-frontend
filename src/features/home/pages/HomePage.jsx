@@ -184,7 +184,7 @@ function FeaturedProducts() {
     isErrorProducts,
     errorProducts,
     refetchProducts,
-  } = useProducts.useAllWithoutVariants({ limit: 4 });
+  } = useProducts.useAllWithoutVariants({ limit: 4, featured: 1, active: 1 });
 
   if (isLoadingProducts) return <LoadingState />;
 

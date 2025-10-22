@@ -16,6 +16,7 @@ import AdminVariantsTypesPage from "@/features/admin/variants/pages/AdminVariant
 import AdminVariantsValuesPage from "@/features/admin/variants/pages/AdminVariantsValuesPage";
 import AdminLayout from "@/layout/AdminLayout";
 import EmptyState from "@/ui/EmptyState";
+import { IconEmptyState } from "@/ui/IconEmptyState";
 import { Routes, Route } from "react-router";
 
 function AdminRouter() {
@@ -59,9 +60,9 @@ function AdminRouter() {
           <Route
             index
             element={
-              <EmptyState
-                title={"Please select a chat"}
-                subtitle={"any of them"}
+              <IconEmptyState
+                title={"Inbox"}
+                subtitle={"Select one of the chats in the list"}
               />
             }
           />

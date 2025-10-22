@@ -45,8 +45,12 @@ export default function OrderSuccessPage() {
     <div className="flex flex-col gap-12 mx-auto max-w-200">
       <Title />
       <OrderReceipt order={order} />
-      <OrderContainer items={order.items} bundles={order.bundles} />
-      <SuccessAction order={order} />
+      <OrderContainer items={order?.items} bundles={order?.bundles} />
+      <SuccessAction
+        order={order}
+        orderBundles={order?.bundles}
+        orderItems={order?.items}
+      />
     </div>
   );
 }

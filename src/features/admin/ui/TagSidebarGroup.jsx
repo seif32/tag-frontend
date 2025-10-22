@@ -7,7 +7,7 @@ import {
 
 import TagSidebarMenuItem from "./TagSidebarMenuItem";
 
-function TagSidebarGroup({ group }) {
+function TagSidebarGroup({ group, unseenCount, isLoadingUnseenCount }) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{group.groupLabel}</SidebarGroupLabel>
@@ -18,6 +18,8 @@ function TagSidebarGroup({ group }) {
               <TagSidebarMenuItem
                 key={index}
                 menuButton={menuItem.menuButton}
+                unseenCount={unseenCount} // ✅ Pass it here
+                isLoadingUnseenCount={isLoadingUnseenCount}
               />
             );
           })}

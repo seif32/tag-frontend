@@ -58,12 +58,14 @@ const useProducts = {
     const page = parseInt(searchParams.get("page")) || queryParams.page || 1;
     const limit =
       parseInt(searchParams.get("limit")) || queryParams.limit || 10;
+    const featured = queryParams?.featured || 0;
 
     const mergedFilters = {
       ...queryParams,
       page,
       limit,
       active,
+      featured,
     };
 
     // 🔥 Remove null/undefined values to avoid sending unnecessary params

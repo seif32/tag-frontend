@@ -55,11 +55,18 @@ function ActionButtons({ selectedVariant, selectedBundle, product }) {
       return;
     }
 
-    const startEl = document.querySelector("#add-to-cart-btn");
-    const endEl = document.querySelector("#cart-icon");
+    const startEl = document?.querySelector("#add-to-cart-btn");
+    const endEl = document?.querySelector("#cart-icon");
 
-    const startRect = startEl.getBoundingClientRect();
-    const endRect = endEl.getBoundingClientRect();
+    if (!startEl || !endEl) {
+      console.warn("Missing start or end element for flying animation");
+      // still add to cart without animation
+      addItem(item, quantity);
+      return;
+    }
+
+    const startRect = startEl?.getBoundingClientRect();
+    const endRect = endEl?.getBoundingClientRect();
 
     setFlyItem({
       text: isBundleMode

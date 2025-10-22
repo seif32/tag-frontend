@@ -26,8 +26,7 @@ function AdminLayout() {
         <AdminSidebar />
         <SidebarInset className="flex flex-1 flex-col overflow-hidden">
           <AdminHeader />
-
-          <main className="flex flex-1 flex-col gap-4  pt-0 overflow-auto">
+          <main className="flex flex-1 flex-col gap-4  pt-0 overflow-auto ">
             <Outlet />
           </main>
         </SidebarInset>
@@ -60,7 +59,7 @@ function AdminHeader() {
       {/* Right side - User section */}
       <div className="flex items-center gap-2">
         {/* Notifications */}
-        <Button variant="ghost" size="icon" className="relative">
+        {/* <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-4 w-4" />
           {notifications > 0 && (
             <Badge
@@ -71,7 +70,7 @@ function AdminHeader() {
             </Badge>
           )}
           <span className="sr-only">Notifications</span>
-        </Button>
+        </Button> */}
 
         {/* User Dropdown */}
         <DropdownMenu>
@@ -100,15 +99,15 @@ function AdminHeader() {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent className="w-56" align="end" forceMount>
-            <DropdownMenuLabel className="font-normal">
+            {/* <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">{user.name}</p>
                 <p className="text-xs leading-none text-muted-foreground">
                   {user.email}
                 </p>
               </div>
-            </DropdownMenuLabel>
-
+            </DropdownMenuLabel> */}
+            {/*
             <DropdownMenuSeparator />
 
             <DropdownMenuItem>
@@ -121,7 +120,7 @@ function AdminHeader() {
               <span>Settings</span>
             </DropdownMenuItem>
 
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
 
             <DropdownMenuItem className="text-red-600">
               <LogOut className="mr-2 h-4 w-4" />

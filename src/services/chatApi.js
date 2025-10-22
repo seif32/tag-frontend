@@ -22,6 +22,17 @@ const chatApi = {
     }
   },
 
+  getUnseenCount: async (options = {}) => {
+    try {
+      return await api.get(`/chats/unseen`, options);
+    } catch (error) {
+      console.error(`Failed to fetch unseen count:`, {
+        error: error.details,
+      });
+      throw error;
+    }
+  },
+
   /**
    * 📥 GET ALL CHATS
    * Fetches paginated list of chats
@@ -32,8 +43,7 @@ const chatApi = {
     try {
       const params = new URLSearchParams();
 
-      if (queryParams.page) params.append("page", queryParams.page);
-      if (queryParams.limit) params.append("limit", queryParams.limit);
+      if (queryParams.search) params.append("search", queryParams.search);
 
       const queryString = params.toString();
       const url = `/chats${queryString ? `?${queryString}` : ""}`;

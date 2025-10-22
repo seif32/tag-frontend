@@ -41,7 +41,7 @@ function CustomerLayout() {
 
       {isCartFlow && <ProgressSteps currentStep={getCurrentStep()} />}
 
-      <main className={` flex-1 py-8 container px-8 mx-auto`}>
+      <main className={` flex-1 py-8 container px-8 mx-auto `}>
         <Outlet />
       </main>
       {!isInitializing && !isAgeVerified && (

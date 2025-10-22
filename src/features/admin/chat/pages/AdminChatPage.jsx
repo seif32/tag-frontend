@@ -30,7 +30,7 @@ function AdminChatPage() {
   const isSeenByUser = chat?.seen_by_user === 1;
 
   return (
-    <div className="flex relative flex-col h-full ">
+    <div className="flex flex-col h-screen bg-stone-100">
       <ChatHeader chat={chat} refetchMessages={refetchMessages} />
       <ChatContainer messages={messages?.data} activeSender={"admin"} />
       {isSeenByUser && <SeenIndicator firstName={chat?.first_name} />}
@@ -43,9 +43,9 @@ export default AdminChatPage;
 
 export function SeenIndicator({ firstName }) {
   return (
-    <div className=" bg-stone-100 w-full flex justify-end ">
-      <div className="text-xs italic flex  mr-5 mb-1 text-muted-foreground ">
-        <CheckCheck className="size-4" />
+    <div className="bg-stone-100 w-full flex justify-end px-4 sm:px-6">
+      <div className="text-xs italic flex items-center gap-1 mb-2 text-muted-foreground">
+        <CheckCheck className="w-4 h-4" />
         <p>Seen by {firstName}</p>
       </div>
     </div>
@@ -54,16 +54,21 @@ export function SeenIndicator({ firstName }) {
 
 export function ChatHeader({ chat, refetchMessages }) {
   return (
-    <div className="sticky top-0 bg-white z-10 border-b px-4 py-2 shadow-md">
+    <div className="sticky top-0 bg-white z-10 border-b px-4 sm:px-6 py-3 shadow-sm">
       <div className="flex justify-between items-center">
-        <div>
-          <h2>{`${chat?.first_name} ${chat?.last_name}`}</h2>
+        <div className="min-w-0 flex-1">
+          <h2 className="text-base sm:text-lg font-semibold truncate">
+            {`${chat?.first_name} ${chat?.last_name}`}
+          </h2>
           <p className="text-muted-foreground text-xs">client</p>
         </div>
-        <RefreshCcw
+        <button
           onClick={refetchMessages}
-          className="size-4 cursor-pointer"
-        />
+          className="p-2 hover:bg-gray-100 rounded-full transition-colors ml-2 flex-shrink-0"
+          aria-label="Refresh messages"
+        >
+          <RefreshCcw className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );
@@ -75,7 +80,7 @@ export function ChatContainer({ messages, activeSender }) {
   function scrollToBottom() {
     messagesEndRef.current?.scrollIntoView({
       behavior: "smooth",
-      block: "center",
+      block: "end",
     });
   }
 
@@ -84,9 +89,8 @@ export function ChatContainer({ messages, activeSender }) {
   }, [messages]);
 
   return (
-    <div className="flex flex-col-reverse gap-2 p-5 overflow-y-auto bg-stone-100">
-      <div ref={messagesEndRef} className="scroll-mb-200"></div>{" "}
-      {/* 80px offset */}
+    <div className="flex-1 flex flex-col-reverse gap-2 px-4 sm:px-6 py-4 overflow-y-auto bg-stone-100">
+      <div ref={messagesEndRef} />
       {messages?.map((message) => (
         <BubbleChatCard
           key={message?.id}
@@ -102,8 +106,10 @@ export function BubbleChatCard({ message, sender_type, activeSender }) {
   return (
     <p
       className={`${
-        sender_type === activeSender ? "bg-accent/50 self-end " : "bg-gray-200"
-      } w-fit p-3 rounded-md text-sm max-w-[70%]`}
+        sender_type === activeSender
+          ? "bg-accent/50 self-end ml-auto"
+          : "bg-white self-start mr-auto"
+      } w-fit p-3 rounded-lg text-sm max-w-[85%] sm:max-w-[70%] shadow-sm break-words`}
     >
       {message}
     </p>
@@ -128,16 +134,16 @@ export function SendMessageActions({ chatId, SenderType }) {
       sender_type: SenderType,
       message: messageText,
     });
-    setMessageText("");
   }
+
   return (
-    <div className="sticky bottom-2 right-0 w-full  ">
-      <div className="flex  bg-stone-100">
+    <div className="sticky bottom-0 left-0 right-0 bg-white border-t p-3 sm:p-4">
+      <div className="flex gap-2 max-w-5xl mx-auto">
         <Textarea
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
           placeholder="Type a message..."
-          className="flex-1 resize-none "
+          className="flex-1 resize-none min-h-[44px] max-h-32"
           rows={1}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -147,17 +153,16 @@ export function SendMessageActions({ chatId, SenderType }) {
           }}
         />
         <button
-          className={`p-2 px-6 grid place-items-center cursor-pointer hover:bg-accent hover:text-black transition-all bg-black text-white rounded-2xl ${
-            isPendingMessage && "bg-gray-500 "
-          }`}
+          className={`px-4 sm:px-6 py-2 grid place-items-center cursor-pointer hover:bg-gray-800 transition-all bg-black text-white rounded-xl disabled:bg-gray-400 disabled:cursor-not-allowed flex-shrink-0`}
           onClick={handleSend}
-          disabled={isPendingMessage}
+          disabled={isPendingMessage || !messageText.trim()}
+          aria-label="Send message"
         >
           {isPendingMessage ? (
-            <div className="animate-spin border w-5 h-5 rounded-full"></div>
+            <div className="animate-spin border-2 border-white border-t-transparent w-5 h-5 rounded-full" />
           ) : (
             <SendHorizontal className="w-5 h-5" />
-          )}{" "}
+          )}
         </button>
       </div>
     </div>

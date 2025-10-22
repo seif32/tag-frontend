@@ -1,32 +1,121 @@
 {
-  "id": 2,
-  "name": "Clothing",
-  "image_url": "https://images.unsplash.com/photo-1723223440648-dc41fb3d9a7f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "created_at": "2025-08-29T20:36:14.000Z",
-  "updated_at": "2025-08-29T20:36:14.000Z",
-  "subcategories": [
+  "id": 148,
+  "order_status": "pending",
+  "payment_status": "pending",
+  "subtotal": "500.00",
+  "tax_amount": "70.00",
+  "shipping_amount": "45.00",
+  "discount_percent": "0.00",
+  "discount_type": null,
+  "discount_amount": "0.00",
+  "total_amount": "615.00",
+  "currency": "GBP",
+  "created_at": "2025-10-22T08:33:15.000Z",
+  "updated_at": "2025-10-22T08:33:15.000Z",
+  "promo_code": null,
+  "user": {
+    "id": 5,
+    "uid": "XnYJvGwPXoOfDolbftYLjAbSgZE3",
+    "first_name": "Mostafa ",
+    "last_name": "Essam",
+    "email": "mostafa@gmail.com",
+    "phone_number": "+201074895231",
+    "role": "user",
+    "created_at": "2025-09-12T02:00:43.000Z",
+    "updated_at": "2025-09-12T02:00:43.000Z",
+    "is_verified": 0,
+    "business_name": null,
+    "vat_number": null
+  },
+  "address": {
+    "id": 26,
+    "user_id": 5,
+    "description": "mafesh sho'a' khalas tanyyy",
+    "apartment_number": "77",
+    "building_number": "250",
+    "street_name": "Om kolthoum st",
+    "postal_code": "1425",
+    "country": "Unknown",
+    "location_url": "",
+    "is_default": 0,
+    "created_at": "2025-10-16T21:36:55.000Z",
+    "updated_at": "2025-10-22T08:33:01.000Z",
+    "city_id": 5,
+    "city_name": "Bristol"
+  },
+  "items": [
     {
-      "id": 2,
-      "name": "Shoes",
-      "image_url": "https://images.unsplash.com/photo-1723223440648-dc41fb3d9a7f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "product_count": 4,
-      "active_product_count": 3
-    },
-    {
-      "id": 7,
-      "name": "Ties",
-      "image_url": "https://images.unsplash.com/photo-1723223440648-dc41fb3d9a7f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "product_count": 0,
-      "active_product_count": 0
-    },
-    {
-      "id": 8,
-      "name": "Shirts",
-      "image_url": "https://images.unsplash.com/photo-1723223440648-dc41fb3d9a7f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "product_count": 0,
-      "active_product_count": 0
+      "id": 257,
+      "order_id": 148,
+      "variant_id": 33,
+      "quantity": 1,
+      "unit_price": "500.00",
+      "total_price": "570.00",
+      "currency": "GBP",
+      "created_at": "2025-10-22T08:33:15.000Z",
+      "updated_at": "2025-10-22T08:33:15.000Z",
+      "total_vat": "70.00",
+      "product": {
+        "id": 22,
+        "name": "Sony X",
+        "sku": "SKU-3088B6-1759523137753",
+        "description": "ay haga",
+        "short_description": "ay haga tany",
+        "category_id": 2,
+        "subcategory_id": 2,
+        "brand_id": 1,
+        "featured": 0,
+        "active": 1,
+        "rating": "0.00",
+        "rating_count": 0,
+        "created_at": "2025-10-03T20:25:37.000Z",
+        "updated_at": "2025-10-03T20:38:33.000Z",
+        "category_name": "Clothing",
+        "sub_category_name": "Shoes",
+        "brand_name": "Apple",
+        "tags": [
+          {
+            "id": 2,
+            "name": "casual"
+          }
+        ],
+        "variants": [
+          {
+            "id": 33,
+            "product_id": 22,
+            "variant_sku": "SKU-887395-1759523137755",
+            "is_primary": 1,
+            "price": "500.00",
+            "compare_at_price": "1000.00",
+            "cost_price": "200.00",
+            "currency": "USD",
+            "quantity": 57,
+            "created_at": "2025-10-03T20:25:37.000Z",
+            "updated_at": "2025-10-22T08:33:15.000Z",
+            "vat": "14.00",
+            "images": [],
+            "types": [
+              {
+                "type_id": 1,
+                "type_name": "Color",
+                "value": {
+                  "id": 10,
+                  "name": "Black"
+                }
+              },
+              {
+                "type_id": 11,
+                "type_name": "Storage",
+                "value": {
+                  "id": 43,
+                  "name": "128GB"
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
-  "product_count": 4,
-  "active_product_count": 3
+  "bundles": []
 }

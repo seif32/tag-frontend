@@ -12,9 +12,24 @@ function TagSidebarMenuButton({
   menuButton,
   hasSubmenu,
   isOpen,
+  unseenCount,
+  isLoadingUnseenCount,
 }) {
   const location = useLocation();
   const IconComponent = getIcon(menuButton.iconName);
+
+  // ✅ Conditionally set badge content for "Chats" menu
+  const getBadgeContent = () => {
+    if (menuButton.name === "Chats") {
+      return isLoadingUnseenCount ? "..." : unseenCount || 0;
+    }
+    return menuButton.badge?.content;
+  };
+
+  const badgeContent = getBadgeContent();
+  const shouldShowBadge =
+    menuButton.badge &&
+    (menuButton.name !== "Chats" || unseenCount > 0 || isLoadingUnseenCount);
 
   return (
     <SidebarMenuButton
@@ -30,9 +45,9 @@ function TagSidebarMenuButton({
           </div>
 
           <div className="flex items-center gap-2">
-            {menuButton.badge && (
+            {shouldShowBadge && (
               <Badge variant={menuButton.badge.variant} className="text-xs">
-                {menuButton.badge.content}
+                {badgeContent}
               </Badge>
             )}
             <ChevronRight
@@ -49,12 +64,12 @@ function TagSidebarMenuButton({
         >
           <IconComponent className="w-4 h-4" />
           <span>{menuButton.name}</span>
-          {menuButton.badge && (
+          {shouldShowBadge && (
             <Badge
               variant={menuButton.badge.variant}
               className="ml-auto text-xs"
             >
-              {menuButton.badge.content}
+              {badgeContent}
             </Badge>
           )}
         </NavLink>

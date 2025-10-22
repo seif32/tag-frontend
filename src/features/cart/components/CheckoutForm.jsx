@@ -44,6 +44,7 @@ function CheckoutForm({
   setIsEditMode,
   isEditMode,
 }) {
+  console.log("CheckoutForm", addresses);
   return (
     <Form {...form}>
       <form

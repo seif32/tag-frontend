@@ -22,7 +22,7 @@ function AdminHeader() {
         <div className="flex-1">{/* <p>sdds</p> */}</div>
 
         {/* 🔔 Notifications */}
-        <Button variant="ghost" size="icon" className="relative">
+        {/* <Button variant="ghost" size="icon" className="relative">
           <Bell className="w-5 h-5" />
           <Badge
             variant="destructive"
@@ -30,7 +30,7 @@ function AdminHeader() {
           >
             3
           </Badge>
-        </Button>
+        </Button> */}
 
         {/* 👨‍💼 User Profile Dropdown */}
         <DropdownMenu>

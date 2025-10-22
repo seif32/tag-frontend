@@ -35,9 +35,11 @@ export default function ControlsBar({
   }
 
   return (
-    <div className="flex gap-2">
-      <div className="relative ">
-        <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
+      {/* Search Input - Full width on mobile */}
+      {/* Search Input - Full width on mobile, max-width on desktop */}
+      <div className="relative w-full sm:flex-1 sm:max-w-md lg:max-w-lg sm:min-w-0">
+        <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2 pointer-events-none" />
         <Input
           placeholder={`Search by ${searchName}...`}
           value={searchInput}
@@ -45,40 +47,53 @@ export default function ControlsBar({
             setSearchInput(e.target.value);
             updateUrlParams({ page: 1, status: undefined });
           }}
-          className={`${searchWidth} min-w-full  pl-10`}
+          className="w-full pl-10 pr-4"
+          aria-label={`Search by ${searchName}`}
         />
       </div>
-      {isShowFilter && (
-        <Select
-          value={urlParams || status}
-          onValueChange={onStatusChange || handleStatusChange}
-        >
-          <SelectTrigger className="w-auto min-w-32">
-            <div className="flex items-center gap-2">
-              <Filter />
-              <SelectValue placeholder="All Status" />
-            </div>
-          </SelectTrigger>
-          {children}
-        </Select>
-      )}
-      {isShowLimit && (
-        <Select
-          value={String(limit)}
-          onValueChange={(value) => updateUrlParams({ limit: Number(value) })}
-        >
-          <SelectTrigger className="w-auto ">
-            <SelectValue placeholder="10" />
-          </SelectTrigger>
-          <SelectContent>
-            {[10, 20, 50, 100].map((size) => (
-              <SelectItem key={size} value={String(size)}>
-                {size}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
+
+      {/* Filter & Limit Selects - Side by side on mobile */}
+      <div className="flex gap-2 sm:gap-3 flex-shrink-0">
+        {/* Status Filter */}
+        {isShowFilter && (
+          <Select
+            value={urlParams || status}
+            onValueChange={onStatusChange || handleStatusChange}
+          >
+            <SelectTrigger className="w-full sm:w-auto sm:min-w-[140px]">
+              <div className="flex items-center gap-2">
+                <Filter className="w-4 h-4 flex-shrink-0" />
+                <span className="hidden sm:inline">
+                  <SelectValue placeholder="All Status" />
+                </span>
+                <span className="sm:hidden">
+                  <SelectValue placeholder="Filter" />
+                </span>
+              </div>
+            </SelectTrigger>
+            {children}
+          </Select>
+        )}
+
+        {/* Items Per Page Limit */}
+        {isShowLimit && (
+          <Select
+            value={String(limit)}
+            onValueChange={(value) => updateUrlParams({ limit: Number(value) })}
+          >
+            <SelectTrigger className="w-20 sm:w-24" aria-label="Items per page">
+              <SelectValue placeholder="10" />
+            </SelectTrigger>
+            <SelectContent>
+              {[10, 20, 50, 100].map((size) => (
+                <SelectItem key={size} value={String(size)}>
+                  {size} / page
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      </div>
     </div>
   );
 }

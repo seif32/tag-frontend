@@ -6,7 +6,7 @@ import TagSidebarMenuSubItem from "./TagSidebarMenuSubItem";
 import TagSidebarMenuButton from "./TagSidebarMenuButton";
 import { isActiveSection } from "../services/utils";
 
-function TagSidebarMenuItem({ menuButton }) {
+function TagSidebarMenuItem({ menuButton, unseenCount, isLoadingUnseenCount }) {
   const location = useLocation();
   const [openSections, setOpenSections] = useState({});
 
@@ -25,6 +25,8 @@ function TagSidebarMenuItem({ menuButton }) {
         menuButton={menuButton}
         sectionKey={sectionKey}
         setOpenSections={setOpenSections}
+        unseenCount={unseenCount} // ✅ Pass it here
+        isLoadingUnseenCount={isLoadingUnseenCount}
       />
       {hasSubmenu && isOpen && (
         <SidebarMenuSub className="transition-all duration-200 border-l-2">

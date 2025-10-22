@@ -1,16 +1,16 @@
 export const AdminSidebarGroups = [
-  {
-    groupLabel: "Dashboard",
-    menuItems: [
-      {
-        menuButton: {
-          name: "Overview",
-          path: "/admin",
-          iconName: "Home",
-        },
-      },
-    ],
-  },
+  // {
+  //   groupLabel: "Dashboard",
+  //   menuItems: [
+  //     {
+  //       menuButton: {
+  //         name: "Overview",
+  //         path: "/admin",
+  //         iconName: "Home",
+  //       },
+  //     },
+  //   ],
+  // },
   {
     groupLabel: "E-commerce",
     menuItems: [
@@ -84,17 +84,18 @@ export const AdminSidebarGroups = [
     ],
   },
   {
-    groupLabel: "Preferences",
+    groupLabel: "Inbox",
     menuItems: [
+      // {
+      //   menuButton: {
+      //     name: "Settings",
+      //     path: "/admin/settings",
+      //     iconName: "Settings",
+      //   },
+      // },
       {
         menuButton: {
-          name: "Settings",
-          path: "/admin/settings",
-          iconName: "Settings",
-        },
-      },
-      {
-        menuButton: {
+          badge: { variant: "destructive" },
           name: "Chats",
           path: "/admin/chat",
           iconName: "MessageCircleMore",

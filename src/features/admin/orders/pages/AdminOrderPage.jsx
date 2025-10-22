@@ -3,6 +3,7 @@ import { formatDateFull } from "@/utils/dateUtils";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import {
   ArrowLeft,
+  ClockFading,
   CreditCard,
   DollarSign,
   LucidePackage2,
@@ -224,6 +225,7 @@ function OrderInformation({ user, address }) {
 }
 
 function CustomerInformation({ customer }) {
+  console.log("AdminOrderPage", customer);
   return (
     <section className="border p-4 rounded-2xl">
       <div className=" flex items-center gap-2 mb-5">

@@ -12,20 +12,9 @@ const useChat = {
    * Example: const { isLoadingChats, chats } = useChat.useAll({page: 1, limit: 10});
    */
   useAll: (queryParams = {}, options = {}) => {
-    const [searchParams] = useSearchParams();
-
-    const page = parseInt(searchParams.get("page")) || queryParams.page;
-    const limit = parseInt(searchParams.get("limit")) || queryParams.limit;
-
-    const mergedFilters = {
-      ...queryParams,
-      page,
-      limit,
-    };
-
     const query = useQuery({
-      queryKey: ["chats", "all", mergedFilters],
-      queryFn: () => chatApi.getAll(mergedFilters),
+      queryKey: ["chats", "all", queryParams],
+      queryFn: () => chatApi.getAll(queryParams),
       staleTime: 1 * 60 * 1000, // 1 minute - chats update frequently
       cacheTime: 3 * 60 * 1000,
       keepPreviousData: true,
@@ -40,6 +29,30 @@ const useChat = {
       refetchChats: query.refetch,
       isFetchingChats: query.isFetching,
       isPreviousData: query.isPreviousData,
+    };
+  },
+
+  /**
+   * 👁️ GET UNSEEN CHATS COUNT HOOK
+   * Returns: isLoadingUnseenCount, unseenCount, errorUnseenCount
+   * Example: const { isLoadingUnseenCount, unseenCount } = useChat.useUnseenCount();
+   */
+  useUnseenCount: (options = {}) => {
+    const query = useQuery({
+      queryKey: ["chats", "unseen"],
+      queryFn: () => chatApi.getUnseenCount(),
+      staleTime: 30 * 1000, // 30 seconds - frequently updated
+      cacheTime: 1 * 60 * 1000,
+      ...options,
+    });
+
+    return {
+      isLoadingUnseenCount: query.isLoading,
+      unseenCount: query.data?.unseen_count,
+      errorUnseenCount: query.error,
+      isErrorUnseenCount: query.isError,
+      refetchUnseenCount: query.refetch,
+      isFetchingUnseenCount: query.isFetching,
     };
   },
 

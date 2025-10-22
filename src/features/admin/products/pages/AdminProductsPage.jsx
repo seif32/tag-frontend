@@ -98,7 +98,7 @@ function ProductsControlsBar({ searchInput, setSearchInput }) {
   const active = searchParams.get("active") || "";
   const limit = parseInt(searchParams.get("limit")) || 10;
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 flex-col md:flex-row">
       <div className="relative ">
         <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
         <Input

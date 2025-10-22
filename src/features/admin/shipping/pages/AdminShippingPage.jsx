@@ -184,14 +184,19 @@ export default AdminShippingPage;
 
 function Title({ form, setCityModal, cityModal, onAddCity }) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col md:flex-row items-center justify-between">
       <div>
         <h1 className="text-4xl font-bold">Shipping fees management</h1>
         <p className="text-muted-foreground">
           Manage all your city shipping fees in here!
         </p>
       </div>
-      <Button onClick={onAddCity}>+ Add City</Button>
+      <Button
+        className={"w-full py-7 sm:w-fit px-8 sm:py-4"}
+        onClick={onAddCity}
+      >
+        + Add City
+      </Button>
       <CityModal form={form} modal={cityModal} setModal={setCityModal} />
     </div>
   );
@@ -253,10 +258,10 @@ function ControlsBar({ searchInput, setSearchInput }) {
   const status = searchParams.get("status") || "";
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col md:flex-row gap-2">
       <div className="relative ">
         <Search className="absolute w-4 h-4 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
-        <Textarea
+        <Input
           placeholder="Search by city . . ."
           value={searchInput}
           onChange={(e) => {

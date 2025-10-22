@@ -52,6 +52,8 @@ const productsApi = {
       if (filters.page) queryParams.append("page", filters.page);
       if (filters.limit) queryParams.append("limit", filters.limit);
 
+      if (filters.featured) queryParams.append("featured", filters.featured);
+
       // 🎯 Only append `active` if it's explicitly provided (0, 1, or "0", "1")
       if (filters.active !== null && filters.active !== undefined) {
         queryParams.append("active", filters.active);
