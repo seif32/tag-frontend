@@ -1,0 +1,78 @@
+name: Build and Deploy Frontend
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set lowercase repository owner
+        run: echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      
+      - name: Import Secrets from Vault
+        uses: hashicorp/vault-action@v3
+        with:
+          url: https://hv.peakops.cloud
+          token: ${{ secrets.VAULT_TOKEN }}
+          secrets: |
+            secret/data/tag/frontend VITE_API_URL | VITE_API_URL ;
+            secret/data/tag/frontend VITE_FIREBASE_API_KEY | VITE_FIREBASE_API_KEY ;
+            secret/data/tag/frontend VITE_FIREBASE_AUTH_DOMAIN | VITE_FIREBASE_AUTH_DOMAIN ;
+            secret/data/tag/frontend VITE_FIREBASE_PROJECT_ID | VITE_FIREBASE_PROJECT_ID ;
+            secret/data/tag/frontend VITE_FIREBASE_STORAGE_BUCKET | VITE_FIREBASE_STORAGE_BUCKET ;
+            secret/data/tag/frontend VITE_FIREBASE_MESSAGING_SENDER_ID | VITE_FIREBASE_MESSAGING_SENDER_ID ;
+            secret/data/tag/frontend VITE_FIREBASE_APP_ID | VITE_FIREBASE_APP_ID ;
+            secret/data/tag/deployment SSH_HOST | SSH_HOST ;
+            secret/data/tag/deployment SSH_USER | SSH_USER ;
+            secret/data/tag/deployment SSH_PORT | SSH_PORT
+      
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          build-args: |
+            VITE_API_URL=${{ env.VITE_API_URL }}
+            VITE_FIREBASE_API_KEY=${{ env.VITE_FIREBASE_API_KEY }}
+            VITE_FIREBASE_AUTH_DOMAIN=${{ env.VITE_FIREBASE_AUTH_DOMAIN }}
+            VITE_FIREBASE_PROJECT_ID=${{ env.VITE_FIREBASE_PROJECT_ID }}
+            VITE_FIREBASE_STORAGE_BUCKET=${{ env.VITE_FIREBASE_STORAGE_BUCKET }}
+            VITE_FIREBASE_MESSAGING_SENDER_ID=${{ env.VITE_FIREBASE_MESSAGING_SENDER_ID }}
+            VITE_FIREBASE_APP_ID=${{ env.VITE_FIREBASE_APP_ID }}
+          tags: |
+            ghcr.io/${{ env.REPO_OWNER }}/tag-frontend:latest
+            ghcr.io/${{ env.REPO_OWNER }}/tag-frontend:${{ github.sha }}
+      
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ env.SSH_HOST }}
+          username: ${{ env.SSH_USER }}
+          port: ${{ env.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/apps
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker-compose pull frontend
+            docker-compose up -d frontend
+            docker image prune -f
+            echo "✅ Frontend deployed successfully"
+
