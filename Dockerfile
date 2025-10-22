@@ -1,16 +1,13 @@
 # Build stage
-FROM node:20-alpine AS build
+FROM node:20 AS build
 
 WORKDIR /app
-
-# Install build dependencies for native modules
-RUN apk add --no-cache python3 make g++
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies (not using --ci to avoid npm bug with optional deps)
-RUN npm install
+# Install dependencies
+RUN npm ci
 
 # Copy source
 COPY . .
