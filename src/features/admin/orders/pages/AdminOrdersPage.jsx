@@ -140,29 +140,28 @@ function StatsContainer() {
       {
         title: "Total Orders",
         icon: ShoppingBag,
-        value: stats.total_orders,
+        value: stats.total_orders ?? 0,
         subtitle: "All orders ever placed",
       },
       {
         title: "New Orders",
         icon: PlusCircle,
-        value: stats.new_orders,
+        value: stats.new_orders ?? 0,
         subtitle: "Recently placed orders",
       },
 
       {
         title: "Pending Orders",
         icon: Clock,
-        value: stats.pending_orders,
+        value: stats.pending_orders ?? 0,
         subtitle: "Needs immediate attention",
       },
       {
         title: "Delivered Orders",
         icon: CheckCircle,
-        value: stats.delivered_orders,
+        value: stats.delivered_orders ?? 0,
         subtitle: `${(
-          (stats?.delivered_orders / stats?.total_orders) *
-          100
+          (stats?.delivered_orders ?? 0 / stats?.total_orders ?? 1) * 100
         ).toFixed(1)}% success rate`,
       },
     ];

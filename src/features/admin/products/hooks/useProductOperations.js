@@ -60,17 +60,17 @@ export const useProductOperations = (navigate) => {
       return;
     }
 
-    toast.info(
-      `🚀 Submitting product with ${validVariants.length} variant${
-        validVariants.length === 1 ? "" : "s"
-      }`,
-      {
-        description: `Creating ${
-          data.name || "product"
-        } with all selected variants`,
-        duration: 3000,
-      }
-    );
+    // toast.info(
+    //   `🚀 Submitting product with ${validVariants.length} variant${
+    //     validVariants.length === 1 ? "" : "s"
+    //   }`,
+    //   {
+    //     description: `Creating ${
+    //       data.name || "product"
+    //     } with all selected variants`,
+    //     duration: 3000,
+    //   }
+    // );
 
     const addTransformedData = {
       ...data,
@@ -84,13 +84,12 @@ export const useProductOperations = (navigate) => {
         vat: parseInt(variant?.vat),
         quantity: parseInt(variant?.quantity),
         price: parseFloat(variant?.price),
-        compare_at_price: parseFloat(variant?.compare_at_price || 0),
+        compare_at_price:
+          variant?.compare_at_price && parseFloat(variant.compare_at_price) > 0
+            ? parseFloat(variant.compare_at_price)
+            : undefined,
         cost_price: parseFloat(variant?.cost_price || 0),
-        currency: variant?.currency || "USD",
-        has_discount:
-          parseFloat(variant?.compare_at_price || 0) >
-          parseFloat(variant?.price),
-        in_stock: parseInt(variant?.quantity) > 0,
+        currency: variant?.currency || "GBP",
         types:
           variant?.types?.map((type) => ({
             type_id: parseInt(type?.typeId),

@@ -91,11 +91,7 @@ export default function OrderDataTable({
                   className="h-24 text-center"
                 >
                   <div className="flex flex-col items-center space-y-2">
-                    <div className="text-gray-400">📦</div>
                     <p className="text-gray-500">No orders found</p>
-                    <p className="text-sm text-gray-400">
-                      Try adjusting your filters or search terms
-                    </p>
                   </div>
                 </TableCell>
               </TableRow>

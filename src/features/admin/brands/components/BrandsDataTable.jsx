@@ -93,7 +93,7 @@ export function BrandsDataTable({ data = [], handleEdit, handleDelete }) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results found.
+                  No brands found.
                 </TableCell>
               </TableRow>
             )}

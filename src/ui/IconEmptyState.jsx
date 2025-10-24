@@ -1,9 +1,11 @@
 import { Package } from "lucide-react";
 
-export function IconEmptyState({ title, subtitle, icon }) {
+export function IconEmptyState({ title, subtitle, icon, height }) {
   const Icon = icon || Package;
   return (
-    <div className="  flex flex-col items-center justify-center text-center">
+    <div
+      className={`flex flex-col items-center justify-center text-center ${height}`}
+    >
       <div className="flex items-center justify-center w-24 h-24 mb-6 bg-gray-100 rounded-full">
         <Icon className="w-12 h-12 text-gray-400" />
       </div>

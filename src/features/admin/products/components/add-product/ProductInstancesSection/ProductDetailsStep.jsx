@@ -66,7 +66,7 @@ function ProductDetailsStep({ currentSelections }) {
             placeholder="e.g., 899.99"
           />
         </div>
-        <div className="flex-1">
+        {/* <div className="flex-1">
           <FormField
             control={control}
             name="variants.0.currency"
@@ -91,7 +91,7 @@ function ProductDetailsStep({ currentSelections }) {
               </FormItem>
             )}
           />
-        </div>
+        </div> */}
       </div>
       <div className="flex items-end gap-2">
         <div className="flex-1">

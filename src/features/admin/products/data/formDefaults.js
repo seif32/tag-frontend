@@ -44,14 +44,12 @@ export const productSchema = z.object({
   brand_id: z
     .union([z.string(), z.number()])
     .transform((val) => (val === "" ? "" : parseInt(val)))
-    .refine((val) => val !== "" && !isNaN(val), {
-      message: "Brand is required",
-    }),
+    .optional(),
 
   featured: z.boolean().default(false),
   active: z.boolean().default(true),
 
-  tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()).default([]).optional(),
 
   variants: z.array(z.any()).optional().default([]),
 });

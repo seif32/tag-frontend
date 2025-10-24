@@ -17,6 +17,7 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router";
+import { IconEmptyState } from "@/ui/IconEmptyState";
 
 function AdminVariantsTypesPage() {
   const [isTypeDialogOpen, setIsTypeDialogOpen] = useState(false);
@@ -148,7 +149,13 @@ function TypeCardContainer({ onEditType }) {
     );
   }
 
-  return (
+  return variantTypes?.data?.length === 0 ? (
+    <IconEmptyState
+      title={"No Variants"}
+      subtitle={"Add your first now!"}
+      height={"py-20"}
+    />
+  ) : (
     <div className="grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid gap-3 ">
       {variantTypes?.data?.map((type) => (
         <TypeCard key={type?.id} type={type} onEditType={onEditType} />

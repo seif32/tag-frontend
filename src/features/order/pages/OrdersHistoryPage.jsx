@@ -38,11 +38,12 @@ function OrdersHistoryPage() {
         onDismiss={() => refetchUserOrders()}
       />
     );
+  console.log(userOrders);
 
   return (
     <div className="w-full mx-auto max-w-250 flex flex-col space-y-7">
-      <Title limit={userOrders.limit} total={userOrders.total} />
-      {userOrders.total > 0 ? (
+      <Title limit={userOrders?.limit} total={userOrders?.total} />
+      {userOrders?.total > 0 ? (
         <OrderHistoryCardContainer orders={userOrders?.data} />
       ) : (
         <EmptyState
@@ -67,6 +68,8 @@ function OrdersHistoryPage() {
 export default OrdersHistoryPage;
 
 function Title({ limit, total }) {
+  console.log("limit", limit);
+  console.log("total", total);
   return (
     <div className="mb-8 ">
       <h1 className="text-2xl sm:text-4xl font-bold">Orders History</h1>
@@ -110,8 +113,6 @@ function OrderHistoryCard({
   totalPrice,
 }) {
   const navigate = useNavigate();
-
-  console.log("products", products);
 
   // Calculate total items including bundles
   const regularItemsCount = products.reduce(

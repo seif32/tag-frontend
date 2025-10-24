@@ -16,9 +16,6 @@ import {
   Calendar,
   Percent,
   DollarSign,
-  Users,
-  Target,
-  TrendingUp,
   Clock,
   CheckCircle,
 } from "lucide-react";
@@ -254,15 +251,9 @@ export default function PromoCodesTable({ promoCodes, onView, onEdit }) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={8} className="text-center py-12">
-                <div className="space-y-3">
-                  <div className="text-4xl">🎫</div>
-                  <div className="text-lg font-medium text-gray-500">
-                    No promo codes found
-                  </div>
-                  <div className="text-sm text-gray-400">
-                    Create your first promotional code to get started
-                  </div>
+              <TableCell colSpan={8} className="h-24 text-center">
+                <div className="flex flex-col items-center space-y-2">
+                  <p className="text-gray-500">No promo-codes found</p>
                 </div>
               </TableCell>
             </TableRow>

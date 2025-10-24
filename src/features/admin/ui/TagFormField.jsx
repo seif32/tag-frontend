@@ -203,7 +203,7 @@ function renderFieldByType(type, field, props) {
       return (
         <Select
           onValueChange={field.onChange}
-          value={field.value || ""}
+          value={field.value ? String(field.value) : ""}
           disabled={disabled}
         >
           <SelectTrigger className={`w-full ${triggerClassName}`}>

@@ -81,13 +81,13 @@ export default function ControlsBar({
             value={String(limit)}
             onValueChange={(value) => updateUrlParams({ limit: Number(value) })}
           >
-            <SelectTrigger className="w-20 sm:w-24" aria-label="Items per page">
+            <SelectTrigger className=" " aria-label="Items per page">
               <SelectValue placeholder="10" />
             </SelectTrigger>
             <SelectContent>
               {[10, 20, 50, 100].map((size) => (
                 <SelectItem key={size} value={String(size)}>
-                  {size} / page
+                  {size}
                 </SelectItem>
               ))}
             </SelectContent>

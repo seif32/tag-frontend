@@ -209,28 +209,28 @@ function ShippingStatsContainer({ stats }) {
         id: 1,
         title: "Total Cities",
         icon: MapPin,
-        value: stats?.total_cities || 0,
+        value: stats?.total_cities ?? 0,
         subtitle: "Cities configured for shipping",
       },
       {
         id: 2,
         title: "Average Shipping Fee",
         icon: DollarSign,
-        value: formatCurrency(stats?.avg_shipping_fee),
+        value: formatCurrency(stats?.avg_shipping_fee ?? 0),
         subtitle: "Across all cities with shipping",
       },
       {
         id: 3,
         title: "Free Shipping Cities",
         icon: Gift,
-        value: stats?.free_shipping_cities || 0,
+        value: stats?.free_shipping_cities ?? 0,
         subtitle: "Cities offering free shipping threshold",
       },
       {
         id: 4,
         title: "Always Charged Cities",
         icon: Truck,
-        value: stats?.always_charged_cities || 0,
+        value: stats?.always_charged_cities ?? 0,
         subtitle: "Cities where free shipping is disabled",
       },
     ];
@@ -316,9 +316,6 @@ function ShippingDataTable({ cities, onEditCity }) {
   return (
     <div className="p-4  rounded-lg border">
       <Table className={" "}>
-        <TableCaption>
-          A list of the cities and their shipping fees.
-        </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">ID</TableHead>
@@ -332,43 +329,53 @@ function ShippingDataTable({ cities, onEditCity }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {cities?.map((city) => (
-            <TableRow key={city?.id}>
-              <TableCell className="font-medium">{city?.id}</TableCell>
-              <TableCell>{city?.name}</TableCell>
-              <TableCell className={"font-semibold"}>
-                {formatCurrency(city?.shipping_fees)}
-              </TableCell>
-              <TableCell>
-                {formatCurrency(city?.free_shipping_threshold)}
-              </TableCell>
-              <TableCell>
-                <span
-                  className={`px-3 py-1 rounded-lg text-xs ${
-                    city?.always_charge_shipping === 1
-                      ? "text-red-500 bg-red-100"
-                      : "text-green-500 bg-green-100"
-                  } `}
-                >
-                  {city?.always_charge_shipping === 1
-                    ? "Yes"
-                    : "FREE above threshold"}
-                </span>
-              </TableCell>
-              <TableCell className={"text-xs text-muted-foreground"}>
-                {formatDateDMY(city?.created_at)}
-              </TableCell>
-              <TableCell className={"text-xs text-muted-foreground"}>
-                {formatDateDMY(city?.updated_at)}
-              </TableCell>
-              <TableCell className={"flex justify-end mr-4"}>
-                <SquarePen
-                  className="size-4 text-accent cursor-pointer"
-                  onClick={() => onEditCity(city)}
-                />
+          {cities?.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={8} className="h-24 text-center">
+                <div className="flex flex-col items-center space-y-2">
+                  <p className="text-gray-500">No cities found</p>
+                </div>
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            cities?.map((city) => (
+              <TableRow key={city?.id}>
+                <TableCell className="font-medium">{city?.id}</TableCell>
+                <TableCell>{city?.name}</TableCell>
+                <TableCell className={"font-semibold"}>
+                  {formatCurrency(city?.shipping_fees)}
+                </TableCell>
+                <TableCell>
+                  {formatCurrency(city?.free_shipping_threshold)}
+                </TableCell>
+                <TableCell>
+                  <span
+                    className={`px-3 py-1 rounded-lg text-xs ${
+                      city?.always_charge_shipping === 1
+                        ? "text-red-500 bg-red-100"
+                        : "text-green-500 bg-green-100"
+                    } `}
+                  >
+                    {city?.always_charge_shipping === 1
+                      ? "Yes"
+                      : "FREE above threshold"}
+                  </span>
+                </TableCell>
+                <TableCell className={"text-xs text-muted-foreground"}>
+                  {formatDateDMY(city?.created_at)}
+                </TableCell>
+                <TableCell className={"text-xs text-muted-foreground"}>
+                  {formatDateDMY(city?.updated_at)}
+                </TableCell>
+                <TableCell className={"flex justify-end mr-4"}>
+                  <SquarePen
+                    className="size-4 text-accent cursor-pointer"
+                    onClick={() => onEditCity(city)}
+                  />
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

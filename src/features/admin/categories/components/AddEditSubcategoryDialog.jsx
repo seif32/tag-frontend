@@ -8,13 +8,38 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Info, Upload, Tag } from "lucide-react";
+import { Plus, Tag } from "lucide-react";
 import TagFormField from "../../ui/TagFormField";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import useCategories from "@/hooks/useCategories";
 import LoadingState from "@/ui/LoadingState";
 import { useEffect } from "react";
+
+import { useState } from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 function AddEditSubcategoryDialog({
   subcategory,

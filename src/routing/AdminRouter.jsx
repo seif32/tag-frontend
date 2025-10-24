@@ -1,10 +1,8 @@
-import { ROUTES } from "@/constants";
 import AdminBrandsPage from "@/features/admin/brands/pages/AdminBrandsPage";
 import AdminBundlesPage from "@/features/admin/bundles/pages/AdminBundlesPage";
 import AdminCategoriesPage from "@/features/admin/categories/pages/AdminCategoriesPage";
 import AdminChatsLayout from "@/features/admin/chat/components/AdminChatsLayout";
 import AdminChatPage from "@/features/admin/chat/pages/AdminChatPage";
-import AdminDashboardPage from "@/features/admin/dashboard/pages/AdminDashboardPage";
 import AdminOrderPage from "@/features/admin/orders/pages/AdminOrderPage";
 import AdminOrdersPage from "@/features/admin/orders/pages/AdminOrdersPage";
 import AdminProductPage from "@/features/admin/products/pages/AdminProductPage";
@@ -15,7 +13,6 @@ import AdminTagsPage from "@/features/admin/tags/pages/AdminTagsPage";
 import AdminVariantsTypesPage from "@/features/admin/variants/pages/AdminVariantsTypesPage";
 import AdminVariantsValuesPage from "@/features/admin/variants/pages/AdminVariantsValuesPage";
 import AdminLayout from "@/layout/AdminLayout";
-import EmptyState from "@/ui/EmptyState";
 import { IconEmptyState } from "@/ui/IconEmptyState";
 import { Routes, Route } from "react-router";
 
@@ -23,9 +20,8 @@ function AdminRouter() {
   return (
     <Routes>
       <Route path="/" element={<AdminLayout />}>
-        <Route index element={<AdminDashboardPage />} />
+        <Route index path={"products"} element={<AdminProductsPage />} />
         <Route path={"categories"} element={<AdminCategoriesPage />} />
-        <Route path={"products"} element={<AdminProductsPage />} />
         <Route
           path={"products/add"}
           element={<AdminProductPage mode="add" />}

@@ -19,7 +19,7 @@ const ProductLayout = ({
   const isEditMode = mode === "edit";
 
   return (
-    <div className="flex flex-col gap-4 mb-40">
+    <div className="flex flex-col gap-4 mb-40 px-6">
       <ProductHeader
         handleSubmit={form.handleSubmit}
         onSubmit={() => {}} // This will be handled by the form provider

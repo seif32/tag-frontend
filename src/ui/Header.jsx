@@ -5,7 +5,6 @@ import SearchInput from "./SearchInput";
 import CartBadge from "@/features/cart/components/CartBadge";
 import { useAuthStore } from "@/auth/store/authStore";
 import { FiPackage, FiShoppingCart, FiMenu, FiX } from "react-icons/fi";
-import { IoIosLogOut } from "react-icons/io";
 import { useState } from "react";
 
 const Header = () => {
@@ -31,7 +30,7 @@ const Header = () => {
     <header className="sticky top-0 z-50 border-b border-border backdrop-blur">
       <div className="flex items-center justify-between h-16 px-4 md:px-8">
         {/* Logo */}
-        <Link to={ROUTES.HOME} className="text-xl font-bold text-gray-800">
+        <Link to={"/"} className="text-xl font-bold text-gray-800">
           TAG
         </Link>
 

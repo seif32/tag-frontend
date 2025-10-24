@@ -100,11 +100,6 @@ export const CategoriesDataTable = ({ data, onEdit, onDelete, onView }) => {
                     <div className="text-muted-foreground">
                       No subcategories found
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      {globalFilter
-                        ? "Try adjusting your search"
-                        : "Create your first subcategory to get started"}
-                    </div>
                   </div>
                 </TableCell>
               </TableRow>

@@ -158,7 +158,7 @@ function PageHeader({ products, categoryId, subcategoryId }) {
               <SelectValue placeholder={limit} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[12, 24, 36, 56, 90].map((pageSize) => (
+              {[10, 20, 40, 100].map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>

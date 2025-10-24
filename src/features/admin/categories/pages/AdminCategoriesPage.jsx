@@ -63,7 +63,7 @@ export default function AdminCategoriesPage() {
   if (errorAllSubCategories)
     return (
       <ErrorMessage
-        message={errorAllSubCategories.message || "Failed to load data"}
+        message={errorAllSubCategories?.message || "Failed to load data"}
         dismissible={true}
         onDismiss={() => refetchAllSubCategories()}
       />
@@ -120,7 +120,7 @@ function PageHeader({
   subcategory,
   openSubcategoryDialog,
   setOpenSubcategoryDialog,
-  handleAdd,
+  onAdd,
   refetchAllSubCategories,
 }) {
   return (
@@ -137,7 +137,7 @@ function PageHeader({
           openSubcategoryDialog={openSubcategoryDialog}
           setOpenSubcategoryDialog={setOpenSubcategoryDialog}
           subcategory={subcategory}
-          onAdd={handleAdd}
+          onAdd={onAdd}
           mode={subcategory ? "edit" : "create"}
           refetchAllSubCategories={refetchAllSubCategories}
         />

@@ -117,28 +117,27 @@ function PromoCodeStatsContainer({ promoStats }) {
       {
         title: "Total Codes",
         icon: Tag,
-        value: stats.total_codes,
+        value: stats.total_codes ?? 0,
         subtitle: "All promo codes created",
       },
       {
         title: "Active Codes",
         icon: CheckCircle,
-        value: stats.active_codes,
+        value: stats.active_codes ?? 0,
         subtitle: "Currently usable codes",
       },
       {
         title: "Total Usage",
         icon: TrendingUp,
-        value: stats.total_usage,
+        value: stats.total_usage ?? 0,
         subtitle: `${(
-          (stats?.total_usage / stats?.total_capacity) *
-          100
+          (stats?.total_usage ?? 0 / stats?.total_capacity ?? 1) * 100
         ).toFixed(1)}% capacity used`,
       },
       {
         title: "Expiring Soon",
         icon: Clock,
-        value: stats.expiring_soon,
+        value: stats.expiring_soon ?? 0,
         subtitle: "Within 3 days",
       },
     ];
