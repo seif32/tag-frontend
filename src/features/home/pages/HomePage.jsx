@@ -1,17 +1,13 @@
 import { Button } from "@/components/ui/button";
 import HeroImage from "@/assets/hero-product.png";
-import Product1 from "@/assets/product2.jpg";
-import Product2 from "@/assets/product7.jpg";
-import Product3 from "@/assets/product4.jpg";
-import Product4 from "@/assets/product5.jpg";
 import BulkOrders from "@/assets/promo-bulk-orders.jpg";
 import DeliveryNetwork from "@/assets/promo-delivery-network.jpg";
 import MultiCategory from "@/assets/promo-multi-category.jpg";
 import Hand from "@/assets/hand-home.png";
 import {
-  ArrowRight,
   Headphones,
   MoveRight,
+  Package,
   RefreshCcw,
   ShieldCheck,
   ShipIcon,
@@ -22,6 +18,8 @@ import useProducts from "@/hooks/useProducts";
 import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import useCategories from "@/hooks/useCategories";
+import { IconEmptyState } from "@/ui/IconEmptyState";
+import DashedIconEmptyState from "@/ui/DashedIconEmptyState";
 
 function HomePage() {
   return (
@@ -51,15 +49,19 @@ function HeroBanner() {
           guaranteed
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
-          <Button className={"capitalize h-15 sm:w-55 w-full rounded-full"}>
-            see all products
-          </Button>
-          <Button
-            className={"capitalize h-15 sm:w-55 w-full rounded-full"}
-            variant={"outline"}
-          >
-            shop by category
-          </Button>
+          <Link to={"/products"}>
+            <Button className={"capitalize h-15 sm:w-55 w-full rounded-full"}>
+              see all products
+            </Button>
+          </Link>
+          <Link to={"/categories"}>
+            <Button
+              className={"capitalize h-15 sm:w-55 w-full rounded-full"}
+              variant={"outline"}
+            >
+              shop by category
+            </Button>
+          </Link>
         </div>
       </div>
       <div className="flex-1 sm:block hidden">
@@ -91,8 +93,8 @@ function CategoriesSection() {
     );
 
   return (
-    <section className="flex flex-col gap-3">
-      <div className="capitalize flex justify-between font-semibold ">
+    <section className="flex flex-col gap-3 w-full">
+      <div className="w-full capitalize flex justify-between font-semibold ">
         <Link to={"/categories"} className="hover:text-accent">
           shop by categories
         </Link>
@@ -101,27 +103,34 @@ function CategoriesSection() {
           <MoveRight />
         </Link>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-        {categories?.data?.map((category) => (
-          <div
-            key={category?.id}
-            className="h-80 sm:h-100 bg-stone-200 relative hover:shadow transition-all duration-300 cursor-pointer"
-            onClick={() => navigate(`categories/${category?.id}/products`)}
-          >
-            <img
-              src={category?.image_url}
-              alt=""
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4 text-white">
-              <span className="font-semibold text-lg">{category?.name}</span>
-              <p className="text-sm opacity-80">
-                +{category?.active_product_count || 0} items
-              </p>
+      {categories?.data?.length === 0 ? (
+        <DashedIconEmptyState
+          title={"No Categories yet"}
+          subtitle={"Will be added soon"}
+        />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 ">
+          {categories?.data?.map((category) => (
+            <div
+              key={category?.id}
+              className="h-80 sm:h-100 bg-stone-200 relative hover:shadow transition-all duration-300 cursor-pointer"
+              onClick={() => navigate(`categories/${category?.id}/products`)}
+            >
+              <img
+                src={category?.image_url}
+                alt=""
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4 text-white">
+                <span className="font-semibold text-lg">{category?.name}</span>
+                <p className="text-sm opacity-80">
+                  +{category?.active_product_count || 0} items
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -212,19 +221,26 @@ function FeaturedProducts() {
           <MoveRight />
         </Link>
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-        {products?.data?.map((product) => (
-          <ProductCard
-            key={product?.id}
-            brand={product?.brand_name}
-            category={product?.category_name}
-            name={product?.name}
-            productId={product?.id}
-            onViewProductDetails={handleViewProductDetails}
-            variantCount={product?.variant_count}
-          />
-        ))}
-      </div>
+      {products?.data?.length === 0 ? (
+        <DashedIconEmptyState
+          title={"No Featured Products yet"}
+          subtitle={"Will be added soon"}
+        />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+          {products?.data?.map((product) => (
+            <ProductCard
+              key={product?.id}
+              brand={product?.brand_name}
+              category={product?.category_name}
+              name={product?.name}
+              productId={product?.id}
+              onViewProductDetails={handleViewProductDetails}
+              variantCount={product?.variant_count}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

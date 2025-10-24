@@ -16,8 +16,8 @@ function CustomerRouter() {
   return (
     <Routes>
       <Route path="/" element={<CustomerLayout />}>
-        <Route index element={<HomePage />} />
         {/*Begin from here ✅✅✅✅ */}
+        <Route index element={<HomePage />} />
         <Route path="products" element={<ProductsPage />} />
         <Route
           path="categories/:categoryId/products"
