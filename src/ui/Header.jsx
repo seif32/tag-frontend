@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/constants";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SearchInput from "./SearchInput";
 import CartBadge from "@/features/cart/components/CartBadge";
 import { useAuthStore } from "@/auth/store/authStore";
@@ -9,13 +9,17 @@ import { useState } from "react";
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
+  const clearCart = useAuthStore((state) => state.user);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function handleLogout() {
     logout();
+    navigate("/");
+    clearCart();
     localStorage.setItem("isAgeVerified", "false");
     setIsMenuOpen(false);
   }

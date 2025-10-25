@@ -5,7 +5,9 @@ import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import { useState } from "react";
 import useDebounce from "@/hooks/useDebounce";
-import { Menu, X } from "lucide-react";
+import { Menu, MessageCircleHeart, MessageCircleMore, X } from "lucide-react";
+import DashedIconEmptyState from "@/ui/DashedIconEmptyState";
+import { IconEmptyState } from "@/ui/IconEmptyState";
 
 function AdminChatsLayout() {
   const { chatId } = useParams();
@@ -95,11 +97,11 @@ function AdminChatsLayout() {
         {chatId ? (
           <Outlet />
         ) : (
-          <div className="h-full flex items-center justify-center bg-stone-50">
-            <p className="text-muted-foreground text-center px-4">
-              Select a chat to start messaging
-            </p>
-          </div>
+          <IconEmptyState
+            height={"py-50"}
+            subtitle={"Select one of the contacts"}
+            icon={MessageCircleMore}
+          />
         )}
       </div>
     </div>

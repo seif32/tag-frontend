@@ -1,7 +1,9 @@
 import { Input } from "@/components/ui/input";
 import useChat from "@/hooks/useChat";
+import { IconEmptyState } from "@/ui/IconEmptyState";
 import LoadingState from "@/ui/LoadingState";
 import { formatDateMDY } from "@/utils/dateUtils";
+import { MessageCircleCode, MessageCircleDashed } from "lucide-react";
 import { useNavigate } from "react-router";
 
 function ChatList({
@@ -14,16 +16,24 @@ function ChatList({
   return (
     <div className="flex flex-col gap-4  h-screen border-r-0.2 ">
       <ListHeader setSearchInput={setSearchInput} searchInput={searchInput} />
-      <div className="flex-1 overflow-y-auto">
-        {chats?.map((chat) => (
-          <ChatCard
-            key={chat?.id}
-            {...chat}
-            onChatClick={onChatClick}
-            selectedChatId={selectedChatId}
-          />
-        ))}
-      </div>
+      {chats?.length === 0 ? (
+        <IconEmptyState
+          height={"py-15"}
+          subtitle={"No contacts yet"}
+          icon={MessageCircleDashed}
+        />
+      ) : (
+        <div className="flex-1 overflow-y-auto">
+          {chats?.map((chat) => (
+            <ChatCard
+              key={chat?.id}
+              {...chat}
+              onChatClick={onChatClick}
+              selectedChatId={selectedChatId}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -43,9 +53,11 @@ function ListHeader({ setSearchInput, searchInput }) {
     <div className="px-3 flex gap-2 flex-col">
       <div className="flex justify-between">
         <h1 className="px-2 font-bold text-lg">Chats</h1>
-        <span className="w-6 h-6 rounded-full bg-red-500 grid place-items-center text-xs text-white ">
-          {unseenCount}
-        </span>
+        {Boolean(unseenCount) && (
+          <span className="w-6 h-6 rounded-full bg-red-500 grid place-items-center text-xs text-white ">
+            {unseenCount}
+          </span>
+        )}
       </div>
       <Input
         className={"h-8 rounded-2xl"}
