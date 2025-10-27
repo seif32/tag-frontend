@@ -1,4 +1,5 @@
 import { useAuthStore } from "@/auth/store/authStore";
+import LoadingState from "@/ui/LoadingState";
 import { Navigate, useLocation } from "react-router";
 
 function ProtectedRoute({ children, requireVerified = true }) {
@@ -9,7 +10,7 @@ function ProtectedRoute({ children, requireVerified = true }) {
 
   // ✅ Show loading while checking auth
   if (loading) {
-    return <div>Loading...</div>; // Replace with your LoadingState component
+    return <LoadingState type="page" />; // Replace with your LoadingState component
   }
 
   if (!isAuth) {
@@ -17,9 +18,9 @@ function ProtectedRoute({ children, requireVerified = true }) {
   }
 
   // ✅ Uncomment if you want email verification
-  // if (requireVerified && user && !user.emailVerified) {
-  //   return <Navigate to="/check-email" replace />;
-  // }
+  if (requireVerified && user && !user.emailVerified) {
+    return <Navigate to="/check-email" replace />;
+  }
 
   return children;
 }

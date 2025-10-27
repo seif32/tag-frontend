@@ -7,6 +7,8 @@ function ProtectedAdminRoute({ children }) {
   const user = useAuthStore((state) => state.user);
   const loading = useAuthStore((state) => state.loading);
 
+  console.log("XXX", user);
+
   // ✅ Show loading while checking auth
   if (loading) {
     return <LoadingState type="page" />; // Replace with your LoadingState component
@@ -17,14 +19,14 @@ function ProtectedAdminRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
+  // Check if user is admin
+  // if (user && user.role !== "admin") {
+  //   return <Navigate to="/" replace />; // Redirect to customer area
+  // }
+
   // Check if email is verified first (uncomment if needed)
   // if (user && !user.emailVerified) {
   //   return <Navigate to="/check-email" replace />;
-  // }
-
-  // // Check if user is admin
-  // if (user && user.role !== "admin") {
-  //   return <Navigate to="/" replace />; // Redirect to customer area
   // }
 
   return children;

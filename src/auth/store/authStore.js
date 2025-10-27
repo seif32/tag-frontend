@@ -13,13 +13,9 @@ export const useAuthStore = create((set, get) => ({
 
     try {
       const userCredential = await authApi.login(email, password);
-      const token = await getTokenWithRetry(userCredential.user);
-      const backendProfile = await fetchBackendProfile(
-        userCredential.user.uid,
-        token
-      );
+      const backendProfile = await fetchBackendProfile(userCredential.user.uid);
 
-      const user = buildUserObject(userCredential.user, backendProfile, token);
+      const user = buildUserObject(userCredential.user, backendProfile);
 
       set({
         ...get(),
@@ -63,12 +59,10 @@ export const useAuthStore = create((set, get) => ({
         console.warn("⚠️ Failed to send verification email:", emailError);
       }
 
-      const token = await getTokenWithRetry(userCredential.user);
       const completeProfile =
-        (await fetchBackendProfile(userCredential.user.uid, token)) ||
-        backendUser;
+        (await fetchBackendProfile(userCredential.user.uid)) || backendUser;
 
-      const user = buildUserObject(userCredential.user, completeProfile, token);
+      const user = buildUserObject(userCredential.user, completeProfile);
 
       setAuthenticatedState(set, user);
       return user;
@@ -101,13 +95,9 @@ export const useAuthStore = create((set, get) => ({
 
       if (firebaseUser) {
         try {
-          const token = await getTokenWithRetry(firebaseUser);
-          const backendProfile = await fetchBackendProfile(
-            firebaseUser.uid,
-            token
-          );
+          const backendProfile = await fetchBackendProfile(firebaseUser.uid);
 
-          const user = buildUserObject(firebaseUser, backendProfile, token);
+          const user = buildUserObject(firebaseUser, backendProfile);
           setAuthenticatedState(set, user);
         } catch (tokenError) {
           console.error("🔴 Failed to get user token during init:", tokenError);
@@ -130,111 +120,18 @@ export const useAuthStore = create((set, get) => ({
 
     return unsubscribe;
   },
-
-  refreshAuthState: async () => {
-    const currentUser = authApi.getCurrentUser();
-    if (!currentUser) return;
-
-    try {
-      await currentUser.reload(); // Refresh Firebase user
-      const token = await currentUser.getIdToken(true); // Force token refresh
-
-      const currentState = get();
-      if (currentState.user) {
-        set({
-          ...currentState,
-          user: {
-            ...currentState.user,
-            emailVerified: currentUser.emailVerified,
-            token,
-          },
-        });
-      }
-    } catch (error) {
-      console.error("Failed to refresh auth state:", error);
-      throw error;
-    }
-  },
-
-  refreshProfile: async () => {
-    const currentUser = get().user;
-    if (!currentUser?.uid) {
-      throw new Error("No authenticated user to refresh");
-    }
-
-    try {
-      const token = await authApi.getCurrentUserToken();
-      const backendProfile = await authApi.getUserByUid(currentUser.uid, token);
-
-      const updatedUser = {
-        ...currentUser,
-        ...backendProfile,
-        token,
-      };
-
-      set({ ...get(), user: updatedUser });
-      return updatedUser;
-    } catch (error) {
-      console.error("Failed to refresh profile:", error);
-      throw error;
-    }
-  },
-
-  updateProfile: async (updateData) => {
-    const currentUser = get().user;
-    if (!currentUser?.id) {
-      throw new Error("No authenticated user to update");
-    }
-
-    try {
-      const token = await authApi.getCurrentUserToken();
-      const updatedProfile = await authApi.updateUser(
-        currentUser.id,
-        updateData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      const updatedUser = {
-        ...currentUser,
-        ...updatedProfile,
-      };
-
-      set({ ...get(), user: updatedUser });
-      return updatedUser;
-    } catch (error) {
-      console.error("Failed to update profile:", error);
-      throw error;
-    }
-  },
-
-  clearError: () => {
-    set({ ...get(), error: null });
-  },
 }));
 
-/*🔴🔴🔴🔴🔴🔴🔴 Helper Functions*/
-
-const getTokenWithRetry = async (firebaseUser) => {
+const fetchBackendProfile = async (uid) => {
   try {
-    return await firebaseUser.getIdToken();
-  } catch (tokenError) {
-    console.warn("Token error, forcing refresh:", tokenError);
-    return await firebaseUser.getIdToken(true); // Force refresh
-  }
-};
-
-const fetchBackendProfile = async (uid, token) => {
-  try {
-    return await authApi.getUserByUid(uid, token);
+    return await authApi.getUserByUid(uid);
   } catch (profileError) {
     console.warn("⚠️ Could not fetch backend profile:", profileError);
     return null;
   }
 };
 
-const buildUserObject = (firebaseUser, backendProfile, token) => ({
+const buildUserObject = (firebaseUser, backendProfile) => ({
   id: backendProfile?.id || null,
   first_name: backendProfile?.first_name || null,
   last_name: backendProfile?.last_name || null,
@@ -253,7 +150,6 @@ const buildUserObject = (firebaseUser, backendProfile, token) => ({
   uid: firebaseUser.uid,
   email: firebaseUser.email,
   emailVerified: firebaseUser.emailVerified,
-  token,
 
   // Include any other backend fields
   ...backendProfile,

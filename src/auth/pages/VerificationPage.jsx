@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuthStore } from "@/auth/store/authStore";
 import { toast } from "sonner";
+import LoadingState from "@/ui/LoadingState";
 
 function VerificationPage() {
   const navigate = useNavigate();
@@ -167,19 +168,23 @@ function VerificationPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-blue-100">
+      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
         {status === "loading" && (
           <div>
-            <div className="text-6xl mb-4">⏳</div>
-            <h2 className="text-xl font-semibold mb-2">
-              Verifying your email...
+            <LoadingState />
+            <h2 className="text-xl font-semibold mb-2 text-blue-700">
+              Hang tight, we’re verifying!
             </h2>
-            <p className="text-gray-600">
-              Please wait while we confirm your email address.
+            <p className="text-gray-600 mb-2">
+              Ensuring your email is secure...
             </p>
-
-            {/* ✅ Debug Info Panel (development only) */}
+            {debugInfo.email && (
+              <p className="text-xs text-gray-400 mt-2">
+                Email: {debugInfo.email}
+              </p>
+            )}
+            {/* Debug Info Panel (development only) */}
             {process.env.NODE_ENV === "development" && (
               <div className="mt-6 p-4 bg-gray-100 rounded-lg text-left">
                 <h4 className="font-bold mb-2 text-sm">Debug Info:</h4>
@@ -193,29 +198,44 @@ function VerificationPage() {
 
         {status === "success" && (
           <div>
-            <div className="text-6xl mb-4">✅</div>
-            <h2 className="text-2xl font-bold mb-4 text-green-600">
-              Email Verified!
+            <div className="text-6xl mb-4">🎉</div>
+            <h2 className="text-2xl font-bold mb-2 text-green-600">
+              Success! Email Verified
             </h2>
             <p className="mb-4 text-gray-700">{message}</p>
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-              <div className="animate-spin w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full"></div>
-              <span>Redirecting you to your dashboard...</span>
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+              <LoadingState />
+              <span>Redirecting to your dashboard...</span>
             </div>
+            {/* Optionally, bring confetti animation here */}
           </div>
         )}
 
         {status === "error" && (
           <div>
-            <div className="text-6xl mb-4">❌</div>
-            <h2 className="text-2xl font-bold mb-4 text-red-600">
-              Verification Failed
+            <div className="text-6xl mb-2">😓</div>
+            <h2 className="text-2xl font-bold mb-2 text-red-600">
+              Verification Didn’t Work
             </h2>
-            <p className="mb-6 text-gray-700">{message}</p>
-
-            {/* ✅ Debug Info Panel for errors (development only) */}
+            <p className="mb-4 text-gray-700">{message}</p>
+            <div className="space-y-2">
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full bg-black text-white px-4 py-2 rounded hover:bg-black/70 transition"
+                autoFocus
+              >
+                Try Again
+              </button>
+              <button
+                onClick={() => navigate("/login")}
+                className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+              >
+                Back to Login
+              </button>
+            </div>
+            {/* Debug Info Panel for errors (development only) */}
             {process.env.NODE_ENV === "development" && (
-              <div className="mb-6 p-4 bg-red-50 rounded-lg text-left">
+              <div className="mt-4 p-4 bg-red-50 rounded-lg text-left">
                 <h4 className="font-bold mb-2 text-sm text-red-700">
                   Debug Info:
                 </h4>
@@ -224,21 +244,6 @@ function VerificationPage() {
                 </pre>
               </div>
             )}
-
-            <div className="space-y-3">
-              <button
-                onClick={() => window.location.reload()}
-                className="w-full bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
-              >
-                Try Again
-              </button>
-              <button
-                onClick={() => navigate("/login")}
-                className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-              >
-                Back to Login
-              </button>
-            </div>
           </div>
         )}
       </div>

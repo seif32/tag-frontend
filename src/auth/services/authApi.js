@@ -121,20 +121,13 @@ const authApi = {
    * Includes user addresses and complete profile information
    * Example: const profile = await authApi.getUserByUid("Yl3a2XETvSVW1JI6XEW7ZZrxJwA2", token);
    */
-  getUserByUid: async (firebaseUid, token, options = {}) => {
+  getUserByUid: async (firebaseUid, options = {}) => {
     if (!firebaseUid) {
       throw new Error("Firebase UID is required");
     }
 
-    if (!token) {
-      throw new Error("Authorization token is required");
-    }
-
     try {
       return await api.get(`/users/uid/${firebaseUid}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         ...options,
       });
     } catch (error) {

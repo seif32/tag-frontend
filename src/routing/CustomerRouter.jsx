@@ -16,7 +16,6 @@ function CustomerRouter() {
   return (
     <Routes>
       <Route path="/" element={<CustomerLayout />}>
-        {/*Begin from here ✅✅✅✅ */}
         <Route index element={<HomePage />} />
         <Route path="products" element={<ProductsPage />} />
         <Route
@@ -31,7 +30,14 @@ function CustomerRouter() {
         <Route path="categories/:categoryId" element={<CategoriesPage />} />
         <Route path="products/:id" element={<ProductDetailPage />} />
 
-        <Route path="cart" element={<CartPage />} />
+        <Route
+          path="cart"
+          element={
+            <ProtectedRoute>
+              <CartPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="checkout"
           element={

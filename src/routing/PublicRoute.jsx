@@ -9,8 +9,8 @@ function PublicRoute({ children }) {
   if (loading) {
     return <div>Loading...</div>;
   }
-  // if (isAuthenticated && !user?.emailVerified)
-  //   return <Navigate to={"/check-email"} />;
+  if (isAuthenticated && !user?.emailVerified)
+    return <Navigate to={"/check-email"} />;
 
   if (isAuthenticated && user) {
     const redirectPath = user.role === "admin" ? "/admin" : "/";

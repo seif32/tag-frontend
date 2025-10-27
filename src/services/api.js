@@ -1,15 +1,19 @@
 import { API_BASE_URL } from "@/constants";
+import { getAuth } from "firebase/auth";
 
-// Get auth token (Firebase will be added here later)
-const getAuthToken = () => {
-  // For now, return null - we'll add Firebase auth later
-  return null;
+async function getAuthToken() {
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
 
-  // Future Firebase implementation will look like:
-  // import { getAuth } from 'firebase/auth'
-  // const auth = getAuth()
-  // return auth.currentUser ? await auth.currentUser.getIdToken() : null
-};
+  if (!currentUser) return null;
+
+  try {
+    return await currentUser.getIdToken();
+  } catch (error) {
+    console.error("Failed to get auth token:", error);
+    return null;
+  }
+}
 
 // Main reusable fetch function
 async function apiRequest(endpoint, options = {}) {
