@@ -10,9 +10,7 @@ function ProductSheetHeader({ onAddVariant }) {
   return (
     <SheetHeader className={"pb-0"}>
       <SheetTitle className={"flex justify-between"}>
-        <p className={"text-3xl font-normal font-degular "}>
-          Create your product
-        </p>
+        <p className={"text-3xl font-normal  "}>Create your product</p>
         <Button className="cursor-pointer" onClick={onAddVariant}>
           Add Variant
         </Button>

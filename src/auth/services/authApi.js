@@ -127,7 +127,7 @@ const authApi = {
     }
 
     try {
-      return await api.get(`/users/uid/${firebaseUid}`, {
+      return await api.get(`/users/uid`, {
         ...options,
       });
     } catch (error) {
@@ -260,6 +260,89 @@ const authApi = {
       return await currentUser.getIdToken();
     } catch (error) {
       console.error("Failed to get user token:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * 📧 RESEND VERIFICATION EMAIL
+   * Resends email verification link via your /api/users/resend-verification endpoint
+   * Useful when users don't receive initial verification email
+   * Example: await authApi.resendVerificationEmail("user@example.com", token);
+   */
+  resendVerificationEmail: async (email, options = {}) => {
+    if (!email) {
+      throw new Error("Email is required to resend verification");
+    }
+
+    try {
+      return await api.post("/users/resend-verification", { email }, options);
+    } catch (error) {
+      console.error("Failed to resend verification email:", error.details);
+      throw error;
+    }
+  },
+
+  /**
+   * ✅ VERIFY USER EMAIL
+   * Verifies a user's email address via your /api/users/verify-email endpoint
+   * Requires Firebase authentication token
+   * Example: await authApi.verifyEmail("user@example.com", token);
+   */
+  verifyEmail: async (email, options = {}) => {
+    if (!email) {
+      throw new Error("Email is required for verification");
+    }
+
+    try {
+      return await api.put("/users/verify-email", { email }, options);
+    } catch (error) {
+      console.error("Failed to verify email:", error.details);
+      throw error;
+    }
+  },
+
+  /**
+   * 🏷️ ADD USER CATEGORY
+   * Adds a category to user's profile via your /api/users/categories endpoint
+   * Links user interests/preferences to specific categories
+   * Example: await authApi.addUserCategory(5, 2, token);
+   */
+  addUserCategory: async (userId, categoryId, options = {}) => {
+    if (!userId || !categoryId) {
+      throw new Error("User ID and Category ID are required");
+    }
+
+    try {
+      return await api.post(
+        "/users/categories",
+        { user_id: userId, category_id: categoryId },
+        options
+      );
+    } catch (error) {
+      console.error(
+        `Failed to add category ${categoryId} to user ${userId}:`,
+        error.details
+      );
+      throw error;
+    }
+  },
+
+  /**
+   * 🗑️ REMOVE USER CATEGORY
+   * Removes a category from user's profile via your /api/users/categories/{categoryId} endpoint
+   * Unlinks user from specific category
+   * Example: await authApi.removeUserCategory(2, token);
+   */
+  removeUserCategory: async (categoryId, options = {}) => {
+    if (!categoryId) {
+      throw new Error("Category ID is required for removal");
+    }
+
+    try {
+      return await api.delete(`/users/categories/${categoryId}`, options);
+    } catch (error) {
+      console.error(`Failed to remove category ${categoryId}:`, error.details);
       throw error;
     }
   },

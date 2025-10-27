@@ -18,9 +18,9 @@ function ProtectedRoute({ children, requireVerified = true }) {
   }
 
   // ✅ Uncomment if you want email verification
-  if (requireVerified && user && !user.emailVerified) {
-    return <Navigate to="/check-email" replace />;
-  }
+  // if (requireVerified && user && !user.emailVerified) {
+  //   return <Navigate to="/check-email" replace />;
+  // }
 
   return children;
 }

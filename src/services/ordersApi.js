@@ -112,11 +112,7 @@ const ordersApi = {
    * Perfect for user profile pages, order history, customer service
    * Example: const userOrders = await ordersApi.getByUserId(456);
    */
-  getByUserId: async (userId, options = {}) => {
-    if (!userId) {
-      throw new Error("User ID is required");
-    }
-
+  getByUserId: async (options = {}) => {
     try {
       // Build query string from pagination options
       const queryParams = new URLSearchParams();
@@ -135,15 +131,12 @@ const ordersApi = {
 
       const queryString = queryParams.toString();
       const url = queryString
-        ? `/orders/user/${userId}?${queryString}`
-        : `/orders/user/${userId}`;
+        ? `/orders/user/?${queryString}`
+        : `/orders/user/`;
 
       return await api.get(url, restOptions);
     } catch (error) {
-      console.error(
-        `Failed to fetch orders for user ${userId}:`,
-        error.details
-      );
+      console.error(`Failed to fetch orders for user :`, error.details);
       throw error;
     }
   },

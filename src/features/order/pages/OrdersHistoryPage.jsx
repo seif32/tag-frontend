@@ -129,7 +129,7 @@ function OrderHistoryCard({
   return (
     <div className="p-4 bg-white border rounded-md">
       <div className="">
-        <h3 className="text-xl font-degular">
+        <h3 className="text-xl ">
           Order <span className="text-xs">#</span>
           {orderId}
         </h3>

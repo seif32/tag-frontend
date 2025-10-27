@@ -10,7 +10,7 @@ export const transformProductDataForCreate = (data, validVariants) => {
       price: parseFloat(variant?.price),
       compare_at_price: parseFloat(variant?.compare_at_price || 0),
       cost_price: parseFloat(variant?.cost_price || 0),
-      currency: variant?.currency || "USD",
+      currency: variant?.currency || "GBP",
       has_discount:
         parseFloat(variant?.compare_at_price || 0) > parseFloat(variant?.price),
       in_stock: parseInt(variant?.quantity) > 0,

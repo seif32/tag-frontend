@@ -29,7 +29,7 @@ function ProductInfoSection({
       <p className="text-sm text-muted-foreground">
         {categoryName} {subCategoryName && `• ${subCategoryName}`}
       </p>
-      <h2 className="text-3xl sm:text-6xl font-bold font-degular">
+      <h2 className="text-3xl sm:text-6xl font-bold ">
         {displayName}{" "}
         {selectedVariant?.types?.map((type) => (
           <span key={type.type_id}>{type.value.name} </span>
@@ -38,13 +38,13 @@ function ProductInfoSection({
       {isAuthenticated && (
         <>
           <div className="flex items-baseline gap-2">
-            <p className="text-4xl font-medium font-degular">
+            <p className="text-4xl font-medium ">
               {formatCurrency(currentPrice)}
             </p>
             {quantity > 1 && (
               <span className="text-lg text-muted-foreground">each</span>
             )}
-            {comparePrice && !selectedBundle && (
+            {Boolean(comparePrice) && !selectedBundle && (
               <p className="font-medium line-through text-muted-foreground">
                 {formatCurrency(comparePrice)}
               </p>

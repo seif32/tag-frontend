@@ -1,4 +1,5 @@
 import { useAuthStore } from "@/auth/store/authStore";
+import LoadingState from "@/ui/LoadingState";
 import { Navigate } from "react-router";
 
 function PublicRoute({ children }) {
@@ -7,13 +8,14 @@ function PublicRoute({ children }) {
   const loading = useAuthStore((state) => state.loading);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingState type="page" />;
   }
-  if (isAuthenticated && !user?.emailVerified)
-    return <Navigate to={"/check-email"} />;
+
+  // if (isAuthenticated && !user?.emailVerified)
+  //   return <Navigate to={"/check-email"} />;
 
   if (isAuthenticated && user) {
-    const redirectPath = user.role === "admin" ? "/admin" : "/";
+    const redirectPath = user.role === "admin" ? "/admin/products" : "/";
     return <Navigate to={redirectPath} replace />;
   }
 

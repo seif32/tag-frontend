@@ -24,6 +24,8 @@ function OrderDetailsPage() {
   const { order, isLoadingOrder, isErrorOrder, errorOrder, refetchOrder } =
     useOrders.useById(orderId);
 
+  console.log(order);
+
   // 🚀 Handle invoice generation
   async function handleDownloadInvoice() {
     if (!order) return;

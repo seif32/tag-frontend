@@ -7,8 +7,6 @@ function ProtectedAdminRoute({ children }) {
   const user = useAuthStore((state) => state.user);
   const loading = useAuthStore((state) => state.loading);
 
-  console.log("XXX", user);
-
   // ✅ Show loading while checking auth
   if (loading) {
     return <LoadingState type="page" />; // Replace with your LoadingState component

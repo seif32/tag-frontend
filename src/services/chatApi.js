@@ -7,12 +7,8 @@ const chatApi = {
    * Example: const chat = await chatApi.create({user_id: 42});
    */
   create: async (chatData, options = {}) => {
-    if (!chatData.user_id) {
-      throw new Error("User ID is required");
-    }
-
     try {
-      return await api.post("/chats", chatData, options);
+      return await api.post("/chats", options);
     } catch (error) {
       console.error("Failed to create chat:", {
         data: chatData,

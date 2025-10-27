@@ -8,7 +8,6 @@
 
 @theme inline {
   --font-poppins: "Poppins", sans-serif;
-  --font-degular: "DegularDisplay", sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

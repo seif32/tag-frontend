@@ -6,20 +6,22 @@ import CartBadge from "@/features/cart/components/CartBadge";
 import { useAuthStore } from "@/auth/store/authStore";
 import { FiPackage, FiShoppingCart, FiMenu, FiX } from "react-icons/fi";
 import { useState } from "react";
+import { useOrderStore } from "@/store/orderStore";
+import { useCartStore } from "@/store/cartStore";
 
-const Header = () => {
+function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
-  const clearCart = useAuthStore((state) => state.user);
+  const clearCart = useCartStore((state) => state.clearCart);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function handleLogout() {
+    clearCart();
     logout();
     navigate("/");
-    clearCart();
     localStorage.setItem("isAgeVerified", "false");
     setIsMenuOpen(false);
   }
@@ -92,7 +94,10 @@ const Header = () => {
               <Link to="/login" className="text-gray-600 hover:text-gray-800">
                 Login
               </Link>
-              <Button className="px-4 py-2 text-white bg-primary hover:bg-primary/90">
+              <Button
+                onClick={() => navigate("/register")}
+                className="px-4 py-2 text-white bg-primary hover:bg-primary/90"
+              >
                 Sign Up
               </Button>
             </div>
@@ -171,6 +176,6 @@ const Header = () => {
       )}
     </header>
   );
-};
+}
 
 export default Header;

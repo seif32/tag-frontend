@@ -27,9 +27,7 @@ function ProductDetailsStep({ currentSelections }) {
       <StepHeader step={2} title="Tell Us About Your Product" />
 
       <div className="flex items-center bg-black rounded-lg ">
-        <h3 className="px-3 py-4 text-xl text-white font-degular">
-          {baseName}
-        </h3>
+        <h3 className="px-3 py-4 text-xl text-white ">{baseName}</h3>
         <div className="flex flex-wrap gap-1">
           {Object.values(currentSelections).map((selection, index) => (
             <span

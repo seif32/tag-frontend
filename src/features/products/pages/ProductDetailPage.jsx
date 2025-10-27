@@ -108,11 +108,14 @@ export default ProductDetailPage;
 function BundlesSection({ bundles, selectedBundle, onBundleSelect }) {
   if (!bundles?.length) return null;
 
+  const activeBundles =
+    bundles?.filter((bundle) => bundle.is_active === 1) || [];
+
   return (
     <div className="space-y-3">
       <p className="font-medium text-sm">Volume Discounts</p>
       <div className="grid gap-2">
-        {bundles.map((bundle) => {
+        {activeBundles.map((bundle) => {
           const isSelected = selectedBundle?.id === bundle.id;
           const unitPrice = parseFloat(bundle.subtotal) / bundle.quantity;
           // const savings = bundle.quantity * (/* original price needed */) - parseFloat(bundle.subtotal);

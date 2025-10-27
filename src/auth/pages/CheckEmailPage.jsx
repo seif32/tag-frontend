@@ -1,8 +1,7 @@
 import { useLocation } from "react-router";
 import { useAuthStore } from "@/auth/store/authStore";
-import { sendEmailVerification } from "firebase/auth";
 import { toast } from "sonner";
-import { auth } from "../firebase/config";
+import authApi from "../services/authApi";
 
 function CheckEmailPage() {
   const location = useLocation();
@@ -12,12 +11,21 @@ function CheckEmailPage() {
 
   async function handleResendEmail() {
     try {
-      if (auth.currentUser) {
-        await sendEmailVerification(auth.currentUser);
-        toast.success("Verification email resent! 📧");
+      if (!email) {
+        toast.error("Email address not found");
+        return;
       }
+
+      await authApi.resendVerificationEmail(email);
+      toast.success("Verification email resent!");
     } catch (error) {
-      toast.error("Failed to resend email");
+      // Handle specific error cases
+      if (error.status === 400) {
+        toast.error("Email already verified ");
+      } else {
+        toast.error("Failed to resend email. Please try again.");
+      }
+      console.error("Resend verification error:", error);
     }
   }
 

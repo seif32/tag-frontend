@@ -168,22 +168,6 @@ export function useAddProductInstance(
       if (isEditMode) {
         console.log("🔄 Adding variant to existing product via API...");
 
-        consoleObject({
-          productId: productId,
-          variantData: {
-            quantity: parseInt(builtVariant.quantity),
-            price: parseFloat(builtVariant.price),
-            compare_at_price: parseFloat(builtVariant.compare_at_price || 0),
-            cost_price: parseFloat(builtVariant.cost_price || 0),
-            currency: builtVariant.currency,
-            types: builtVariant.types.map((combo) => ({
-              type_id: combo.typeId,
-              value_id: combo.selectedValue.id,
-            })),
-            images: builtVariant.images,
-          },
-        });
-
         addVariant({
           productId: productId,
           variantData: {

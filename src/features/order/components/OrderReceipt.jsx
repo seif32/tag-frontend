@@ -13,12 +13,12 @@ export default function OrderReceipt({ order, isOrderDetails = true, style }) {
           text: "Payment Success",
           style: "border-green-500  text-green-600 bg-green-100",
         };
-      case "paid":
+      case "failed":
         return {
           text: "Payment Fail",
           style: "border-red-500  text-red-600 bg-red-100",
         };
-      case "paid":
+      case "pending":
         return {
           text: "Payment Pending",
           style: "border-amber-500  text-amber-600 bg-amber-100",

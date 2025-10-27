@@ -44,7 +44,6 @@ function CheckoutForm({
   setIsEditMode,
   isEditMode,
 }) {
-  console.log("CheckoutForm", addresses);
   return (
     <Form {...form}>
       <form
@@ -201,7 +200,9 @@ function AddressDropdown({
 
       form.reset({
         ...selected,
-        city_id: selected.city_id?.toString(), // 🔥 Convert to string for form
+        city_id: selected.city_id?.toString(),
+        apartment_number: selected.apartment_number?.toString(),
+        building_number: selected.building_number?.toString(),
         is_default: Boolean(selected.is_default),
       });
     }

@@ -196,36 +196,6 @@ function EditProductDialog({ isDialogOpen, selectedProduct, onClose }) {
               />
 
               {/* Currency Field */}
-              <FormField
-                control={form.control}
-                name="currency"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Currency</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select currency" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="USD">USD - US Dollar 🇺🇸</SelectItem>
-                        <SelectItem value="EGP">
-                          EGP - Egyptian Pound 🇪🇬
-                        </SelectItem>
-                        <SelectItem value="EUR">EUR - Euro 🇪🇺</SelectItem>
-                        <SelectItem value="GBP">
-                          GBP - British Pound 🇬🇧
-                        </SelectItem>
-                        <SelectItem value="SAR">
-                          SAR - Saudi Riyal 🇸🇦
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
 
             <DialogFooter>
