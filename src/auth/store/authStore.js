@@ -16,6 +16,7 @@ export const useAuthStore = create((set, get) => ({
       const backendProfile = await fetchBackendProfile(userCredential.user.uid);
 
       const user = buildUserObject(userCredential.user, backendProfile);
+      console.log("authStore", user);
 
       set({
         ...get(),
@@ -120,6 +121,8 @@ export const useAuthStore = create((set, get) => ({
 
     return unsubscribe;
   },
+
+  setUser: (updatedUser) => set({ user: updatedUser }),
 }));
 
 const fetchBackendProfile = async (uid) => {

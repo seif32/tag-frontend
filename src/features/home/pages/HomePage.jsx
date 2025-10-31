@@ -20,8 +20,11 @@ import ErrorMessage from "@/ui/ErrorMessage";
 import useCategories from "@/hooks/useCategories";
 import { IconEmptyState } from "@/ui/IconEmptyState";
 import DashedIconEmptyState from "@/ui/DashedIconEmptyState";
+import { useAuthStore } from "@/auth/store/authStore";
 
 function HomePage() {
+  const user = useAuthStore((state) => state.user);
+  console.log(user);
   return (
     <main className="mb-10 space-y-25">
       <HeroBanner />

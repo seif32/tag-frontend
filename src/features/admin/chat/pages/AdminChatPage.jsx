@@ -30,10 +30,10 @@ function AdminChatPage() {
   const isSeenByUser = chat?.seen_by_user === 1;
 
   return (
-    <div className="flex flex-col h-screen bg-stone-100">
+    <div className="flex flex-col w-full h-full  bg-stone-100">
       <ChatHeader chat={chat} refetchMessages={refetchMessages} />
       <ChatContainer messages={messages?.data} activeSender={"admin"} />
-      {isSeenByUser && <SeenIndicator firstName={chat?.first_name} />}
+      {/* {isSeenByUser && <SeenIndicator firstName={chat?.first_name} />} */}
       <SendMessageActions chatId={chatId} SenderType={"admin"} />
     </div>
   );
@@ -89,7 +89,9 @@ export function ChatContainer({ messages, activeSender }) {
   }, [messages]);
 
   return (
-    <div className="flex-1 flex flex-col-reverse gap-2 px-4 sm:px-6 py-4 overflow-y-auto bg-stone-100">
+    <div className="flex-1 flex flex-col-reverse gap-2 px-4 sm:px-6 py-4 overflow-y-auto bg-stone-100 min-h-0">
+      {" "}
+      {/* ✅ flex-1 and min-h-0 */}
       <div ref={messagesEndRef} />
       {messages?.map((message) => (
         <BubbleChatCard

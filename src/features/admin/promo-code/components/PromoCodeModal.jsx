@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -132,9 +132,33 @@ export default function PromoCodeModal({
       is_active: true,
     },
   });
-
+  const [maxDiscountUserModified, setMaxDiscountUserModified] = useState(false);
   const watchedDiscountType = form.watch("discount_type");
   const watchedDiscountValue = form.watch("discount_value");
+
+  useEffect(() => {
+    setMaxDiscountUserModified(false);
+  }, [watchedDiscountType]);
+
+  // Auto-sync max_discount when discount type is fixed
+  useEffect(() => {
+    if (
+      watchedDiscountType === "fixed" &&
+      watchedDiscountValue &&
+      !maxDiscountUserModified
+    ) {
+      form.setValue("max_discount", watchedDiscountValue, {
+        shouldValidate: false,
+        shouldDirty: false,
+        shouldTouch: false,
+      });
+    }
+  }, [
+    watchedDiscountType,
+    watchedDiscountValue,
+    maxDiscountUserModified,
+    form,
+  ]);
 
   useEffect(() => {
     if (isOpen && promoCode && (mode === "edit" || mode === "view")) {
@@ -464,9 +488,11 @@ export default function PromoCodeModal({
                           <Input
                             type="number"
                             {...field}
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value))
-                            }
+                            onChange={(e) => {
+                              const value = Number(e.target.value);
+                              field.onChange(value);
+                              setMaxDiscountUserModified(true); // 👈 Track manual changes
+                            }}
                             disabled={isReadOnly}
                             className="h-12 pl-8"
                             placeholder="20"
@@ -475,7 +501,9 @@ export default function PromoCodeModal({
                         </div>
                       </FormControl>
                       <FormDescription>
-                        Maximum dollar amount that can be discounted
+                        {watchedDiscountType === "fixed"
+                          ? "Auto-synced with discount value (you can override)"
+                          : "Maximum dollar amount that can be discounted"}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

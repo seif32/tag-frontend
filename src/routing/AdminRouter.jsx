@@ -19,7 +19,7 @@ import { Routes, Route } from "react-router";
 function AdminRouter() {
   return (
     <Routes>
-      <Route path="/" element={<AdminLayout />}>
+      <Route element={<AdminLayout />}>
         <Route index path={"products"} element={<AdminProductsPage />} />
         <Route path={"categories"} element={<AdminCategoriesPage />} />
         <Route

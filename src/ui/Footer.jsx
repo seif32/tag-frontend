@@ -15,10 +15,47 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useLocation, useNavigate } from "react-router";
+import { useAuthStore } from "@/auth/store/authStore";
+import useChat from "@/hooks/useChat";
 
 export default function Footer() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const user = useAuthStore((state) => state.user);
+  const setUser = useAuthStore((state) => state.setUser);
+  const { createChatAsync, isPendingChat } = useChat.useCreate();
+
+  const handleChatClick = async () => {
+    if (user?.chat?.id) {
+      navigate("/chat");
+      return;
+    }
+
+    // ⚠️ Not logged in? Redirect to login
+    if (!user || !user?.id) {
+      navigate("/login");
+      return;
+    }
+
+    // 🆕 Create new chat for user
+    try {
+      const newChat = await createChatAsync();
+
+      console.log("new chat", newChat);
+
+      setUser({
+        ...user,
+        chat: newChat, // Should have { id, ... }
+      });
+
+      // Navigate to chat page
+      navigate("/chat");
+    } catch (error) {
+      console.error("Failed to create chat:", error);
+      // Show error toast/notification here
+    }
+  };
   return (
     <footer className="bg-stone-950 text-slate-100">
       {/* Main Footer Content */}
@@ -238,8 +275,16 @@ export default function Footer() {
 
       {!location?.pathname.includes("chat") && (
         <div className="fixed bottom-6 right-6 flex flex-col gap-1">
-          <Button className={"rounded-full"} onClick={() => navigate("chat")}>
-            <MessageCircleMore />
+          <Button
+            className="rounded-full"
+            onClick={handleChatClick}
+            disabled={isPendingChat}
+          >
+            {isPendingChat ? (
+              <div className="animate-spin border-2 border-white border-t-transparent w-5 h-5 rounded-full" />
+            ) : (
+              <MessageCircleMore />
+            )}
           </Button>
         </div>
       )}

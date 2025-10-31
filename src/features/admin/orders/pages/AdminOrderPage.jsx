@@ -206,6 +206,7 @@ function StatsContainer({
 }
 
 function OrderInformation({ user, address }) {
+  console.log("AdminOrderPage", user);
   return (
     <div className="flex flex-1 flex-col gap-5">
       <CustomerInformation customer={user} />
@@ -225,7 +226,6 @@ function OrderInformation({ user, address }) {
 }
 
 function CustomerInformation({ customer }) {
-  console.log("AdminOrderPage", customer);
   return (
     <section className="border p-4 rounded-2xl">
       <div className=" flex items-center gap-2 mb-5">
@@ -254,6 +254,7 @@ function CustomerInformation({ customer }) {
           </div>
         </div>
         <Link
+          to={`/admin/chat/${customer?.chat_id}`}
           className={"flex items-center gap-1 text-accent text-sm"}
           variant={"ghost"}
           size={"sm"}
