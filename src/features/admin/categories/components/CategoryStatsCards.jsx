@@ -10,28 +10,28 @@ function CategoryStatsCards({ stats, isLoadingStats }) {
       id: nanoid(),
       title: "Total Subcategories",
       icon: Layers,
-      value: stats.total_sub_categories ?? 0,
+      value: stats?.total_sub_categories ?? 0,
       subtitle: "All subcategories listed",
     },
     {
       id: nanoid(),
       title: "Active Subcategories",
       icon: Archive,
-      value: stats.sub_categories_with_products ?? 0,
+      value: stats?.sub_categories_with_products ?? 0,
       subtitle: "Linked to products",
     },
     {
       id: nanoid(),
       title: "Inactive Subcategories",
       icon: EyeOff,
-      value: stats.sub_categories_without_products ?? 0,
+      value: stats?.sub_categories_without_products ?? 0,
       subtitle: "No products assigned",
     },
     {
       id: nanoid(),
       title: "Empty Subcategories",
       icon: FolderX,
-      value: stats.sub_categories_without_products ?? 0, // Same as above, feel free to change!
+      value: stats?.sub_categories_without_products ?? 0, // Same as above, feel free to change!
       subtitle: "Contain zero products",
     },
   ];

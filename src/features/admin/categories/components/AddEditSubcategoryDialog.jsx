@@ -8,26 +8,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Tag } from "lucide-react";
+import { Plus, Tag, UploadCloud, X } from "lucide-react";
 import TagFormField from "../../ui/TagFormField";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import useCategories from "@/hooks/useCategories";
 import LoadingState from "@/ui/LoadingState";
-import { useEffect } from "react";
 
 import { useState } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import {
   FormControl,
   FormField,
@@ -35,11 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 function AddEditSubcategoryDialog({
   subcategory,
@@ -50,14 +33,13 @@ function AddEditSubcategoryDialog({
   refetchAllSubCategories,
 }) {
   const isEditMode = mode === "edit";
+  const [preview, setPreview] = useState(null);
 
   const form = useForm({
     defaultValues: {
       name: subcategory?.name || "",
       parent_id: subcategory?.parent_id || "",
-      image_url:
-        subcategory?.image_url ||
-        "https://images.unsplash.com/photo-1723223440648-dc41fb3d9a7f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      image_file: subcategory?.image_url || "",
     },
   });
 
@@ -88,12 +70,21 @@ function AddEditSubcategoryDialog({
         }))
       : [];
 
+  const handleImageChange = (file, onChange) => {
+    if (!file) return;
+
+    onChange(file);
+    const previewUrl = URL.createObjectURL(file);
+    setPreview(previewUrl);
+  };
+
   function onSubmit(data) {
     if (isEditMode) {
       console.log({ id: subcategory.id, data });
       updateSubCategory({ id: subcategory.id, data });
     } else {
       createSubCategory(data);
+      console.log(data);
     }
   }
 
@@ -166,22 +157,67 @@ function AddEditSubcategoryDialog({
             {/* <Separator /> */}
             {/* Media Section */}
             <div className="space-y-4">
-              {/* <div className="flex items-center gap-2">
-                <Upload className="w-4 h-4 text-muted-foreground" />
-                <h3 className="text-sm font-medium">Image Upload</h3>
-              </div> */}
-
-              {/* <TagFormField
+              <FormField
                 control={form.control}
-                name="image_url"
-                type="image-upload"
-                maxSize={2 * 1024 * 1024}
-                accept="image/*"
-                description="To represent this subcategory (max 2MB)"
-                className="w-full"
-              /> */}
+                name="image_file"
+                rules={{ required: "Image file is required" }}
+                render={({ field }) => {
+                  const onClear = () => {
+                    field.onChange(null);
+                    setPreview(null);
+                  };
+
+                  return (
+                    <FormItem>
+                      <FormLabel>Subcategory Image</FormLabel>
+                      <FormControl>
+                        <label
+                          htmlFor="image_file_input"
+                          className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md p-6 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition"
+                        >
+                          <UploadCloud className="w-10 h-10 text-gray-400 mb-2" />
+                          <span className="text-sm text-gray-600">
+                            Click or drag image to upload
+                          </span>
+                          <input
+                            id="image_file_input"
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) =>
+                              handleImageChange(
+                                e.target.files?.[0],
+                                field.onChange
+                              )
+                            }
+                          />
+                        </label>
+                      </FormControl>
+
+                      {preview && (
+                        <div className="mt-4 relative inline-block">
+                          <img
+                            src={preview}
+                            alt="Image preview"
+                            className="rounded-md max-h-48 object-cover border shadow"
+                          />
+                          <button
+                            type="button"
+                            aria-label="Remove image"
+                            onClick={onClear}
+                            className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 shadow"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
+
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
             </div>
-            {/* <Separator /> */}
             {/* Action Buttons */}
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">
               <Button

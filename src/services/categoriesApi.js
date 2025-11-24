@@ -72,13 +72,22 @@ const categoriesApi = {
    * Example: const newCategory = await categoryApi.create({name: "Electronics", image_url: "https://..."});
    */
   create: async (categoryData, options = {}) => {
-    // Input validation based on your backend controller requirements
     if (!categoryData.name) {
       throw new Error("Category name is required");
     }
 
+    let payload = categoryData;
+
+    // If image_file exists, convert to FormData
+    if (categoryData.image_file instanceof File) {
+      payload = new FormData();
+      payload.append("name", categoryData.name);
+      payload.append("image", categoryData.image_file);
+    }
     try {
-      return await api.post("/categories", categoryData, options);
+      return await api.post("/categories", payload, {
+        ...options,
+      });
     } catch (error) {
       console.error("Failed to create category:", {
         data: categoryData,
@@ -223,16 +232,28 @@ const categoriesApi = {
    * Example: const newSubCat = await categoryApi.createSubCategory({name: "Smartphones", categoryId: 1});
    */
   createSubCategory: async (subCategoryData, options = {}) => {
-    if (!subCategoryData.name || !subCategoryData.parent_id) {
-      throw new Error("Subcategory name and parent category ID are required");
+    if (
+      !subCategoryData.name ||
+      !subCategoryData.parent_id ||
+      !subCategoryData.image_file
+    ) {
+      throw new Error(
+        "Subcategory name and parent category ID and image file are required"
+      );
+    }
+
+    let payload = subCategoryData;
+
+    // If image_file exists, convert to FormData
+    if (subCategoryData.image_file instanceof File) {
+      payload = new FormData();
+      payload.append("name", subCategoryData.name);
+      payload.append("parent_id", subCategoryData.parent_id);
+      payload.append("image", subCategoryData.image_file);
     }
 
     try {
-      return await api.post(
-        "/categories/subcategories",
-        subCategoryData,
-        options
-      );
+      return await api.post("/categories/subcategories", payload, options);
     } catch (error) {
       console.error("Failed to create subcategory:", {
         data: subCategoryData,
@@ -253,12 +274,18 @@ const categoriesApi = {
       throw new Error("Subcategory ID is required for updates");
     }
 
+    let payload = updateData;
+
+    // If image_file exists, convert to FormData
+    if (updateData.image_file instanceof File) {
+      payload = new FormData();
+      payload.append("name", updateData.name);
+      payload.append("parent_id", updateData.parent_id);
+      payload.append("image", updateData.image_file);
+    }
+
     try {
-      return await api.put(
-        `/categories/subcategories/${id}`,
-        updateData,
-        options
-      );
+      return await api.put(`/categories/subcategories/${id}`, payload, options);
     } catch (error) {
       console.error(`Failed to update subcategory ${id}:`, {
         updateData,

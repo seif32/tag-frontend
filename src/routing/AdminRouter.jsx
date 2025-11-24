@@ -14,12 +14,14 @@ import AdminVariantsTypesPage from "@/features/admin/variants/pages/AdminVariant
 import AdminVariantsValuesPage from "@/features/admin/variants/pages/AdminVariantsValuesPage";
 import AdminLayout from "@/layout/AdminLayout";
 import { IconEmptyState } from "@/ui/IconEmptyState";
+import Test from "@/ui/Test";
 import { Routes, Route } from "react-router";
 
 function AdminRouter() {
   return (
     <Routes>
       <Route element={<AdminLayout />}>
+        <Route index path={"test"} element={<Test />} />
         <Route index path={"products"} element={<AdminProductsPage />} />
         <Route path={"categories"} element={<AdminCategoriesPage />} />
         <Route

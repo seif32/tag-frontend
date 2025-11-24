@@ -3,21 +3,6 @@ import StepHeader from "@/features/admin/ui/StepHeader";
 import TagFormField from "@/features/admin/ui/TagFormField";
 import { useFormContext } from "react-hook-form";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-
 function ProductDetailsStep({ currentSelections }) {
   const baseName = useProductStore((state) => state.baseName);
   const { control } = useFormContext();

@@ -28,15 +28,15 @@ function AddCategoryDialog() {
   const form = useForm({
     defaultValues: {
       name: "",
-      image_url:
-        "https://images.unsplash.com/photo-1723223440648-dc41fb3d9a7f?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      image_file: "",
     },
   });
 
   function onSubmit(data) {
-    console.log(data);
     createCategory(data);
   }
+
+  const [preview, setPreview] = useState(null);
 
   return (
     <Dialog
@@ -86,19 +86,19 @@ function AddCategoryDialog() {
                 <Upload className="w-4 h-4 text-muted-foreground" />
                 <h3 className="text-sm font-medium">Category Image</h3>
               </div>
+              <ImageUploadFormField
+                control={form.control}
+                name="image_file"
+                label="Category Image"
+                preview={preview}
+                setPreview={setPreview}
+              />
 
               <div className="space-y-3">
-                {/* <TagFormField
-                  control={form.control}
-                  name="image_url"
-                  type="image-upload"
-                  maxSize={2 * 1024 * 1024} // 2MB
-                  accept="image/*"
-                /> */}
-
                 {/* Image Guidelines */}
                 <div className="flex items-start gap-2 p-3 border border-blue-200 rounded-lg bg-blue-50/50">
                   <Info className="h-4 w-4 text-blue-500 shrink-0 mt-0.5" />
+
                   <div className="space-y-1">
                     <p className="text-xs font-medium text-blue-900">
                       Image Guidelines
@@ -155,3 +155,81 @@ function AddCategoryDialog() {
 }
 
 export default AddCategoryDialog;
+
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+import { UploadCloud } from "lucide-react";
+
+function ImageUploadFormField({ control, name, label, preview, setPreview }) {
+  const [fileName, setFileName] = useState(null);
+
+  const onFileChange = (e, onChange) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    onChange(file);
+    setFileName(`${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+  };
+
+  const clearFile = (onChange) => {
+    onChange(null);
+    setFileName(null);
+    setPreview(null);
+  };
+
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormControl>
+            <label
+              htmlFor={name}
+              className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md p-6 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition"
+            >
+              <UploadCloud className="w-10 h-10 text-gray-400 mb-2" />
+              <span className="text-sm text-gray-600">Click to upload</span>
+              <input
+                id={name}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => onFileChange(e, field.onChange)}
+              />
+            </label>
+          </FormControl>
+
+          {preview && (
+            <div className="mt-4 relative inline-block">
+              <img
+                src={preview}
+                alt="Preview"
+                className="rounded-md max-h-48 object-cover border shadow"
+              />
+              <Button
+                type="Button"
+                aria-label="Remove image"
+                onClick={() => clearFile(field.onChange)}
+                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 shadow"
+              >
+                ×
+              </Button>
+              <p className="mt-1 text-xs text-gray-600">{fileName}</p>
+            </div>
+          )}
+
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}

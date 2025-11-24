@@ -16,13 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import useProducts from "@/hooks/useProducts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";

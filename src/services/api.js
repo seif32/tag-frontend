@@ -23,12 +23,20 @@ async function apiRequest(endpoint, options = {}) {
   try {
     const token = await getAuthToken();
 
+    // Determine if body is FormData
+    const isFormData = options.body instanceof FormData;
+
+    // Build headers conditionally
     const headers = {
-      "Content-Type": "application/json",
       ...options.headers,
     };
 
-    // Add auth header if token exists
+    // Only set Content-Type if NOT FormData (JSON case)
+    if (!isFormData) {
+      headers["Content-Type"] = "application/json";
+    }
+
+    // Add Authorization header if token exists
     if (token) {
       headers.Authorization = `Bearer ${token}`;
     }
@@ -167,26 +175,49 @@ export const api = {
   get: (endpoint, options = {}) =>
     apiRequest(endpoint, { ...options, method: "GET" }),
 
-  post: (endpoint, data, options = {}) =>
-    apiRequest(endpoint, {
+  post: (endpoint, data, options = {}) => {
+    const isFormData = data instanceof FormData;
+    console.log("XXXXXXXXXXXX", isFormData);
+
+    return apiRequest(endpoint, {
       ...options,
       method: "POST",
-      body: JSON.stringify(data),
-    }),
+      body: isFormData ? data : JSON.stringify(data),
+      headers: {
+        // If FormData, DO NOT set Content-Type; otherwise, set to JSON
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        ...options.headers,
+      },
+    });
+  },
 
-  put: (endpoint, data, options = {}) =>
-    apiRequest(endpoint, {
+  put: (endpoint, data, options = {}) => {
+    const isFormData = data instanceof FormData;
+
+    return apiRequest(endpoint, {
       ...options,
       method: "PUT",
-      body: JSON.stringify(data),
-    }),
+      body: isFormData ? data : JSON.stringify(data),
+      headers: {
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        ...options.headers,
+      },
+    });
+  },
 
-  patch: (endpoint, data, options = {}) =>
-    apiRequest(endpoint, {
+  patch: (endpoint, data, options = {}) => {
+    const isFormData = data instanceof FormData;
+
+    return apiRequest(endpoint, {
       ...options,
       method: "PATCH",
-      body: JSON.stringify(data),
-    }),
+      body: isFormData ? data : JSON.stringify(data),
+      headers: {
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        ...options.headers,
+      },
+    });
+  },
 
   delete: (endpoint, options = {}) =>
     apiRequest(endpoint, { ...options, method: "DELETE" }),
