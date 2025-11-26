@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   packages: write
+  id-token: write
 
 jobs:
   build-and-deploy:
@@ -24,7 +25,8 @@ jobs:
         uses: hashicorp/vault-action@v3
         with:
           url: https://hv.peakops.cloud
-          token: ${{ secrets.VAULT_TOKEN }}
+          method: jwt                 # <--- 1. Set method to JWT
+          role: frontend-role         # <--- 2. Must match the role name you created in Vault
           secrets: |
             secret/data/tag/frontend VITE_API_URL | VITE_API_URL ;
             secret/data/tag/frontend VITE_FIREBASE_API_KEY | VITE_FIREBASE_API_KEY ;
