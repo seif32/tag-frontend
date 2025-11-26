@@ -70,7 +70,7 @@ function VariantsSection({ variantValues, variantTypes }) {
       <CardContent>
         {isViewMode ? (
           <div className="space-y-4">
-            {cleanedVariantValues.length === 0 ? (
+            {cleanedVariantValues?.length === 0 ? (
               <p className="text-sm text-gray-500">No variants available</p>
             ) : (
               cleanedVariantValues.map((variant) => (
@@ -115,7 +115,7 @@ function VariantsSection({ variantValues, variantTypes }) {
                 </div>
               </div>
             ))}
-            {selectedTypes.length === 0 && <NoVariants />}
+            {selectedTypes?.length === 0 && <NoVariants />}
           </div>
         )}
       </CardContent>

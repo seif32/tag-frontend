@@ -1,12 +1,36 @@
 import { create } from "zustand";
 import authApi from "../services/authApi";
+import { toast } from "sonner";
+
+// 🆕 Error message mapper
+const getFirebaseErrorMessage = (errorCode) => {
+  const errorMessages = {
+    "auth/email-already-in-use":
+      "This email is already registered. Please login instead.",
+    "auth/invalid-email": "Please enter a valid email address.",
+    "auth/weak-password": "Password is too weak. Use at least 6 characters.",
+    "auth/user-not-found": "No account found with this email.",
+    "auth/wrong-password": "Incorrect password. Please try again.",
+    "auth/too-many-requests": "Too many attempts. Please try again later.",
+    "auth/network-request-failed":
+      "Network error. Please check your connection.",
+    "auth/invalid-credential": "Invalid email or password.",
+    "auth/user-disabled": "This account has been disabled.",
+  };
+
+  return (
+    errorMessages[errorCode] ||
+    "An unexpected error occurred. Please try again."
+  );
+};
 
 export const useAuthStore = create((set, get) => ({
   user: null,
   isAuthenticated: false,
-  loading: true,
+  loading: true, // ✅ Start as true
   error: null,
   _isLoggingIn: false,
+  _hasInitialized: false, // 🆕 Track if auth has initialized
 
   login: async (email, password) => {
     set({ loading: true, error: null, _isLoggingIn: true });
@@ -14,29 +38,33 @@ export const useAuthStore = create((set, get) => ({
     try {
       const userCredential = await authApi.login(email, password);
       const backendProfile = await fetchBackendProfile(userCredential.user.uid);
-
       const user = buildUserObject(userCredential.user, backendProfile);
-      console.log("authStore", user);
 
       set({
-        ...get(),
         user,
         isAuthenticated: true,
         loading: false,
-        error: null,
+        error: null, // ✅ Clear error on success
         _isLoggingIn: false,
+        _hasInitialized: true,
       });
 
+      toast.success(`Welcome back, ${user.name || user.email}! 👋`);
       return user;
     } catch (err) {
       console.error("🔴 Auth store login failed:", err);
+      const friendlyError = getFirebaseErrorMessage(err.code);
+
       set({
-        ...get(),
-        error: err.message,
+        error: friendlyError,
         loading: false,
         _isLoggingIn: false,
+        isAuthenticated: false,
+        user: null,
+        // ❌ Don't set _hasInitialized here - keeps error visible
       });
-      throw err;
+
+      throw err; // ✅ Re-throw so LoginPage can catch it
     }
   },
 
@@ -45,17 +73,13 @@ export const useAuthStore = create((set, get) => ({
 
     try {
       const backendUser = await authApi.register(userData);
-
       const userCredential = await authApi.login(
         userData.email,
         userData.password
       );
 
       try {
-        console.log(
-          "✅ Verification email sent to:",
-          userCredential.user.email
-        );
+        await authApi.sendVerificationEmail(userCredential.user);
       } catch (emailError) {
         console.warn("⚠️ Failed to send verification email:", emailError);
       }
@@ -65,22 +89,48 @@ export const useAuthStore = create((set, get) => ({
 
       const user = buildUserObject(userCredential.user, completeProfile);
 
-      setAuthenticatedState(set, user);
+      set({
+        user,
+        isAuthenticated: true,
+        loading: false,
+        error: null,
+        _hasInitialized: true, // 🆕 Mark as initialized
+      });
+
+      toast.success("Account created successfully!");
       return user;
     } catch (err) {
-      set({ ...get(), error: err.message, loading: false });
-      throw err;
+      console.error("🔴 Registration failed:", err);
+
+      const friendlyError = err.code
+        ? getFirebaseErrorMessage(err.code)
+        : err.message || "Registration failed.";
+
+      set({
+        error: friendlyError,
+        loading: false,
+        isAuthenticated: false,
+        user: null,
+      });
+      throw new Error(friendlyError);
     }
   },
 
   logout: async () => {
     try {
       await authApi.logout();
+      toast.info("You've been logged out. 👋");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Always clear state, even if logout fails
-      setUnauthenticatedState(set);
+      set({
+        user: null,
+        isAuthenticated: false,
+        loading: false,
+        error: null,
+        _isLoggingIn: false,
+        _hasInitialized: true, // ✅ Keep initialized
+      });
     }
   },
 
@@ -88,7 +138,7 @@ export const useAuthStore = create((set, get) => ({
     const unsubscribe = authApi.onAuthStateChanged(async (firebaseUser) => {
       const currentState = get();
 
-      // Skip if login is in progress
+      // 🆕 Skip ONLY during active login operation
       if (currentState._isLoggingIn) {
         console.log("🔄 Skipping initAuth - login in progress");
         return;
@@ -97,25 +147,40 @@ export const useAuthStore = create((set, get) => ({
       if (firebaseUser) {
         try {
           const backendProfile = await fetchBackendProfile(firebaseUser.uid);
-
           const user = buildUserObject(firebaseUser, backendProfile);
-          setAuthenticatedState(set, user);
-        } catch (tokenError) {
-          console.error("🔴 Failed to get user token during init:", tokenError);
 
-          // Handle network errors gracefully
+          set({
+            user,
+            isAuthenticated: true,
+            loading: false,
+            error: null,
+            _hasInitialized: true, // 🆕 Mark as initialized
+          });
+        } catch (tokenError) {
+          console.error("🔴 Failed during init:", tokenError);
+
           if (tokenError.code === "auth/network-request-failed") {
-            console.log("Network error - keeping current state");
-            set({ ...get(), loading: false });
+            set({ loading: false, _hasInitialized: true });
           } else {
-            setUnauthenticatedState(
-              set,
-              "Authentication failed - please login again"
-            );
+            set({
+              user: null,
+              isAuthenticated: false,
+              loading: false,
+              error: "Authentication failed",
+              _hasInitialized: true,
+            });
           }
         }
       } else {
-        setUnauthenticatedState(set);
+        // 🆕 User logged out or no session
+        set({
+          user: null,
+          isAuthenticated: false,
+          loading: false,
+          error: null,
+          _isLoggingIn: false,
+          _hasInitialized: true,
+        });
       }
     });
 
@@ -123,6 +188,7 @@ export const useAuthStore = create((set, get) => ({
   },
 
   setUser: (updatedUser) => set({ user: updatedUser }),
+  clearError: () => set({ error: null }),
 }));
 
 const fetchBackendProfile = async (uid) => {
@@ -141,7 +207,6 @@ const buildUserObject = (firebaseUser, backendProfile) => ({
   phone_number: backendProfile?.phone_number || null,
   role: backendProfile?.role || "user",
 
-  // Firebase data
   name:
     firebaseUser.displayName ||
     `${backendProfile?.first_name || ""} ${
@@ -152,9 +217,8 @@ const buildUserObject = (firebaseUser, backendProfile) => ({
   phoneNumber: firebaseUser.phoneNumber || backendProfile?.phone_number,
   uid: firebaseUser.uid,
   email: firebaseUser.email,
-  emailVerified: firebaseUser.emailVerified,
+  emailVerified: backendProfile.is_verified,
 
-  // Include any other backend fields
   ...backendProfile,
 });
 

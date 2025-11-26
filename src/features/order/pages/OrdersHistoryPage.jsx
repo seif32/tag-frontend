@@ -68,8 +68,6 @@ function OrdersHistoryPage() {
 export default OrdersHistoryPage;
 
 function Title({ limit, total }) {
-  console.log("limit", limit);
-  console.log("total", total);
   return (
     <div className="mb-8 ">
       <h1 className="text-2xl sm:text-4xl font-bold">Orders History</h1>
@@ -186,16 +184,38 @@ function OrderHistoryCard({
 }
 
 function ProductItem({ product }) {
+  // 🎯 Extract image from nested variant structure
+  const imageUrl =
+    product?.product?.variants
+      .find((v) => v.id === product.variant_id)
+      ?.images?.find((img) => img.is_primary === 1)?.image_url ||
+    product?.product?.variants.find((v) => v.id === product.variant_id)
+      ?.images?.[0]?.image_url ||
+    null;
+
   return (
     <div className="flex flex-col gap-0.5">
-      <div className="w-20 h-20 bg-gray-200 rounded-md">
-        <img alt={product?.product?.name} />
+      <div className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden border border-gray-200">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={product?.product?.name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.target.src = "/placeholder.svg";
+            }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <PiPackageThin className="w-8 h-8 text-gray-400" />
+          </div>
+        )}
       </div>
-      <h4 className="truncate max-w-[10ch] text-xs">
+      <h4 className="truncate max-w-[10ch] text-xs font-medium">
         {product?.product?.name}
       </h4>
       <div className="flex items-center gap-1 text-muted-foreground">
-        <PiPackageThin />
+        <PiPackageThin className="w-3 h-3" />
         <p className="text-xs">×{product?.quantity}</p>
       </div>
     </div>
@@ -205,17 +225,51 @@ function ProductItem({ product }) {
 function BundleItem({ bundle }) {
   const totalItems = bundle.required_quantity * bundle.times_applied;
 
+  // 🎯 Extract image from bundle's product variant
+  const imageUrl =
+    bundle?.product?.variants
+      .find((v) => v.id === bundle.variant_id)
+      ?.images?.find((img) => img.is_primary === 1)?.image_url ||
+    bundle?.product?.variants.find((v) => v.id === bundle.variant_id)
+      ?.images?.[0]?.image_url ||
+    null;
   return (
     <div className="flex flex-col gap-0.5">
-      <div className="w-20 h-20 bg-blue-100 rounded-md flex items-center justify-center relative">
-        <Package className="w-8 h-8 text-blue-600" />
-        <div className="absolute top-1 right-1 bg-green-500 text-white text-xs px-1 rounded-full">
-          B
+      <div className="relative w-20 h-20 bg-gray-100 rounded-md overflow-hidden border-2 border-blue-300">
+        {imageUrl ? (
+          <>
+            <img
+              src={imageUrl}
+              alt={bundle?.product?.name}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.src = "/placeholder.svg";
+              }}
+            />
+            {/* Bundle Badge Overlay */}
+            <div className="absolute inset-0 bg-blue-500/20" />
+          </>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <Package className="w-8 h-8 text-blue-400" />
+          </div>
+        )}
+
+        {/* Bundle Indicator Badge */}
+        <div className="absolute top-1 right-1 bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-lg">
+          BUNDLE
+        </div>
+
+        {/* Quantity Badge */}
+        <div className="absolute bottom-1 left-1 bg-green-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-lg">
+          ×{bundle.required_quantity}
         </div>
       </div>
-      <h4 className="truncate max-w-[10ch] text-xs">
+
+      <h4 className="truncate max-w-[10ch] text-xs font-medium">
         {bundle?.product?.name || "Bundle"}
       </h4>
+
       <div className="flex flex-col text-muted-foreground">
         <div className="flex items-center gap-1">
           <Package className="w-3 h-3" />
@@ -223,7 +277,9 @@ function BundleItem({ bundle }) {
             ×{bundle.times_applied} bundle{bundle.times_applied > 1 ? "s" : ""}
           </p>
         </div>
-        <p className="text-xs text-green-600">{totalItems} items total</p>
+        <p className="text-xs text-green-600 font-medium">
+          {totalItems} items total
+        </p>
       </div>
     </div>
   );

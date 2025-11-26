@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { Tag, Upload, Info, Plus } from "lucide-react";
+import { Tag, Upload, Info, Plus, Loader2 } from "lucide-react";
 import TagFormField from "../../ui/TagFormField";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
@@ -17,11 +17,13 @@ import useCategories from "@/hooks/useCategories";
 
 function AddCategoryDialog() {
   const [openAddCategoryDialog, setOpenAddCategoryDialog] = useState(false);
+  const [preview, setPreview] = useState(null);
 
   const { createCategory, isPendingCreateCategory } = useCategories.useCreate({
     onSuccess: () => {
       setOpenAddCategoryDialog(false);
       form.reset();
+      setPreview(null);
     },
   });
 
@@ -36,12 +38,14 @@ function AddCategoryDialog() {
     createCategory(data);
   }
 
-  const [preview, setPreview] = useState(null);
-
   return (
     <Dialog
       open={openAddCategoryDialog}
-      onOpenChange={setOpenAddCategoryDialog}
+      onOpenChange={(open) => {
+        // 👇 Prevent closing while loading
+        if (isPendingCreateCategory) return;
+        setOpenAddCategoryDialog(open);
+      }}
     >
       <DialogTrigger asChild>
         <Button size="sm" className="h-8 gap-3">
@@ -52,6 +56,18 @@ function AddCategoryDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
+        {/* 🆕 Loading overlay */}
+        {isPendingCreateCategory && (
+          <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
+            <div className="bg-white p-4 rounded-lg shadow-lg flex items-center gap-3">
+              <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+              <span className="text-sm font-medium text-gray-700">
+                Creating category...
+              </span>
+            </div>
+          </div>
+        )}
+
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Tag className="w-5 h-5 text-primary" />
@@ -66,15 +82,12 @@ function AddCategoryDialog() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Basic Information Section */}
             <div className="space-y-4">
-              {/* <div className="flex items-center gap-2">
-                <h3 className="text-sm font-medium">Category Details</h3>
-              </div> */}
-
               <TagFormField
                 control={form.control}
                 label="Name"
                 name="name"
                 placeholder="e.g., Electronics, Clothing"
+                disabled={isPendingCreateCategory} // 👈 Disable during loading
               />
             </div>
 
@@ -92,13 +105,13 @@ function AddCategoryDialog() {
                 label="Category Image"
                 preview={preview}
                 setPreview={setPreview}
+                disabled={isPendingCreateCategory} // 👈 Pass disabled state
               />
 
               <div className="space-y-3">
                 {/* Image Guidelines */}
                 <div className="flex items-start gap-2 p-3 border border-blue-200 rounded-lg bg-blue-50/50">
                   <Info className="h-4 w-4 text-blue-500 shrink-0 mt-0.5" />
-
                   <div className="space-y-1">
                     <p className="text-xs font-medium text-blue-900">
                       Image Guidelines
@@ -124,19 +137,18 @@ function AddCategoryDialog() {
                 variant="outline"
                 onClick={() => setOpenAddCategoryDialog(false)}
                 className="sm:w-auto"
+                disabled={isPendingCreateCategory} // 👈 Disable during loading
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 className="sm:w-auto"
-                disabled={
-                  form.formState.isSubmitting || isPendingCreateCategory
-                }
+                disabled={isPendingCreateCategory} // 👈 Disable during loading
               >
-                {form.formState.isSubmitting ? (
+                {isPendingCreateCategory ? (
                   <>
-                    <div className="w-4 h-4 mr-2 border-2 rounded-full animate-spin border-background border-t-transparent" />
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Creating...
                   </>
                 ) : (
@@ -155,7 +167,6 @@ function AddCategoryDialog() {
 }
 
 export default AddCategoryDialog;
-
 import {
   FormControl,
   FormField,
@@ -164,9 +175,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { UploadCloud } from "lucide-react";
+import { UploadCloud, X } from "lucide-react";
 
-function ImageUploadFormField({ control, name, label, preview, setPreview }) {
+function ImageUploadFormField({
+  control,
+  name,
+  label,
+  preview,
+  setPreview,
+  disabled = false, // 👈 Accept disabled prop
+}) {
   const [fileName, setFileName] = useState(null);
 
   const onFileChange = (e, onChange) => {
@@ -194,7 +212,11 @@ function ImageUploadFormField({ control, name, label, preview, setPreview }) {
           <FormControl>
             <label
               htmlFor={name}
-              className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md p-6 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition"
+              className={`flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md p-6 transition ${
+                disabled
+                  ? "cursor-not-allowed opacity-50"
+                  : "cursor-pointer hover:border-blue-500 hover:bg-blue-50"
+              }`}
             >
               <UploadCloud className="w-10 h-10 text-gray-400 mb-2" />
               <span className="text-sm text-gray-600">Click to upload</span>
@@ -203,6 +225,7 @@ function ImageUploadFormField({ control, name, label, preview, setPreview }) {
                 type="file"
                 accept="image/*"
                 className="hidden"
+                disabled={disabled} // 👈 Disable input
                 onChange={(e) => onFileChange(e, field.onChange)}
               />
             </label>
@@ -216,14 +239,21 @@ function ImageUploadFormField({ control, name, label, preview, setPreview }) {
                 className="rounded-md max-h-48 object-cover border shadow"
               />
               <Button
-                type="Button"
+                type="button"
                 aria-label="Remove image"
                 onClick={() => clearFile(field.onChange)}
-                className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 shadow"
+                disabled={disabled} // 👈 Disable button
+                className={`absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 shadow ${
+                  disabled
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:bg-red-700"
+                }`}
               >
-                ×
+                <X className="w-4 h-4" />
               </Button>
-              <p className="mt-1 text-xs text-gray-600">{fileName}</p>
+              {fileName && (
+                <p className="mt-1 text-xs text-gray-600">{fileName}</p>
+              )}
             </div>
           )}
 

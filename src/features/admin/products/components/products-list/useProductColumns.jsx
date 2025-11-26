@@ -7,23 +7,46 @@ import {
 import { useNavigate } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import { formatDateShort } from "@/utils/dateUtils";
-import { Edit, Eye, Trash2 } from "lucide-react";
+import { Edit, Eye, Package, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function useProductColumns({ onDelete }) {
   const navigate = useNavigate();
 
   return [
-    // 🏷️ PRODUCT NAME - Main Identifier
+    // 🖼️ PRODUCT IMAGE & NAME - Main Identifier
     {
       accessorKey: "name",
-      header: ({ column }) => <div className="p-0 ">Product</div>,
+      header: ({ column }) => <div className="p-0">Product</div>,
       cell: ({ row }) => {
         const product = row.original;
+        const imageUrl = product.primary_image || null;
+
         return (
-          <div>
-            <div className="font-medium">{product.name}</div>
-            <div className="text-sm text-gray-500">SKU: {product.sku}</div>
+          <div className="flex items-center gap-3">
+            {/* Product Image */}
+            <div className="w-12 h-12 rounded-md border border-gray-200 overflow-hidden bg-gray-50 flex-shrink-0">
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = "/placeholder.svg";
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Package className="w-6 h-6 text-gray-300" />
+                </div>
+              )}
+            </div>
+
+            {/* Product Info */}
+            <div>
+              <div className="font-medium">{product.name}</div>
+              <div className="text-sm text-gray-500">SKU: {product.sku}</div>
+            </div>
           </div>
         );
       },
@@ -33,7 +56,7 @@ export function useProductColumns({ onDelete }) {
     // 🏪 CATEGORY - Organization
     {
       accessorKey: "category_name",
-      header: ({ column }) => <div className="p-0 ">Category</div>,
+      header: ({ column }) => <div className="p-0">Category</div>,
       cell: ({ row }) => {
         const category = row.getValue("category_name");
         const subcategory = row.original.sub_category_name;
@@ -54,7 +77,7 @@ export function useProductColumns({ onDelete }) {
     // 📦 STOCK STATUS - Inventory Overview
     {
       id: "stockStatus",
-      header: ({ column }) => <div className="p-0 ">Stock</div>,
+      header: ({ column }) => <div className="p-0">Stock</div>,
       cell: ({ row }) => {
         const stock = row.original.total_quantity || 0;
 
@@ -93,7 +116,7 @@ export function useProductColumns({ onDelete }) {
     // 🔢 VARIANT COUNT - Complexity Indicator
     {
       accessorKey: "variant_count",
-      header: ({ column }) => <div className="p-0  ">Variants</div>,
+      header: ({ column }) => <div className="p-0">Variants</div>,
       cell: ({ row }) => {
         const count = row.original.variant_count || 0;
         return (
@@ -108,7 +131,7 @@ export function useProductColumns({ onDelete }) {
     // ✅ CREATED AT - Modern Date Display
     {
       id: "created_at",
-      header: ({ column }) => <div className="p-0 ">Created</div>,
+      header: ({ column }) => <div className="p-0">Created</div>,
       cell: ({ row }) => {
         const dateString = row.original.created_at;
         const date = new Date(dateString);
@@ -134,7 +157,6 @@ export function useProductColumns({ onDelete }) {
         if (dateA === dateB) return 0;
         return dateA > dateB ? 1 : -1;
       },
-
       enableSorting: true,
       sortingFn: "datetime",
     },
@@ -145,7 +167,7 @@ export function useProductColumns({ onDelete }) {
       header: ({ column }) => (
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 "
+          className="p-0"
         >
           Updated
         </div>
@@ -183,7 +205,7 @@ export function useProductColumns({ onDelete }) {
       header: ({ column }) => (
         <div
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="p-0 "
+          className="p-0"
         >
           Status
         </div>
@@ -238,7 +260,7 @@ export function useProductColumns({ onDelete }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => navigate(`${product.id}`)}>
-                <Eye className="w-4 h-4 mr-2 " />
+                <Eye className="w-4 h-4 mr-2" />
                 View
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate(`${product.id}/edit`)}>
@@ -246,7 +268,7 @@ export function useProductColumns({ onDelete }) {
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="text-red-600 "
+                className="text-red-600"
                 onClick={() => onDelete(product)}
               >
                 <Trash2 className="w-4 h-4 mr-2" />

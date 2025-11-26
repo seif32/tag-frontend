@@ -321,7 +321,6 @@ function OrderItems({ order, totalUnits }) {
     </section>
   );
 }
-
 function ItemsTable({
   orderNumber,
   orderItems = [],
@@ -352,71 +351,105 @@ function ItemsTable({
       </TableHeader>
 
       <TableBody>
-        {orderItems.map((item) => (
-          <TableRow key={`item-${item.id}`} className="hover:bg-gray-50">
-            <TableCell>
-              <div className="flex items-center space-x-3">
-                <img
-                  src={
-                    item?.product?.variants[0].images[0] || "/placeholder.jpg"
-                  }
-                  alt={item?.product?.name}
-                  className="w-12 h-12 object-cover rounded border"
-                />
-                <div className="flex flex-col">
-                  <span className="font-medium text-sm">
-                    {item?.product?.name}
-                  </span>
-                  {item?.product?.variants[0]?.types?.map((type) => (
-                    <div
-                      key={type?.type_id}
-                      className="text-xs text-muted-foreground"
-                    >
-                      <span>{type?.type_name}: </span>
-                      <span>{type?.value?.name}</span>
-                    </div>
-                  ))}
+        {/* Regular Items */}
+        {orderItems.map((item) => {
+          // 🎯 Extract image for the specific variant
+          const variant = item?.product?.variants?.find(
+            (v) => v.id === item.variant_id
+          );
+          const imageUrl =
+            variant?.images?.find((img) => img.is_primary === 1)?.image_url ||
+            variant?.images?.[0]?.image_url ||
+            null;
+
+          return (
+            <TableRow key={`item-${item.id}`} className="hover:bg-gray-50">
+              <TableCell>
+                <div className="flex items-center space-x-3">
+                  {/* 🆕 Updated Image */}
+                  <div className="w-12 h-12 rounded border border-gray-200 overflow-hidden bg-gray-50 flex-shrink-0">
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={item?.product?.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = "/placeholder.svg";
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="w-6 h-6 text-gray-300" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col">
+                    <span className="font-medium text-sm">
+                      {item?.product?.name}
+                    </span>
+                    {variant?.types?.map((type) => (
+                      <div
+                        key={type?.type_id}
+                        className="text-xs text-muted-foreground"
+                      >
+                        <span>{type?.type_name}: </span>
+                        <span className="font-medium">{type?.value?.name}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </TableCell>
-            <TableCell>
-              <div className="flex flex-wrap gap-1">
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700">
-                  {item?.product?.category_name || "N/A"}
-                </span>
-                {item?.product?.sub_category_name && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-700">
-                    {item?.product?.sub_category_name}
+              </TableCell>
+
+              <TableCell>
+                <div className="flex flex-wrap gap-1">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-slate-100 text-slate-700">
+                    {item?.product?.category_name || "N/A"}
                   </span>
-                )}
-              </div>
-            </TableCell>
+                  {item?.product?.sub_category_name && (
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-blue-50 text-blue-700">
+                      {item?.product?.sub_category_name}
+                    </span>
+                  )}
+                </div>
+              </TableCell>
 
-            <TableCell>
-              <span className="font-mono text-xs text-gray-600">
-                {item?.product?.variants[0]?.variant_sku || "N/A"}
-              </span>
-            </TableCell>
+              <TableCell>
+                <span className="font-mono text-xs text-gray-600">
+                  {variant?.variant_sku || "N/A"}
+                </span>
+              </TableCell>
 
-            <TableCell className="text-center">
-              <span className="font-semibold">{item?.quantity}</span>
-            </TableCell>
+              <TableCell className="text-center">
+                <span className="font-semibold">{item?.quantity}</span>
+              </TableCell>
 
-            <TableCell className="text-right">
-              <span className="font-medium text-xs">
-                {formatCurrency(item?.unit_price)}
-              </span>
-            </TableCell>
+              <TableCell className="text-right">
+                <span className="font-medium text-xs">
+                  {formatCurrency(item?.unit_price)}
+                </span>
+              </TableCell>
 
-            <TableCell className="text-right">
-              <span className="font-semibold text-xs">
-                {formatCurrency(Number(item?.unit_price) * item?.quantity)}
-              </span>
-            </TableCell>
-          </TableRow>
-        ))}
+              <TableCell className="text-right">
+                <span className="font-semibold text-xs">
+                  {formatCurrency(Number(item?.unit_price) * item?.quantity)}
+                </span>
+              </TableCell>
+            </TableRow>
+          );
+        })}
 
+        {/* Bundle Items */}
         {orderBundles.map((bundle) => {
+          // 🎯 Extract image for the bundle's variant
+          const variant = bundle?.product?.variants?.find(
+            (v) => v.id === bundle.variant_id
+          );
+          const imageUrl =
+            variant?.images?.find((img) => img.is_primary === 1)?.image_url ||
+            variant?.images?.[0]?.image_url ||
+            null;
+
           return (
             <TableRow
               key={`bundle-${bundle.id}`}
@@ -424,9 +457,33 @@ function ItemsTable({
             >
               <TableCell>
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-blue-100 rounded border border-blue-200 flex items-center justify-center">
-                    <Package className="w-6 h-6 text-blue-600" />
+                  {/* 🆕 Bundle Image with Overlay */}
+                  <div className="relative w-12 h-12 rounded border-2 border-blue-300 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 flex-shrink-0">
+                    {imageUrl ? (
+                      <>
+                        <img
+                          src={imageUrl}
+                          alt={bundle?.product?.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = "/placeholder.svg";
+                          }}
+                        />
+                        {/* Blue tint overlay */}
+                        <div className="absolute inset-0 bg-blue-500/20" />
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="w-6 h-6 text-blue-400" />
+                      </div>
+                    )}
+
+                    {/* Bundle Badge */}
+                    <div className="absolute top-0.5 right-0.5 bg-green-600 text-white text-[8px] font-bold px-1 py-0.5 rounded-full">
+                      B
+                    </div>
                   </div>
+
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-sm">
@@ -436,19 +493,21 @@ function ItemsTable({
                         Bundle
                       </span>
                     </div>
-                    {bundle?.product?.variants[0]?.types?.map((type) => (
+                    {variant?.types?.map((type) => (
                       <div
                         key={type?.type_id}
                         className="text-xs text-muted-foreground"
                       >
                         <span>{type?.type_name}: </span>
-                        <span>{type?.value?.name}</span>
+                        <span className="font-medium">{type?.value?.name}</span>
                       </div>
                     ))}
-                    <div className="text-xs text-blue-600 mt-0.5">
+                    <div className="text-xs text-blue-600 font-medium mt-0.5">
                       {bundle.required_quantity} items × {bundle.times_applied}{" "}
                       bundle{bundle.times_applied > 1 ? "s" : ""} ={" "}
-                      {bundle.bundle_quantity * bundle.times_applied} total
+                      <span className="font-semibold">
+                        {bundle.bundle_quantity * bundle.times_applied} total
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -469,7 +528,7 @@ function ItemsTable({
 
               <TableCell>
                 <span className="font-mono text-xs text-gray-600">
-                  {bundle?.product?.variants[0]?.variant_sku || "N/A"}
+                  {variant?.variant_sku || "N/A"}
                 </span>
               </TableCell>
 
@@ -485,6 +544,9 @@ function ItemsTable({
                     {formatCurrency(
                       bundle.bundle_subtotal / bundle.required_quantity
                     )}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">
+                    per item
                   </span>
                 </div>
               </TableCell>

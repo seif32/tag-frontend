@@ -1,26 +1,81 @@
-[
-  {
-    "id": 7,
-    "user_id": 5,
-    "seen_by_admin": 1,
-    "seen_by_user": 1,
-    "created_at": "2025-10-31T14:00:23.000Z",
-    "updated_at": "2025-10-31T14:06:57.000Z",
-    "first_name": "Mostafa",
-    "last_name": "Essam",
-    "latest_message": "ef",
-    "latest_message_date": "2025-10-31T14:06:53.000Z"
-  },
-  {
-    "id": 7,
-    "user_id": 5,
-    "seen_by_admin": 1,
-    "seen_by_user": 1,
-    "created_at": "2025-10-31T14:00:23.000Z",
-    "updated_at": "2025-10-31T14:06:57.000Z",
-    "first_name": "Mostafa",
-    "last_name": "Essam",
-    "latest_message": "ef",
-    "latest_message_date": "2025-10-31T14:06:53.000Z"
+{
+  "id": 17,
+  "order_id": 18,
+  "variant_id": 29,
+  "quantity": 1,
+  "unit_price": "900.00",
+  "total_vat": "27.00",
+  "total_price": "927.00",
+  "currency": "GBP",
+  "created_at": "2025-11-25T15:03:33.000Z",
+  "updated_at": "2025-11-25T15:03:33.000Z",
+  "product": {
+    "id": 20,
+    "name": "Laptop gamed",
+    "sku": "SKU-F998EA-1764082919870",
+    "description": "fehfeihfe",
+    "short_description": "fefeiohiahf",
+    "category_id": 1,
+    "subcategory_id": 1,
+    "brand_id": 1,
+    "featured": 0,
+    "active": 1,
+    "rating": "0.00",
+    "rating_count": 0,
+    "created_at": "2025-11-25T15:01:59.000Z",
+    "updated_at": "2025-11-25T15:01:59.000Z",
+    "category_name": "Electronics",
+    "sub_category_name": "Tablets",
+    "brand_name": "Nike",
+    "tags": [
+      {
+        "id": 1,
+        "name": "shinny"
+      }
+    ],
+    "variants": [
+      {
+        "id": 29,
+        "product_id": 20,
+        "variant_sku": "SKU-1E85FA-1764082919871",
+        "is_primary": 1,
+        "price": "900.00",
+        "compare_at_price": null,
+        "cost_price": "200.00",
+        "currency": "GBP",
+        "quantity": 891,
+        "vat": "3.00",
+        "created_at": "2025-11-25T15:01:59.000Z",
+        "updated_at": "2025-11-25T15:03:33.000Z",
+        "images": [
+          {
+            "image_url": "https://pub-6f083a8a341a403d8080725e4521e1f4.r2.dev/1764082907110-971818155.jpg",
+            "is_primary": 0
+          },
+          {
+            "image_url": "https://pub-6f083a8a341a403d8080725e4521e1f4.r2.dev/1764082912778-810287527.jpg",
+            "is_primary": 1
+          }
+        ],
+        "types": [
+          {
+            "type_id": 2,
+            "type_name": "Color",
+            "value": {
+              "id": 2,
+              "name": "Black"
+            }
+          },
+          {
+            "type_id": 4,
+            "type_name": "Material",
+            "value": {
+              "id": 6,
+              "name": "Cotton"
+            }
+          }
+        ]
+      }
+    ]
   }
-]
+}

@@ -84,15 +84,33 @@ function RegistrationPage() {
           ? data.phone_number
           : `+20${data.phone_number.replace(/^0/, "")}`,
       };
-      // console.log("RegistrationPage", data);
+
       await register(formattedData);
-      toast.success("Registration successful! Please check your email.");
+      // ✅ Success - will redirect via PublicRoute
     } catch (error) {
       console.error("Registration error:", error);
-      toast.error(`Registration failed: ${error.message}`);
+
+      // 🆕 Set form error instead of just toast
+      form.setError("root.serverError", {
+        type: "server",
+        message: error.message || "Registration failed. Please try again.",
+      });
+
+      toast.error(error.message);
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  // 🆕 Add error display in JSX (same as LoginPage)
+  {
+    form.formState.errors.root?.serverError && (
+      <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+        <p className="text-sm text-red-600 font-medium">
+          ❌ {form.formState.errors.root.serverError.message}
+        </p>
+      </div>
+    );
   }
 
   return (

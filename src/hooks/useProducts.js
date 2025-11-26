@@ -173,7 +173,7 @@ const useProducts = {
           queryClient.setQueryData(["products", data.product_id], data);
         }
 
-        toast.success(" Product created successfully!");
+        // toast.success(" Product created successfully!");
 
         // Your custom logic runs after
         if (options.onSuccess) {
@@ -501,29 +501,27 @@ const useProducts = {
   // 📸 IMAGE MANAGEMENT HOOKS
 
   /**
-   * ➕ ADD IMAGES TO VARIANT HOOK
-   * Uploads multiple images to a specific variant
-   * Automatically refreshes variant and product data
-   * Returns: isPendingImages, addImages, errorAddImages
-   * Example: const { addImages } = useProducts.useAddImages();
-   *          addImages({variantId: 456, images: [{image_url: "...", is_primary: true}]});
+   * 🗑️ DELETE IMAGE HOOK
+   * Deletes a specific image from a variant
+   * Automatically refreshes product data
+   * Returns: isPendingDelete, deleteImage, errorDelete
+   * Example: const { deleteImage } = useProducts.useDeleteImage();
+   *          deleteImage(789);
    */
-  useAddImages: (options = {}) => {
+  useDeleteImage: (options = {}) => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
-      mutationFn: ({ variantId, images }) =>
-        productsApi.addImagesToVariant(variantId, images),
+      mutationFn: (imageId) => productsApi.deleteImage(imageId),
       onSuccess: (data, variables) => {
         queryClient.invalidateQueries({ queryKey: ["products"] });
-        toast.success("📸 Images added successfully!");
 
         if (options.onSuccess) {
           options.onSuccess(data, variables);
         }
       },
       onError: (error) => {
-        toast.error(` Failed to add images: ${error.message}`);
+        toast.error(`Failed to delete image: ${error.message}`);
 
         if (options.onError) {
           options.onError(error);
@@ -537,11 +535,10 @@ const useProducts = {
     });
 
     return {
-      isPendingImages: mutation.isPending,
-      addImages: mutation.mutate,
-      errorAddImages: mutation.error,
-      isErrorAddImages: mutation.isError,
-      resetAddImages: mutation.reset,
+      isPendingDelete: mutation.isPending,
+      deleteImage: mutation.mutate,
+      errorDelete: mutation.error,
+      isErrorDelete: mutation.isError,
     };
   },
 
@@ -624,6 +621,29 @@ const useProducts = {
       nameExists: query.data?.exists || false,
       errorNameCheck: query.error,
       isErrorNameCheck: query.isError,
+    };
+  },
+
+  useUploadImages: (options = {}) => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+      mutationFn: ({ variantId, files }) =>
+        productsApi.uploadImagesToVariant(variantId, files),
+      onSuccess: (data, variables) => {
+        queryClient.invalidateQueries({ queryKey: ["products"] });
+        toast.success("📸 Images uploaded successfully!");
+        if (options.onSuccess) options.onSuccess(data, variables);
+      },
+      onError: (error) => {
+        toast.error(`Failed to upload images: ${error.message}`);
+        if (options.onError) options.onError(error);
+      },
+    });
+
+    return {
+      isPendingImages: mutation.isPending,
+      uploadImages: mutation.mutate,
     };
   },
 };

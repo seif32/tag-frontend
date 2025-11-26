@@ -8,7 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Tag, UploadCloud, X } from "lucide-react";
+import { Plus, Tag, UploadCloud, X, Loader2 } from "lucide-react";
 import TagFormField from "../../ui/TagFormField";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
@@ -88,10 +88,17 @@ function AddEditSubcategoryDialog({
     }
   }
 
+  // 🎯 Check if any operation is pending
+  const isLoading = isPendingCreateSubCategory || isPendingUpdateSubCategory;
+
   return (
     <Dialog
       open={openSubcategoryDialog}
-      onOpenChange={setOpenSubcategoryDialog}
+      onOpenChange={(open) => {
+        // 👇 Prevent closing while loading
+        if (isLoading) return;
+        setOpenSubcategoryDialog(open);
+      }}
     >
       <DialogTrigger asChild>
         <Button
@@ -109,6 +116,20 @@ function AddEditSubcategoryDialog({
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[525px]">
+        {/* 🆕 Loading overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-50 flex items-center justify-center rounded-lg">
+            <div className="bg-white p-4 rounded-lg shadow-lg flex items-center gap-3">
+              <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+              <span className="text-sm font-medium text-gray-700">
+                {isEditMode
+                  ? "Updating subcategory..."
+                  : "Creating subcategory..."}
+              </span>
+            </div>
+          </div>
+        )}
+
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Tag className="w-5 h-5 text-primary" />
@@ -133,9 +154,8 @@ function AddEditSubcategoryDialog({
                   name="name"
                   placeholder="Enter subcategory name"
                   className="col-span-1"
+                  disabled={isLoading} // 👈 Disable during loading
                 />
-
-                {/* {mode === "edit" && <span>{subcategory.parent_name}</span>} */}
 
                 {isLoadingCategories ? (
                   <div className="flex items-center justify-center col-span-1 p-4">
@@ -150,11 +170,12 @@ function AddEditSubcategoryDialog({
                     options={selectCategories}
                     placeholder="Select parent category"
                     className="col-span-1"
+                    disabled={isLoading} // 👈 Disable during loading
                   />
                 )}
               </div>
             </div>
-            {/* <Separator /> */}
+
             {/* Media Section */}
             <div className="space-y-4">
               <FormField
@@ -173,7 +194,11 @@ function AddEditSubcategoryDialog({
                       <FormControl>
                         <label
                           htmlFor="image_file_input"
-                          className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md p-6 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition"
+                          className={`flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-md p-6 transition ${
+                            isLoading
+                              ? "cursor-not-allowed opacity-50"
+                              : "cursor-pointer hover:border-blue-500 hover:bg-blue-50"
+                          }`}
                         >
                           <UploadCloud className="w-10 h-10 text-gray-400 mb-2" />
                           <span className="text-sm text-gray-600">
@@ -184,6 +209,7 @@ function AddEditSubcategoryDialog({
                             type="file"
                             accept="image/*"
                             className="hidden"
+                            disabled={isLoading} // 👈 Disable during loading
                             onChange={(e) =>
                               handleImageChange(
                                 e.target.files?.[0],
@@ -205,7 +231,12 @@ function AddEditSubcategoryDialog({
                             type="button"
                             aria-label="Remove image"
                             onClick={onClear}
-                            className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 hover:bg-red-700 shadow"
+                            disabled={isLoading} // 👈 Disable during loading
+                            className={`absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 shadow ${
+                              isLoading
+                                ? "opacity-50 cursor-not-allowed"
+                                : "hover:bg-red-700"
+                            }`}
                           >
                             <X className="w-4 h-4" />
                           </button>
@@ -218,6 +249,7 @@ function AddEditSubcategoryDialog({
                 }}
               />
             </div>
+
             {/* Action Buttons */}
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2">
               <Button
@@ -225,25 +257,24 @@ function AddEditSubcategoryDialog({
                 variant="outline"
                 onClick={() => setOpenSubcategoryDialog(false)}
                 className="sm:w-auto"
+                disabled={isLoading} // 👈 Disable during loading
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 className="sm:w-auto"
-                disabled={form.formState.isSubmitting}
+                disabled={isLoading} // 👈 Disable during loading
               >
-                {form.formState.isSubmitting ||
-                isPendingCreateSubCategory ||
-                isPendingUpdateSubCategory ? (
+                {isLoading ? (
                   <>
-                    <div className="w-4 h-4 mr-2 border-2 rounded-full animate-spin border-background border-t-transparent" />
-                    Creating...
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {isEditMode ? "Updating..." : "Creating..."}
                   </>
                 ) : (
                   <>
                     <Plus className="w-4 h-4 mr-2" />
-                    {isEditMode ? "Edit Subcategory" : " Create Subcategory"}
+                    {isEditMode ? "Edit Subcategory" : "Create Subcategory"}
                   </>
                 )}
               </Button>

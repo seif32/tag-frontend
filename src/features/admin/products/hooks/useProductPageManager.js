@@ -22,7 +22,7 @@ export const useProductPageManager = (mode) => {
     enabled: mode !== "add",
   });
 
-  const { createProduct, updateProduct, isPending } =
+  const { createProduct, updateProduct, isPending, loadingState } =
     useProductOperations(navigate);
 
   const form = useForm({
@@ -84,5 +84,6 @@ export const useProductPageManager = (mode) => {
     isAddMode,
     isEditMode,
     isViewMode,
+    loadingState,
   };
 };

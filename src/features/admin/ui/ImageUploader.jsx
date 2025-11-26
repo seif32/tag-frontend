@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import React, { useState, useRef } from "react";
 import { ImagePlus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -13,17 +13,14 @@ function ImageUploader({ images, setImages }) {
   const processFiles = (files) => {
     files.forEach((file, i) => {
       if (file.type.startsWith("image/")) {
-        // Assign a default new name: variant_image_N
-        const index = images.length + i + 1;
-        const renamed = renameFile(
-          file,
-          `variant_image_${index}${file.name.slice(file.name.lastIndexOf("."))}`
-        );
+        const index = images.length + i;
+        const extension = file.name.slice(file.name.lastIndexOf("."));
+        const renamed = renameFile(file, `variant_image_${index}${extension}`);
         const reader = new FileReader();
         reader.onload = (e) => {
           const imageData = {
             image_url: e.target?.result,
-            is_primary: images.length === 0 && i === 0, // Only the very first
+            is_primary: images.length === 0 && i === 0, // first image primary by default
             file: renamed,
             id: `img-${Date.now()}-${Math.random()}`,
           };
@@ -53,7 +50,6 @@ function ImageUploader({ images, setImages }) {
 
   return (
     <div className="space-y-4">
-           {" "}
       <div
         className={`flex flex-col items-center justify-center border-2 border-dashed rounded-md cursor-pointer w-full min-h-[120px] p-4 transition-colors ${
           isDragOver
@@ -65,7 +61,6 @@ function ImageUploader({ images, setImages }) {
         onDragLeave={handleDragLeave}
         onClick={() => fileInputRef.current?.click()}
       >
-               {" "}
         <ImagePlus
           size={32}
           className={`transition-colors ${
@@ -74,7 +69,6 @@ function ImageUploader({ images, setImages }) {
               : "text-green-600 group-hover:text-amber-600"
           }`}
         />
-               {" "}
         <p
           className={`text-sm text-center mt-2 ${
             isDragOver
@@ -82,12 +76,9 @@ function ImageUploader({ images, setImages }) {
               : "text-green-600 group-hover:text-amber-600"
           }`}
         >
-                    {isDragOver ? "Drop images here" : "Click to upload images"}
-                 {" "}
+          {isDragOver ? "Drop images here" : "Click to upload images"}
         </p>
-               {" "}
-        <p className="mt-1 text-xs text-muted-foreground">or drag & drop</p>   
-           {" "}
+        <p className="mt-1 text-xs text-muted-foreground">or drag & drop</p>
         <input
           ref={fileInputRef}
           type="file"
@@ -96,9 +87,7 @@ function ImageUploader({ images, setImages }) {
           onChange={handleFileUpload}
           className="hidden"
         />
-             {" "}
       </div>
-         {" "}
     </div>
   );
 }

@@ -278,28 +278,26 @@ function recalc(
 }
 
 function calculateShipping(address, subtotal, selectedCity) {
-  if (!address) return 0;
+  // No address selected yet = no shipping calculated
+  if (!address || !selectedCity) return 0;
 
-  if (selectedCity) {
-    const freeShippingThreshold =
-      parseFloat(selectedCity.free_shipping_threshold) || 0;
-    if (
-      freeShippingThreshold > 0 &&
-      subtotal >= freeShippingThreshold &&
-      !selectedCity.always_charge_shipping
-    ) {
-      return 0;
-    }
+  const freeShippingThreshold =
+    parseFloat(selectedCity.free_shipping_threshold) || 0;
+  const shippingFees = parseFloat(selectedCity.shipping_fees) || 0;
+  const alwaysCharge = Boolean(selectedCity.always_charge_shipping);
 
-    if (selectedCity.shipping_fees) {
-      const baseRate = parseFloat(selectedCity.shipping_fees);
-      return baseRate;
-    }
+  // Always charge shipping if flag is set
+  if (alwaysCharge) {
+    return shippingFees;
   }
 
-  // Fallback to default rates
-  // const shippingRates = { standard: 45, express: 100 };
-  // return shippingRates[method] || shippingRates["standard"];
+  // Free shipping if subtotal exceeds threshold
+  if (freeShippingThreshold > 0 && subtotal >= freeShippingThreshold) {
+    return 0;
+  }
+
+  // Otherwise, charge shipping
+  return shippingFees;
 }
 
 function calculateDiscount(appliedCoupon, subtotal) {

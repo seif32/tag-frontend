@@ -109,6 +109,7 @@ function ActionButtons({ selectedVariant, selectedBundle, product }) {
       category: product.category_name,
       subcategory: product.sub_category_name,
       brand: product.brand,
+      image: selectedVariant?.images.find((image) => image.is_primary == 1),
     };
 
     addItem(item, quantity);

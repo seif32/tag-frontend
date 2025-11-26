@@ -132,48 +132,133 @@ const productsApi = {
    *   variants: [{ variant_sku: "IP15-BLK-128", price: 999.99, types: [...], images: [...] }]
    * });
    */
+  /**
+   * Create a new product with variants and images
+   */
   create: async (productData, options = {}) => {
     console.log("🚀 Original product data:", productData);
 
     if (!productData.name) {
-      throw new Error("Product name and SKU are required");
+      throw new Error("Product name is required");
     }
     if (!productData.variants || !Array.isArray(productData.variants)) {
       throw new Error("Variants array is required");
     }
 
-    productData.variants.forEach((variant, index) => {
-      if (!variant.types || variant.types.length === 0) {
-        throw new Error(
-          `Variant ${index + 1}: must have at least one type selection`
-        );
+    // Strip images from variants (backend expects them separately)
+    const cleanedVariants = productData.variants.map(
+      ({ images, ...rest }) => rest
+    );
+
+    // Collect all images into a flat array with variant + image index for renaming
+    const allImages = [];
+    const imagesMeta = []; // 👈 Track primary flag for each image
+
+    productData.variants.forEach((variant, variantIndex) => {
+      if (variant.images && Array.isArray(variant.images)) {
+        variant.images.forEach((imgObj, imageIndex) => {
+          if (!imgObj.file) return; // skip if no file
+
+          const extension = imgObj.file.name.slice(
+            imgObj.file.name.lastIndexOf(".")
+          );
+          const renamedFile = new File(
+            [imgObj.file],
+            `variant_images_${variantIndex}_${imageIndex}${extension}`,
+            { type: imgObj.file.type }
+          );
+
+          allImages.push(renamedFile);
+
+          // Store metadata for this image
+          imagesMeta.push({
+            name: renamedFile.name,
+            variantIndex,
+            imageIndex,
+            is_primary: !!imgObj.is_primary, // 👈 Capture primary flag
+          });
+        });
       }
     });
 
-    const apiPayload = {
-      product: {
-        name: productData.name,
-        description: productData.description,
-        short_description: productData.short_description,
-        brand_id: productData.brand_id,
-        category_id: productData.category_id,
-        subcategory_id: productData.subcategory_id,
-        active: productData.active ?? true,
-        featured: productData.featured ?? false,
-      },
-      tags: productData.tags || [],
-      variants: productData.variants, // ✅ Already transformed with correct structure
+    // Build FormData
+    const formData = new FormData();
+
+    const productPayload = {
+      name: productData.name,
+      description: productData.description,
+      short_description: productData.short_description,
+      brand_id: productData.brand_id,
+      category_id: productData.category_id,
+      subcategory_id: productData.subcategory_id,
+      active: productData.active ?? true,
+      featured: productData.featured ?? false,
     };
 
-    console.log("🔄 API payload:", apiPayload);
+    formData.append("product", JSON.stringify(productPayload));
+    formData.append("tags", JSON.stringify(productData.tags || []));
+    formData.append("variants", JSON.stringify(cleanedVariants));
+    formData.append("images_meta", JSON.stringify(imagesMeta)); // 👈 NEW: metadata
+
+    allImages.forEach((file) => formData.append("images", file));
+
+    // ════════════════════════════════════════════════════════════════
+    // 🔍 DETAILED LOGGING - EXACTLY what's being sent
+    // ════════════════════════════════════════════════════════════════
+
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+    console.log("📦 FORMDATA PAYLOAD BEING SENT TO BACKEND");
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+    // Log each FormData entry
+    for (const [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`🖼️  ${key}:`, {
+          fileName: value.name,
+          fileType: value.type,
+          fileSize: `${(value.size / 1024).toFixed(2)} KB`,
+        });
+      } else {
+        console.log(`📝 ${key}:`, value);
+      }
+    }
+
+    console.log("\n📊 PARSED JSON PAYLOADS:");
+    console.log("─────────────────────────");
+    console.log("Product:", JSON.parse(formData.get("product")));
+    console.log("Tags:", JSON.parse(formData.get("tags")));
+    console.log("Variants:", JSON.parse(formData.get("variants")));
+    console.log("Images Metadata:", JSON.parse(formData.get("images_meta")));
+
+    console.log("\n📸 IMAGES SUMMARY:");
+    console.log("─────────────────────────");
+    console.log(`Total images: ${allImages.length}`);
+    imagesMeta.forEach((meta, idx) => {
+      console.log(
+        `  [${idx}] ${meta.name} → Variant ${meta.variantIndex}, Image ${
+          meta.imageIndex
+        }, Primary: ${meta.is_primary ? "✅" : "❌"}`
+      );
+    });
+
+    console.log("\n🌐 API CALL:");
+    console.log("─────────────────────────");
+    console.log("Endpoint: POST /products");
+    console.log("Content-Type: multipart/form-data");
+    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
     try {
-      return await api.post("/products", apiPayload, options);
+      const response = await api.post("/products", formData, options);
+      console.log("✅ SUCCESS Response:", response);
+      return response;
     } catch (error) {
-      console.error("❌ Failed to create product:", {
-        originalData: productData,
-        apiPayload: apiPayload,
-        error: error.details,
+      console.error("❌ FAILED to create product");
+      console.error("Error details:", error.response?.data || error.message);
+      console.error("Original data sent:", {
+        product: productPayload,
+        variants: cleanedVariants,
+        tags: productData.tags,
+        imagesMeta,
       });
       throw error;
     }
@@ -328,47 +413,6 @@ const productsApi = {
   // 📸 IMAGE MANAGEMENT OPERATIONS
 
   /**
-   * ➕ ADD IMAGES TO SPECIFIC VARIANT
-   * Uploads multiple images to a variant at once
-   * Required: images array with image_url for each image
-   * Optional: is_primary flag to set main variant image
-   * Perfect for product photo galleries and variant visualization
-   * Example: const addedImages = await productsApi.addImagesToVariant(456, [
-   *   {image_url: "https://...", is_primary: true},
-   *   {image_url: "https://...", is_primary: false}
-   * ]);
-   */
-  addImagesToVariant: async (variantId, images, options = {}) => {
-    if (!variantId) {
-      throw new Error("Variant ID is required");
-    }
-
-    if (!Array.isArray(images) || images.length === 0) {
-      throw new Error("Images array is required and must not be empty");
-    }
-
-    // Validate image structure
-    const invalidImages = images.filter((img) => !img.image_url);
-    if (invalidImages.length > 0) {
-      throw new Error("All images must have image_url");
-    }
-
-    try {
-      return await api.post(
-        `/products/variant/${variantId}/images`,
-        { images },
-        options
-      );
-    } catch (error) {
-      console.error(`Failed to add images to variant ${variantId}:`, {
-        images,
-        error: error.details,
-      });
-      throw error;
-    }
-  },
-
-  /**
    * ✏️ UPDATE SINGLE IMAGE INFORMATION
    * Changes image URL or primary status for one specific image
    * You can update the image_url or toggle is_primary flag
@@ -490,6 +534,36 @@ const productsApi = {
         url: error.url,
         responseTime: error.responseTime,
       });
+      throw error;
+    }
+  },
+
+  /**
+   * 📤 UPLOAD IMAGES TO VARIANT
+   * Uploads image files directly to variant endpoint
+   */
+  uploadImagesToVariant: async (variantId, files, options = {}) => {
+    if (!variantId) {
+      throw new Error("Variant ID is required");
+    }
+
+    if (!Array.isArray(files) || files.length === 0) {
+      throw new Error("Files array is required");
+    }
+
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    try {
+      return await api.post(
+        `/products/variant/${variantId}/images`,
+        formData,
+        options
+      );
+    } catch (error) {
+      console.error(`Failed to upload images:`, error.details);
       throw error;
     }
   },

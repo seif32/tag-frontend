@@ -24,7 +24,6 @@ import { useAuthStore } from "@/auth/store/authStore";
 
 function HomePage() {
   const user = useAuthStore((state) => state.user);
-  console.log(user);
   return (
     <main className="mb-10 space-y-25">
       <HeroBanner />
@@ -231,17 +230,20 @@ function FeaturedProducts() {
         />
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-          {products?.data?.map((product) => (
-            <ProductCard
-              key={product?.id}
-              brand={product?.brand_name}
-              category={product?.category_name}
-              name={product?.name}
-              productId={product?.id}
-              onViewProductDetails={handleViewProductDetails}
-              variantCount={product?.variant_count}
-            />
-          ))}
+          {products?.data?.map((product) => {
+            return (
+              <ProductCard
+                key={product?.id}
+                brand={product?.brand_name}
+                category={product?.category_name}
+                name={product?.name}
+                image={product?.primary_image}
+                productId={product?.id}
+                onViewProductDetails={handleViewProductDetails}
+                variantCount={product?.variant_count}
+              />
+            );
+          })}
         </div>
       )}
     </section>

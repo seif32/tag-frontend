@@ -1,3 +1,4 @@
+// ProductCard.jsx
 import ProductCardImage from "./ProductCardImage";
 import ProductCardInfo from "./ProductCardInfo";
 
@@ -13,7 +14,7 @@ function ProductCard({
 }) {
   return (
     <div
-      className="flex flex-col border  rounded-md shadow-sm overflow-hidden cursor-pointer"
+      className="group flex flex-col bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1"
       onClick={() => onViewProductDetails(productId)}
     >
       <ProductCardImage image={image} variantCount={variantCount} />
@@ -24,11 +25,6 @@ function ProductCard({
         brand={brand}
         variants={variants}
       />
-
-      {/* <ProductCardActions
-        onViewProductDetails={onViewProductDetails}
-        productId={productId}
-      /> */}
     </div>
   );
 }

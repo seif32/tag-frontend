@@ -8,7 +8,6 @@ function ProductInfoSection({
   selectedBundle,
 }) {
   const displayName = product?.name || "Product Name";
-
   const shortDescription =
     product?.short_description || "No description available.";
   const categoryName = product?.category_name || "";
@@ -18,30 +17,38 @@ function ProductInfoSection({
 
   const currentPrice = effectivePrice?.unitPrice || selectedVariant?.price || 0;
   const comparePrice = selectedVariant?.compare_at_price;
-  const totalPrice = effectivePrice?.bundlePrice || currentPrice;
-  const subtotalPrice = effectivePrice?.bundleSubtotal || currentPrice;
   const quantity = effectivePrice?.quantity || 1;
   const savings = effectivePrice?.savings || 0;
   const vat = effectivePrice?.vat || selectedVariant?.vat || 0;
+
+  // ✅ FIXED: Calculate prices correctly
+  const subtotalBeforeVat = effectivePrice?.bundleSubtotal || currentPrice;
+  const vatAmount = subtotalBeforeVat * (vat / 100);
+  const totalWithVat = subtotalBeforeVat + vatAmount;
+
+  const isBundle = quantity > 1;
 
   return (
     <div className="space-y-1">
       <p className="text-sm text-muted-foreground">
         {categoryName} {subCategoryName && `• ${subCategoryName}`}
       </p>
-      <h2 className="text-3xl sm:text-6xl font-bold ">
+
+      <h2 className="text-3xl sm:text-6xl font-bold">
         {displayName}{" "}
         {selectedVariant?.types?.map((type) => (
           <span key={type.type_id}>{type.value.name} </span>
         ))}
       </h2>
+
       {isAuthenticated && (
         <>
+          {/* Unit price */}
           <div className="flex items-baseline gap-2">
-            <p className="text-4xl font-medium ">
+            <p className="text-4xl font-medium">
               {formatCurrency(currentPrice)}
             </p>
-            {quantity > 1 && (
+            {isBundle && (
               <span className="text-lg text-muted-foreground">each</span>
             )}
             {Boolean(comparePrice) && !selectedBundle && (
@@ -51,43 +58,53 @@ function ProductInfoSection({
             )}
           </div>
 
-          {quantity > 1 && (
-            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium">
-                    Bundle Price: {quantity} × {formatCurrency(currentPrice)} ={" "}
-                    {formatCurrency(subtotalPrice)}
-                  </p>
-                  {savings > 0 && (
-                    <p className="text-green-600 text-sm font-medium">
-                      You save {formatCurrency(savings)}!
-                    </p>
-                  )}
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-lg">
-                    {formatCurrency(totalPrice)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Total incl. VAT
+          {/* ✅ FIXED: Bundle breakdown */}
+          {isBundle && (
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 space-y-2">
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-gray-700">
+                  Bundle: {quantity} × {formatCurrency(currentPrice)} ={" "}
+                  {formatCurrency(subtotalBeforeVat)}
+                </p>
+                <p className="text-xs text-gray-600">
+                  VAT ({vat}%): {formatCurrency(vatAmount)}
+                </p>
+              </div>
+
+              {savings > 0 && (
+                <div className="pt-2 border-t border-blue-200">
+                  <p className="text-green-600 text-sm font-semibold">
+                    You save {formatCurrency(savings)}!
                   </p>
                 </div>
+              )}
+
+              <div className="pt-2 border-t border-blue-200 flex justify-between items-center">
+                <p className="text-sm font-medium text-gray-700">
+                  Total (incl. VAT):
+                </p>
+                <p className="font-bold text-xl text-blue-600">
+                  {formatCurrency(totalWithVat)}
+                </p>
               </div>
             </div>
           )}
 
-          <p className="text-xs font-semibold text-red-600">
-            + <span className="tracking-tighter">VAT</span>: {vat}%
-            {quantity > 1 && (
-              <span className="ml-2">
-                ({formatCurrency(totalPrice - subtotalPrice)} VAT amount)
-              </span>
-            )}
-          </p>
+          {/* ✅ FIXED: Single item VAT */}
+          {!isBundle && (
+            <div className="flex items-baseline gap-2">
+              <p className="text-sm text-gray-600">
+                + VAT ({vat}%): {formatCurrency(vatAmount)}
+              </p>
+              <p className="text-sm font-semibold text-gray-900">
+                = {formatCurrency(totalWithVat)} total
+              </p>
+            </div>
+          )}
         </>
       )}
-      <p className="text-sm leading-snug text-muted-foreground">
+
+      <p className="text-sm leading-snug text-muted-foreground pt-2">
         {shortDescription}
       </p>
     </div>

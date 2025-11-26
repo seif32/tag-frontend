@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -22,21 +24,36 @@ const loginSchema = z.object({
 function LoginPage() {
   const form = useForm({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
   const login = useAuthStore((state) => state.login);
-  const loading = useAuthStore((state) => state.loading);
+  const storeError = useAuthStore((state) => state.error); // 🆕 Get error from store
+  const clearError = useAuthStore((state) => state.clearError); // 🆕
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 🆕 Clear errors when user starts typing
+  useEffect(() => {
+    if (storeError) {
+      clearError();
+    }
+  }, [form.watch("email"), form.watch("password")]);
 
   async function onSubmit(data) {
+    setIsSubmitting(true);
     try {
       await login(data.email, data.password);
+      // ✅ Success - user will be redirected by PublicRoute
     } catch (error) {
-      console.error("Login error:", error);
-      alert(`❌ Login failed: ${error.message}`);
+      // 🆕 Set error directly on the form
+      form.setError("root.serverError", {
+        type: "server",
+        message: error.message || "Login failed. Please try again.",
+      });
+
+      toast.error(error.message); // 📧 Also show toast
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -49,6 +66,16 @@ function LoginPage() {
           </h2>
           <p className="text-gray-600">Sign in to your account</p>
         </div>
+
+        {/* 🆕 Display server errors prominently */}
+        {(form.formState.errors.root?.serverError || storeError) && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-600 font-medium">
+              ❌{" "}
+              {form.formState.errors.root?.serverError?.message || storeError}
+            </p>
+          </div>
+        )}
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -88,8 +115,8 @@ function LoginPage() {
               )}
             />
 
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Signing In..." : "Sign In "}
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? "Signing In..." : "Sign In"}
             </Button>
           </form>
         </Form>

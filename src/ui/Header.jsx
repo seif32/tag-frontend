@@ -18,6 +18,8 @@ function Header() {
   const clearCart = useCartStore((state) => state.clearCart);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  console.log(user);
+
   function handleLogout() {
     clearCart();
     logout();
