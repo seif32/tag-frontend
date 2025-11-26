@@ -28,32 +28,17 @@ function LoginPage() {
   });
 
   const login = useAuthStore((state) => state.login);
-  const storeError = useAuthStore((state) => state.error); // 🆕 Get error from store
+  const storeError = useAuthStore((state) => state.error); // 🆕
   const clearError = useAuthStore((state) => state.clearError); // 🆕
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // 🆕 Clear errors when user starts typing
-  useEffect(() => {
-    if (storeError) {
-      clearError();
-    }
-  }, [form.watch("email"), form.watch("password")]);
+  const loading = useAuthStore((state) => state.loading);
 
   async function onSubmit(data) {
-    setIsSubmitting(true);
+    clearError(); // ✅ Clear previous error on new attempt
+
     try {
       await login(data.email, data.password);
-      // ✅ Success - user will be redirected by PublicRoute
     } catch (error) {
-      // 🆕 Set error directly on the form
-      form.setError("root.serverError", {
-        type: "server",
-        message: error.message || "Login failed. Please try again.",
-      });
-
-      toast.error(error.message); // 📧 Also show toast
-    } finally {
-      setIsSubmitting(false);
+      console.error("Login failed:", error.message);
     }
   }
 
@@ -67,13 +52,18 @@ function LoginPage() {
           <p className="text-gray-600">Sign in to your account</p>
         </div>
 
-        {/* 🆕 Display server errors prominently */}
-        {(form.formState.errors.root?.serverError || storeError) && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-600 font-medium">
-              ❌{" "}
-              {form.formState.errors.root?.serverError?.message || storeError}
-            </p>
+        {/* 🆕 Persistent error display */}
+        {storeError && (
+          <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">⚠️</span>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-red-800 mb-1">
+                  Login Failed
+                </p>
+                <p className="text-sm text-red-600">{storeError}</p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -88,7 +78,7 @@ function LoginPage() {
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder="john@example.com"
                       {...field}
                     />
                   </FormControl>
@@ -115,8 +105,8 @@ function LoginPage() {
               )}
             />
 
-            <Button type="submit" disabled={isSubmitting} className="w-full">
-              {isSubmitting ? "Signing In..." : "Sign In"}
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? "Signing In..." : "Sign In"}
             </Button>
           </form>
         </Form>
@@ -124,7 +114,10 @@ function LoginPage() {
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             Don&apos;t have an account?{" "}
-            <Link to="/register" className="text-accent hover:text-accent/70">
+            <Link
+              to="/register"
+              className="text-accent hover:text-accent/70 font-medium"
+            >
               Sign up
             </Link>
           </p>

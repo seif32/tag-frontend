@@ -6,24 +6,22 @@ function PublicRoute({ children }) {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
   const loading = useAuthStore((state) => state.loading);
-  const hasInitialized = useAuthStore((state) => state._hasInitialized); // 🆕
+  const hasInitialized = useAuthStore((state) => state._hasInitialized);
 
-  // ✅ Wait for BOTH loading AND initialization
   if (loading || !hasInitialized) {
     return <LoadingState type="page" />;
   }
 
-  // ✅ Now safe to redirect
-  if (isAuthenticated && !user?.emailVerified) {
-    return <Navigate to="/check-email" replace />;
-  }
-
+  // ✅ Only redirect if truly authenticated
   if (isAuthenticated && user) {
+    if (!user.emailVerified) {
+      return <Navigate to="/check-email" replace />;
+    }
     const redirectPath = user.role === "admin" ? "/admin/products" : "/";
     return <Navigate to={redirectPath} replace />;
   }
 
-  return children;
+  return children; // ✅ Show login page with error
 }
 
 export default PublicRoute;

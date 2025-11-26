@@ -3,24 +3,49 @@ import authApi from "../services/authApi";
 import { toast } from "sonner";
 
 // 🆕 Error message mapper
+// 🆕 Enhanced error mapper with emojis and friendly language
 const getFirebaseErrorMessage = (errorCode) => {
   const errorMessages = {
+    // 🔐 Authentication Errors
     "auth/email-already-in-use":
-      "This email is already registered. Please login instead.",
-    "auth/invalid-email": "Please enter a valid email address.",
-    "auth/weak-password": "Password is too weak. Use at least 6 characters.",
-    "auth/user-not-found": "No account found with this email.",
-    "auth/wrong-password": "Incorrect password. Please try again.",
-    "auth/too-many-requests": "Too many attempts. Please try again later.",
+      "This email is already registered. Try logging in instead!",
+
+    "auth/invalid-email": "Please enter a valid email address",
+
+    "auth/weak-password":
+      "Your password is too weak. Use at least 6 characters for security",
+
+    "auth/user-not-found":
+      "We couldn't find an account with this email. Want to sign up?",
+
+    "auth/wrong-password": "Incorrect password. Please try again",
+
+    "auth/invalid-credential":
+      "Invalid email or password. Please check your credentials",
+
+    // ⏱️ Security & Rate Limiting
+    "auth/too-many-requests":
+      "Too many login attempts. Please wait a few minutes and try again",
+
+    // 🌐 Network Errors
     "auth/network-request-failed":
-      "Network error. Please check your connection.",
-    "auth/invalid-credential": "Invalid email or password.",
-    "auth/user-disabled": "This account has been disabled.",
+      "Network connection issue. Please check your internet and try again",
+
+    // 🚫 Account Status
+    "auth/user-disabled":
+      "This account has been disabled. Contact support for help",
+
+    // ✉️ Email Verification
+    "auth/email-already-verified":
+      "Your email is already verified! You're good to go",
+
+    "auth/invalid-action-code":
+      "This verification link is invalid or expired. Request a new one",
   };
 
   return (
     errorMessages[errorCode] ||
-    "An unexpected error occurred. Please try again."
+    "Something went wrong. Please try again or contact support 💬"
   );
 };
 
@@ -44,7 +69,7 @@ export const useAuthStore = create((set, get) => ({
         user,
         isAuthenticated: true,
         loading: false,
-        error: null, // ✅ Clear error on success
+        error: null,
         _isLoggingIn: false,
         _hasInitialized: true,
       });
@@ -61,10 +86,15 @@ export const useAuthStore = create((set, get) => ({
         _isLoggingIn: false,
         isAuthenticated: false,
         user: null,
-        // ❌ Don't set _hasInitialized here - keeps error visible
       });
 
-      throw err; // ✅ Re-throw so LoginPage can catch it
+      // 🆕 Use error toast with custom styling
+      toast.error(friendlyError, {
+        duration: 5000, // Show for 5 seconds
+        description: "Please check your credentials and try again",
+      });
+
+      throw new Error(friendlyError);
     }
   },
 
@@ -172,12 +202,14 @@ export const useAuthStore = create((set, get) => ({
           }
         }
       } else {
-        // 🆕 User logged out or no session
+        const shouldClearError =
+          !currentState.error || currentState._isLoggingIn;
+
         set({
           user: null,
           isAuthenticated: false,
           loading: false,
-          error: null,
+          error: shouldClearError ? null : currentState.error, // ✅ Preserve error
           _isLoggingIn: false,
           _hasInitialized: true,
         });
@@ -217,7 +249,7 @@ const buildUserObject = (firebaseUser, backendProfile) => ({
   phoneNumber: firebaseUser.phoneNumber || backendProfile?.phone_number,
   uid: firebaseUser.uid,
   email: firebaseUser.email,
-  emailVerified: backendProfile.is_verified,
+  emailVerified: backendProfile?.is_verified,
 
   ...backendProfile,
 });
