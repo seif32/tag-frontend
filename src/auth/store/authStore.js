@@ -2,7 +2,6 @@ import { create } from "zustand";
 import authApi from "../services/authApi";
 import { toast } from "sonner";
 
-// 🆕 Error message mapper
 // 🆕 Enhanced error mapper with emojis and friendly language
 const getFirebaseErrorMessage = (errorCode) => {
   const errorMessages = {
@@ -52,13 +51,19 @@ const getFirebaseErrorMessage = (errorCode) => {
 export const useAuthStore = create((set, get) => ({
   user: null,
   isAuthenticated: false,
-  loading: true, // ✅ Start as true
+  loading: true,
   error: null,
+  hasIncompleteProfile: false, // 🆕 NEW FLAG
   _isLoggingIn: false,
-  _hasInitialized: false, // 🆕 Track if auth has initialized
+  _hasInitialized: false,
 
   login: async (email, password) => {
-    set({ loading: true, error: null, _isLoggingIn: true });
+    set({
+      loading: true,
+      error: null,
+      _isLoggingIn: true,
+      hasIncompleteProfile: false,
+    }); // 🆕 Reset flag
 
     try {
       // ✅ Step 1: Firebase login succeeds
@@ -70,7 +75,7 @@ export const useAuthStore = create((set, get) => ({
 
       try {
         backendProfile = await fetchBackendProfile(userCredential.user.uid);
-        hasBackendData = true;
+        hasBackendData = !!backendProfile; // 🆕 Check if we got data
       } catch (profileError) {
         console.warn("⚠️ Could not fetch backend profile:", profileError);
 
@@ -95,11 +100,12 @@ export const useAuthStore = create((set, get) => ({
         error: null,
         _isLoggingIn: false,
         _hasInitialized: true,
+        hasIncompleteProfile: !hasBackendData, // 🆕 Set flag based on backend data
       });
 
       // 🎉 Success message (only if we got backend data)
       if (hasBackendData) {
-        toast.success(`Welcome back, ${user.name || user.email}!`);
+        toast.success(`Welcome back, ${user.name || user.email}! 👋`);
       } else {
         // 🆕 Show Firebase-only success (no backend data)
         toast.info(`Signed in as ${user.email}`, {
@@ -119,6 +125,7 @@ export const useAuthStore = create((set, get) => ({
         _isLoggingIn: false,
         isAuthenticated: false,
         user: null,
+        hasIncompleteProfile: false, // 🆕 Reset on failure
       });
 
       toast.error(friendlyError, {
@@ -131,7 +138,7 @@ export const useAuthStore = create((set, get) => ({
   },
 
   register: async (userData) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null, hasIncompleteProfile: false }); // 🆕 Reset flag
 
     try {
       const backendUser = await authApi.register(userData);
@@ -156,10 +163,11 @@ export const useAuthStore = create((set, get) => ({
         isAuthenticated: true,
         loading: false,
         error: null,
-        _hasInitialized: true, // 🆕 Mark as initialized
+        _hasInitialized: true,
+        hasIncompleteProfile: false, // 🆕 Registration always has complete profile
       });
 
-      toast.success("Account created successfully!");
+      toast.success("Account created successfully! 🎉");
       return user;
     } catch (err) {
       console.error("🔴 Registration failed:", err);
@@ -173,6 +181,7 @@ export const useAuthStore = create((set, get) => ({
         loading: false,
         isAuthenticated: false,
         user: null,
+        hasIncompleteProfile: false, // 🆕 Reset on failure
       });
       throw new Error(friendlyError);
     }
@@ -181,7 +190,7 @@ export const useAuthStore = create((set, get) => ({
   logout: async () => {
     try {
       await authApi.logout();
-      toast.info("You've been logged out.");
+      toast.info("You've been logged out. 👋");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
@@ -191,7 +200,8 @@ export const useAuthStore = create((set, get) => ({
         loading: false,
         error: null,
         _isLoggingIn: false,
-        _hasInitialized: true, // ✅ Keep initialized
+        _hasInitialized: true,
+        hasIncompleteProfile: false, // 🆕 Reset on logout
       });
     }
   },
@@ -216,7 +226,8 @@ export const useAuthStore = create((set, get) => ({
             isAuthenticated: true,
             loading: false,
             error: null,
-            _hasInitialized: true, // 🆕 Mark as initialized
+            _hasInitialized: true,
+            hasIncompleteProfile: !backendProfile, // 🆕 Set flag in initAuth too
           });
         } catch (tokenError) {
           console.error("🔴 Failed during init:", tokenError);
@@ -230,6 +241,7 @@ export const useAuthStore = create((set, get) => ({
               loading: false,
               error: "Authentication failed",
               _hasInitialized: true,
+              hasIncompleteProfile: false, // 🆕 Reset on failure
             });
           }
         }
@@ -241,9 +253,10 @@ export const useAuthStore = create((set, get) => ({
           user: null,
           isAuthenticated: false,
           loading: false,
-          error: shouldClearError ? null : currentState.error, // ✅ Preserve error
+          error: shouldClearError ? null : currentState.error,
           _isLoggingIn: false,
           _hasInitialized: true,
+          hasIncompleteProfile: false, // 🆕 Reset when logged out
         });
       }
     });
@@ -285,22 +298,3 @@ const buildUserObject = (firebaseUser, backendProfile) => ({
 
   ...backendProfile,
 });
-
-const setAuthenticatedState = (set, user) => {
-  set({
-    user,
-    isAuthenticated: true,
-    loading: false,
-    error: null,
-  });
-};
-
-const setUnauthenticatedState = (set, error = null) => {
-  set({
-    user: null,
-    isAuthenticated: false,
-    loading: false,
-    error,
-    _isLoggingIn: false,
-  });
-};
