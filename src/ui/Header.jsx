@@ -6,7 +6,6 @@ import CartBadge from "@/features/cart/components/CartBadge";
 import { useAuthStore } from "@/auth/store/authStore";
 import { FiPackage, FiShoppingCart, FiMenu, FiX } from "react-icons/fi";
 import { useState } from "react";
-import { useOrderStore } from "@/store/orderStore";
 import { useCartStore } from "@/store/cartStore";
 
 function Header() {
@@ -15,8 +14,18 @@ function Header() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
+  const hasIncompleteProfile = useAuthStore(
+    (state) => state.hasIncompleteProfile
+  ); // 🆕
   const clearCart = useCartStore((state) => state.clearCart);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // 🆕 Smart display name extraction
+  const displayName =
+    user?.first_name ||
+    user?.name ||
+    (user?.email ? user.email.split("@")[0] : "") ||
+    "User";
 
   console.log(user);
 
@@ -36,6 +45,24 @@ function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border backdrop-blur">
+      {/* 🆕 Warning Banner for Incomplete Profile */}
+      {isAuthenticated && hasIncompleteProfile && (
+        <div className="bg-amber-50 border-b border-amber-300 px-4 py-2 text-sm text-amber-900">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+            <span>
+              ⚠️ Your profile isn't fully loaded.{" "}
+              <span className="font-semibold">Some features may not work.</span>
+            </span>
+            <button
+              onClick={() => navigate("/support")}
+              className="px-3 py-1 rounded bg-amber-200 text-amber-900 hover:bg-amber-300 text-xs font-semibold whitespace-nowrap"
+            >
+              Contact Support
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between h-16 px-4 md:px-8">
         {/* Logo */}
         <Link to={"/"} className="text-xl font-bold text-gray-800">
@@ -43,7 +70,7 @@ function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden space-x-8 md:flex">
+        <nav className="hidden space-x-8 md:flex items-center">
           {navItems.map((item) => (
             <Link
               key={item.name}
@@ -57,7 +84,18 @@ function Header() {
               {item.name}
             </Link>
           ))}
-          {user?.name && <p className="text-gray-600">{user.name}</p>}
+
+          {/* 🆕 Better User Display */}
+          {isAuthenticated && (
+            <p className="text-gray-700 text-sm flex items-center gap-2">
+              Hi, <span className="font-semibold">{displayName}</span> 👋
+              {hasIncompleteProfile && (
+                <span className="text-xs text-amber-600 ml-1">
+                  (profile incomplete)
+                </span>
+              )}
+            </p>
+          )}
         </nav>
 
         {/* Right side actions */}
@@ -141,11 +179,27 @@ function Header() {
               </Link>
             ))}
 
-            {/* User Info */}
-            {user?.name && (
-              <p className="text-gray-600 py-2 border-t border-border">
-                {user.name}
-              </p>
+            {/* 🆕 User Info with Warning */}
+            {isAuthenticated && (
+              <div className="pt-2 border-t border-border text-gray-700 text-sm">
+                <p>
+                  Hi, <span className="font-semibold">{displayName}</span> 👋
+                </p>
+                {hasIncompleteProfile && (
+                  <div className="text-xs mt-2 p-2 bg-amber-50 rounded border border-amber-200 text-amber-800">
+                    ⚠️ Your profile is incomplete.{" "}
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        navigate("/support");
+                      }}
+                      className="underline font-semibold"
+                    >
+                      Contact support
+                    </button>
+                  </div>
+                )}
+              </div>
             )}
 
             {/* Auth Buttons */}
@@ -166,7 +220,10 @@ function Header() {
                   Login
                 </Link>
                 <Button
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    navigate("/register");
+                  }}
                   className="w-full bg-primary hover:bg-primary/90"
                 >
                   Sign Up
