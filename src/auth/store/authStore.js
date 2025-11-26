@@ -45,7 +45,7 @@ const getFirebaseErrorMessage = (errorCode) => {
 
   return (
     errorMessages[errorCode] ||
-    "Something went wrong. Please try again or contact support 💬"
+    "Something went wrong. Please try again or contact support"
   );
 };
 
@@ -61,8 +61,31 @@ export const useAuthStore = create((set, get) => ({
     set({ loading: true, error: null, _isLoggingIn: true });
 
     try {
+      // ✅ Step 1: Firebase login succeeds
       const userCredential = await authApi.login(email, password);
-      const backendProfile = await fetchBackendProfile(userCredential.user.uid);
+
+      // 🔄 Step 2: Try to fetch backend profile
+      let backendProfile = null;
+      let hasBackendData = false;
+
+      try {
+        backendProfile = await fetchBackendProfile(userCredential.user.uid);
+        hasBackendData = true;
+      } catch (profileError) {
+        console.warn("⚠️ Could not fetch backend profile:", profileError);
+
+        // 🆕 NOTIFY USER: Partial success
+        toast.warning("Logged in with limited data", {
+          description:
+            "We couldn't load your complete profile. Some features may be unavailable.",
+          duration: 6000,
+          action: {
+            label: "Contact Support",
+          },
+        });
+      }
+
+      // ✅ Build user object (works even without backend data)
       const user = buildUserObject(userCredential.user, backendProfile);
 
       set({
@@ -74,7 +97,17 @@ export const useAuthStore = create((set, get) => ({
         _hasInitialized: true,
       });
 
-      toast.success(`Welcome back, ${user.name || user.email}! 👋`);
+      // 🎉 Success message (only if we got backend data)
+      if (hasBackendData) {
+        toast.success(`Welcome back, ${user.name || user.email}!`);
+      } else {
+        // 🆕 Show Firebase-only success (no backend data)
+        toast.info(`Signed in as ${user.email}`, {
+          description: "Using basic profile data",
+          icon: "⚡",
+        });
+      }
+
       return user;
     } catch (err) {
       console.error("🔴 Auth store login failed:", err);
@@ -88,9 +121,8 @@ export const useAuthStore = create((set, get) => ({
         user: null,
       });
 
-      // 🆕 Use error toast with custom styling
       toast.error(friendlyError, {
-        duration: 5000, // Show for 5 seconds
+        duration: 5000,
         description: "Please check your credentials and try again",
       });
 
@@ -149,7 +181,7 @@ export const useAuthStore = create((set, get) => ({
   logout: async () => {
     try {
       await authApi.logout();
-      toast.info("You've been logged out. 👋");
+      toast.info("You've been logged out.");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
