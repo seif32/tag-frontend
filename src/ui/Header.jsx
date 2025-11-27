@@ -53,10 +53,7 @@ function Header() {
               ⚠️ Your profile isn't fully loaded.{" "}
               <span className="font-semibold">Some features may not work.</span>
             </span>
-            <button
-              onClick={() => navigate("/support")}
-              className="px-3 py-1 rounded bg-amber-200 text-amber-900 hover:bg-amber-300 text-xs font-semibold whitespace-nowrap"
-            >
+            <button className="px-3 py-1 rounded bg-amber-200 text-amber-900 hover:bg-amber-300 text-xs font-semibold whitespace-nowrap">
               Contact Support
             </button>
           </div>

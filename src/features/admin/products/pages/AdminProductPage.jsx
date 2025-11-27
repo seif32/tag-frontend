@@ -39,6 +39,7 @@ export default function AdminProductPage({ mode }) {
         isVisible={loadingState.isLoading}
         progress={loadingState.progress}
         stage={loadingState.stage}
+        type="product" // 👈 Product stages
       />
 
       <ProductFormProvider form={form} onSubmit={onSubmit}>

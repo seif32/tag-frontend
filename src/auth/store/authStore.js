@@ -269,32 +269,80 @@ export const useAuthStore = create((set, get) => ({
 }));
 
 const fetchBackendProfile = async (uid) => {
+  console.group("🔍 FETCH BACKEND PROFILE");
+  console.log("📋 Input UID:", uid);
+  console.log("📋 UID Type:", typeof uid);
+  console.log("📋 UID Length:", uid?.length);
+  console.log("📋 Timestamp:", new Date().toISOString());
+
   try {
-    return await authApi.getUserByUid(uid);
+    console.log("🌐 Making API call to /users/uid...");
+    const startTime = performance.now();
+
+    const profile = await authApi.getUserByUid(uid);
+
+    const endTime = performance.now();
+    console.log(
+      `✅ API Response received in ${(endTime - startTime).toFixed(2)}ms`
+    );
+    console.log("📦 Backend Profile Data:", JSON.stringify(profile, null, 2));
+    console.groupEnd();
+
+    return profile;
   } catch (profileError) {
-    console.warn("⚠️ Could not fetch backend profile:", profileError);
+    console.error("❌ FETCH FAILED");
+    console.log("🔴 Error Type:", profileError.constructor.name);
+    console.log("🔴 Error Message:", profileError.message);
+    console.log("🔴 Error Code:", profileError.code);
+    console.log("🔴 Error Status:", profileError.status);
+    console.log("🔴 Full Error:", JSON.stringify(profileError, null, 2));
+    console.groupEnd();
+
     return null;
   }
 };
 
-const buildUserObject = (firebaseUser, backendProfile) => ({
-  id: backendProfile?.id || null,
-  first_name: backendProfile?.first_name || null,
-  last_name: backendProfile?.last_name || null,
-  phone_number: backendProfile?.phone_number || null,
-  role: backendProfile?.role || "user",
+const buildUserObject = (firebaseUser, backendProfile) => {
+  console.group("🏗️ BUILD USER OBJECT");
+  console.log("📋 Firebase User UID:", firebaseUser.uid);
+  console.log("📋 Firebase User Email:", firebaseUser.email);
+  console.log("📋 Backend Profile Exists:", !!backendProfile);
 
-  name:
-    firebaseUser.displayName ||
-    `${backendProfile?.first_name || ""} ${
-      backendProfile?.last_name || ""
-    }`.trim() ||
-    firebaseUser.email?.split("@")[0] ||
-    "User",
-  phoneNumber: firebaseUser.phoneNumber || backendProfile?.phone_number,
-  uid: firebaseUser.uid,
-  email: firebaseUser.email,
-  emailVerified: backendProfile?.is_verified,
+  if (backendProfile) {
+    console.log("✅ Backend Profile:", {
+      id: backendProfile.id,
+      first_name: backendProfile.first_name,
+      last_name: backendProfile.last_name,
+      role: backendProfile.role,
+    });
+  } else {
+    console.warn("⚠️ No backend profile - using Firebase data only");
+  }
 
-  ...backendProfile,
-});
+  const userObject = {
+    id: backendProfile?.id || null,
+    first_name: backendProfile?.first_name || null,
+    last_name: backendProfile?.last_name || null,
+    phone_number: backendProfile?.phone_number || null,
+    role: backendProfile?.role || "user",
+
+    name:
+      firebaseUser.displayName ||
+      `${backendProfile?.first_name || ""} ${
+        backendProfile?.last_name || ""
+      }`.trim() ||
+      firebaseUser.email?.split("@")[0] ||
+      "User",
+    phoneNumber: firebaseUser.phoneNumber || backendProfile?.phone_number,
+    uid: firebaseUser.uid,
+    email: firebaseUser.email,
+    emailVerified: backendProfile?.is_verified,
+
+    ...backendProfile,
+  };
+
+  console.log("🎯 Final User Object:", JSON.stringify(userObject, null, 2));
+  console.groupEnd();
+
+  return userObject;
+};

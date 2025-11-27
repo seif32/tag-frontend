@@ -321,14 +321,13 @@ const productsApi = {
   /**
    * ➕ ADD NEW VARIANT TO EXISTING PRODUCT
    * Adds a single variant with types and pricing to an existing product
-   * Required: variant_sku, price, and the types array for dynamic attributes
-   * Optional: images, stock quantity, discount pricing
-   * Great for expanding product options after initial creation
+   * Uses FormData for efficient image upload (not base64 JSON)
+   * Required: price, and the types array for dynamic attributes
+   * Optional: images (as File objects), stock quantity, discount pricing
    * Example: const newVariant = await productsApi.addVariant(123, {
-   *   variant_sku: "IP15-RED-256",
    *   price: 1099.99,
    *   types: [{type_id: 1, value_id: 3}],
-   *   images: [{image_url: "...", is_primary: true}]
+   *   images: [fileObject1, fileObject2]
    * });
    */
   addVariant: async (productId, variantData, options = {}) => {
@@ -337,17 +336,88 @@ const productsApi = {
     }
 
     if (!variantData.price) {
-      throw new Error("Price are required");
+      throw new Error("Price is required");
     }
 
     try {
+      // ✅ Separate images from variant data
+      const { images, ...cleanVariantData } = variantData;
+
+      // ✅ Build FormData
+      const formData = new FormData();
+
+      // Add variant data as JSON
+      const variantPayload = {
+        quantity: cleanVariantData.quantity,
+        vat: cleanVariantData.vat,
+        price: cleanVariantData.price,
+        compare_at_price: cleanVariantData.compare_at_price,
+        cost_price: cleanVariantData.cost_price,
+        currency: cleanVariantData.currency || "GBP",
+        types: cleanVariantData.types || [],
+      };
+
+      formData.append("variant", JSON.stringify(variantPayload));
+
+      // ✅ Add images as File objects (not base64!)
+      if (images && Array.isArray(images)) {
+        const imagesMeta = [];
+
+        images.forEach((imgObj, imageIndex) => {
+          if (imgObj.file) {
+            // Rename file for backend processing
+            const extension = imgObj.file.name.slice(
+              imgObj.file.name.lastIndexOf(".")
+            );
+            const renamedFile = new File(
+              [imgObj.file],
+              `variant_image_${imageIndex}${extension}`,
+              { type: imgObj.file.type }
+            );
+
+            formData.append("images", renamedFile);
+
+            // Track metadata
+            imagesMeta.push({
+              name: renamedFile.name,
+              imageIndex,
+              is_primary: !!imgObj.is_primary,
+            });
+          }
+        });
+
+        formData.append("images_meta", JSON.stringify(imagesMeta));
+      }
+
+      // 🔍 Debug logging
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+      console.log("📦 ADD VARIANT FORMDATA PAYLOAD");
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+      for (const [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          console.log(`🖼️  ${key}:`, {
+            fileName: value.name,
+            fileType: value.type,
+            fileSize: `${(value.size / 1024).toFixed(2)} KB`,
+          });
+        } else {
+          console.log(`📝 ${key}:`, value);
+        }
+      }
+
+      console.log("\n🌐 API CALL:");
+      console.log(`Endpoint: POST /products/variant/${productId}`);
+      console.log("Content-Type: multipart/form-data");
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+
       return await api.post(
         `/products/variant/${productId}`,
-        variantData,
+        formData,
         options
       );
     } catch (error) {
-      console.error(`Failed to add variant to product ${productId}:`, {
+      console.error(`❌ Failed to add variant to product ${productId}:`, {
         variantData,
         error: error.details,
       });

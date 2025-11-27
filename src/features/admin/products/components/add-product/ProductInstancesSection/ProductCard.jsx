@@ -216,7 +216,6 @@ function ProductImages({ images = [], variantId }) {
       setIsUploadModalOpen(false);
       setSelectedFiles([]);
       setPreviewImages([]);
-      toast.success("Images uploaded successfully! 📸");
     },
   });
 

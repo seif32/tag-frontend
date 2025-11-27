@@ -71,7 +71,7 @@ export const useProductOperations = (navigate) => {
       setLoadingState({ isLoading: true, stage: "complete", progress: 100 });
 
       setTimeout(() => {
-        toast.success("Product updated successfully! ✨", {
+        toast.success("Product updated successfully!", {
           description: "Your changes have been saved.",
           duration: 3000,
         });

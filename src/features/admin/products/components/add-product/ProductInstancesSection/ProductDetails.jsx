@@ -25,7 +25,7 @@ function ProductDetails({ product, onEditBundle, onDeleteBundle }) {
   return (
     <div className="space-y-6">
       <Table>
-        <TableHeader>
+        <TableHeader asChild>
           <p className="font-medium text-muted-foreground">Product</p>
           <TableRow>
             <TableHead className={"text-left pl-0 "}>Quantity</TableHead>

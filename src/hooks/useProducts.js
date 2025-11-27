@@ -240,7 +240,7 @@ const useProducts = {
         // Built-in functionality
         queryClient.setQueryData(["products", variables.id], data);
         queryClient.invalidateQueries({ queryKey: ["products"] });
-        toast.success("Product updated successfully!");
+        // toast.success("Product updated successfully!");
 
         // Your custom logic
         if (options.onSuccess) {
@@ -632,7 +632,7 @@ const useProducts = {
         productsApi.uploadImagesToVariant(variantId, files),
       onSuccess: (data, variables) => {
         queryClient.invalidateQueries({ queryKey: ["products"] });
-        toast.success("📸 Images uploaded successfully!");
+        toast.success("Images uploaded successfully!");
         if (options.onSuccess) options.onSuccess(data, variables);
       },
       onError: (error) => {

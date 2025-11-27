@@ -1,9 +1,8 @@
 import useVariantStore from "../../store/variantStore";
-import useProductStore from "../../store/productStore"; // ✅ Add product store
-import useProducts from "@/hooks/useProducts"; // ✅ Add products hook
+import useProductStore from "../../store/productStore";
+import useProducts from "@/hooks/useProducts";
 import { useState } from "react";
 import { toast } from "sonner";
-import { consoleObject } from "@/utils/consoleObject";
 
 export function useAddProductInstance(
   control,
@@ -16,20 +15,42 @@ export function useAddProductInstance(
   const [tempImages, setTempImages] = useState([]);
   const [newVariant, setNewVariant] = useState(null);
 
-  // ✅ Add mode and product state
+  // 🆕 Add loading state for overlay
+  const [loadingState, setLoadingState] = useState({
+    isLoading: false,
+    progress: 0,
+    stage: "preparing",
+  });
+
   const mode = useProductStore((state) => state.mode);
   const isEditMode = mode === "edit";
   const productId = useProductStore((state) => state.productId);
 
-  // ✅ Add hooks for API calls
   const { refetchProduct } = useProducts.useById(productId, {
     enabled: !!productId,
   });
 
   const { addVariant, isPendingVariants } = useProducts.useAddVariant({
     onSuccess: () => {
+      // 🆕 Update to complete stage
+      setLoadingState({
+        isLoading: true,
+        progress: 100,
+        stage: "complete",
+      });
+
+      // 🆕 Hide overlay after short delay
+      setTimeout(() => {
+        setLoadingState({
+          isLoading: false,
+          progress: 0,
+          stage: "preparing",
+        });
+      }, 1500);
+
       refetchProduct();
 
+      // Reset form fields
       resetField("variants.0.quantity", { defaultValue: "" });
       resetField("variants.0.price", { defaultValue: "" });
       resetField("variants.0.currency", { defaultValue: "USD" });
@@ -37,9 +58,16 @@ export function useAddProductInstance(
       resetField("variants.0.cost_price", { defaultValue: "" });
       resetField("variants.0.vat", { defaultValue: "" });
 
-      // ✅ Clear local state after successful add
       setCurrentSelections({});
       setTempImages([]);
+    },
+    onError: (error) => {
+      // 🆕 Hide overlay on error
+      setLoadingState({
+        isLoading: false,
+        progress: 0,
+        stage: "preparing",
+      });
     },
   });
 
@@ -53,6 +81,7 @@ export function useAddProductInstance(
   function validateVariantData(variantData) {
     const errors = [];
 
+    // ✅ Required fields with number validation
     if (
       !variantData.quantity ||
       variantData.quantity.toString().trim() === "" ||
@@ -60,6 +89,7 @@ export function useAddProductInstance(
     ) {
       errors.push("Quantity is required and must be a valid number");
     }
+
     if (
       !variantData.price ||
       variantData.price.toString().trim() === "" ||
@@ -67,6 +97,7 @@ export function useAddProductInstance(
     ) {
       errors.push("Price is required and must be a valid number");
     }
+
     if (
       !variantData.vat ||
       variantData.vat.toString().trim() === "" ||
@@ -74,19 +105,22 @@ export function useAddProductInstance(
     ) {
       errors.push("VAT is required and must be a valid number");
     }
-    if (
-      !variantData.compare_at_price ||
-      variantData.compare_at_price.toString().trim() === "" ||
-      isNaN(Number(variantData.compare_at_price))
-    ) {
-      errors.push("Compare at price is required and must be a valid number");
-    }
+
     if (
       !variantData.cost_price ||
       variantData.cost_price.toString().trim() === "" ||
       isNaN(Number(variantData.cost_price))
     ) {
       errors.push("Cost price is required and must be a valid number");
+    }
+
+    // 🆕 OPTIONAL: Compare at price - only validate if provided
+    if (
+      variantData.compare_at_price &&
+      variantData.compare_at_price.toString().trim() !== "" &&
+      isNaN(Number(variantData.compare_at_price))
+    ) {
+      errors.push("Compare at price must be a valid number if provided");
     }
 
     return errors;
@@ -119,7 +153,6 @@ export function useAddProductInstance(
   async function handleAddVariant() {
     const variantData = getValues("variants.0");
 
-    // ✅ Validate variant form data
     const variantErrors = validateVariantData(variantData);
     if (variantErrors.length > 0) {
       toast.error("Please fix the following errors", {
@@ -154,19 +187,40 @@ export function useAddProductInstance(
 
       updateSelectedCombination(combinationArray);
 
-      // ✅ Build the new variant
       const builtVariant = {
         ...variantData,
         types: combinationArray,
         images: tempImages,
       };
 
-      // ✅ Update state so it can be exported
       setNewVariant(builtVariant);
 
-      // ✅ Conditional logic based on mode
       if (isEditMode) {
         console.log("🔄 Adding variant to existing product via API...");
+
+        // 🆕 Show loading overlay
+        setLoadingState({
+          isLoading: true,
+          progress: 10,
+          stage: "preparing",
+        });
+
+        // 🆕 Simulate progress stages
+        setTimeout(() => {
+          setLoadingState({
+            isLoading: true,
+            progress: 40,
+            stage: "uploading",
+          });
+        }, 500);
+
+        setTimeout(() => {
+          setLoadingState({
+            isLoading: true,
+            progress: 70,
+            stage: "saving",
+          });
+        }, 1000);
 
         addVariant({
           productId: productId,
@@ -185,9 +239,11 @@ export function useAddProductInstance(
           },
         });
       } else {
-        // ✨ Add mode: Normal flow - append to form
+        // Add mode: Normal flow
         console.log("✨ Adding variant to form...");
         append(builtVariant);
+
+        // Reset form
         resetField("variants.0.quantity", { defaultValue: "" });
         resetField("variants.0.price", { defaultValue: "" });
         resetField("variants.0.currency", { defaultValue: "USD" });
@@ -195,26 +251,27 @@ export function useAddProductInstance(
         resetField("variants.0.cost_price", { defaultValue: "" });
         resetField("variants.0.vat", { defaultValue: "" });
 
-        // ✅ Clear local state after successful add
         setCurrentSelections({});
         setTempImages([]);
       }
-
-      const variantName = combinationArray
-        .map((c) => c.selectedValue.value)
-        .join(" ");
     } catch (error) {
-      // ✅ Error handling
       console.error("Error adding variant:", error);
       toast.error("Failed to add variant", {
         description: "Something went wrong. Please try again.",
         duration: 4000,
       });
-      setNewVariant(null); // Clear on error
+
+      // 🆕 Hide overlay on error
+      setLoadingState({
+        isLoading: false,
+        progress: 0,
+        stage: "preparing",
+      });
+
+      setNewVariant(null);
     }
   }
 
-  // ✅ Function to clear the newVariant (optional)
   function clearNewVariant() {
     setNewVariant(null);
   }
@@ -230,7 +287,8 @@ export function useAddProductInstance(
     setCurrentSelections,
     newVariant,
     clearNewVariant,
-    isEditMode, // ✅ Export mode info
-    isPendingVariants, // ✅ Export loading state
+    isEditMode,
+    isPendingVariants,
+    loadingState, // 🆕 Export loading state
   };
 }

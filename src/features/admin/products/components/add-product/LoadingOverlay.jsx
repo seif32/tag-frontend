@@ -5,10 +5,12 @@ export default function LoadingOverlay({
   isVisible,
   progress = 0,
   stage = "preparing",
+  type = "product", // 🆕 NEW: "product" or "variant"
 }) {
   if (!isVisible) return null;
 
-  const stages = {
+  // 🆕 Product stages
+  const productStages = {
     preparing: {
       icon: Package,
       title: "Preparing Product",
@@ -31,6 +33,32 @@ export default function LoadingOverlay({
     },
   };
 
+  // 🆕 Variant stages
+  const variantStages = {
+    preparing: {
+      icon: Package,
+      title: "Preparing Variant",
+      description: "Validating variant information...",
+    },
+    uploading: {
+      icon: Upload,
+      title: "Uploading Images",
+      description: "Uploading variant images to storage...",
+    },
+    saving: {
+      icon: Loader2,
+      title: "Saving Variant",
+      description: "Adding variant to product...",
+    },
+    complete: {
+      icon: CheckCircle2,
+      title: "Variant Added!",
+      description: "Successfully added to product...",
+    },
+  };
+
+  // 🆕 Select stages based on type
+  const stages = type === "variant" ? variantStages : productStages;
   const currentStage = stages[stage] || stages.preparing;
   const Icon = currentStage.icon;
 
