@@ -126,13 +126,13 @@ function Header() {
           {isAuthenticated ? (
             <>
               {/* Orders */}
-              {/* <Link
+              <Link
                 to={"/orders"}
                 className="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-all"
                 title="My Orders"
               >
                 <FiPackage size={20} />
-              </Link> */}
+              </Link>
 
               {/* Cart */}
               <Link
