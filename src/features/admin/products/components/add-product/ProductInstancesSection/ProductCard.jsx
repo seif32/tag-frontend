@@ -222,7 +222,7 @@ function ProductImages({ images = [], variantId }) {
   const { deleteImage, isPendingDelete } = useProducts.useDeleteImage({
     onSuccess: () => {
       setImageToDelete(null);
-      toast.success("Image deleted successfully! 🗑️");
+      toast.success("Image deleted successfully!");
     },
   });
 

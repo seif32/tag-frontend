@@ -5,8 +5,7 @@ import LoadingState from "@/ui/LoadingState";
 import ErrorMessage from "@/ui/ErrorMessage";
 import { useState } from "react";
 import useDebounce from "@/hooks/useDebounce";
-import { Menu, MessageCircleHeart, MessageCircleMore, X } from "lucide-react";
-import DashedIconEmptyState from "@/ui/DashedIconEmptyState";
+import { Menu, MessageCircleMore, X } from "lucide-react";
 import { IconEmptyState } from "@/ui/IconEmptyState";
 
 function AdminChatsLayout() {
@@ -18,9 +17,7 @@ function AdminChatsLayout() {
 
   const { chats, isLoadingChats, isErrorChats, errorChats, refetchChats } =
     useChat.useAll(
-      {
-        search: debouncedInput,
-      },
+      { search: debouncedInput },
       {
         refetchInterval: 5000,
         refetchIntervalInBackground: false,
@@ -41,41 +38,41 @@ function AdminChatsLayout() {
 
   const handleChatClick = (id) => {
     navigate(`/admin/chat/${id}`);
-    setIsSidebarOpen(false); // Close sidebar on mobile after selection
+    setIsSidebarOpen(false);
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Mobile Toggle Button */}
+    <div className="flex flex-1 overflow-hidden bg-gray-100">
+      {/* 🆕 Mobile Toggle Button - Top Left (Better Position) */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed bottom-5 left-5 z-50 p-2 bg-accent text-white rounded-lg shadow-lg lg:hidden hover:bg-gray-100 transition-colors"
+        className="fixed top-4 left-4 z-50 w-12 h-12 bg-white border-2 border-gray-200 text-gray-700 rounded-full shadow-lg lg:hidden hover:shadow-xl hover:bg-gray-50 active:scale-95 transition-all duration-200 flex items-center justify-center"
+        aria-label="Toggle sidebar"
       >
         {isSidebarOpen ? (
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5" />
         ) : (
-          <Menu className="w-6 h-6" />
+          <Menu className="w-5 h-5" />
         )}
       </button>
-
       {/* Overlay for mobile */}
       {isSidebarOpen && (
         <div
           onClick={() => setIsSidebarOpen(false)}
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-300"
         />
       )}
-
       {/* Sidebar - Chat List */}
       <div
         className={`
           fixed lg:relative
           inset-y-0 left-0
-          w-full sm:w-80 lg:w-1/3
-          bg-white border-r
-          transform transition-transform duration-300 ease-in-out
+          w-full sm:w-96 lg:w-1/3 xl:w-1/4
+          bg-white
+          transform transition-transform duration-300 ease-out
           z-40
           flex flex-col
+          shadow-xl lg:shadow-none
           ${
             isSidebarOpen
               ? "translate-x-0"
@@ -91,17 +88,17 @@ function AdminChatsLayout() {
           searchInput={searchInput}
         />
       </div>
-
       {/* Main Chat Area */}
-      <div className="flex-1 w-full lg:w-2/3 overflow-hidden">
+      <div className="flex-1 overflow-hidden flex flex-col">
         {chatId ? (
           <Outlet />
         ) : (
-          <IconEmptyState
-            height={"py-50"}
-            subtitle={"Select one of the contacts"}
-            icon={MessageCircleMore}
-          />
+          <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+            <IconEmptyState
+              subtitle={"Select a conversation to start messaging"}
+              icon={MessageCircleMore}
+            />
+          </div>
         )}
       </div>
     </div>

@@ -11,6 +11,7 @@ import OrdersHistoryPage from "@/features/order/pages/OrdersHistoryPage";
 import OrderDetailsPage from "@/features/order/pages/OrderDetailsPage";
 import ProtectedRoute from "./ProtectedRoute";
 import ChatPage from "@/features/chat/pages/ChatPage";
+import OrderFailPage from "@/features/cart/pages/OrderFailPage";
 
 function CustomerRouter() {
   return (
@@ -46,11 +47,21 @@ function CustomerRouter() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="order/success/:orderId"
           element={
             <ProtectedRoute>
               <OrderSuccessPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="order/fail/:orderId"
+          element={
+            <ProtectedRoute>
+              <OrderFailPage />
             </ProtectedRoute>
           }
         />

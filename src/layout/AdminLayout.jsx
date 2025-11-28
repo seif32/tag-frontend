@@ -23,7 +23,8 @@ function AdminLayout() {
         <AdminSidebar />
         <SidebarInset className="flex flex-1 flex-col overflow-hidden">
           <AdminHeader />
-          <main className="flex flex-1 flex-col gap-4  pt-0 overflow-auto ">
+          {/* 🆕 Removed overflow-auto, let child pages handle their own scrolling */}
+          <main className="flex flex-1 flex-col gap-4 pt-0 min-h-0">
             <Outlet />
           </main>
         </SidebarInset>
@@ -46,7 +47,7 @@ function AdminHeader() {
   }
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b bg-background px-4 mb-3">
+    <header className="flex h-16 shrink-0 items-center justify-between border-b bg-background px-4">
       <div className="flex items-center gap-2">
         <SidebarTrigger className="-ml-1" />
         <div className="h-6 w-px bg-border mx-2" />
