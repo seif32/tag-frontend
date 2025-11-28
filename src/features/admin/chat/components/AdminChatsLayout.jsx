@@ -46,7 +46,7 @@ function AdminChatsLayout() {
       {/* 🆕 Mobile Toggle Button - Top Left (Better Position) */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="fixed top-4 left-4 z-50 w-12 h-12 bg-white border-2 border-gray-200 text-gray-700 rounded-full shadow-lg lg:hidden hover:shadow-xl hover:bg-gray-50 active:scale-95 transition-all duration-200 flex items-center justify-center"
+        className="fixed bottom-18 left-4 z-50 w-12 h-12 bg-white border-2 border-gray-200 text-gray-700 rounded-full shadow-lg lg:hidden hover:shadow-xl hover:bg-gray-50 active:scale-95 transition-all duration-200 flex items-center justify-center"
         aria-label="Toggle sidebar"
       >
         {isSidebarOpen ? (
