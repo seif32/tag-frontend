@@ -42,8 +42,6 @@ export default function Footer() {
     try {
       const newChat = await createChatAsync();
 
-      console.log("new chat", newChat);
-
       setUser({
         ...user,
         chat: newChat, // Should have { id, ... }

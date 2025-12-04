@@ -55,7 +55,6 @@ function EditProductDialog({ isDialogOpen, selectedProduct, onClose }) {
   }, [selectedProduct, isDialogOpen, form]);
 
   function onSubmit(data) {
-    console.log("EditProductDialog", data);
     updateVariant({ variantId: selectedProduct.id, variantData: data });
     onClose();
   }

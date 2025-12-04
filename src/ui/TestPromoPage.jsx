@@ -9,8 +9,6 @@ export default function TestPromoPage() {
     defaultValues: { test: "" },
   });
 
-  console.log("🔥 TestPromoPage render");
-
   return (
     <div className="p-8">
       <h1>Test Promo Page</h1>

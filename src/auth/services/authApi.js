@@ -268,15 +268,12 @@ const authApi = {
    * 📧 RESEND VERIFICATION EMAIL
    * Resends email verification link via your /api/users/resend-verification endpoint
    * Useful when users don't receive initial verification email
-   * Example: await authApi.resendVerificationEmail("user@example.com", token);
+   * Example: await authApi.resendVerificationEmail();
    */
-  resendVerificationEmail: async (email, options = {}) => {
-    if (!email) {
-      throw new Error("Email is required to resend verification");
-    }
-
+  resendVerificationEmail: async (options = {}) => {
     try {
-      return await api.post("/users/resend-verification", { email }, options);
+      // ✅ Backend gets email from req.user.email (from token)
+      return await api.post("/users/resend-verification", {}, options);
     } catch (error) {
       console.error("Failed to resend verification email:", error.details);
       throw error;
@@ -286,18 +283,15 @@ const authApi = {
   /**
    * ✅ VERIFY USER EMAIL
    * Verifies a user's email address via your /api/users/verify-email endpoint
-   * Requires Firebase authentication token
-   * Example: await authApi.verifyEmail("user@example.com", token);
+   * Requires Firebase authentication token (automatically added)
+   * Example: await authApi.verifyEmail();
    */
-  verifyEmail: async (email, options = {}) => {
-    if (!email) {
-      throw new Error("Email is required for verification");
-    }
-
+  verifyEmail: async (options = {}) => {
     try {
-      return await api.put("/users/verify-email", { email }, options);
+      // ✅ Backend gets email from req.user.email (from token)
+      return await api.put("/users/verify-email", {}, options);
     } catch (error) {
-      console.error("Failed to verify email:", error.details);
+      console.error("Failed to verify email:", error.details || error.message);
       throw error;
     }
   },

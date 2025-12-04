@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { useAuthStore } from "@/auth/store/authStore";
 import { toast } from "sonner";
 import LoadingState from "@/ui/LoadingState";
+import authApi from "../services/authApi";
 
 function VerificationPage() {
   const navigate = useNavigate();
@@ -12,7 +13,6 @@ function VerificationPage() {
   const [debugInfo, setDebugInfo] = useState({});
 
   useEffect(() => {
-    console.log("🔥 VerificationPage mounted");
     handleEmailVerification();
   }, []);
 
@@ -21,11 +21,6 @@ function VerificationPage() {
       // ✅ Step 1: Parse URL parameters
       const params = new URLSearchParams(window.location.search);
       const email = params.get("email");
-
-      console.log("🔍 URL Parameters:", {
-        email,
-        fullUrl: window.location.href,
-      });
 
       setDebugInfo({
         step: "parsing-params",
@@ -56,78 +51,10 @@ function VerificationPage() {
         return;
       }
 
-      // ✅ Step 3: Call backend verification endpoint
-      console.log("🔍 Calling backend verification for:", email);
+      // ✅ Step 3: Call backend verification endpoint using API helper
       setDebugInfo((prev) => ({ ...prev, step: "calling-backend" }));
 
-      const response = await fetch(
-        "http://localhost:3000/api/users/verify-email",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        }
-      );
-
-      console.log("🔍 Backend response:", {
-        status: response.status,
-        ok: response.ok,
-        statusText: response.statusText,
-      });
-
-      setDebugInfo((prev) => ({
-        ...prev,
-        step: "backend-responded",
-        status: response.status,
-        ok: response.ok,
-      }));
-
-      // ✅ Step 4: Handle backend response
-      if (!response.ok) {
-        let errorMessage = "Email verification failed";
-
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-          console.error("❌ Backend error:", errorData);
-
-          setDebugInfo((prev) => ({
-            ...prev,
-            step: "backend-error",
-            errorData,
-          }));
-        } catch (parseError) {
-          console.error("❌ Error parsing backend error response:", parseError);
-        }
-
-        if (response.status === 404) {
-          setStatus("error");
-          setMessage("Email not found or already verified.");
-        } else if (response.status === 400) {
-          setStatus("error");
-          setMessage("Invalid verification request.");
-        } else if (response.status >= 500) {
-          setStatus("error");
-          setMessage("Server error occurred. Please try again later.");
-        } else {
-          setStatus("error");
-          setMessage(errorMessage);
-        }
-        return;
-      }
-
-      // ✅ Step 5: Success response
-      let responseData = {};
-      try {
-        responseData = await response.json();
-        console.log("✅ Verification successful:", responseData);
-      } catch (parseError) {
-        console.warn(
-          "⚠️ Could not parse success response, but verification completed"
-        );
-      }
+      const responseData = await authApi.verifyEmail();
 
       setDebugInfo((prev) => ({
         ...prev,
@@ -135,35 +62,50 @@ function VerificationPage() {
         responseData,
       }));
 
-      // ✅ Step 6: Show success and redirect
+      // ✅ Step 4: Success response
       setStatus("success");
       setMessage(`Email ${email} verified successfully!`);
-      toast.success("Email verified! 🎉");
 
       // Navigate based on user role after delay
       setTimeout(() => {
-        console.log("🔄 Redirecting user...", { userRole: user?.role });
-
         if (user?.role === "admin") {
           navigate("/admin");
         } else {
           navigate("/");
         }
       }, 2000);
-    } catch (networkError) {
-      console.error("💥 Network error during verification:", networkError);
+    } catch (error) {
+      console.error("💥 Verification error:", error);
 
       setDebugInfo((prev) => ({
         ...prev,
-        step: "network-error",
-        error: networkError.message,
-        stack: networkError.stack,
+        step: "verification-failed",
+        error: error.message,
+        status: error.status,
+        details: error.details,
       }));
 
+      // ✅ Handle different error types
+      let errorMessage = "Email verification failed";
+
+      if (error.status === 404) {
+        errorMessage = "Email not found or already verified.";
+      } else if (error.status === 400) {
+        errorMessage =
+          error.details?.error ||
+          "Invalid verification request or email not verified yet.";
+      } else if (error.status >= 500) {
+        errorMessage = "Server error occurred. Please try again later.";
+      } else if (error.message.includes("Network request failed")) {
+        errorMessage =
+          "Network error occurred. Please check your connection and try again.";
+      } else {
+        errorMessage = error.message || errorMessage;
+      }
+
       setStatus("error");
-      setMessage(
-        "Network error occurred. Please check your connection and try again."
-      );
+      setMessage(errorMessage);
+      toast.error(errorMessage);
     }
   }
 
@@ -174,7 +116,7 @@ function VerificationPage() {
           <div>
             <LoadingState />
             <h2 className="text-xl font-semibold mb-2 text-blue-700">
-              Hang tight, we’re verifying!
+              Hang tight, we're verifying!
             </h2>
             <p className="text-gray-600 mb-2">
               Ensuring your email is secure...
@@ -198,7 +140,6 @@ function VerificationPage() {
 
         {status === "success" && (
           <div>
-            <div className="text-6xl mb-4">🎉</div>
             <h2 className="text-2xl font-bold mb-2 text-green-600">
               Success! Email Verified
             </h2>
@@ -207,7 +148,6 @@ function VerificationPage() {
               <LoadingState />
               <span>Redirecting to your dashboard...</span>
             </div>
-            {/* Optionally, bring confetti animation here */}
           </div>
         )}
 
@@ -215,7 +155,7 @@ function VerificationPage() {
           <div>
             <div className="text-6xl mb-2">😓</div>
             <h2 className="text-2xl font-bold mb-2 text-red-600">
-              Verification Didn’t Work
+              Verification Didn't Work
             </h2>
             <p className="mb-4 text-gray-700">{message}</p>
             <div className="space-y-2">

@@ -142,7 +142,7 @@ function ServiceHighlights() {
     {
       id: 1,
       title: "Free Shipping",
-      subtitle: "On all orders over $50",
+      subtitle: "Over a threshold",
       icon: ShipIcon,
     },
     {

@@ -30,7 +30,7 @@ export const useProductOperations = (navigate) => {
       setLoadingState({ isLoading: true, stage: "complete", progress: 100 });
 
       setTimeout(() => {
-        toast.success("Product created successfully! 🎉", {
+        toast.success("Product created successfully! ", {
           description: "Your product is now live and ready to sell!",
           duration: 3000,
         });
@@ -137,9 +137,6 @@ export const useProductOperations = (navigate) => {
       0
     );
 
-    console.log("➕ Creating product:", addTransformedData);
-    console.log(`📸 Total images to upload: ${totalImages}`);
-
     // Stage 2: Uploading (20-80%)
     if (totalImages > 0) {
       setLoadingState({ isLoading: true, stage: "uploading", progress: 30 });
@@ -178,8 +175,6 @@ export const useProductOperations = (navigate) => {
   };
 
   const updateProduct = ({ id, data }) => {
-    console.log("🔄 Editing product:", data);
-
     // Simple loading for updates
     setLoadingState({ isLoading: true, stage: "saving", progress: 50 });
 

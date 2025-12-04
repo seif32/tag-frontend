@@ -87,11 +87,6 @@ function SuccessAction({ order, orderItems, orderBundles }) {
         items: orderItems,
         bundles: orderBundles || [],
       });
-      console.log("OrderSuccessPage", {
-        ...order,
-        items: orderItems,
-        bundles: orderBundles || [],
-      });
       toast.success("Invoice downloaded successfully!");
     } catch (error) {
       console.error("Invoice generation failed:", error);

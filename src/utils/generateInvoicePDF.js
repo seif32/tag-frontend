@@ -461,7 +461,6 @@ export const generateOrderInvoicePDF = async (orderData) => {
     )}-${new Date().toISOString().slice(0, 10)}.pdf`;
     doc.save(filename);
 
-    console.log("✅ Invoice PDF generated successfully!");
     return true;
   } catch (error) {
     console.error("❌ Error generating invoice PDF:", error);

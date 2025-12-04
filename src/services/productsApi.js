@@ -70,8 +70,6 @@ const productsApi = {
         ? `/products/without-variants?${queryString}`
         : "/products/without-variants";
 
-      console.log("productsApi", url);
-
       return await api.get(url, options);
     } catch (error) {
       console.error("Failed to fetch products without variants:", {
@@ -136,8 +134,6 @@ const productsApi = {
    * Create a new product with variants and images
    */
   create: async (productData, options = {}) => {
-    console.log("🚀 Original product data:", productData);
-
     if (!productData.name) {
       throw new Error("Product name is required");
     }
@@ -206,50 +202,8 @@ const productsApi = {
     // 🔍 DETAILED LOGGING - EXACTLY what's being sent
     // ════════════════════════════════════════════════════════════════
 
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    console.log("📦 FORMDATA PAYLOAD BEING SENT TO BACKEND");
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-    // Log each FormData entry
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        console.log(`🖼️  ${key}:`, {
-          fileName: value.name,
-          fileType: value.type,
-          fileSize: `${(value.size / 1024).toFixed(2)} KB`,
-        });
-      } else {
-        console.log(`📝 ${key}:`, value);
-      }
-    }
-
-    console.log("\n📊 PARSED JSON PAYLOADS:");
-    console.log("─────────────────────────");
-    console.log("Product:", JSON.parse(formData.get("product")));
-    console.log("Tags:", JSON.parse(formData.get("tags")));
-    console.log("Variants:", JSON.parse(formData.get("variants")));
-    console.log("Images Metadata:", JSON.parse(formData.get("images_meta")));
-
-    console.log("\n📸 IMAGES SUMMARY:");
-    console.log("─────────────────────────");
-    console.log(`Total images: ${allImages.length}`);
-    imagesMeta.forEach((meta, idx) => {
-      console.log(
-        `  [${idx}] ${meta.name} → Variant ${meta.variantIndex}, Image ${
-          meta.imageIndex
-        }, Primary: ${meta.is_primary ? "✅" : "❌"}`
-      );
-    });
-
-    console.log("\n🌐 API CALL:");
-    console.log("─────────────────────────");
-    console.log("Endpoint: POST /products");
-    console.log("Content-Type: multipart/form-data");
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-
     try {
       const response = await api.post("/products", formData, options);
-      console.log("✅ SUCCESS Response:", response);
       return response;
     } catch (error) {
       console.error("❌ FAILED to create product");
@@ -388,28 +342,6 @@ const productsApi = {
 
         formData.append("images_meta", JSON.stringify(imagesMeta));
       }
-
-      // 🔍 Debug logging
-      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-      console.log("📦 ADD VARIANT FORMDATA PAYLOAD");
-      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-      for (const [key, value] of formData.entries()) {
-        if (value instanceof File) {
-          console.log(`🖼️  ${key}:`, {
-            fileName: value.name,
-            fileType: value.type,
-            fileSize: `${(value.size / 1024).toFixed(2)} KB`,
-          });
-        } else {
-          console.log(`📝 ${key}:`, value);
-        }
-      }
-
-      console.log("\n🌐 API CALL:");
-      console.log(`Endpoint: POST /products/variant/${productId}`);
-      console.log("Content-Type: multipart/form-data");
-      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
       return await api.post(
         `/products/variant/${productId}`,

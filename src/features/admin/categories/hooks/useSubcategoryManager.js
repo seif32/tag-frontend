@@ -5,13 +5,11 @@ export const useSubcategoryManager = () => {
   const [openSubcategoryDialog, setOpenSubcategoryDialog] = useState(false);
 
   const handleEdit = (subcategory) => {
-    console.log("edit");
     setSubcategory(subcategory);
     setOpenSubcategoryDialog(true);
   };
 
   const handleAdd = () => {
-    console.log("Add");
     setSubcategory(null);
     setOpenSubcategoryDialog(true);
   };

@@ -21,8 +21,6 @@ function VariantManualValueInput({ typeId, typeName, onValueCreated }) {
         if (onValueCreated) {
           onValueCreated();
         }
-
-        console.log("✅ Value created successfully:", data);
       },
       onError: (error) => {
         console.error("❌ Failed to create value:", error);

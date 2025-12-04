@@ -112,8 +112,6 @@ function ProductCard({ variantsList, onEditProduct, productName }) {
     setIsModalOpen(true);
   }
 
-  console.log(filteredVariants);
-
   return (
     <CardContent className="space-y-4">
       {filteredVariants.map((product, index) => (
@@ -256,12 +254,10 @@ function ProductImages({ images = [], variantId }) {
 
   // 🔧 Fixed delete handler
   const handleDeleteClick = (imageId) => {
-    console.log("🗑️ Delete clicked for image:", imageId); // Debug log
     setImageToDelete(imageId);
   };
 
   const confirmDeleteImage = () => {
-    console.log("✅ Confirming delete for image:", imageToDelete); // Debug log
     if (imageToDelete) {
       deleteImage(imageToDelete);
     }
@@ -369,7 +365,6 @@ function ProductImages({ images = [], variantId }) {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        console.log("🖱️ Click detected! Image ID:", image.id); // Debug
                         handleDeleteClick(image.id);
                       }}
                       className="absolute inset-0 bg-black/0 hover:bg-black/60 transition-all duration-200 flex items-center justify-center group"

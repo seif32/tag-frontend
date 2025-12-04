@@ -196,8 +196,6 @@ export function useAddProductInstance(
       setNewVariant(builtVariant);
 
       if (isEditMode) {
-        console.log("🔄 Adding variant to existing product via API...");
-
         // 🆕 Show loading overlay
         setLoadingState({
           isLoading: true,
@@ -240,7 +238,6 @@ export function useAddProductInstance(
         });
       } else {
         // Add mode: Normal flow
-        console.log("✨ Adding variant to form...");
         append(builtVariant);
 
         // Reset form

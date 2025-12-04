@@ -33,7 +33,6 @@ const useVariantStore = create((set, get) => ({
   addVariantValue: (typeId, value) => {
     set((state) => {
       const currentValues = state.availableValues[typeId] || [];
-      console.log("XXX", currentValues);
       return {
         ...state,
         availableValues: {

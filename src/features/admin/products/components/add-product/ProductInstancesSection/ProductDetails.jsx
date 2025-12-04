@@ -100,7 +100,6 @@ function ProductDetails({ product, onEditBundle, onDeleteBundle }) {
                     <DropdownMenuContent align="start">
                       <DropdownMenuItem
                         onClick={(e) => {
-                          console.log("📝 Edit bundle dropdown clicked");
                           e.stopPropagation();
                           onEditBundle?.(bundle);
                         }}
@@ -110,7 +109,6 @@ function ProductDetails({ product, onEditBundle, onDeleteBundle }) {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={(e) => {
-                          console.log("🗑️ Delete bundle dropdown clicked");
                           e.stopPropagation();
                           onDeleteBundle?.(bundle);
                         }}

@@ -37,13 +37,6 @@ function Test() {
     );
   };
 
-  const logRenamedFiles = () => {
-    console.log("Renamed files:");
-    images.forEach((img, i) =>
-      console.log(`${i}: ${img.file.name} (type: ${img.file.type})`)
-    );
-  };
-
   return (
     <div style={{ padding: 20 }}>
       <h2>Image Upload with Icons for Remove & Primary</h2>
@@ -115,7 +108,7 @@ function Test() {
       </div>
       {images.length > 0 && (
         <div style={{ marginTop: 15 }}>
-          <button onClick={logRenamedFiles}>Log New File Names & Types</button>
+          {/* <button onClick={logRenamedFiles}>Log New File Names & Types</button> */}
         </div>
       )}
     </div>

@@ -5,8 +5,6 @@ import { Package } from "lucide-react";
 export default function OrderContainer({ items = [], bundles = [], style }) {
   const totalItems = items.length + (bundles?.length || 0);
 
-  console.log(items);
-  console.log(bundles);
 
   return (
     <div className={`w-full ${style}`}>

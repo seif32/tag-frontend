@@ -38,7 +38,6 @@ function OrdersHistoryPage() {
         onDismiss={() => refetchUserOrders()}
       />
     );
-  console.log(userOrders);
 
   return (
     <div className="w-full mx-auto max-w-250 flex flex-col space-y-7">

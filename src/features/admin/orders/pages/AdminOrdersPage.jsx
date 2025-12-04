@@ -70,7 +70,6 @@ function AdminOrdersPage() {
       />
     );
   }
-  console.log("AdminOrdersPage", ordersLight);
 
   return (
     <div className="p-6 space-y-6">

@@ -103,7 +103,7 @@ export const useAuthStore = create((set, get) => ({
         hasIncompleteProfile: !hasBackendData, // 🆕 Set flag based on backend data
       });
 
-      // 🎉 Success message (only if we got backend data)
+      //  Success message (only if we got backend data)
       if (hasBackendData) {
         toast.success(`Welcome back, ${user.name || user.email}! 👋`);
       } else {
@@ -167,7 +167,7 @@ export const useAuthStore = create((set, get) => ({
         hasIncompleteProfile: false, // 🆕 Registration always has complete profile
       });
 
-      toast.success("Account created successfully! 🎉");
+      toast.success("Account created successfully! ");
       return user;
     } catch (err) {
       console.error("🔴 Registration failed:", err);
@@ -212,7 +212,6 @@ export const useAuthStore = create((set, get) => ({
 
       // 🆕 Skip ONLY during active login operation
       if (currentState._isLoggingIn) {
-        console.log("🔄 Skipping initAuth - login in progress");
         return;
       }
 
@@ -269,52 +268,19 @@ export const useAuthStore = create((set, get) => ({
 }));
 
 const fetchBackendProfile = async (uid) => {
-  console.group("🔍 FETCH BACKEND PROFILE");
-  console.log("📋 Input UID:", uid);
-  console.log("📋 UID Type:", typeof uid);
-  console.log("📋 UID Length:", uid?.length);
-  console.log("📋 Timestamp:", new Date().toISOString());
-
   try {
-    console.log("🌐 Making API call to /users/uid...");
-    const startTime = performance.now();
-
     const profile = await authApi.getUserByUid(uid);
-
-    const endTime = performance.now();
-    console.log(
-      `✅ API Response received in ${(endTime - startTime).toFixed(2)}ms`
-    );
-    console.log("📦 Backend Profile Data:", JSON.stringify(profile, null, 2));
-    console.groupEnd();
 
     return profile;
   } catch (profileError) {
     console.error("❌ FETCH FAILED");
-    console.log("🔴 Error Type:", profileError.constructor.name);
-    console.log("🔴 Error Message:", profileError.message);
-    console.log("🔴 Error Code:", profileError.code);
-    console.log("🔴 Error Status:", profileError.status);
-    console.log("🔴 Full Error:", JSON.stringify(profileError, null, 2));
-    console.groupEnd();
 
     return null;
   }
 };
 
 const buildUserObject = (firebaseUser, backendProfile) => {
-  console.group("🏗️ BUILD USER OBJECT");
-  console.log("📋 Firebase User UID:", firebaseUser.uid);
-  console.log("📋 Firebase User Email:", firebaseUser.email);
-  console.log("📋 Backend Profile Exists:", !!backendProfile);
-
   if (backendProfile) {
-    console.log("✅ Backend Profile:", {
-      id: backendProfile.id,
-      first_name: backendProfile.first_name,
-      last_name: backendProfile.last_name,
-      role: backendProfile.role,
-    });
   } else {
     console.warn("⚠️ No backend profile - using Firebase data only");
   }
@@ -340,9 +306,6 @@ const buildUserObject = (firebaseUser, backendProfile) => {
 
     ...backendProfile,
   };
-
-  console.log("🎯 Final User Object:", JSON.stringify(userObject, null, 2));
-  console.groupEnd();
 
   return userObject;
 };

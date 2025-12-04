@@ -46,26 +46,8 @@ async function apiRequest(endpoint, options = {}) {
       headers,
     };
 
-    // 🔍 Log request details in development
-    if (process.env.NODE_ENV === "development") {
-      console.group(`🚀 API Request: ${config.method || "GET"} ${url}`);
-      console.log("Headers:", headers);
-      if (config.body) {
-        console.log("Body:", config.body);
-      }
-      console.groupEnd();
-    }
-
     const response = await fetch(url, config);
     const responseTime = Date.now() - startTime;
-
-    // 🔍 Log response details in development
-    if (process.env.NODE_ENV === "development") {
-      console.group(`📡 API Response: ${response.status} (${responseTime}ms)`);
-      console.log("Status:", response.status, response.statusText);
-      console.log("Headers:", Object.fromEntries(response.headers.entries()));
-      console.groupEnd();
-    }
 
     // Handle different response types
     if (!response.ok) {
@@ -125,10 +107,6 @@ async function apiRequest(endpoint, options = {}) {
       const text = await response.text();
       const data = text ? JSON.parse(text) : null; // avoid crash on empty response
 
-      if (process.env.NODE_ENV === "development") {
-        console.log(`✅ API Success: ${config.method || "GET"} ${url}`, data);
-      }
-
       return data;
     }
   } catch (error) {
@@ -177,7 +155,6 @@ export const api = {
 
   post: (endpoint, data, options = {}) => {
     const isFormData = data instanceof FormData;
-    console.log("XXXXXXXXXXXX", isFormData);
 
     return apiRequest(endpoint, {
       ...options,

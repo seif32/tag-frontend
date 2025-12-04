@@ -29,7 +29,6 @@ const useVariants = {
   //   });
 
   //   if (query.isSuccess && query.data?.data && availableTypes.length === 0) {
-  //     console.log("🔥 Direct sync triggered!");
   //     setAvailableTypes(query.data.data);
   //   }
 

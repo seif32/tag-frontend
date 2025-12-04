@@ -204,10 +204,8 @@ export default function PromoCodeModal({
       };
 
       if (mode === "create") {
-        console.log("add", formattedData);
         createPromoCode(formattedData, { onSuccess: () => onSuccess() });
       } else if (mode === "edit") {
-        console.log("edit", formattedData);
 
         updatePromoCode(
           {

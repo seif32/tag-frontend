@@ -80,11 +80,9 @@ function AddEditSubcategoryDialog({
 
   function onSubmit(data) {
     if (isEditMode) {
-      console.log({ id: subcategory.id, data });
       updateSubCategory({ id: subcategory.id, data });
     } else {
       createSubCategory(data);
-      console.log(data);
     }
   }
 
